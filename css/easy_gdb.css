@@ -1,0 +1,38 @@
+html,body {
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
+.page_container {
+  margin:auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.min900 {
+  min-width: 900px;
+}
+
+
+.pointer_cursor {
+  cursor: pointer;
+}
+
+.collapse_section {
+  background-color: #eee;
+  font-size: 24px;
+  padding-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.collapse_section:hover {
+  text-decoration: underline;
+  background-color: #d1d7d1;
+  color:#337ab7;
+}
+
+.p_font18 {
+  font-size:18px;
+}
