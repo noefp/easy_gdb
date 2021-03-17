@@ -17,6 +17,8 @@ include_once "$conf_path/easyGDB_conf.php"
   	<link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
     <link rel="stylesheet" type="text/css" href="/easy_gdb/css/datatables.css">
     <!-- <link rel="stylesheet" href="/easy_gdb/js/DataTables/Select-1.2.6/css/select.dataTables.min.css"> -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -28,6 +30,8 @@ include_once "$conf_path/easyGDB_conf.php"
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="/easy_gdb/js/download2.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/DataTables/datatables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="/easy_gdb/js/DataTables/Buttons-1.5.2/js/dataTables.buttons.min.js"></script>
