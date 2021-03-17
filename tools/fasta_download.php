@@ -4,7 +4,7 @@
   <br>
   <h3 class="text-center">Gene Sequence Downloading</h3>
   <div class="form margin-20">
-    <form id="download_fasta_form" action="blastdbcmd.php" method="post">
+    <form id="download_fasta_form" action="blast/blastdbcmd.php" method="post">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
       <textarea class="form-control" id="txtDownloadGenes" rows="8" name="gids">
 gene1

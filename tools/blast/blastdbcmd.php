@@ -1,18 +1,19 @@
 <?php
-include_once "db_paths.php";
+// include_once "db_paths.php";
 // File is ignored by .gitignore - should contain:
 // getBlastdbcmdPath and getBlastdbBaseLocation.
 // These functions are returning corresponding paths and taking no arguments. Path of directory ends with /
 
 
 function getFastaFile($gids,$dbPath) {
-	$blastdbcmdPath=getBlastdbcmdPath();
+  // $blastdbcmdPath=getBlastdbcmdPath();
 
   // echo $blastdbcmdPath."\n";
   // echo $blastDbLocation."\n";
   // echo escapeshellarg(implode(",",$gids))."\n";
 
-	exec("{$blastdbcmdPath} -db {$dbPath} -entry " . escapeshellarg(implode(",",$gids)) ."| sed 's/lcl|//'" ,$ret);
+	exec("blastdbcmd -db {$dbPath} -entry " . escapeshellarg(implode(",",$gids)) ."| sed 's/lcl|//'" ,$ret);
+  // exec("{$blastdbcmdPath} -db {$dbPath} -entry " . escapeshellarg(implode(",",$gids)) ."| sed 's/lcl|//'" ,$ret);
 	return implode("\n",$ret);
 }
 
