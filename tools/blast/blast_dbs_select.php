@@ -34,7 +34,7 @@ foreach ($sps_found as $bdb) {
     $bdb = str_replace(".nhr","",$bdb);
     $blast_db = str_replace(".fasta","",$bdb);
     $blast_db = str_replace("_"," ",$blast_db);
-    echo "<option value=\"$blast_dbs_path/$bdb\">$blast_db</option>";
+    echo "<option dbtype=\"$match[0]\" value=\"$blast_dbs_path/$bdb\">$blast_db</option>";
   }
 }
 

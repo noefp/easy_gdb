@@ -124,6 +124,7 @@ AACGTGAACTCCTAG
       var seq_type = "nt";
       var input_seq = $('#blast_sequence').val();
       var blast_db = $('#sel1').val();
+      var blast_db_type = $('#sel1').children(":selected").attr("dbtype");;
       var blast_program = $('#blast_program').val();
 
       input_seq = input_seq.trim();
@@ -160,11 +161,11 @@ AACGTGAACTCCTAG
           alert("Input protein sequences can only be used with BLASTp");
           return false;
       }
-      if (blast_program == "blastn" && blast_db.match("proteins")) {
+      if (blast_program == "blastn" && blast_db_type.match("\.phr")) {
           alert("BLASTn can not be used for a protein database");
           return false;
       }
-      if ((blast_program == "blastp" || blast_program == "blastx") && !blast_db.match("proteins")) {
+      if ((blast_program == "blastp" || blast_program == "blastx") && !blast_db_type.match("\.phr")) {
         // $('#blast_form').submit(function() {
           alert("BLASTp and BLASTx can only be used for a protein database");
           return false;
