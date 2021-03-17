@@ -7,9 +7,9 @@
     <form id="download_fasta_form" action="blastdbcmd.php" method="post">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
       <textarea class="form-control" id="txtDownloadGenes" rows="8" name="gids">
-Gene1
-Gene2
-Gene3
+gene1
+gene2
+gene3
       </textarea>
       <br>
 
