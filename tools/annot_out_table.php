@@ -87,7 +87,7 @@ $annotTypes = array_values($annot_type_hash);
       ";")
     . "</td>";},$annotTypeIds));
 
-    echo "<tr><td><a href=\"/aetar_db/gene.php?name={$row["input"]}\" target=\"_blank\">{$row["input"]}</a></td>{$annotStr}</tr>";
+    echo "<tr><td><a href=\"/easy_gdb/gene.php?name={$row["input"]}\" target=\"_blank\">{$row["input"]}</a></td>{$annotStr}</tr>";
 
 	}
 	echo "</tbody></table>\n";
