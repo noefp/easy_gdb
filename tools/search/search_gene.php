@@ -6,7 +6,7 @@
 <?php
 // $current_version = "3.3";
 // Performing SQL query
-$query = "SELECT * FROM gene WHERE gene_name ILIKE '%".pg_escape_string($search_input)."%' ORDER BY genome_version DESC, gene_name ASC";
+$query = "SELECT * FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name ILIKE '%".pg_escape_string($search_input)."%' ORDER BY gene_version DESC, gene_name ASC";
 $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 if (pg_fetch_assoc($res)) {
@@ -20,7 +20,7 @@ if (pg_fetch_assoc($res)) {
 
       $found_gene_name = $line["gene_name"];
       $found_gene_id = $line["gene_id"];
-      $found_gene_version = $line["genome_version"];
+      $found_gene_version = $line["gene_version"];
 
       echo "<tr><td><a href=\"/db/gene.php?name=$found_gene_name\" target=\"_blank\">$found_gene_name</a></td><td>$found_gene_version</td></tr>\n";
       // $counter++;
