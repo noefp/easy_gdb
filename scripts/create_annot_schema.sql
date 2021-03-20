@@ -1,7 +1,12 @@
+CREATE TABLE gene_version (
+    gene_version_id bigserial PRIMARY KEY,
+    gene_version varchar(80) UNIQUE
+);
+
 CREATE TABLE gene (
     gene_id bigserial PRIMARY KEY,
-    gene_name varchar(80) NOT NULL UNIQUE,
-    genome_version varchar(80)
+    gene_name varchar(80) NOT NULL,
+    gene_version_id bigserial REFERENCES gene_version(gene_version_id)
 );
 
 CREATE TABLE gene_gene (
@@ -22,7 +27,6 @@ CREATE TABLE annotation (
     annotation_type_id bigserial REFERENCES annotation_type(annotation_type_id)
 );
 
-
 CREATE TABLE gene_annotation (
     gene_annotation_id bigserial PRIMARY KEY,
     gene_id bigserial REFERENCES gene(gene_id),
@@ -35,6 +39,7 @@ CREATE TABLE gene_annotation (
 
 
 GRANT ALL PRIVILEGES ON gene TO web_usr;
+GRANT ALL PRIVILEGES ON gene_version TO web_usr;
 GRANT ALL PRIVILEGES ON gene_gene TO web_usr;
 GRANT ALL PRIVILEGES ON annotation_type TO web_usr;
 GRANT ALL PRIVILEGES ON annotation TO web_usr;

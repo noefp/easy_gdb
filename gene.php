@@ -35,11 +35,11 @@ function test_input($data) {
 
 
 // Performing SQL query
-$query = "SELECT gene_id,genome_version FROM gene WHERE gene_name='".pg_escape_string($gene_name)."'";
+$query = "SELECT gene_id,gene_version FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
 $res = pg_query($query) or die("The gene $gene_name was not found in the database. Most probably this gene was not associated to a gene from the current version.");
 // $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 $gene_row = pg_fetch_array($res,0,PGSQL_ASSOC);
-$ori_gene_version = $gene_row["genome_version"];
+$ori_gene_version = $gene_row["gene_version"];
 $gene_version = $ori_gene_version;
 $gene_id = $gene_row["gene_id"];
 
