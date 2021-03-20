@@ -1,6 +1,6 @@
 CREATE TABLE gene (
     gene_id bigserial PRIMARY KEY,
-    gene_name varchar(80) NOT NULL,
+    gene_name varchar(80) NOT NULL UNIQUE,
     genome_version varchar(80)
 );
 
@@ -12,7 +12,7 @@ CREATE TABLE gene_gene (
 
 CREATE TABLE annotation_type (
     annotation_type_id bigserial PRIMARY KEY,
-    annotation_type varchar(80)
+    annotation_type varchar(80) UNIQUE NOT NULL
 );
 
 CREATE TABLE annotation (
