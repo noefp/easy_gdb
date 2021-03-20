@@ -24,8 +24,8 @@
                 <a class="dropdown-item" href="/easy_gdb/tools/blast/blast_input.php">BLAST</a>
                 <!-- <a class="dropdown-item" class="jbrowse_link" href="/jbrowse" target="_blank">Genome Browser</a> -->
                 <a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence extraction</a>
-                <!-- <a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation extraction</a> -->
-                <!-- <a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene version lookup</a> -->
+                <a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation extraction</a>
+                <a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene version lookup</a>
               </div>
             </li>
           </ul>

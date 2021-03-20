@@ -25,7 +25,7 @@ if ($res) {
       $found_term = $line["annot_term"];
       $found_desc = $line["annot_desc"];
       $found_type = $line["annotation_type"];
-      echo "<tr><td><a href=\"/aetar_db/gene.php?name=$found_gene\" target=\"_blank\">$found_gene</a></td><td>$found_term</td><td>$found_desc</td><td style=\"white-space: nowrap;\">$found_type</td></tr>\n";
+      echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$found_gene\" target=\"_blank\">$found_gene</a></td><td>$found_term</td><td>$found_desc</td><td style=\"white-space: nowrap;\">$found_type</td></tr>\n";
       // $counter++;
       // if ($counter >= $max_row) {
         // echo "<tr><td colspan=\"4\">Number of annotations found exceeded the limit to display, Please refine your search.</td></tr>\n";
