@@ -18,7 +18,7 @@ $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 // if (pg_fetch_assoc($res)) {
 if ($res) {
   // Printing results in HTML
-  echo "<table class=\"table annot_table tblAnnotations\">\n<thead><tr><th>Gene</th><th>Term</th><th>Description</th><th>Source</th></tr></thead>\n<tbody>\n";
+  echo "<table id=\"tblAnnotations\" class=\"table annot_table\">\n<thead><tr><th>Gene</th><th>Term</th><th>Description</th><th>Source</th></tr></thead>\n<tbody>\n";
   // $counter = 0;
   while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
       $found_gene = $line["gene_name"];

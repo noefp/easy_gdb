@@ -5,7 +5,7 @@
 <br>
 <div style="margin:auto; max-width:900px">
 
-<form id="ppatens_search_form" action="search_output.php" method="get">
+<form id="egdb_search_form" action="search_output.php" method="get">
   <div class="form-group">
     <label for="search_box" style="font-size:16px">Insert a gene ID or annotation keywords</label> <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
     <input type="search_box" class="form-control" id="search_box" name="search_keywords">

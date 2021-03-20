@@ -50,23 +50,35 @@ pg_close($dbconn);
 </div>
 
 <script type="text/javascript">
-  $(".tblAnnotations").dataTable({
-    dom:'Bfrtip',
-    buttons:[{
-      extend:'csv',
-      text:'Download',
-      title:"AETAR_annotations",
-      fieldBoundary: '',
-      fieldSeparator:"\t"},
-      {
-        extend:'excel',
-        text:'Excel',
-        title:"AETAR_annotations",
-        fieldSeparator:"\t"
-      },
-      'copy'],
-      bFilter:false
+  // $(".tblAnnotations").dataTable({
+  //   dom:'Bfrtip',
+  //   buttons:[{
+  //     extend:'csv',
+  //     text:'Download',
+  //     title:"AETAR_annotations",
+  //     fieldBoundary: '',
+  //     fieldSeparator:"\t"},
+  //     {
+  //       extend:'excel',
+  //       text:'Excel',
+  //       title:"AETAR_annotations",
+  //       fieldSeparator:"\t"
+  //     },
+  //     'copy'],
+  //     bFilter:false
+  //   });
+    
+    $("#tblAnnotations").dataTable({
+    	dom:'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+      ]
     });
+  
+    $("#tblResults_filter").addClass("float-right");
+    $("#tblResults_info").addClass("float-left");
+    $("#tblResults_paginate").addClass("float-right");
+
 </script>
 
 
