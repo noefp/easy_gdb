@@ -30,7 +30,7 @@
             </li>
           </ul>
         
-          <form class="form-inline" id="ppatens_search_form" action="search_output.php" method="get">
+          <form class="form-inline" id="egdb_search_form" action="/easy_gdb/tools/search/search_output.php" method="get">
             <input type="search_box" class="form-control mr-sm-2" id="search_box" name="search_keywords" placeholder="Search">
             <button type="submit" class="btn btn-info"><i class="fa fa-search" style="font-size:16px;color:white"></i></button>
           </form>
