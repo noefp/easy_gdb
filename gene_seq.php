@@ -2,7 +2,7 @@
   Sequences
 </div>
 
-<div id="seq_section" class="collapse in">
+<div id="seq_section" class="collapse show">
   <br>
 
 
