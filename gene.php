@@ -35,7 +35,8 @@ function test_input($data) {
 
 
 // Performing SQL query
-$query = "SELECT gene_id,gene_version FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
+$query = "SELECT gene_id,gene_version FROM gene WHERE gene_name='".pg_escape_string($gene_name)."'";
+// $query = "SELECT gene_id,gene_version FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
 $res = pg_query($query) or die("The gene $gene_name was not found in the database. Most probably this gene was not associated to a gene from the current version.");
 // $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 $gene_row = pg_fetch_array($res,0,PGSQL_ASSOC);
@@ -80,7 +81,9 @@ else {
   // include_once 'ppdb_search_input_form.php';
   // include_once 'pp_annot_desc.php';
   include_once 'annot_desc.php';
-  include_once 'other_gene_ids.php';
+  if ($tb_lookup) {
+    include_once 'other_gene_ids.php';
+  }
   include_once 'gene_seq.php';
 }
 
