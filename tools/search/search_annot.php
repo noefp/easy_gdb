@@ -11,7 +11,8 @@ $desc_input = strtolower($search_input);
 if ( preg_match('/\s+/',$desc_input) ) {
   $desc_input = preg_replace('/\s+/','%|%',$desc_input);
 }
-$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_type USING(annotation_type_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annot_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annot_term) ILIKE '%".pg_escape_string($search_input)."%'";
+$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_term) ILIKE '%".pg_escape_string($search_input)."%'";
+// $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_type USING(annotation_type_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annot_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annot_term) ILIKE '%".pg_escape_string($search_input)."%'";
 // $query = "SELECT * FROM annotation JOIN gene_annotation USING(annotation_id) JOIN gene USING(gene_id) WHERE lower(annot_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annot_term) ILIKE '%".pg_escape_string($search_input)."%'";
 // $query = "SELECT * FROM annotation WHERE annot_desc ILIKE '%$search_input%' OR annot_term ILIKE '%$search_input%'";
 $res = pg_query($query) or die('Query failed: ' . pg_last_error());
@@ -22,8 +23,8 @@ if ($res) {
   // $counter = 0;
   while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
       $found_gene = $line["gene_name"];
-      $found_term = $line["annot_term"];
-      $found_desc = $line["annot_desc"];
+      $found_term = $line["annotation_term"];
+      $found_desc = $line["annotation_desc"];
       $found_type = $line["annotation_type"];
       echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$found_gene\" target=\"_blank\">$found_gene</a></td><td>$found_term</td><td>$found_desc</td><td style=\"white-space: nowrap;\">$found_type</td></tr>\n";
       // $counter++;
