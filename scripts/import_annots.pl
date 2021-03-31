@@ -34,7 +34,7 @@ sub insert_gene {
 	} else {
 		# print "$gene_name\tV$gene_version\n";
 
-	  $sth = $dbh->prepare("INSERT INTO gene (gene_name,genome_version) VALUES (\'$gene_name\',\'$gene_version\')");
+	  $sth = $dbh->prepare("INSERT INTO gene (gene_name,gene_version) VALUES (\'$gene_name\',\'$gene_version\')");
 	  $sth->execute() or die $sth->errstr;
 		$sth = $dbh->prepare("SELECT gene_id FROM gene WHERE gene_name = \'$gene_name\'");
 		$sth->execute() or die $sth->errstr;
@@ -58,7 +58,7 @@ sub insert_annot {
 	my $gene_id = shift;
 
 	my $my_annot_id;
-	my $my_annotation_type_id;
+  # my $my_annotation_type_id;
 
 	# to remove special character that crush the SQL import code
 	if ($annotation_desc) {
@@ -75,46 +75,56 @@ sub insert_annot {
 		$annotation_desc =~ s/^PREDICTED: //;
 	}
 
-	# check if annotation type already exist and import it to the database
-	my $sth = $dbh->prepare("SELECT annotation_type_id FROM annotation_type WHERE annotation_type = \'$annotation_type\'");
-	$sth->execute() or die $sth->errstr;
-  
-	my @annotation_type_id = $sth->fetchrow_array();
-
-	if (@annotation_type_id) {
-		#print "\n $gene_id-$my_annot_id already exists in gene_annotation table: gene_annotation_id\n";
-    $my_annotation_type_id = $annotation_type_id[0];
-	} else {
-		$sth = $dbh->prepare("INSERT INTO annotation_type (annotation_type) VALUES ('".$annotation_type."')");
-		$sth->execute() or die $sth->errstr;
-		$sth = $dbh->prepare("SELECT annotation_type_id FROM annotation_type WHERE annotation_type = \'$annotation_type\'");
-		$sth->execute() or die $sth->errstr;
-
-		(my @annotation_type_id) = $sth->fetchrow_array();
-
-		# print $gene_id[0]."\n";
-		$my_annotation_type_id = $annotation_type_id[0];
-    
-		$sth->finish();
-	}
+  # # check if annotation type already exist and import it to the database
+  # my $sth = $dbh->prepare("SELECT annotation_type_id FROM annotation_type WHERE annotation_type = \'$annotation_type\'");
+  # $sth->execute() or die $sth->errstr;
+  #
+  # my @annotation_type_id = $sth->fetchrow_array();
+  #
+  # if (@annotation_type_id) {
+  #   #print "\n $gene_id-$my_annot_id already exists in gene_annotation table: gene_annotation_id\n";
+  #     $my_annotation_type_id = $annotation_type_id[0];
+  # } else {
+  #   $sth = $dbh->prepare("INSERT INTO annotation_type (annotation_type) VALUES ('".$annotation_type."')");
+  #   $sth->execute() or die $sth->errstr;
+  #   $sth = $dbh->prepare("SELECT annotation_type_id FROM annotation_type WHERE annotation_type = \'$annotation_type\'");
+  #   $sth->execute() or die $sth->errstr;
+  #
+  #   (my @annotation_type_id) = $sth->fetchrow_array();
+  #
+  #   # print $gene_id[0]."\n";
+  #   $my_annotation_type_id = $annotation_type_id[0];
+  #
+  #   $sth->finish();
+  # }
   
   
   
 	# check if entry already exist and import it to the database
-	my $sth2 = $dbh->prepare("SELECT annotation_id FROM annotation WHERE annot_term = \'$annotation_term\'");
+	my $sth2 = $dbh->prepare("SELECT annotation_id FROM annotation WHERE annotation_term = \'$annotation_term\' AND annotation_type = \'$annot_src\'");
 	$sth2->execute() or die $sth2->errstr;
 
 	my @annot_id = $sth2->fetchrow_array();
-
+  my @ident_annot_id;
+  
 	if (@annot_id) {
-		#print "\n $annotation_term already exists in gene table: ".$annot_id[0]."\n";
+    print "\n $annotation_term already exists in gene table: ".$annot_id[0]."\n";
 		$my_annot_id = $annot_id[0];
-	} else {
-		# print "$annotation_term\t$annotation_desc\n";
+    
+  	# check identical description already exist
+  	my $sth3 = $dbh->prepare("SELECT annotation_id FROM annotation WHERE annotation_desc = \'$annotation_desc\'");
+  	$sth3->execute() or die $sth3->errstr;
+    
+    @ident_annot_id = $sth3->fetchrow_array();
+    $sth3->finish();
+	}
+  
+  if (!@annot_id || !@ident_annot_id) {
+    print "$annotation_term\t$annotation_desc\n";
 
-		$sth2 = $dbh->prepare("INSERT INTO annotation (annot_term,annot_desc,annotation_type_id) VALUES (\'$annotation_term\',\'$annotation_desc\',\'$my_annotation_type_id\')");
+		$sth2 = $dbh->prepare("INSERT INTO annotation (annotation_term,annotation_desc,annotation_type) VALUES (\'$annotation_term\',\'$annotation_desc\',\'$annot_src\')");
 		$sth2->execute() or die $sth2->errstr;
-		$sth2 = $dbh->prepare("SELECT annotation_id FROM annotation WHERE annot_term = \'$annotation_term\'");
+		$sth2 = $dbh->prepare("SELECT annotation_id FROM annotation WHERE annotation_term = \'$annotation_term\'");
 		$sth2->execute() or die $sth2->errstr;
 
 		(my @annot_id) = $sth2->fetchrow_array();
@@ -141,8 +151,13 @@ sub insert_annot {
 }
 
 
-my $host="localhost";
 my $username="postgres";
+
+print "host name (postgres container name)> ";
+my $host=<STDIN>;
+print "\n";
+chomp($host);
+
 
 print "DB name> ";
 my $dbname=<STDIN>;
