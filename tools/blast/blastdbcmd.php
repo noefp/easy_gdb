@@ -22,7 +22,7 @@ if(isset($_POST["gids"])) {
 
   if(isset($_POST["blast_db"])) {
 		header('Content-Type: application/octet-stream');
-		$filename="aetar_sequences_" . date("Y-m-d.His") . ".fasta";
+		$filename="egdb_sequences_" . date("Y-m-d.His") . ".fasta";
 		header("Content-Disposition: attachment;filename={$filename}");
 
     $gids=array_map(function($row) {
