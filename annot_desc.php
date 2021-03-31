@@ -1,19 +1,17 @@
-
-
-<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true">
-  Genome Browser
-</div>
-
-<div id="jb_section" class="collapse in">
 <?php
-$jb_gene_name = $gene_name_displayed;
-if (preg_match('/\.\d$/',$gene_name_displayed) ) {
-  $jb_gene_name = preg_replace('/\.\d+$/','',$gene_name_displayed);
-}
+  if ($tb_jbrowse) {
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true">Genome Browser</div>';
+    echo '<div id="jb_section" class="collapse show">';
 
-echo "<a class=\"pull-right jbrowse_link\" href=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a>";
-echo "<iframe class=\"jb_iframe\" src=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\">";
-echo "<p>Your browser does not support iframes.</p> </iframe>";
+    $jb_gene_name = $gene_name_displayed;
+    if (preg_match('/\.\d$/',$gene_name_displayed) ) {
+      $jb_gene_name = preg_replace('/\.\d+$/','',$gene_name_displayed);
+    }
+
+    echo "<a class=\"float-right jbrowse_link\" href=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a>";
+    echo "<iframe class=\"jb_iframe\" src=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\">";
+    echo "<p>Your browser does not support iframes.</p> </iframe>";
+  }
 ?>
 </div>
 
@@ -31,13 +29,14 @@ echo "<p>Your browser does not support iframes.</p> </iframe>";
   Functional descriptions
 </div>
 
-<div id="annot_section" class="collapse in">
+<div id="annot_section" class="collapse show">
   <br>
 
 <?php
 
 // $query = "SELECT * FROM annotation JOIN gene_annotation USING(annotation_id) JOIN gene USING(gene_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
-$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_type USING(annotation_type_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
+$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
+// $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_type USING(annotation_type_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
 
 $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 
@@ -47,8 +46,8 @@ echo "<table class=\"table annot_table\">\n<tr><th>Gene ID</th><th>Description</
 
 
 while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
-     $q_term = $line["annot_term"];
-     $q_desc = $line["annot_desc"];
+     $q_term = $line["annotation_term"];
+     $q_desc = $line["annotation_desc"];
      $annot_type = $line["annotation_type"];
      $q_link = "#";
 
