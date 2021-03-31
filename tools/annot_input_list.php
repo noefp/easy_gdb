@@ -7,9 +7,7 @@
     <form id="gene_version_lookup">
       <label for="txtGenes">Paste a list of gene IDs</label>
       <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10">
-gene1
-gene2
-gene3
+<?php echo "$input_gene_list" ?>
       </textarea>
       <br>
       <button type="submit" class="btn btn-success float-right" form="gene_version_lookup" formaction="annot_out_table.php" formmethod="post">search</button>

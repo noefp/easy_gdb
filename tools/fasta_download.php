@@ -7,9 +7,7 @@
     <form id="download_fasta_form" action="blast/blastdbcmd.php" method="post">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
       <textarea class="form-control" id="txtDownloadGenes" rows="8" name="gids">
-gene1
-gene2
-gene3
+<?php echo "$input_gene_list" ?>
       </textarea>
       <br>
 
@@ -25,7 +23,7 @@ gene3
 
 </div>
 
-<?php include_once '../footer.php';?>
+<?php include realpath('../footer.php'); ?>
 
 
 <style>
