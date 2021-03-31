@@ -57,15 +57,15 @@ include_once "$conf_path/easyGDB_conf.php"
   <body>
 
     <div class="container-fluid easygdb-top">
-      <p class="pull-left cover-title">
-        <?php echo "$dbTitle";?>
-      </p>
+      <!-- <p class="pull-left cover-title">
+        <?php //echo "$dbTitle";?>
+      </p> -->
 
       <div style="background: url(<?php echo $images_path."/".$header_img;?>) left bottom; background-size:cover;">
        <img class="cover-img" src=<?php echo "$images_path/$header_img";?> style="visibility: hidden;"/>
-       <a href=<?php echo "$logo1_link";?> target="_blank"><img class="float-left img-rounded-5" width=<?php echo "$logo1_width";?> src=<?php echo "$images_path/$logo1";?> ></a>
-       <a href=<?php echo "$logo2_link";?> target="_blank"><img class="float-right img-rounded-5" width=<?php echo "$logo2_width";?> src=<?php echo "$images_path/$logo2";?> ></a>
-       <a href=<?php echo "$logo3_link";?> target="_blank"><img class="float-right institution_logo3 img-rounded-5" width=<?php echo "$logo3_width";?> src=<?php echo "$images_path/$logo3";?> ></a>
+       <!-- <a href=<?php //echo "$logo1_link";?> target="_blank"><img class="float-left img-rounded-5" width=<?php //echo "$logo1_width";?> src=<?php //echo "$images_path/$logo1";?> ></a> -->
+       <!-- <a href=<?php //echo "$logo2_link";?> target="_blank"><img class="float-right img-rounded-5" width=<?php //echo "$logo2_width";?> src=<?php //echo "$images_path/$logo2";?> ></a> -->
+       <!-- <a href=<?php //echo "$logo3_link";?> target="_blank"><img class="float-right institution_logo3 img-rounded-5" width=<?php //echo "$logo3_width";?> src=<?php //echo "$images_path/$logo3";?> ></a> -->
       </div>
     </div>
 
