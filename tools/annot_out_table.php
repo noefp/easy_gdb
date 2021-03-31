@@ -18,24 +18,25 @@ else
   $dbconn = pg_connect(getConnectionString());
 
 	// Getting all annotation types.
-  $query="SELECT annotation_type_id,annotation_type from annotation_type";
-  // $query="SELECT distinct annotation_type_id from annotation where annot_type not like 'GO %' order by annotation_type desc";
+  // $query="SELECT annotation_type_id,annotation_type from annotation_type";
+  $query="SELECT distinct annotation_type from annotation order by annotation_type desc";
+  // $query="SELECT distinct annotation_type from annotation where annotation_type not like 'GO %' order by annotation_type desc";
   $res=pg_query($query) or die("Couldn't query database.");
 
-$annot_type_hash = array();
+// $annot_type_hash = array();
+//
+// while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
+//   // echo "<p>".$line["annotation_type_id"]." ".$line["annotation_type"]."</p>";
+//   $annot_type_hash[ $line["annotation_type_id"] ] = $line["annotation_type"];
+// }
+// $annotTypeIds = array_keys($annot_type_hash);
+// $annotTypes = array_values($annot_type_hash);
 
-while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
-  // echo "<p>".$line["annotation_type_id"]." ".$line["annotation_type"]."</p>";
-  $annot_type_hash[ $line["annotation_type_id"] ] = $line["annotation_type"];
-}
-$annotTypeIds = array_keys($annot_type_hash);
-$annotTypes = array_values($annot_type_hash);
-
-  // $annotTypes=pg_fetch_all_columns($res);
+  $annotTypes=pg_fetch_all_columns($res);
 
   $gNameValues=implode(",",array_map(function($input) {if(empty(trim($input))) return ""; else  return "'" . trim(pg_escape_string($input))."'" ;},$gNamesArr));
 
-  $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annot_desc, annotation.annotation_type_id)) \"annot\"
+  $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annotation_desc, annotation.annotation_type)) \"annot\"
   FROM
   gene g inner join gene_annotation on gene_annotation.gene_id=g.gene_id
   inner join annotation on annotation.annotation_id=gene_annotation.annotation_id
@@ -85,7 +86,7 @@ $annotTypes = array_values($annot_type_hash);
         array_map(function($currAnnot){return str_replace("\\\"","",$currAnnot[0]);},
         array_filter($annotEntries,function($item) use($type) { return $item[1] == $type;})),
       ";")
-    . "</td>";},$annotTypeIds));
+    . "</td>";},$annotTypes));
 
     echo "<tr><td><a href=\"/easy_gdb/gene.php?name={$row["input"]}\" target=\"_blank\">{$row["input"]}</a></td>{$annotStr}</tr>";
 
