@@ -25,7 +25,7 @@
   </div>
 
   <br>
-  <img class="img-fluid" src=<?php echo "$images_path/header_img.png";?> />
+  <!-- <img class="img-fluid" src=<?php echo "$images_path/header_img.png";?> /> -->
 
 </div>
 
