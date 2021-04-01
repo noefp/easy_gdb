@@ -51,6 +51,7 @@
           if ($tb_search_box) {
             echo '<form class="form-inline" id="egdb_search_form" action="/easy_gdb/tools/search/search_output.php" method="get">';
               echo '<input type="search_box" class="form-control mr-sm-2" id="search_box" name="search_keywords" placeholder="Search">';
+              // echo '<input type="search_box" class="form-control mr-sm-2" id="search_box" name="search_keywords" placeholder="Search">';
               echo '<button type="submit" class="btn btn-info"><i class="fa fa-search" style="font-size:16px;color:white"></i></button>';
             echo '</form>';
           }
@@ -58,3 +59,13 @@
         </div>
 
     </nav>
+
+<style>
+   @media (max-width: 575px) {
+     #search_box {
+       width: 193px;
+       margin-right: .5rem!important;
+     }
+   }
+  
+</style>
