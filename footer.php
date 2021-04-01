@@ -1,8 +1,8 @@
 
       <div id="gdb_footer">
-        <a href=<?php echo "$logo1_link";?> target="_blank"><img class="img-rounded-5" width=<?php echo "$logo1_width";?> src=<?php echo "$images_path/$logo1";?> ></a>
-        <a href=<?php echo "$logo2_link";?> target="_blank"><img class="img-rounded-5" width=<?php echo "$logo2_width";?> src=<?php echo "$images_path/$logo2";?> ></a>
-        <a href=<?php echo "$logo3_link";?> target="_blank"><img class="img-rounded-5" width=<?php echo "$logo3_width";?> src=<?php echo "$images_path/$logo3";?> ></a>
+        <a href=<?php echo "$logo1_link";?> target="_blank"><img class="m-2" height=<?php echo "$logo1_height";?> src=<?php echo "$images_path/$logo1";?> ></a>
+        <a href=<?php echo "$logo2_link";?> target="_blank"><img class="m-2" height=<?php echo "$logo2_height";?> src=<?php echo "$images_path/$logo2";?> ></a>
+        <a href=<?php echo "$logo3_link";?> target="_blank"><img class="m-2" height=<?php echo "$logo3_height";?> src=<?php echo "$images_path/$logo3";?> ></a>
         
         <p>
           All data and services offered on this site are &copy; copyrighted. Distribution via internet or other media is prohibited.
