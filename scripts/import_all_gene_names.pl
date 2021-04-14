@@ -7,7 +7,7 @@ use DBI;
 use Term::ReadKey;
 
 # check arguments and print usage
-if (scalar(@ARGV) != 1) {
+if (scalar(@ARGV) != 2) {
 	print "Usage: perl import_all_gene_names.pl <gene_names_file> <annotation_version>\n";
 	exit;
 }
