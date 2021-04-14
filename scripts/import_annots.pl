@@ -9,6 +9,7 @@ use Term::ReadKey;
 # check arguments and print usage
 if (scalar(@ARGV) != 3) {
 	print "Usage: perl import_annots.pl <annot_file> <annot_src> <gene_version>\n";
+	print "<annot_src> could be TAIR10, Araport11, SwissProt, InterPro or NCBI\n";
 	exit;
 }
 
@@ -65,10 +66,10 @@ sub insert_annot {
 		$annotation_desc =~ s/[\'\"]//g;
 	}
 
-	if ($annotation_type eq "TAIR") {
+	if ($annotation_type eq "TAIR10") {
 		$annotation_term =~ s/ARATHwo_//;
 	}
-	if ($annotation_type eq "TAIR") {
+	if ($annotation_type eq "TAIR10") {
 		$annotation_desc =~ s/Has \d+ Blast hits to \d+ proteins in \d+ species:.+\(source: NCBI BLink\)\.//;
 	}
 	if ($annotation_type eq "NCBI Nr") {
