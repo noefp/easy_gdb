@@ -54,6 +54,9 @@ while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
      if ($annot_type == "TAIR10") {
        $q_link = 'http://www.arabidopsis.org/servlets/TairObject?type=locus&name='.preg_replace('/\.\d$/','',$q_term);
      }
+     if ($annot_type == "Araport11") {
+       $q_link = 'http://www.arabidopsis.org/servlets/TairObject?type=locus&name='.preg_replace('/\.\d$/','',$q_term);
+     }
      if ($annot_type == "SwissProt") {
        $q_link = 'http://www.uniprot.org/uniprot/'.preg_replace('/sp\|(.+)\|.+/','$1',$q_term);
      }
