@@ -3,7 +3,6 @@
 </div>
 
 <div id="seq_section" class="collapse show">
-  <br>
 
 
 <?php
@@ -53,7 +52,9 @@ foreach ($sps_found as $bdb) {
 
     if ($ret) {
       echo "<h5>$blast_db</h5>";
-      echo "<div class=\"well\" style=\"font-family:courier\">".implode("<br>",$ret)."</div>";
+      echo "<div class=\"card bg-light\">";
+      echo "<div class=\"card-body\" style=\"font-family:courier\">".implode("<br>",$ret)."</div>";
+      echo "</div><br>";
     }
     $ret=null;
   }
