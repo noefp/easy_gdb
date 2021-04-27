@@ -36,7 +36,7 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           else {//print first dirs and load subdirs
             echo "<h3>$file_name/</h3><div class=\"card bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             get_dir_and_files($root, $dir_name, 1);
-            echo "</ul></div></div>";
+            echo "</ul></div></div><br>";
           }
         }
                 
