@@ -1,0 +1,23 @@
+{
+  "Homo sapiens":
+    {"sps_name":"Homo sapiens",
+      "common_name":"Human",
+      "image":"human.png",
+      "public":"1",
+      "link":"human.php"
+    },
+  "Other species":
+    {"sps_name":"Other species",
+      "common_name":"name1",
+      "image":"species1.png",
+      "public":"1",
+      "link":"species1.php"
+    },
+  "Other species2":
+    {"sps_name":"Other species2",
+      "common_name":"name2",
+      "image":"species2.png",
+      "public":"1",
+      "link":"species2.php"
+    }
+}

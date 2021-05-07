@@ -1,0 +1,24 @@
+{
+	"group_name":"The Wall Lab",
+	"people":
+		[
+			{"person_name":"John Snow","position":"Principal Investigator","picture":"placeholder.png","link":"",
+				"more_info":[
+					"phone: 555-123456",
+					"email: john.snow@the.wall.edu"
+				]
+			},
+			{"person_name":"Samwell Tarly","position":"Research Assistant","picture":"placeholder.png","link":"",
+				"more_info":[
+					"phone: 555-123456",
+					"email: samwell.tarly@the.wall.edu"
+				]
+			},
+			{"person_name":"White Walker","position":"PhD Student","picture":"placeholder.png","link":"",
+				"more_info":[
+					"phone: 555-123456",
+					"email: white.walker@the.wall.edu"
+				]
+			}
+		]
+}
