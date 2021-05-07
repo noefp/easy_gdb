@@ -2,7 +2,7 @@
 <html lang="en">
 <?php 
 include_once 'configuration_path.php';
-include_once "$conf_path/easyGDB_conf.php"
+include_once "$conf_path/easyGDB_conf.php";
 ?>
 
   <head>
