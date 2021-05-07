@@ -25,6 +25,9 @@ if ($tb_login) {
               if ($tb_about) {
                 echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About Us</a></li>';
               }
+              if ($tb_species) {
+                echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
+              }
               if ($tb_downloads) {
                 echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
               }
@@ -55,6 +58,11 @@ if ($tb_login) {
               </div>
             </li>
             
+            <?php
+              if ($tb_more) {
+                include_once realpath("$easy_gdb_path/more.php");
+              }
+            ?>
             <?php
               if ($tb_private) {
                 echo '<li class="nav-item"><a id="tbp_link" class="nav-link" href="#"><b>Private links</b></a></li>';
