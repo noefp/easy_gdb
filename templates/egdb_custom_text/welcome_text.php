@@ -1,7 +1,9 @@
       <h1 style="font-size:26px">Welcome to <?php echo "$dbTitle";?> </h4>
 
       <h4 class="p_font18">
-        Lorem ipsum dolor sit amet consectetur adipiscing elit mus nisi vel risus semper sagittis vitae.
+        This is a template to write your own welcome page. 
+        Please, follow the instructions to create your own custom_text folder and include the path in the configuration file.
+        
       </h4>
       <p>
         Lorem ipsum dolor sit amet consectetur adipiscing elit mus nisi vel risus semper sagittis vitae, 
