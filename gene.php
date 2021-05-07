@@ -1,4 +1,5 @@
 <?php include_once 'header.php';?>
+<?php include_once 'common_functions.php';?>
 
 <div class="page_container">
 <br>
@@ -21,17 +22,17 @@ $gene_name_displayed = $gene_name;
 
 // echo "\n\n<br><br><h1>GENE NAME: $gene_name</h1><br><br>\n\n";
 
-function test_input($data) {
-  $data = stripslashes($data);
-  $data = preg_replace('/[\<\>]+/','',$data);
-  $data = htmlspecialchars($data);
-
-  // if (! preg_match('/\.\d$/',$data) ) {
-  //   $data = preg_replace('/$/','.1',$data);
-  // }
-
-  return $data;
-}
+// function test_input($data) {
+//   $data = stripslashes($data);
+//   $data = preg_replace('/[\<\>]+/','',$data);
+//   $data = htmlspecialchars($data);
+//
+//   // if (! preg_match('/\.\d$/',$data) ) {
+//   //   $data = preg_replace('/$/','.1',$data);
+//   // }
+//
+//   return $data;
+// }
 
 
 // Performing SQL query
