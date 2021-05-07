@@ -4,10 +4,10 @@ $root_path = "/var/www/html"; //use absolute path
 $easy_gdb_path = "$root_path/easy_gdb";
 $blast_dbs_path = "$root_path/blast_dbs";
 $downloads_path = "downloads";
-$images_path = "/egdb_img_samples";
-$custom_text_path = "$root_path/egdb_custom_text";
-$species_path = "$root_path/egdb_species";
-$lab_path = "$root_path/egdb_labs";
+$images_path = "/egdb_files/egdb_img_samples";
+$custom_text_path = "$root_path/egdb_files/egdb_custom_text";
+$species_path = "$root_path/egdb_files/egdb_species";
+$lab_path = "$root_path/egdb_files/egdb_labs";
 
 // header
 $dbTitle = "DB Title";
