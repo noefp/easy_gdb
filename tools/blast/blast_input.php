@@ -134,8 +134,10 @@
 
       //check input genes from BLAST output before sending form
       seqnum = input_seq.match(/>/g).length
-      if (seqnum > 10) {
-          alert("A maximum of 10 sequences can be provided as input, your input has: "+seqnum);
+      var max_input = "<?php echo $max_blast_input ?>";
+      
+      if (seqnum > max_input) {
+          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
           return false;
       }
       if (!input_seq || seq_length < 5) {
