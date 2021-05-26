@@ -1,30 +1,3 @@
-<?php
-  if ($tb_jbrowse) {
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true">Genome Browser</div>';
-    echo '<div id="jb_section" class="collapse show">';
-
-    $jb_gene_name = $gene_name_displayed;
-    // if (preg_match('/\.\d$/',$gene_name_displayed) ) {
-      // $jb_gene_name = preg_replace('/\.\d+$/','',$gene_name_displayed);
-    // }
-
-    echo "<a class=\"float-right jbrowse_link\" href=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a>";
-    echo "<iframe class=\"jb_iframe\" src=\"/jbrowse/?loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\">";
-    echo "<p>Your browser does not support iframes.</p> </iframe>";
-  }
-?>
-</div>
-
-
-<style>
-  .jb_iframe {
-    border: 1px solid rgb(80, 80, 80);
-    height: 300px;
-    width: 100%;
-    margin-right: 20px;
-  }
-</style>
-
 <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#annot_section" aria-expanded="true">
   Functional descriptions
 </div>
@@ -33,6 +6,8 @@
   <br>
 
 <?php
+// Get annotation types
+include_once("tools/get_annotation_types.php");
 
 // $query = "SELECT * FROM annotation JOIN gene_annotation USING(annotation_id) JOIN gene USING(gene_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
 $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
@@ -44,11 +19,14 @@ $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 // Printing results in HTML
 echo "<table class=\"table annot_table\">\n<tr><th>Gene ID</th><th>Description</th><th>Source</th></tr>\n";
 
-
+// Get annotations
 while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
      $q_term = $line["annotation_term"];
      $q_desc = $line["annotation_desc"];
-     $annot_type = $line["annotation_type"];
+     $annot_type_id = $line["annotation_type_id"];
+     
+     $annot_type = $all_annotation_types[$annot_type_id];
+     
      $q_link = "#";
 
      if ($annot_type == "TAIR10") {
