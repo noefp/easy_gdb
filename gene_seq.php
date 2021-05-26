@@ -6,37 +6,9 @@
 
 
 <?php
-// include_once "db_paths.php";
-// File is ignored by .gitignore - should contain:
-// getBlastdbcmdPath and getBlastdbBaseLocation.
-// These functions are returning corresponding paths and taking no arguments. Path of directory ends with /
 
-
-function get_dir_and_files($dir_name) {
-    $file_array = array();
-
-    $pattern='/^\./';
-    if (is_dir($dir_name)){
-      if ($dh = opendir($dir_name)){
-        while (($file_name = readdir($dh)) !== false){
-          $is_not_file = preg_match($pattern, $file_name, $match);
-          if (!$is_not_file) {
-            // echo $file_name."<br>";
-            array_push($file_array,$file_name);
-          }
-        }
-      }
-    }
-
-    rsort($file_array);
-    return $file_array;
-}
-
-// $bdb_path = getBlastdbBaseLocation();
 $bdb_path = $blast_dbs_path;
 $sps_found = get_dir_and_files($bdb_path); // call the function
-// $blastdbcmdPath=getBlastdbcmdPath();
-
 
 foreach ($sps_found as $bdb) {
 
