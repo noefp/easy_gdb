@@ -1,0 +1,30 @@
+##gff-version	3
+Chr1	easyGDB	gene	1250	3000	.	+	.	ID=gene1
+Chr1	easyGDB	mRNA	1250	3000	.	+	.	ID=gene1.1;Name=gene1.1;Parent=gene1;Note="Histidine kinase 4"
+Chr1	easyGDB	five_prime_UTR	1250	250	.	+	.	Parent=gene1.1
+Chr1	easyGDB	exon	1250	800	.	+	.	Parent=gene1.1
+Chr1	easyGDB	CDS	1251	800	.	+	.	Parent=gene1.1
+Chr1	easyGDB	exon	1500	2000	.	+	.	Parent=gene1.1
+Chr1	easyGDB	CDS	1500	2000	.	+	.	Parent=gene1.1
+Chr1	easyGDB	exon	2500	2800	.	+	.	Parent=gene1.1
+Chr1	easyGDB	three_prime_UTR	2800	3000	.	+	.	Parent=gene1.1
+Chr1	easyGDB	gene	3250	6200	.	-	.	ID=gene2
+Chr1	easyGDB	mRNA	3250	6200	.	-	.	ID=gene2.1;Name=gene2.1;Parent=gene2;Note="Histidine kinase 3"
+Chr1	easyGDB	three_prime_UTR	3250	3550	.	-	.	Parent=gene2.1
+Chr1	easyGDB	exon	3250	3950	.	-	.	Parent=gene2.1
+Chr1	easyGDB	CDS	3551	3950	.	-	.	Parent=gene2.1
+Chr1	easyGDB	exon	4100	4900	.	-	.	Parent=gene2.1
+Chr1	easyGDB	CDS	4100	4900	.	-	.	Parent=gene2.1
+Chr1	easyGDB	exon	5400	6200	.	-	.	Parent=gene2.1
+Chr1	easyGDB	CDS	5400	5799	.	-	.	Parent=gene2.1
+Chr1	easyGDB	five_prime_UTR	5800	6200	.	-	.	Parent=gene2.1
+Chr1	easyGDB	gene	7100	10000	.	+	.	ID=gene3
+Chr1	easyGDB	mRNA	7100	10000	.	+	.	ID=gene3.1;Name=gene3.1;Parent=gene3;Note="Histidine kinase 2"
+Chr1	easyGDB	five_prime_UTR	7100	7250	.	+	.	Parent=gene3.1
+Chr1	easyGDB	exon	7100	7800	.	+	.	Parent=gene3.1
+Chr1	easyGDB	CDS	7251	7800	.	+	.	Parent=gene3.1
+Chr1	easyGDB	exon	8500	9000	.	+	.	Parent=gene3.1
+Chr1	easyGDB	CDS	8500	9000	.	+	.	Parent=gene3.1
+Chr1	easyGDB	exon	9500	10000	.	+	.	Parent=gene3.1
+Chr1	easyGDB	exon	9500	9799	.	+	.	Parent=gene3.1
+Chr1	easyGDB	three_prime_UTR	9800	10000	.	+	.	Parent=gene3.1

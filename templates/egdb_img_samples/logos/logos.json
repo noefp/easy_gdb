@@ -1,0 +1,21 @@
+{
+  "logos":
+    [
+      { "image":"logo1.png",
+        "link":"https://www.google.com/",
+        "height":"60"
+      },
+      { "image":"logo2.png",
+        "link":"https://www.google.com/",
+        "height":"60"
+      },
+      { "image":"logo3.png",
+        "link":"https://www.google.com/",
+        "height":"60"
+      },
+      { "image":"logo4.png",
+        "link":"https://www.google.com/",
+        "height":"60"
+      }
+    ]
+}
