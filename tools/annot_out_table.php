@@ -8,18 +8,25 @@
 <?php
 $gNamesArr=array_filter(explode("\n",trim($_POST["txtGenes"])),function($gName) {return ! empty($gName);});
 
-if(sizeof($gNamesArr)==0)
-{
+if(sizeof($gNamesArr)==0) {
 	echo "<h1>No genes to search provided.</h1>";
 }
-else
-{
+else {
+ 
 	// Connecting to db
   $dbconn = pg_connect(getConnectionString());
+ 
+  // Get annotation types
+  include_once("get_annotation_types.php");
+  
+  
+  
+  
 
 	// Getting all annotation types.
-  // $query="SELECT annotation_type_id,annotation_type from annotation_type";
-  $query="SELECT distinct annotation_type from annotation order by annotation_type desc";
+  $query="SELECT annotation_type_id,annotation_type from annotation_type"; // array with annotation type ids
+//  $query="SELECT annotation_type from annotation_type"; // array with annotation types
+//  $query="SELECT distinct annotation_type from annotation order by annotation_type desc"; // array with annotation types
   // $query="SELECT distinct annotation_type from annotation where annotation_type not like 'GO %' order by annotation_type desc";
   $res=pg_query($query) or die("Couldn't query database.");
 
@@ -34,29 +41,45 @@ else
 
   $annotTypes=pg_fetch_all_columns($res);
 
+  // foreach ($annotTypes as $type) {
+  //   echo "<p>".$all_annotation_types[$type]."</p>";
+  // }
+
+
   $gNameValues=implode(",",array_map(function($input) {if(empty(trim($input))) return ""; else  return "'" . trim(pg_escape_string($input))."'" ;},$gNamesArr));
 
-  $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annotation_desc, annotation.annotation_type)) \"annot\"
+
+  ////////////////////////////////////
+
+  // $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annotation_desc, annotation.annotation_type)) \"annot\"
+  // FROM
+  // gene g inner join gene_annotation on gene_annotation.gene_id=g.gene_id
+  // inner join annotation on annotation.annotation_id=gene_annotation.annotation_id
+  // right join unnest(array[{$gNameValues}]) WITH ORDINALITY AS searchValues(search_name,ord) on search_name=g.gene_name
+  // group by searchValues.search_name, searchValues.ord
+  // order by searchValues.ord asc";
+
+  //////////////////////////////////////
+
+  
+  $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annotation_desc, annotation.annotation_type_id)) \"annot\"
   FROM
   gene g inner join gene_annotation on gene_annotation.gene_id=g.gene_id
   inner join annotation on annotation.annotation_id=gene_annotation.annotation_id
+  inner join annotation_type on annotation_type.annotation_type_id=annotation.annotation_type_id
   right join unnest(array[{$gNameValues}]) WITH ORDINALITY AS searchValues(search_name,ord) on search_name=g.gene_name
   group by searchValues.search_name, searchValues.ord
   order by searchValues.ord asc";
   
-  // $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annot_desc, annotation.annotation_type_id)) \"annot\"
-  // FROM
-  // gene g inner join gene_annotation on gene_annotation.gene_id=g.gene_id
-  // inner join annotation on annotation.annotation_id=gene_annotation.annotation_id
-  // inner join annotation_type on annotation_type.annotation_type_id=annotation.annotation_type_id
-  // right join unnest(array[{$gNameValues}]) WITH ORDINALITY AS searchValues(search_name,ord) on search_name=g.gene_name
-  // group by searchValues.search_name, searchValues.ord
-  // order by searchValues.ord asc";
-  
   $dbRes=pg_query($query) or die('Query failed: ' . pg_last_error());
+  
+  
   echo "<table class=\"table table-striped table-bordered\" id=\"tblResults\"><thead><tr><th>input</th>";
 
-  echo implode("",array_map(function($type) {return "<th style=\"min-width:200px\">{$type}</th>";},$annotTypes));
+  foreach ($annotTypes as $type) {
+    echo "<th style=\"min-width:200px\">".$all_annotation_types[$type]."</th>";
+  }
+  // echo implode("",array_map(function($type) {return "<th style=\"min-width:200px\">{$type}</th>";},$annotTypes));
   echo "</tr></thead><tbody>";
   while($row=pg_fetch_array($dbRes,null, PGSQL_ASSOC)) {
 
