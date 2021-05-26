@@ -1,4 +1,4 @@
-<h1 style="font-size:26px"><i>Species name</i></h4>
+<h1 style="font-size:26px"><i>Homo sapiens</i></h4>
 
 <h4 class="p_font18">
   Example of species view

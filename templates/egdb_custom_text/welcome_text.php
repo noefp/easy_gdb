@@ -1,5 +1,6 @@
-      <h1 style="font-size:26px">Welcome to <?php echo "$dbTitle";?> </h4>
-
+      <h1>Welcome to <?php echo "$dbTitle";?> </h1>
+      <h2>Subtitle h2</h2>
+      <h3>Subtitle h3</h3>
       <h4 class="p_font18">
         This is a template to write your own welcome page. 
         Please, follow the instructions to create your own custom_text folder and include the path in the configuration file.
@@ -19,4 +20,5 @@
         diam pharetra euismod tristique aliquet nam. Dis nascetur vivamus justo libero platea interdum feugiat tellus, 
         ad commodo nec etiam volutpat imperdiet viverra, habitasse suspendisse arcu porttitor lacinia iaculis aenean.
       </p>
+      <img class='rounded' src='<?php echo "$images_path/species/species1.png";?>' alt='img example'>;
       
