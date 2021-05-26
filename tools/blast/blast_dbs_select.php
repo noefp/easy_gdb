@@ -1,25 +1,7 @@
-
 <?php
 
-function get_dir_and_files($dir_name) {
-    $file_array = array();
-
-    $pattern='/^\./';
-    if (is_dir($dir_name)){
-      if ($dh = opendir($dir_name)){
-        while (($file_name = readdir($dh)) !== false){
-          $is_not_file = preg_match($pattern, $file_name, $match);
-          if (!$is_not_file) {
-            // echo $file_name."<br>";
-            array_push($file_array,$file_name);
-          }
-        }
-      }
-    }
-
-    rsort($file_array);
-    return $file_array;
-}
+include_once realpath("$easy_gdb_path/tools/common_functions.php");
+// include_once '../common_functions.php';
 
 $sps_found = get_dir_and_files($blast_dbs_path); // call the function
 
