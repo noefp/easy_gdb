@@ -1,0 +1,3 @@
+gene1.1	Q9C5UO	Histidine kinase 4
+gene2.1	Q9C5U1	Histidine kinase 3
+gene3.1	Q9C5U2	Histidine kinase 2

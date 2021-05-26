@@ -1,0 +1,3 @@
+gene1.1	AT2G01830	Histidine kinase: cytokinin-binding receptor that transduces cytokinin signals across the plasma membrane
+gene2.1	AT1G27320	Encodes a histidine kinases, a cytokinin receptor that controls cytokinin-mediated leaf longevity through a specific phosphorylation of the response regulator, ARR2. The mRNA is cell-to-cell mobile
+gene3.1	AT5G35750	Encodes histidine kinase AHK2
