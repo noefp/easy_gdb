@@ -10,7 +10,7 @@ $species_path = "$root_path/egdb_files/egdb_species";
 $lab_path = "$root_path/egdb_files/egdb_labs";
 
 // header
-$dbTitle = "DB Title";
+$dbTitle = "Easy GDB";
 $header_img = "header_img.png";
 $db_logo = "egdb_logo.png";
 
@@ -26,25 +26,18 @@ $tb_seq_ext = 1;
 $tb_annot_ext = 1;
 $tb_more = 1;
 
-// footer
-$logo1 = "logo1.png";
-$logo2 = "logo1.png";
-$logo3 = "logo1.png";
-$logo1_link = "https://www.google.com/";
-$logo2_link = "https://www.google.com/";
-$logo3_link = "https://www.google.com/";
-$logo1_height = 60;
-$logo2_height = 60;
-$logo3_height = 60;
+// About
+$ab_citation = 1;
+$ab_labs = 1;
 
 // Annotation
-$max_version = "1.0";
+// $max_version = "1.0";
 
 //Gene examples
 $gene_sample = "";
-$input_gene_list="gene1
-gene2
-gene3";
+$input_gene_list="gene1.1
+gene2.1
+gene3.1";
 
 // BLAST
 $blast_example=">protein_or_DNA
