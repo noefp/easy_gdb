@@ -16,17 +16,31 @@
         $species_hash = json_decode($sps_json_file, true);
         // var_dump($$species_hash);
         
-        foreach($species_hash as $one_sps) {
-          if ($one_sps["public"]) {
-            echo '<a href="species_view.php?sps_name='.$one_sps["sps_name"].'" target="_blank" class="float-left egdb_person_card rounded" style="color:#333">';
-            echo '<img class="float-left egdb_person_img rounded" src="'.$images_path.'/species/'.$one_sps["image"].'" alt="'.$one_sps["sps_name"].'">';
+        foreach($species_hash as $key => $value) {
+          
+          if ($species_hash[$key]["public"]) {
+            echo '<a href="species_view.php?sps_name='.$key.'" target="_blank" class="float-left egdb_person_card rounded" style="color:#333">';
+            echo '<img class="float-left egdb_person_img rounded" src="'.$images_path.'/species/'.$species_hash[$key]["image"].'" alt="'.$species_hash[$key]["sps_name"].'">';
             echo '<div style="margin:5px; margin-left:160px; white-space: nowrap;">';
-            echo '<h4 class="card-title"><i>'.$one_sps["sps_name"].'</i></h4>';
-            echo '<p class="person-card-text">'.$one_sps["common_name"].'</p>';
+            echo '<h4 class="card-title"><i>'.$species_hash[$key]["sps_name"].'</i></h4>';
+            echo '<p class="person-card-text">'.$species_hash[$key]["common_name"].'</p>';
             echo '</div>';
             echo '</a>';
           }
+          
         }
+        
+        // foreach($species_hash as $one_sps) {
+        //   if ($one_sps["public"]) {
+        //     echo '<a href="species_view.php?sps_name='.$one_sps["sps_name"].'" target="_blank" class="float-left egdb_person_card rounded" style="color:#333">';
+        //     echo '<img class="float-left egdb_person_img rounded" src="'.$images_path.'/species/'.$one_sps["image"].'" alt="'.$one_sps["sps_name"].'">';
+        //     echo '<div style="margin:5px; margin-left:160px; white-space: nowrap;">';
+        //     echo '<h4 class="card-title"><i>'.$one_sps["sps_name"].'</i></h4>';
+        //     echo '<p class="person-card-text">'.$one_sps["common_name"].'</p>';
+        //     echo '</div>';
+        //     echo '</a>';
+        //   }
+        // }
         
         // echo '</div></div><br>';
         
