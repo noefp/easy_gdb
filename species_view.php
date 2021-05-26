@@ -1,5 +1,5 @@
 <?php include_once realpath("header.php");?>
-<?php include_once 'common_functions.php';?>
+<?php include_once 'tools/common_functions.php';?>
 
 <div style="max-width:900px; margin:auto">
   <br>
