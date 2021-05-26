@@ -40,13 +40,15 @@
       var gene_lookup_input = $('#txtDownloadGenes').val();
       var gene_count = (gene_lookup_input.match(/\n/g)||[]).length
 
-      // alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
+      alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
 
       //check input genes from gene lookup before sending form
-      if (gene_count > 500) {
-          alert("A maximum of 500 sequences can be provided as input, your input has: "+gene_count);
+      var max_input = "<?php echo $max_extract_seq_input ?>";
+      if (gene_count > max_input) {
+          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
           return false;
       }
+
 
       return true;
     });
