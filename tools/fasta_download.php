@@ -40,7 +40,7 @@
       var gene_lookup_input = $('#txtDownloadGenes').val();
       var gene_count = (gene_lookup_input.match(/\n/g)||[]).length
 
-      alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
+      // alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
 
       //check input genes from gene lookup before sending form
       var max_input = "<?php echo $max_extract_seq_input ?>";
