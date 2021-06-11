@@ -48,12 +48,12 @@ $dbh->begin_work;
 
 my $species_id = ImportModule::check_species($dbh,$species);
 if (!$species_id) {
-$species_id = ImportModule::insert_species($dbh,$species,$jbrowse_folder);
+  $species_id = ImportModule::insert_species($dbh,$species,$jbrowse_folder);
 }
 
 my $annot_v_id = ImportModule::check_annotation_version($dbh,$annotation_v);
 if (!$annot_v_id) {
-  ImportModule::insert_annotation_version($dbh,$annotation_v);
+  $annot_v_id = ImportModule::insert_annotation_version($dbh,$annotation_v);
 }
 
 open (my $fh2, $gene_file) || die ("\nERROR: the file $gene_file could not be found\n");
