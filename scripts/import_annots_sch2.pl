@@ -65,6 +65,10 @@ while (my $line = <$fh2>) {
   
   my ($gene_name,$annot_term,$annot_desc) = split("\t",$line);
   
+  if (!$annot_term && !$annot_desc) {
+    next;
+  }
+  
   # Check gene exists and get gene id in database
   my $gene_id = ImportModule::check_gene($dbh,$gene_name,$species_id,$annot_v_id);
   
