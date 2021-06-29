@@ -9,6 +9,20 @@
 // Get annotation types
 include_once("tools/get_annotation_types.php");
 
+
+// load annotation links in hash
+$annot_hash;
+
+if ( file_exists("$annotation_links_path/annotation_links.json") ) {
+    
+    $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
+    // var_dump($annot_json_file);
+    $annot_hash = json_decode($annot_json_file, true);
+    // var_dump($annot_hash);
+    // echo "<p>".$annot_hash["TAIR10"]."</p>";
+}
+
+
 // $query = "SELECT * FROM annotation JOIN gene_annotation USING(annotation_id) JOIN gene USING(gene_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
 $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
 // $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_type USING(annotation_type_id) WHERE gene_id='".pg_escape_string($gene_id)."'";
@@ -29,20 +43,12 @@ while ($line = pg_fetch_array($res, null, PGSQL_ASSOC)) {
      
      $q_link = "#";
 
-     if ($annot_type == "TAIR10") {
-       $q_link = 'http://www.arabidopsis.org/servlets/TairObject?type=locus&name='.preg_replace('/\.\d$/','',$q_term);
+     if ($annot_type == "TAIR10" || $annot_type == "Araport11") {
+       $q_term = preg_replace('/\.\d$/','',$q_term);
      }
-     if ($annot_type == "Araport11") {
-       $q_link = 'http://www.arabidopsis.org/servlets/TairObject?type=locus&name='.preg_replace('/\.\d$/','',$q_term);
-     }
-     if ($annot_type == "SwissProt") {
-       $q_link = 'http://www.uniprot.org/uniprot/'.preg_replace('/sp\|(.+)\|.+/','$1',$q_term);
-     }
-     if ($annot_type == "InterPro") {
-       $q_link = 'https://www.ebi.ac.uk/interpro/entry/InterPro/'.$q_term.'/';
-     }
-     if ($annot_type == "NCBI") {
-       $q_link = 'https://www.ncbi.nlm.nih.gov/protein/'.$q_term;
+     if ($annot_hash[$annot_type]) {
+       $q_link = $annot_hash[$annot_type];
+       $q_link = preg_replace('/query_id/',$q_term,$q_link);
      }
 
      echo "<tr><td><a href=\"$q_link\" target=\"_blank\">$q_term</a></td><td>$q_desc</td><td>$annot_type</td></tr>\n";

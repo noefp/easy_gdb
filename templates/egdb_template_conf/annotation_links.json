@@ -1,0 +1,7 @@
+{
+  "TAIR10":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
+  "Araport11":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
+  "SwissProt":"http://www.uniprot.org/uniprot/query_id",
+  "InterPro":"https://www.ebi.ac.uk/interpro/entry/InterPro/query_id",
+  "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id"
+}
