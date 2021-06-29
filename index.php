@@ -8,7 +8,7 @@
       <?php include_once realpath("$custom_text_path/welcome_text.php");?>
     </div>
   </div>
-
+  <br>
   <?php 
     if (file_exists(realpath("$custom_text_path/db_citation.php")) && filesize(realpath("$custom_text_path/db_citation.php")) >0) {
       include_once realpath("$custom_text_path/db_citation.php");
