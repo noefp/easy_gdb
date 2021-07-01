@@ -1,4 +1,4 @@
-# easy_gdb
+# Easy GDB
 
 Welcome to easy GDB, this tool will help you to create your own genomic database with tools such as BLAST, Genome browser (JBrowse),
 file downloads, sequence extraction, annotation search, bulk annotation extraction and gene list lookup.
@@ -16,27 +16,27 @@ In most of the servers is probable that some of the tools needed are already ins
 
 Lets install git to download the easy GDB code and PHP to be able to run the web.
 ```bash
-    sudo apt-get update
-    apt-get install git
-    apt-get install php
+sudo apt-get update
+apt-get install git
+apt-get install php
 ```
 #### Set up server
 In a server (not mandatory for local instalations) you would need to use Apache or Nginx webservers to host your application in a server.
 
 ```bash
-    sudo apt-get install apache2
+sudo apt-get install apache2
 
-    cd /etc/apache2/
-    sudo cp 000-default.conf easy_gdb.conf
-    sudo a2dissite 000-default.conf
-    sudo a2ensite easy_gdb.conf
-    systemctl reload apache2
+cd /etc/apache2/
+sudo cp 000-default.conf easy_gdb.conf
+sudo a2dissite 000-default.conf
+sudo a2ensite easy_gdb.conf
+systemctl reload apache2
 ```
 
 
 #### Install BLAST
 ```bash
-    apt-get install ncbi-blast+
+apt-get install ncbi-blast+
 ```
 
 
@@ -46,21 +46,25 @@ To install Postgres you can follow the instructions at:
 https://www.postgresql.org/download/linux/ubuntu/
 
 The next commands worked well at the time this documentation was writen:
+```bash
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql-10
 
-    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-    sudo apt-get update
-    sudo apt-get -y install postgresql-10
-
-    sudo apt-get install libpq-dev
-    sudo apt-get install php7.2-pgsql
-
+sudo apt-get install libpq-dev
+sudo apt-get install php7.2-pgsql
+```
 ##### In server
+```bash
     sudo service apache2 restart
+```
 
 ##### locally, stop local server and run again
 
-    php -S localhost:8000
+```bash
+php -S localhost:8000
+```
 
 ##### Set up easy_gdb database
 open the file `example_db/egdb_files/egdb_template_conf/database_access.php`
@@ -70,8 +74,11 @@ function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr
 ```
 
 ##### Set up password
-    sudo -u postgres psql postgres
-    
+
+```bash
+sudo -u postgres psql postgres
+```
+
 ```sql
 \du
 \password postgres
@@ -87,8 +94,9 @@ CREATE DATABASE annot1;
 
 ##### Change role password
 ##### Connect to postgres console and change password (not visible)
+```bash
     psql -h localhost -U postgres
-
+```
 ```sql
 \password web_usr
 type a new password
@@ -96,8 +104,9 @@ type a new password
 ```
 
 ##### Import annotation schema to database
+```bash
 example_db$ psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scripts/create_tea_schema2.sql
-
+```
 
 #### Install Perl dependencies
     apt-get install cpanminus
@@ -109,7 +118,9 @@ example_db$ psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scr
 #### load local-lib in Perl5lib
     apt-get install vim
     vim ~/.bashrc
-(add the line below at the end of the file. Remember to change your user name)
+
+Add the line below at the end of the file. Remember to change your user name.
+
     export PERL5LIB=/home/your_username/local-lib/lib/perl5:$PERL5LIB
     source ~/.bashrc
 
@@ -127,13 +138,14 @@ in the link query_id will be replaced by the gene name or annotation term.
 
 
 
-
 ## Set up easy GDB using the template example
 
     mkdir example_db
     cd example_db
 
+
     git clone https://github.com/noefp/easy_gdb.git
+
 
     php -S localhost:8000
 
@@ -141,12 +153,11 @@ in web browser `localhost:8000/easy_gdb/`
 
 
 ![easy GDB home](templates/egdb_img_samples/easy_gdb_home.png)
-Format: ![Alt Text](url)
 
     example_db$ mkdir egdb_files
-    cd egdb_files
-    cp -r ../easy_gdb/templates/egdb_template_conf .
-    cp -r ../easy_gdb/templates/egdb_img_samples .
+    example_db$ cd egdb_files
+    egdb_files$ cp -r ../easy_gdb/templates/egdb_template_conf .
+    egdb_files$ cp -r ../easy_gdb/templates/egdb_img_samples .
 
 open `example_db/easy_gdb/configuration_path.php` and set the configuration path
 path to `example_db/egdb_files/egdb_template_conf`
@@ -300,6 +311,7 @@ The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum nu
 
 data/easy_gdb_sample/trackList.json
 
+```json
     {
        "category" : "02 Annotations",
        "compress" : 0,
@@ -318,6 +330,7 @@ data/easy_gdb_sample/trackList.json
        "type" : "CanvasFeatures",
        "urlTemplate" : "tracks/egdb_gene_models/{refseq}/trackData.json"
     }
+```
 
 data/easy_gdb_sample/tracks.conf
 
