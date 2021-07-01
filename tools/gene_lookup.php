@@ -71,7 +71,7 @@ echo   "</div>";
       //check input genes from gene lookup before sending form
       var max_input = "<?php echo $max_lookup_input ?>";
       if (!max_input) {
-        max_input = 100000;
+        max_input = 10000;
       }
       if (gene_count > max_input) {
           alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);

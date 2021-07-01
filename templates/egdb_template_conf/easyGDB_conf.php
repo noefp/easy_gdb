@@ -37,6 +37,11 @@ $input_gene_list="gene1.1
 gene2.1
 gene3.1";
 
+// Tools
+$max_lookup_input = 10000;
+$max_extract_seq_input = 10000;
+$max_blast_input = 20;
+
 // BLAST
 $blast_example=">protein_or_DNA
 ATGAGTTGTGGGGAGGGATTTATGTCACCACAAATAGAGACTAAAGGAAGTGTTGGATTC

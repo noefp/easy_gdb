@@ -44,6 +44,11 @@
 
       //check input genes from gene lookup before sending form
       var max_input = "<?php echo $max_extract_seq_input ?>";
+      
+      if (!max_input) {
+        max_input = 1000;
+      }
+      
       if (gene_count > max_input) {
           alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
           return false;

@@ -136,6 +136,10 @@
       seqnum = input_seq.match(/>/g).length
       var max_input = "<?php echo $max_blast_input ?>";
       
+      if (!max_input) {
+        max_input = 10;
+      }
+      
       if (seqnum > max_input) {
           alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
           return false;
