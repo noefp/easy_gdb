@@ -92,10 +92,9 @@ CREATE DATABASE annot1;
 \q
 ```
 
-##### Change role password
-##### Connect to postgres console and change password (not visible)
+##### Change role password. Connect to postgres console and change password (not visible)
 ```bash
-    psql -h localhost -U postgres
+psql -h localhost -U postgres
 ```
 ```sql
 \password web_usr
