@@ -13,20 +13,8 @@ services:
       - -c
       - >
         git clone https://github.com/noefp/easy_gdb.git /var/www/html/easy_gdb;
-        mkdir egdb_files;
-        cp -r easy_gdb/templates/downloads /var/www/html/;
-        cp -r easy_gdb/templates/lookup /var/www/html/;
-        cp -r easy_gdb/templates/annotations/ /var/www/html/egdb_files/;
-        cp -r easy_gdb/templates/egdb_custom_text/ /var/www/html/egdb_files/;
-        cp -r easy_gdb/templates/egdb_img_samples/ /var/www/html/egdb_files/;
-        cp -r easy_gdb/templates/egdb_labs/ /var/www/html/egdb_files/;
-        cp -r easy_gdb/templates/egdb_species/ /var/www/html/egdb_files/;
-        cp -r easy_gdb/templates/egdb_template_conf/ /var/www/html/egdb_files/;
-        mkdir blast_dbs;
-        cp /var/www/html/easy_gdb/templates/blast/*fasta /var/www/html/blast_dbs/;
-        cd blast_dbs;
-        makeblastdb -in sample_blast_DB_proteins.fasta -dbtype 'prot' -parse_seqids;
-        makeblastdb -in sample_blast_DB_nucleotides.fasta -dbtype 'nucl' -parse_seqids;
+        cd easy_gdb/install;
+        bash setup.sh;
         /usr/sbin/apache2ctl -D FOREGROUND;
   DB:
     image: postgres
