@@ -5,109 +5,26 @@ file downloads, sequence extraction, annotation search, bulk annotation extracti
 
 ##  Installation
 
-Easy GDB requires PHP and PostgreSQL to run.
+Easy GDB requires PHP and PostgreSQL to run. You can follow the steps below to install them or you can use our Dockerfile.
 
 It should be easy to install in a linux computer, such as the ones usually provided in servers to hosts genomic database applications.
 To use it in Mac or Windows it would be recommendable to use Docker or VirtualBox to run it in a linux container ir virtual machine.
 
-In most of the servers is probable that some of the tools needed are already installed, and you work often with linux you wuold probably have some of them too.
+In most of the servers is probable that some of the tools needed are already installed, and if you work often with linux you would probably have some of them already.
 
-#### Install Git and PHP
+#### Install Git, PHP, BLAST and useful tools
 
 Lets install git to download the easy GDB code and PHP to be able to run the web.
 ```bash
 sudo apt-get update
 apt-get install git
 apt-get install php
-```
-#### Set up server
-In a server (not mandatory for local instalations) you would need to use Apache or Nginx webservers to host your application in a server.
-
-```bash
-sudo apt-get install apache2
-
-cd /etc/apache2/
-sudo cp 000-default.conf easy_gdb.conf
-sudo a2dissite 000-default.conf
-sudo a2ensite easy_gdb.conf
-systemctl reload apache2
-```
-
-
-#### Install BLAST
-```bash
 apt-get install ncbi-blast+
+apt-get install vim
+apt-get install less
 ```
 
-
-#### Install PostgreSQL 
-
-To install Postgres you can follow the instructions at:
-https://www.postgresql.org/download/linux/ubuntu/
-
-The next commands worked well at the time this documentation was writen:
-```bash
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get -y install postgresql-10
-
-sudo apt-get install libpq-dev
-sudo apt-get install php7.2-pgsql
-```
-##### In server
-```bash
-    sudo service apache2 restart
-```
-
-##### locally, stop local server and run again
-
-```bash
-php -S localhost:8000
-```
-
-##### Set up easy_gdb database
-open the file `example_db/egdb_files/egdb_template_conf/database_access.php`
-
-```php
-function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr password=password";};
-```
-
-##### Set up password
-
-```bash
-sudo -u postgres psql postgres
-```
-
-```sql
-\du
-\password postgres
-```
-
-##### create new role with temporal password
-```sql
-CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
-CREATE DATABASE annot1;
-\l
-\q
-```
-
-##### Change role password. Connect to postgres console and change password (not visible)
-```bash
-psql -h localhost -U postgres
-```
-```sql
-\password web_usr
-type a new password
-\q
-```
-
-##### Import annotation schema to database
-```bash
-example_db$ psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scripts/create_tea_schema2.sql
-```
-
-#### Install Perl dependencies
+#### Install Perl dependencies (for JBrowse and importing scripts)
     apt-get install cpanminus
     cpanm -L ~/local-lib/ DBI
     cpanm -L ~/local-lib/ Term::ReadKey
@@ -115,7 +32,6 @@ example_db$ psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scr
 
 
 #### load local-lib in Perl5lib
-    apt-get install vim
     vim ~/.bashrc
 
 Add the line below at the end of the file. Remember to change your user name.
@@ -123,84 +39,87 @@ Add the line below at the end of the file. Remember to change your user name.
     export PERL5LIB=/home/your_username/local-lib/lib/perl5:$PERL5LIB
     source ~/.bashrc
 
-#### Import annotations
-    perl easy_gdb/scripts/import_genes.pl easy_gdb/templates/anotations/gene_list.txt "Homo sapiens" "v1.0" "easy_gdb_sample"
-    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "v1.0"
-    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
+#### Install PostgreSQL 
 
-You can add custom annotation links in the annotation_links.json file:
-`example_db/egdb_files/egdb_template_conf/annotation_links.json`
-
-This file includes example links for TAIR10, Araport11, SwissProt, InterPro and NCBI. 
-The name used (TAIR10, Araport11, SwissProt ...) should be used in the import_annots_sch2.pl script, as shown above
-in the link query_id will be replaced by the gene name or annotation term.
-
-
+The instructions are provided below, so we can install PostgreSQL and setup the database all together after cloning the easy_GDB repository.
 
 ## Set up easy GDB using the template example
+
+First, let's create a folder to contain your genomic database. Use the name you like. For this example we will use `example_db`.
 
     mkdir example_db
     cd example_db
 
-
+Clone the easy_GBD code from Github:
+ 
     git clone https://github.com/noefp/easy_gdb.git
 
+Now, we will create the configuration and example file. Go to `easy_gdb/install` and run the `setup.sh` script:
 
-    php -S localhost:8000
+    cd easy_gdb/install/
+    bash setup.sh
 
-in web browser `localhost:8000/easy_gdb/`
+This should create some folders, subfolders and files at the same level as easy_gdb.
 
+    cd ../../
+    ls -lh
+
+You should be able to see the folders `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files` and `lookup`, and inside them there are some example templates to help you customize your own genomic web portal.
+
+At this moment most of the features of easy_gdb should be alredy available (all but jbrowse and parts depending on the annotation database).
+
+Run the next command to start a local PHP server:
+
+    example_db$ php -S localhost:8000
+
+In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
+
+You should be able to see an example of easy_gdb running.
 
 ![easy GDB home](templates/egdb_img_samples/easy_gdb_home.png)
 
-    example_db$ mkdir egdb_files
-    example_db$ cd egdb_files
-    egdb_files$ cp -r ../easy_gdb/templates/egdb_template_conf .
-    egdb_files$ cp -r ../easy_gdb/templates/egdb_img_samples .
 
-open `example_db/easy_gdb/configuration_path.php` and set the configuration path
-path to `example_db/egdb_files/egdb_template_conf`
+[Should work by default in Docker container] In the file `example_db/easy_gdb/configuration_path.php` you could change the configuration path
+path to `/abosolute_path_to/example_db/egdb_files/egdb_template_conf`. By default it is pointing to `/var/www/html/egdb_files/egdb_template_conf` 
+where the files will be placed using the docker container and could be the standard location in a server.
 
-open `example_db/example_db_files/egdb_template_conf` and set the root path where the `easy_db` folder is
-Usually in a server you could the files in `/var/www/html`
-Locally you could have them in `/home/your_user_name/Desktop/example_db`
+[Should work by default in Docker container] Open the file `example_db/example_db_files/egdb_template_conf` and set the root path where the `easy_db` folder is.
+In the Docker container and usually in a server it could be `/var/www/html`.
+Locally, for example, you could have them in `/home/your_user_name/Desktop/example_db`
 
-Reload the web browser `localhost:8000/easy_gdb/` and you should see an empty implementation
+Afer the changes, reload the web browser `localhost:8000/easy_gdb/` and check if you can see the home page of easy GDB.
 
-    cp -r ../easy_gdb/templates/egdb_custom_text .
+In the configuration file `example_db/easy_gdb/configuration_path.php` you can customize your site.
 
-Reload again and now you should be able to see text examples for the home and about us page
-
-Open again the configuration file `example_db/easy_gdb/configuration_path.php`
-
-Here you can customize your site. 
-If you used the folder name `egdb_files` all path should work when you place the files there.
-If you want use a different name remember to change the name in the file paths
-
+If you want use a different names for your folders remember to change the names in the file paths included in `example_db/easy_gdb/configuration_path.php`.
 For example, for development you could have multiple sites or multiple versions. 
 You could easily change between them having different file folders and just changing the path to the active one in `easy_gdb/configuration_path.php`
 
-You can customize the header variables `$dbTitle`, `$header_img` and `$db_logo` to change the site title and header and logo images
-Try to change them and reload `localhost:8000/easy_gdb/index.php` to see the cahnges
 
+#### Customize application name and header image
+
+In the configuration file `example_db/easy_gdb/configuration_path.php` you can customize the header variables `$dbTitle` and `$header_img` to change the site title and header image.
+Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
 #### Customize logos
 
-In `egdb_files/egdb_img_samples/logos/` you can place logo images, and you can use the file `logos.json` to customize size and link
-
+In `egdb_files/egdb_img_samples/logos/` you can place logo images, and you can use the file `logos.json` to customize size and link.
+Logos are displayed in all pages at the footer.
 
 #### Customize the toolbar
 
-Below, in the toolbar variables, you can customize wich links will be displayed in the toolbar.
-a value `1` enable the link and `0` disable it. Choose the links you want to show or hide.
+Below, in the toolbar variables, you can customize wich links will be displayed in the toolbar, enabling and disabling the tools and sections available.
+A value `1` enable the link and `0` disable it. Choose the links you want to show or hide.
 
-Lets take a look to each one of the links.
+Lets take a look to each one of the links below.
 
 ##### Home page
 
-The home page is always available. If you copied the `egdb_custom_text` folder, 
-then you should be able to see the example text for the welcome page. 
+The home page is always available. In the `egdb_custom_text` folder, 
+you should be able to see the example text for the welcome page. 
 You can open the file `example_db/egdb_files/egdb_custom_text/welcome_text.php` in a text editor to customize the content.
+It is possible to use PHP or HTML, where you could include CSS and JS. Easy GDB uses Bootstrap 4 library for the style and some elements.
+You could find examples to create you own elements at https://www.w3schools.com/bootstrap4/default.asp
 
 ##### About Us
 
@@ -300,6 +219,102 @@ To enable the annotation extraction first we must install the PostgreSQL databas
     example_db$ cp -r easy_gdb/templates/lookup .
 
 The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum number of gene names allowed as input.
+
+
+#### Install PostgreSQL 
+
+To install Postgres you can follow the instructions at:
+https://www.postgresql.org/download/linux/ubuntu/
+
+The next commands worked well at the time this documentation was writen:
+```bash
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql-10
+
+sudo apt-get install libpq-dev
+sudo apt-get install php7.2-pgsql
+```
+
+
+##### Set up easy_gdb database
+open the file `example_db/egdb_files/egdb_template_conf/database_access.php`
+
+```php
+function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr password=password";};
+```
+
+##### Set up password
+
+```bash
+sudo -u postgres psql postgres
+```
+
+```sql
+\du
+\password postgres
+```
+
+##### create new role with temporal password
+```sql
+CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
+CREATE DATABASE annot1;
+\l
+\q
+```
+
+##### Change role password. Connect to postgres console and change password (not visible)
+```bash
+psql -h localhost -U postgres
+```
+```sql
+\password web_usr
+type a new password
+\q
+```
+
+##### Import annotation schema to database
+```bash
+example_db$ psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scripts/create_tea_schema2.sql
+```
+
+
+#### Import annotations
+    perl easy_gdb/scripts/import_genes.pl easy_gdb/templates/anotations/gene_list.txt "Homo sapiens" "v1.0" "easy_gdb_sample"
+    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "v1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
+
+You can add custom annotation links in the annotation_links.json file:
+`example_db/egdb_files/egdb_template_conf/annotation_links.json`
+
+This file includes example links for TAIR10, Araport11, SwissProt, InterPro and NCBI. 
+The name used (TAIR10, Araport11, SwissProt ...) should be used in the import_annots_sch2.pl script, as shown above
+in the link query_id will be replaced by the gene name or annotation term.
+
+#### Set up server
+In a server (not mandatory for local instalations) you would need to use Apache or Nginx webservers to host your application in a server.
+
+```bash
+sudo apt-get install apache2
+
+cd /etc/apache2/
+sudo cp 000-default.conf easy_gdb.conf
+sudo a2dissite 000-default.conf
+sudo a2ensite easy_gdb.conf
+systemctl reload apache2
+```
+
+##### In server
+```bash
+    sudo service apache2 restart
+```
+
+##### locally, stop local server and run again
+
+```bash
+php -S localhost:8000
+```
 
 
 #### Install and set up JBrowse
