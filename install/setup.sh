@@ -16,3 +16,5 @@ cd ../
 wget https://github.com/GMOD/jbrowse/releases/download/1.16.11-release/JBrowse-1.16.11.zip
 unzip JBrowse-1.16.11.zip
 mv JBrowse-1.16.11/ jbrowse/
+cd jbrowse/
+./setup.sh
