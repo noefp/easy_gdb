@@ -18,3 +18,9 @@ unzip JBrowse-1.16.11.zip
 mv JBrowse-1.16.11/ jbrowse/
 cd jbrowse/
 ./setup.sh
+bin/prepare-refseqs.pl --fasta ../easy_gdb/templates/jbrowse/genome.fasta --out data/easy_gdb_sample
+bin/flatfile-to-json.pl -gff ../easy_gdb/templates/jbrowse/gene_models.gff --key "EasyGDB gene models" --trackLabel egdb_gene_models --trackType CanvasFeatures --type mRNA --out data/easy_gdb_sample
+bin/generate-names.pl --tracks egdb_gene_models --out data/easy_gdb_sample/
+cp ../easy_gdb/templates/jbrowse/jbrowse.conf .
+cp ../easy_gdb/templates/jbrowse/tracks.conf data/easy_gdb_sample/
+cp ../easy_gdb/templates/jbrowse/trackList.conf data/easy_gdb_sample/
