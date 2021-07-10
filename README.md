@@ -220,10 +220,15 @@ function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr
 
 [in the Docker container you already have a postgres password defined]
 
-Open a terminal using docker-compose or Docker desktop
+Open a terminal using docker-compose, docker exec or Docker desktop
 
     docker-compose exec DB /bin/bash
+    psql -U postgres
+    
+or
 
+    docker exec -ti DB psql -U postgres
+    
 You can use `\q` to exit the PostgreSQL console or exit to leave the Docker bash console.
 
 To change the password for the postgres user:
@@ -238,12 +243,18 @@ You will be asked to type your new password
 Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
 you can create a new one nad point to it in the file `egdb_files/egdb_template_conf/database_access.php`.
 
-Open a terminal using docker-compose or Docker desktop
+Open a terminal using docker-compose, docker exec or Docker desktop
 
     docker-compose exec DB /bin/bash
+    psql -U postgres
+    
+or
+
+    docker exec -ti DB psql -U postgres
 
 ```sql
 CREATE DATABASE annot1;
+\l
 \q
 ```
 
@@ -253,13 +264,17 @@ It is recommended to use a different user than postgres to access the database (
 Here, we will create the user `web_usr`. Note that in this example the password you type will be visible in the terminal,
 and the history, so we will create a temporal password and then we will change it in the next step.
 
-Open a terminal using docker-compose or Docker desktop
+Open a terminal using docker-compose, docker exec or Docker desktop
 
     docker-compose exec DB /bin/bash
+    psql -U postgres
+    
+or
+
+    docker exec -ti DB psql -U postgres
 
 ```sql
 CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
-\l
 \password web_usr
 type a new password
 \q
@@ -270,13 +285,8 @@ type a new password
 Now we should have an empty database called `annot1` created.
 In this step we will create the database schema:
 
-Open a terminal using docker-compose or Docker desktop
+    docker exec -i DB psql --username postgres annot1 < src/easy_gdb/scripts/create_annot_schema2.sql
 
-    docker-compose exec easy_gdb /bin/bash
-
-```bash
-psql –U postgres –d annot1 –h DB –a –f easy_gdb/scripts/create_tea_schema2.sql
-```
 
 #### Import annotations
 
@@ -288,7 +298,13 @@ We will import all the gene names using the script `import_genes.pl` and we will
 species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
 This way we can link the genes with the genome browser.
 
-    perl easy_gdb/scripts/import_genes.pl easy_gdb/templates/anotations/gene_list.txt "Homo sapiens" "v1.0" "easy_gdb_sample"
+Open a terminal using docker-compose or Docker desktop
+
+    docker-compose exec easy_gdb /bin/bash
+
+    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "v1.0" "easy_gdb_sample"
+
+It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
 
 Now we will add annotations to the genes using the script `import_annots_sch2.pl`. 
 For that, we will need a file such as `annotation_example_SwissProt.txt`, 
@@ -298,11 +314,11 @@ and a third column with the annotation description.
 As an example we will import annotations for SwissProt and TAIR10 (for model plant arabidopsis).
 The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
 
-    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "v1.0"
-    perl easy_gdb/scripts/import_annots_sch2.pl easy_gdb/templates/anotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "v1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
 
 You can add custom annotation links in the annotation_links.json file:
-`example_db/egdb_files/egdb_template_conf/annotation_links.json`
+`egdb_files/egdb_template_conf/annotation_links.json`
 
 ```json
 {
