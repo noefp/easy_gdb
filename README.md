@@ -16,9 +16,11 @@ In most of the servers is probable that some of the tools needed are already ins
 
 Using the Docker container we can install easy GDB at `/var/www/html/`.
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec easy_gdb /bin/bash
 
 Clone the easy_GBD code from Github:
+
     git clone https://github.com/noefp/easy_gdb.git
 
 Now, we will create the configuration and example folder structure.
@@ -48,7 +50,8 @@ You should be able to see an example of easy_gdb running.
 ![easy GDB home](templates/egdb_img_samples/easy_gdb_home.png)
 
 
-> In case of installing easy GDB ina Linux system not using Docker, run the next command to start a local PHP server:
+> In case of installing easy GDB in a Linux system not using Docker, run the next command to start a local PHP server:
+>
 >    example_db$ php -S localhost:8000
 
 
@@ -158,9 +161,11 @@ To add BLAST datasets we need to copy the blast databases in the `blast_dbs` fol
 You can use the next command lines to create your own blast databases from fasta sequence files:
 
 For protein sequences:
+
     makeblastdb -in your_protein_sequence_file.fasta -dbtype 'prot' -parse_seqids
 
 For nucleotide sequences:
+
     makeblastdb -in your_nucleotide_sequence_file.fasta -dbtype 'nucl' -parse_seqids
 
 It is important to use the option `-parse_seqids` to create the indexes needed to extract sequences, 
@@ -216,6 +221,7 @@ function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr
 [in the Docker container you already have a postgres password defined]
 
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec DB /bin/bash
 
 You can use `\q` to exit the PostgreSQL console or exit to leave the Docker bash console.
@@ -233,6 +239,7 @@ Here, we will create a new database `annot1`. Any time you want to create a new 
 you can create a new one nad point to it in the file `egdb_files/egdb_template_conf/database_access.php`.
 
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec DB /bin/bash
 
 ```sql
@@ -247,6 +254,7 @@ Here, we will create the user `web_usr`. Note that in this example the password 
 and the history, so we will create a temporal password and then we will change it in the next step.
 
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec DB /bin/bash
 
 ```sql
@@ -263,10 +271,11 @@ Now we should have an empty database called `annot1` created.
 In this step we will create the database schema:
 
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec easy_gdb /bin/bash
 
 ```bash
-psql –U postgres –d annot1 –h localhost –a –f easy_gdb/scripts/create_tea_schema2.sql
+psql –U postgres –d annot1 –h DB –a –f easy_gdb/scripts/create_tea_schema2.sql
 ```
 
 #### Import annotations
@@ -316,9 +325,11 @@ when you want to include the genome browser for your species of interest you can
 JBrowse manual (http://gmod.org/wiki/JBrowse_Configuration_Guide#prepare-refseqs.pl). Additionally, below you can find some suggestions.
 
 Open a terminal using docker-compose or Docker desktop
+
     docker-compose exec easy_gdb /bin/bash
     
 Upload your sequences to JBrowse. This is how the gene models were uploaded in the example:
+
     jbrowse$ bin/prepare-refseqs.pl --fasta ../easy_gdb/templates/jbrowse/genome.fasta --out data/easy_gdb_sample
     jbrowse$ bin/flatfile-to-json.pl -gff ../easy_gdb/templates/jbrowse/gene_models.gff --key "EasyGDB gene models" --trackLabel egdb_gene_models --trackType CanvasFeatures --type mRNA --out data/easy_gdb_sample
     jbrowse$ bin/generate-names.pl --tracks egdb_gene_models --out data/easy_gdb_sample/
@@ -385,7 +396,7 @@ systemctl reload apache2
 
 In many cases, after applying some changes you will need to restart the server to make the changes effective:
 ```bash
-    sudo service apache2 restart
+sudo service apache2 restart
 ```
 
 ##### Start local server
