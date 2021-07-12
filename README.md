@@ -346,6 +346,7 @@ As an example we will import annotations for SwissProt and TAIR10 (for model pla
 The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
 
     perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+
     perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
 You can add custom annotation links in the annotation_links.json file:
