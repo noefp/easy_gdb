@@ -5,11 +5,11 @@ $easy_gdb_path = "$root_path/easy_gdb";
 $blast_dbs_path = "$root_path/blast_dbs";
 $downloads_path = "downloads";
 $lookup_path = "$root_path/lookup"; //from root 
-$images_path = "/egdb_files/egdb_img_samples";
+$images_path = "/egdb_files/egdb_images";
 $custom_text_path = "$root_path/egdb_files/egdb_custom_text";
 $species_path = "$root_path/egdb_files/egdb_species";
 $lab_path = "$root_path/egdb_files/egdb_labs";
-$annotation_links_path = "$root_path/egdb_files/egdb_template_conf";
+$annotation_links_path = "$root_path/egdb_files/annotations";
 
 // header
 $dbTitle = "Easy GDB";
