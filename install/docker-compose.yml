@@ -4,27 +4,16 @@ services:
   easy_gdb:
     build:
       context: .
+    container_name: easy_gdb
     ports:
       - "8000:80"
     volumes:
       - ./src:/var/www/html
-    command:
-      - bash
-      - -c
-      - >
-        git clone https://github.com/noefp/easy_gdb.git /var/www/html/easy_gdb;
-        cd easy_gdb/install;
-        bash setup.sh;
-        /usr/sbin/apache2ctl -D FOREGROUND;
   DB:
     image: postgres
+    container_name: DB
     ports:
       - "5432:5432"
     restart: always
     environment:
-      # - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1E24451er
-      # - POSTGRES_DB=annot1
-    # volumes:
-      # - ./postgres-data:/var/lib/postgresql/data
-      # - ./src/easy_gdb/scripts/create_annot_schema2.sql:/docker-entrypoint-initdb.d/create_annot_schema2.sql
+      - POSTGRES_PASSWORD=1234
