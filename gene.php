@@ -4,8 +4,7 @@
 <div class="page_container">
 <br>
 <div class="card bg-light">
-  <div id="query_gene" class="card-body" style="display:none">
-  </div>
+  <?php echo "<div id=\"query_gene\" class=\"card-body\">".test_input($_GET["name"])."</div>" ?>
 </div>
 <?php
 
@@ -24,21 +23,24 @@ $gene_name = test_input($_GET["name"]);
 
 
 // Performing SQL query
-$query = "SELECT * FROM gene WHERE gene_name='".pg_escape_string($gene_name)."'";
+
+$query = "SELECT * FROM gene FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
+// $query = "SELECT * FROM gene WHERE gene_name='".pg_escape_string($gene_name)."'";
+
+
 // $query = "SELECT gene_id,gene_version FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
-$res = pg_query($query) or die("The gene $gene_name was not found in the database. Most probably this gene was not associated to a gene from the current version.");
+$res = pg_query($query) or die("The gene $gene_name was not found in the database. Please, check the spelling carefully or try to find it in the search tool.");
 // $res = pg_query($query) or die('Query failed: ' . pg_last_error());
 $gene_row = pg_fetch_array($res,0,PGSQL_ASSOC);
 $gene_id = $gene_row["gene_id"];
 $species_id= $gene_row["species_id"];
 
+$species_name = $gene_row["species_name"];
+$annot_version = $gene_row["annotation_version"];
 
 
   include_once 'jb_frame.php';
   include_once 'annot_desc.php';
-  // if ($tb_lookup) {
-    // include_once 'other_gene_ids.php';
-  // }
   include_once 'gene_seq.php';
 
 ?>
@@ -60,9 +62,12 @@ pg_close($dbconn);
 <?php include_once 'footer.php';?>
 
 <script>
-
-  var query_gene = "<?php echo $gene_name ?>"
-  document.getElementById('query_gene').innerHTML = query_gene;
-  document.getElementById('query_gene').style.display = "block";
+  var query_gene = "<?php echo $gene_name ?>";
+  var sps_name = "<?php echo $species_name ?>";
+  var annot_v = "<?php echo $annot_version ?>";
+  document.getElementById('query_gene').innerHTML = query_gene+" &nbsp; <i>"+sps_name+"</i> &nbsp; v"+annot_v;
+  
+  // document.getElementById('query_gene').innerHTML = query_gene;
+  // document.getElementById('query_gene').style.display = "block";
 
 </script>
