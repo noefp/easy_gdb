@@ -20,9 +20,9 @@
     echo "<a class=\"float-right jbrowse_link\" href=\"/jbrowse/?data=data%2F$jb_dataset&loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a>";
     echo "<iframe class=\"jb_iframe\" src=\"/jbrowse/?data=data%2F$jb_dataset&loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\">";
     echo "<p>Your browser does not support iframes.</p> </iframe>";
+    echo '</div>';
   }
 ?>
-<!-- </div> -->
 
 
 <style>
