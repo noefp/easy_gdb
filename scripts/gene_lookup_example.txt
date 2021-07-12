@@ -1,3 +1,0 @@
-gene1	gene1_v0.5;gene2_v0.5
-gene2	gene3_v0.5
-gene3	gene4_v0.5

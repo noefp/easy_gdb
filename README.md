@@ -1,23 +1,31 @@
 # Easy GDB
 
-Welcome to easy GDB, this tool will help you to create your own genomic database with tools such as BLAST, Genome browser (JBrowse),
-file downloads, sequence extraction, annotation search, bulk annotation extraction and gene list lookup.
+Welcome to easy GDB. 
+This tool will help you to create your own genomic database with tools such as BLAST, 
+Genome browser (JBrowse), file downloads, sequence extraction, annotation search, 
+bulk annotation extraction and gene list lookup.
 
 ##  Installation
 
-Easy GDB requires PHP and PostgreSQL to run. You can follow the steps below to install them or you can use our Dockerfile.
+Easy GDB requires PHP and PostgreSQL to run. 
+You can use our Docker container (https://docs.docker.com/get-docker/) or follow the steps at the bottom to install easy GDB from scratch in a Linux system (https://github.com/noefp/easy_gdb#instalation-in-linux-system-without-docker).
 
 It should be easy to install in a linux computer, such as the ones usually provided in servers to hosts genomic database applications.
-To use it in Mac or Windows it would be recommendable to use Docker or VirtualBox to run it in a linux container ir virtual machine.
+To use it in Mac or Windows it would be recommendable to use the Docker container or VirtualBox to run it in a linux virtual machine.
 
-In most of the servers is probable that some of the tools needed are already installed, and if you work often with linux you would probably have some of them already.
+In most of the servers is probable that some of the tools needed are already installed, 
+and if you work often with linux you would probably have some of them already.
 
 ### Set up easy GDB using the template example and Docker
 
-Using the Docker container we can install easy GDB at `/var/www/html/`.
-Open a terminal using docker-compose or Docker desktop
+Using the Docker container we can install easy GDB at `/var/www/html/` (src in the Docker container).
+Open the easy_GDB Docker container terminal using `docker-compose`, `docker exec` or Docker desktop application.
 
     docker-compose exec easy_gdb /bin/bash
+    
+or
+
+    docker exec -ti easy_gdb bash
 
 Clone the easy_GBD code from Github:
 
@@ -29,13 +37,13 @@ Go to `easy_gdb/install` and run the `setup.sh` script:
     cd easy_gdb/install/
     bash setup.sh
 
-When running the easy GDB setup, installing JBrowse Perl pre-requisites might take some minutes. Please be patient.
+When running the easy GDB setup, installing JBrowse Perl pre-requisites might take some minutes.
+Please be patient.
 
-When the setup finishes, this should create some folders, subfolders and files at the same level as easy_gdb. 
-You can take a look using your file browser or with the commands below.
+When the setup finishes, this should create some folders, subfolders and files at the same level as easy_gdb.
+You can take a look using your file browser at `src` or in the terminal using the commands below.
 
-    cd ../../
-    ls -lh
+    ls -lh ../../
 
 You should be able to see the folders `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files`, `jbrowse` and `lookup`, 
 and inside them there are some example templates to help you customize your own genomic web portal.
@@ -50,31 +58,40 @@ You should be able to see an example of easy_gdb running.
 ![easy GDB home](templates/egdb_img_samples/easy_gdb_home.png)
 
 
-> In case of installing easy GDB in a Linux system not using Docker, run the next command to start a local PHP server:
+> In case of installing easy GDB in a Linux system, not using Docker, run the next command to start a local PHP server:
 >
 >    example_db$ php -S localhost:8000
 
+
+#### Customize file paths
+
+By default all configuration files contain the default paths used in the Docker container and everything should work without changing any path.
+However, it is possible to customize the paths to have your own file organization system.
 
 In the file `easy_gdb/configuration_path.php` you could change the configuration path
  to `/abosolute_path_to/egdb_files/egdb_template_conf`. By default it is pointing to `/var/www/html/egdb_files/egdb_template_conf` 
 where the files will be placed using the docker container and could be the standard location in a server.
 
-Open the file `egdb_files/egdb_template_conf/easyGDB_conf.php` and set the root path where the `easy_db` folder is.
+In the file `egdb_files/egdb_template_conf/easyGDB_conf.php` is possible to set the root path where the `easy_db` folder is.
 In the Docker container and usually in a server it could be `/var/www/html`.
-Locally, for example, you could have them in `/home/your_user_name/Desktop/example_db`
+Locally, for example, you could have them in `/home/your_user_name/Desktop/example_db`.
 
 Afer the changes, reload the web browser `localhost:8000/easy_gdb/index.php` and check if you can see the home page of easy GDB.
-
-In the configuration file `egdb_files/egdb_template_conf/easyGDB_conf.php` you can customize your site.
 
 If you want use a different names for your folders remember to change the names in the file paths included in `easy_gdb/configuration_path.php` and `egdb_files/egdb_template_conf/easyGDB_conf.php`.
 For example, for development you could have multiple sites or multiple versions. 
 You could easily change between them having different file folders and just changing the path to the active one in `easy_gdb/configuration_path.php`
 
+### Customize your site
+
+In the configuration file `egdb_files/egdb_template_conf/easyGDB_conf.php` together with other data files you can customize your site.
+
+Below we will see how to customize each page of the genomic portal step by step.
 
 #### Customize application name and header image
 
 In the configuration file `egdb_files/egdb_template_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle` and `$header_img` to change the site title and header image.
+The images are stored at `egdb_files/egdb_img_samples/`
 Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
 #### Customize logos
@@ -112,7 +129,7 @@ You can also add here information about the participant labs.
 For this, the `$ab_labs` should be enabled (equal to `1`) in `egdb_files/egdb_template_conf/easyGDB_conf.php`.
 
 You can create a json file for each lab or you can copy and modify the provided examples to add your own information.
-There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/people/`),
+There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/egdb_img_samples/people/`),
 link to a personal page, and, in the more_info array you could add data such as phone, email, and any other custom information.
 
 Every time you change something reload the page `localhost:8000/easy_gdb/about.php` to see the changes.
@@ -129,6 +146,7 @@ There you can include species name, common name, image and link to a
 descriptive custom PHP file (`human.php`, `species1.php` and `species2.php`) 
 where you can write all the information about the species.
 Create as many PHP species files as you need, customize the content and add them in the `egdb_species/species_list.json` file. 
+Images for species menu are placed in `egdb_files/egdb_img_samples/species/`
 It is recommendable to use the template as an example to avoid errors.
 
 ##### Downloads
@@ -184,7 +202,7 @@ You can modify the example input gene list changing the variable `$input_gene_li
 
 The variable `$max_extract_seq_input` (in `easyGDB_conf.php`) controls the maximum number of input gene names to extract.
 
-##### Genome browser:
+##### Genome browser
 
 As we ran the setup file after cloning easy GDB, at this point, and example of JBrowse should be ready.
 You should be able to check it following the `Tools/Genome Browser` link in the menu bar, or at http://localhost:8000/jbrowse/.
@@ -192,12 +210,12 @@ You should be able to check it following the `Tools/Genome Browser` link in the 
 
 For more information about how to add a new species and to add tracks see `Install and set up JBrowse` below (https://github.com/noefp/easy_gdb#install-and-set-up-jbrowse).
 
-##### Annotation extraction:
+##### Annotation extraction
 
 To enable the annotation extraction first we must install the PostgreSQL database and import the annotations.
 See https://github.com/noefp/easy_gdb#install-postgresql-1
 
-##### Gene version lookup: 
+##### Gene version lookup:
 
 It should work correctly if some lookup files are placed in the `lookup` folder.
 Remove the provided examples and create your own lookup files following the same format.
@@ -206,15 +224,27 @@ different gene versions or orthologs in other species.
 
 The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum number of gene names allowed as input.
 
+##### More custom pages
+
+Enabling the variable `$tb_more` in `egdb_files/egdb_template_conf/easyGDB_conf.php` we will see a new tab in the toolbar
+called More. There, you could add as many custom pages as you want. They are stored at  `egdb_files/custom_text/custom_pages/`,
+and we included two examples called `genome.php` and `other page.php`. You just need to create your own PHP pages and place them there.
+The name shown in the toolbar will be taken from the file name, and the content will be automatically wrapped by the header and footer.
+
+Here, for example you can include statistics of your genome assembly, news and events page or anything you like.
+
 ##### Set up easy_gdb database
 
-We need to set up the database so the easy GDB code is able to find it.
+We need to set up the database so the easy GDB code is able to find it. 
+Remember to change the password by the password you will use for web_usr below (https://github.com/noefp/easy_gdb#create-a-new-role-db-user)
 
 open the file `egdb_files/egdb_template_conf/database_access.php`.
 
 ```php
-function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr password=password";};
+function getConnectionString(){return "host=DB dbname=annot1 user=web_usr password=password";};
 ```
+
+> If not using the Docker container the host for the postgreSQL database is usually `localhost`
 
 ##### Set up password
 
@@ -292,7 +322,8 @@ In this step we will create the database schema:
 
 Here, we will learn how to import annotations to the database.
 First we will import all the gene names, for that we will need a file such as
-`easy_gdb/templates/anotations/gene_list.txt` with all the gene identifiers from our organism.
+`easy_gdb/templates/anotations/gene_list.txt` with all the gene identifiers from our organism. 
+It is recommended to use the transcript name (gene1.1).
 
 We will import all the gene names using the script `import_genes.pl` and we will provide the gene list file, 
 species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
