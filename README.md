@@ -55,7 +55,7 @@ In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
 
 You should be able to see an example of easy_gdb running.
 
-![easy GDB home](templates/egdb_img_samples/easy_gdb_home.png)
+![easy GDB home](templates/egdb_images/easy_gdb_home.png)
 
 
 > In case of installing easy GDB in a Linux system, not using Docker, run the next command to start a local PHP server:
@@ -69,34 +69,34 @@ By default all configuration files contain the default paths used in the Docker 
 However, it is possible to customize the paths to have your own file organization system.
 
 In the file `easy_gdb/configuration_path.php` you could change the configuration path
- to `/abosolute_path_to/egdb_files/egdb_template_conf`. By default it is pointing to `/var/www/html/egdb_files/egdb_template_conf` 
+ to `/abosolute_path_to/egdb_files/egdb_conf`. By default it is pointing to `/var/www/html/egdb_files/egdb_conf` 
 where the files will be placed using the docker container and could be the standard location in a server.
 
-In the file `egdb_files/egdb_template_conf/easyGDB_conf.php` is possible to set the root path where the `easy_db` folder is.
+In the file `egdb_files/egdb_conf/easyGDB_conf.php` is possible to set the root path where the `easy_db` folder is.
 In the Docker container and usually in a server it could be `/var/www/html`.
 Locally, for example, you could have them in `/home/your_user_name/Desktop/example_db`.
 
 Afer the changes, reload the web browser `localhost:8000/easy_gdb/index.php` and check if you can see the home page of easy GDB.
 
-If you want use a different names for your folders remember to change the names in the file paths included in `easy_gdb/configuration_path.php` and `egdb_files/egdb_template_conf/easyGDB_conf.php`.
+If you want use a different names for your folders remember to change the names in the file paths included in `easy_gdb/configuration_path.php` and `egdb_files/egdb_conf/easyGDB_conf.php`.
 For example, for development you could have multiple sites or multiple versions. 
 You could easily change between them having different file folders and just changing the path to the active one in `easy_gdb/configuration_path.php`
 
 ### Customize your site
 
-In the configuration file `egdb_files/egdb_template_conf/easyGDB_conf.php` together with other data files you can customize your site.
+In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` together with other data files you can customize your site.
 
 Below we will see how to customize each page of the genomic portal step by step.
 
 #### Customize application name and header image
 
-In the configuration file `egdb_files/egdb_template_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle` and `$header_img` to change the site title and header image.
-The images are stored at `egdb_files/egdb_img_samples/`
+In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle` and `$header_img` to change the site title and header image.
+The images are stored at `egdb_files/egdb_images/`
 Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
 #### Customize logos
 
-In `egdb_files/egdb_img_samples/logos/` you can place logo images, and you can use the file `logos.json` to customize size and link.
+In `egdb_files/egdb_images/logos/` you can place logo images, and you can use the file `logos.json` to customize size and link.
 Logos are displayed in all pages at the footer.
 
 #### Customize the toolbar
@@ -126,10 +126,10 @@ the citation of the papers where the genomic database or data were published.
 You can add the citation in `db_citation.php`.
 
 You can also add here information about the participant labs.
-For this, the `$ab_labs` should be enabled (equal to `1`) in `egdb_files/egdb_template_conf/easyGDB_conf.php`.
+For this, the `$ab_labs` should be enabled (equal to `1`) in `egdb_files/egdb_conf/easyGDB_conf.php`.
 
 You can create a json file for each lab or you can copy and modify the provided examples to add your own information.
-There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/egdb_img_samples/people/`),
+There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/egdb_images/people/`),
 link to a personal page, and, in the more_info array you could add data such as phone, email, and any other custom information.
 
 Every time you change something reload the page `localhost:8000/easy_gdb/about.php` to see the changes.
@@ -146,7 +146,7 @@ There you can include species name, common name, image and link to a
 descriptive custom PHP file (`human.php`, `species1.php` and `species2.php`) 
 where you can write all the information about the species.
 Create as many PHP species files as you need, customize the content and add them in the `egdb_species/species_list.json` file. 
-Images for species menu are placed in `egdb_files/egdb_img_samples/species/`
+Images for species menu are placed in `egdb_files/egdb_images/species/`
 It is recommendable to use the template as an example to avoid errors.
 
 ##### Downloads
@@ -172,7 +172,7 @@ and import the annotations. See https://github.com/noefp/easy_gdb#install-postgr
 ##### BLAST
 
 In the web browser, follow the link to `BLAST` in the tools toolbar menu. There you will see the BLAST input page.
-In `egdb_files/egdb_template_conf/easyGDB_conf.php`, you can change the input example sequence changing the variable `$blast_example`.
+In `egdb_files/egdb_conf/easyGDB_conf.php`, you can change the input example sequence changing the variable `$blast_example`.
 
 To add BLAST datasets we need to copy the blast databases in the `blast_dbs` folder (path can be changed in `easyGDB_conf.php`).
 
@@ -189,7 +189,7 @@ For nucleotide sequences:
 It is important to use the option `-parse_seqids` to create the indexes needed to extract sequences, 
 which will be used by the gene views and the `Sequence extraction` tool.
 
-The variable `$max_blast_input` (in `egdb_files/egdb_template_conf/easyGDB_conf.php`) 
+The variable `$max_blast_input` (in `egdb_files/egdb_conf/easyGDB_conf.php`) 
 controls the maximum number of sequences allowed as input in `BLAST`.
 
 
@@ -226,7 +226,7 @@ The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum nu
 
 ##### More custom pages
 
-Enabling the variable `$tb_more` in `egdb_files/egdb_template_conf/easyGDB_conf.php` we will see a new tab in the toolbar
+Enabling the variable `$tb_more` in `egdb_files/egdb_conf/easyGDB_conf.php` we will see a new tab in the toolbar
 called More. There, you could add as many custom pages as you want. They are stored at  `egdb_files/custom_text/custom_pages/`,
 and we included two examples called `genome.php` and `other page.php`. You just need to create your own PHP pages and place them there.
 The name shown in the toolbar will be taken from the file name, and the content will be automatically wrapped by the header and footer.
@@ -238,7 +238,7 @@ Here, for example you can include statistics of your genome assembly, news and e
 We need to set up the database so the easy GDB code is able to find it. 
 Remember to change the password by the password you will use for web_usr below (https://github.com/noefp/easy_gdb#create-a-new-role-db-user)
 
-open the file `egdb_files/egdb_template_conf/database_access.php`.
+open the file `egdb_files/egdb_conf/database_access.php`.
 
 ```php
 function getConnectionString(){return "host=DB dbname=annot1 user=web_usr password=password";};
@@ -271,7 +271,7 @@ You will be asked to type your new password
 ##### Create a new database
 
 Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
-you can create a new one nad point to it in the file `egdb_files/egdb_template_conf/database_access.php`.
+you can create a new one nad point to it in the file `egdb_files/egdb_conf/database_access.php`.
 
 Open a terminal using docker-compose, docker exec or Docker desktop
 
@@ -349,7 +349,7 @@ The script needs the annotations file, name of the annotation (SwissProt, TAIR10
     perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
 
 You can add custom annotation links in the annotation_links.json file:
-`egdb_files/egdb_template_conf/annotation_links.json`
+`egdb_files/annotations/annotation_links.json`
 
 ```json
 {
