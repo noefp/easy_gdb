@@ -23,4 +23,4 @@ bin/flatfile-to-json.pl -gff ../easy_gdb/templates/jbrowse/gene_models.gff --key
 bin/generate-names.pl --tracks egdb_gene_models --out data/easy_gdb_sample/
 cp ../easy_gdb/templates/jbrowse/jbrowse.conf .
 cp ../easy_gdb/templates/jbrowse/tracks.conf data/easy_gdb_sample/
-cp ../easy_gdb/templates/jbrowse/trackList.conf data/easy_gdb_sample/
+cp ../easy_gdb/templates/jbrowse/trackList.json data/easy_gdb_sample/
