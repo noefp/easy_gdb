@@ -8,9 +8,9 @@ bulk annotation extraction and gene list lookup.
 ##  Installation
 
 Easy GDB requires PHP and PostgreSQL to run. 
-You can use our Docker container (https://docs.docker.com/get-docker/) or follow the steps at the bottom to install easy GDB from scratch in a Linux system (https://github.com/noefp/easy_gdb#instalation-in-linux-system-without-docker).
+You can use Docker (https://docs.docker.com/get-docker/) to install our easy GDB container or follow the steps at the bottom to install easy GDB from scratch in a Linux system (https://github.com/noefp/easy_gdb#instalation-in-linux-system-without-docker).
 
-It should be easy to install in a linux computer, such as the ones usually provided in servers to hosts genomic database applications.
+It should be easy to install it in a linux computer, such as the ones usually provided in servers to hosts genomic database applications.
 To use it in Mac or Windows it would be recommendable to use the Docker container or VirtualBox to run it in a linux virtual machine.
 
 In most of the servers is probable that some of the tools needed are already installed, 
@@ -18,7 +18,7 @@ and if you work often with linux you would probably have some of them already.
 
 ### Set up easy GDB using the template example and Docker
 
-Using the Docker container we can install easy GDB at `/var/www/html/` (src in the Docker container).
+Using the Docker container we can install easy GDB at `/var/www/html/` (`src/` in the Docker container).
 Open the easy_GDB Docker container terminal using `docker-compose`, `docker exec` or Docker desktop application.
 
     docker-compose exec easy_gdb /bin/bash
@@ -333,7 +333,7 @@ Open a terminal using docker-compose or Docker desktop
 
     docker-compose exec easy_gdb /bin/bash
 
-    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "v1.0" "easy_gdb_sample"
+    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
 
 It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
 
@@ -345,8 +345,8 @@ and a third column with the annotation description.
 As an example we will import annotations for SwissProt and TAIR10 (for model plant arabidopsis).
 The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
 
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "v1.0"
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "v1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
 You can add custom annotation links in the annotation_links.json file:
 `egdb_files/annotations/annotation_links.json`
