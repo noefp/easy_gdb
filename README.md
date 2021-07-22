@@ -18,14 +18,26 @@ and if you work often with linux you would probably have some of them already.
 
 ### Set up easy GDB using the template example and Docker
 
-Using the Docker container we can install easy GDB at `/var/www/html/` (`src/` in the Docker container).
-Open the easy_GDB Docker container terminal using `docker-compose`, `docker exec` or Docker desktop application.
+Using the Docker, the first step will be cloning the docker-compose repository. 
+Go to the path where you want to save your genomics database and clone the easyGDB_docker repository from GitHub:
+
+
+    git clone https://github.com/noefp/easyGDB_docker.git
+
+
+Then, build the container:
+
+    docker-compose build
+
+and start the container using `docker-compose` or the Docker desktop application:
+
+    docker-compose up
+
+
+Using the Docker container we install easy GDB at `/var/www/html/` (`src/` in the Docker container).
+Open the easy_GDB Docker container terminal or the Docker desktop application.
 
     docker-compose exec easy_gdb /bin/bash
-    
-or
-
-    docker exec -ti easy_gdb bash
 
 Clone the easy_GBD code from Github:
 
@@ -43,7 +55,7 @@ Please be patient.
 When the setup finishes, this should create some folders, subfolders and files at the same level as easy_gdb.
 You can take a look using your file browser at `src` or in the terminal using the commands below.
 
-    ls -lh ../../
+    ls -lh /var/www/html
 
 You should be able to see the folders `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files`, `jbrowse` and `lookup`, 
 and inside them there are some example templates to help you customize your own genomic web portal.
@@ -61,6 +73,126 @@ You should be able to see an example of easy_gdb running.
 > In case of installing easy GDB in a Linux system, not using Docker, run the next command to start a local PHP server:
 >
 >    example_db$ php -S localhost:8000
+
+
+#### Set up easy_gdb database
+
+We need to set up the database so the easy GDB code is able to find it. 
+Remember to change the password by the password you will use for web_usr below (https://github.com/noefp/easy_gdb#create-a-new-role-db-user)
+
+open the file `egdb_files/egdb_conf/database_access.php`.
+
+```php
+function getConnectionString(){return "host=DB dbname=annot1 user=web_usr password=password";};
+```
+
+> If not using the Docker container the host for the postgreSQL database is usually `localhost`
+
+##### Set up password
+
+[in the Docker container you already have a postgres password defined]
+
+Open a terminal using docker-compose, docker exec or Docker desktop
+
+    docker-compose exec DB /bin/bash
+    psql -U postgres
+
+or
+
+    docker exec -ti DB psql -U postgres
+    
+You can use `\q` to exit the PostgreSQL console or exit to leave the Docker bash console.
+
+To change the password for the postgres user:
+```sql
+\password postgres
+You will be asked to type your new password
+\q
+```
+
+##### Create a new database
+
+Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
+you can create a new one nad point to it in the file `egdb_files/egdb_conf/database_access.php`.
+
+Open a terminal using docker-compose, docker exec or Docker desktop if you needto and create a new database:
+
+```sql
+CREATE DATABASE annot1;
+\l
+\q
+```
+
+##### Create a new role (DB user)
+
+It is recommended to use a different user than postgres to access the database (it will have limited control).
+Here, we will create the user `web_usr`. Note that in this example the password you type will be visible in the terminal,
+and the history, so we will create a temporal password and then we will change it in the next step.
+
+Open a terminal using docker-compose, docker exec or Docker desktop if you needto and create a new database:
+
+```sql
+CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
+\password web_usr
+type a new password
+\q
+```
+
+##### Import annotation schema to database
+
+Now we should have an empty database called `annot1` created.
+In this step we will create the database schema:
+
+    docker exec -i DB psql --username postgres annot1 < src/easy_gdb/scripts/create_annot_schema2.sql
+
+
+#### Import annotations
+
+Here, we will learn how to import annotations to the database.
+First we will import all the gene names, for that we will need a file such as
+`easy_gdb/templates/anotations/gene_list.txt` with all the gene identifiers from our organism. 
+It is recommended to use the transcript name (gene1.1).
+
+We will import all the gene names using the script `import_genes.pl` and we will provide the gene list file, 
+species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
+This way we can link the genes with the genome browser.
+
+Open a terminal using docker-compose or Docker desktop
+
+    docker-compose exec easy_gdb /bin/bash
+
+    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
+
+It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
+
+Now we will add annotations to the genes using the script `import_annots_sch2.pl`. 
+For that, we will need a file such as `annotation_example_SwissProt.txt`, 
+where we have the first column with the gene name, the second column with the annotation term 
+(ID for SwissProt, or a close related model species, GO term, InterProscan term, EC, KEGG, etc.),
+and a third column with the annotation description. 
+As an example we will import annotations for SwissProt and TAIR10 (for model plant arabidopsis).
+The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
+
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
+
+You can add custom annotation links in the annotation_links.json file:
+`egdb_files/annotations/annotation_links.json`
+
+```json
+{
+  "TAIR10":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
+  "Araport11":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
+  "SwissProt":"http://www.uniprot.org/uniprot/query_id",
+  "InterPro":"https://www.ebi.ac.uk/interpro/entry/InterPro/query_id",
+  "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id"
+}
+```
+
+This file includes example links for TAIR10, Araport11, SwissProt, InterPro and NCBI. 
+The name used (TAIR10, Araport11, SwissProt ...) should be used in the import_annots_sch2.pl script, as shown above.
+In the link, `query_id` will be replaced by the gene id or annotation term.
 
 
 #### Customize file paths
@@ -82,24 +214,24 @@ If you want use a different names for your folders remember to change the names 
 For example, for development you could have multiple sites or multiple versions. 
 You could easily change between them having different file folders and just changing the path to the active one in `easy_gdb/configuration_path.php`
 
-### Customize your site
+#### Customize your site
 
 In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` together with other data files you can customize your site.
 
 Below we will see how to customize each page of the genomic portal step by step.
 
-#### Customize application name and header image
+##### Customize application name and header image
 
 In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle` and `$header_img` to change the site title and header image.
 The images are stored at `egdb_files/egdb_images/`
 Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
-#### Customize logos
+##### Customize logos
 
 In `egdb_files/egdb_images/logos/` you can place logo images, and you can use the file `logos.json` to customize size and link.
 Logos are displayed in all pages at the footer.
 
-#### Customize the toolbar
+##### Customize the toolbar
 
 Below, in the toolbar variables, you can customize wich links will be displayed in the toolbar, enabling and disabling the tools and sections available.
 A value `1` enable the link and `0` disable it. Choose the links you want to show or hide.
@@ -233,138 +365,6 @@ The name shown in the toolbar will be taken from the file name, and the content 
 
 Here, for example you can include statistics of your genome assembly, news and events page or anything you like.
 
-##### Set up easy_gdb database
-
-We need to set up the database so the easy GDB code is able to find it. 
-Remember to change the password by the password you will use for web_usr below (https://github.com/noefp/easy_gdb#create-a-new-role-db-user)
-
-open the file `egdb_files/egdb_conf/database_access.php`.
-
-```php
-function getConnectionString(){return "host=DB dbname=annot1 user=web_usr password=password";};
-```
-
-> If not using the Docker container the host for the postgreSQL database is usually `localhost`
-
-##### Set up password
-
-[in the Docker container you already have a postgres password defined]
-
-Open a terminal using docker-compose, docker exec or Docker desktop
-
-    docker-compose exec DB /bin/bash
-    psql -U postgres
-    
-or
-
-    docker exec -ti DB psql -U postgres
-    
-You can use `\q` to exit the PostgreSQL console or exit to leave the Docker bash console.
-
-To change the password for the postgres user:
-```sql
-\password postgres
-You will be asked to type your new password
-\q
-```
-
-##### Create a new database
-
-Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
-you can create a new one nad point to it in the file `egdb_files/egdb_conf/database_access.php`.
-
-Open a terminal using docker-compose, docker exec or Docker desktop
-
-    docker-compose exec DB /bin/bash
-    psql -U postgres
-    
-or
-
-    docker exec -ti DB psql -U postgres
-
-```sql
-CREATE DATABASE annot1;
-\l
-\q
-```
-
-##### Create a new role (DB user)
-
-It is recommended to use a different user than postgres to access the database (it will have limited control).
-Here, we will create the user `web_usr`. Note that in this example the password you type will be visible in the terminal,
-and the history, so we will create a temporal password and then we will change it in the next step.
-
-Open a terminal using docker-compose, docker exec or Docker desktop
-
-    docker-compose exec DB /bin/bash
-    psql -U postgres
-    
-or
-
-    docker exec -ti DB psql -U postgres
-
-```sql
-CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
-\password web_usr
-type a new password
-\q
-```
-
-##### Import annotation schema to database
-
-Now we should have an empty database called `annot1` created.
-In this step we will create the database schema:
-
-    docker exec -i DB psql --username postgres annot1 < src/easy_gdb/scripts/create_annot_schema2.sql
-
-
-#### Import annotations
-
-Here, we will learn how to import annotations to the database.
-First we will import all the gene names, for that we will need a file such as
-`easy_gdb/templates/anotations/gene_list.txt` with all the gene identifiers from our organism. 
-It is recommended to use the transcript name (gene1.1).
-
-We will import all the gene names using the script `import_genes.pl` and we will provide the gene list file, 
-species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
-This way we can link the genes with the genome browser.
-
-Open a terminal using docker-compose or Docker desktop
-
-    docker-compose exec easy_gdb /bin/bash
-
-    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
-
-It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
-
-Now we will add annotations to the genes using the script `import_annots_sch2.pl`. 
-For that, we will need a file such as `annotation_example_SwissProt.txt`, 
-where we have the first column with the gene name, the second column with the annotation term 
-(ID for SwissProt, or a close related model species, GO term, InterProscan term, EC, KEGG, etc.),
-and a third column with the annotation description. 
-As an example we will import annotations for SwissProt and TAIR10 (for model plant arabidopsis).
-The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
-
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
-
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
-
-You can add custom annotation links in the annotation_links.json file:
-`egdb_files/annotations/annotation_links.json`
-
-```json
-{
-  "TAIR10":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
-  "Araport11":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
-  "SwissProt":"http://www.uniprot.org/uniprot/query_id",
-  "InterPro":"https://www.ebi.ac.uk/interpro/entry/InterPro/query_id",
-  "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id"
-}
-```
-
-This file includes example links for TAIR10, Araport11, SwissProt, InterPro and NCBI. 
-The name used (TAIR10, Araport11, SwissProt ...) should be used in the import_annots_sch2.pl script, as shown above.
-In the link, `query_id` will be replaced by the gene id or annotation term.
 
 ####  Customize JBrowse
 
@@ -428,26 +428,28 @@ Here we use the easy GDB example and the volvox and yeast examples from JBrowse:
     name = Yeast Example
 
 
-#### Set up server
+#### Private application
 
-In a server (not mandatory for local instalations) you would need to use Apache or Nginx webservers to host your application in a server.
+In the file easy_gdb_apache.conf we are overwriting the apache configuration insidie the Docker repository.
+There there is a block of code that is commented out. If you want to have a private genomics database you can
+enalbe that piece of code to make private everything in /var/www/html/.
 
-```bash
-sudo apt-get install apache2
+        <Directory "/var/www/html">
+            AuthType Basic
+            AuthName "Restricted Content"
+            AuthUserFile /etc/apache2/.htpasswd
+            Require valid-user
+        </Directory>
 
-cd /etc/apache2/
-sudo cp 000-default.conf easy_gdb.conf
-sudo a2dissite 000-default.conf
-sudo a2ensite easy_gdb.conf
-systemctl reload apache2
-```
 
-In many cases, after applying some changes you will need to restart the server to make the changes effective:
-```bash
-sudo service apache2 restart
-```
+Create the first user to access private data (Create the passwdfile. If passwdfile already exists, it is rewritten and truncated.)
+    htpasswd -c /etc/apache2/.htpasswd First_user
 
-##### Start local server
+Add new user
+    htpasswd /etc/apache2/.htpasswd another_user
+
+
+#### Start local server
 
 In many cases, after applying some changes you will need to restart the server to make the changes effective.
 In a local installation you can stop the application and them start it again from the terminal using the next command:
@@ -515,6 +517,39 @@ sudo apt-get install libpq-dev
 sudo apt-get install php7.2-pgsql
 ```
 
+
+#### Install easy GDB
+
+Then, let's create a folder to contain your genomic database. Use the name you like. For this example we will use `example_db`. 
+Or you can just go to /var/www/html/ and clone easy GDB there.
+
+    $ mkdir example_db
+    $ cd example_db
+
+Then follow the steps as in https://github.com/noefp/easy_gdb#set-up-easy-gdb-using-the-template-example-and-docker, 
+but directly in your terminal, not using any of the docker commands.
+
+    example_db$ git clone https://github.com/noefp/easy_gdb.git
+
+    example_db$ cd easy_gdb/install/
+
+    example_db/easy_gdb/install$ bash setup.sh
+
+    example_db/easy_gdb/install$ ls -lh /var/www/html
+
+    example_db/easy_gdb/install$ cd ../../
+    
+You can run this command in a screen or in the background:
+    example_db$ php -S localhost:8000
+
+In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
+
+open the file `egdb_files/egdb_conf/database_access.php`.
+
+```php
+function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr password=password";};
+```
+
 ##### Set up password
 
 If we installed PostgreSQL from scratch we need to create a password for postgres (it would be like the database default/root user).
@@ -534,14 +569,51 @@ You will be asked to type your new password
 \q
 ```
 
-#### Install easy GDB
 
-Then, let's create a folder to contain your genomic database. Use the name you like. For this example we will use `example_db`. 
-Or you can just go to /var/www/html/ and clone easy GDB there.
 
-    mkdir example_db
-    cd example_db
+    example_db$ psql -U postgres
 
-Then follow the steps as in https://github.com/noefp/easy_gdb#set-up-easy-gdb-using-the-template-example-and-docker.
+In Postgres console
+
+    CREATE DATABASE annot1;
+
+    CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
+    \password web_usr
+
+    \q
+
+Back in your bash terminal:
+
+    example_db$ psql -U postgres -d annot1 -h localhost -a -f easy_gdb/scripts/create_annot_schema2.sql
+
+    example_db$ perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
+    
+    example_db$ perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+    
+    example_db$ perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
+
+
+#### Set up server
+
+In a server (not mandatory for local instalations) you would need to use Apache or Nginx webservers to host your application in a server.
+For example, you could install apache:
+
+```bash
+sudo apt-get install apache2
+
+cd /etc/apache2/
+sudo cp 000-default.conf easy_gdb.conf
+sudo a2dissite 000-default.conf
+sudo a2ensite easy_gdb.conf
+systemctl reload apache2
+```
+
+In many cases, after applying some changes you will need to restart the server to make the changes effective:
+```bash
+sudo service apache2 restart
+```
+
+
+
 
 
