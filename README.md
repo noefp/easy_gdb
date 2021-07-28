@@ -24,20 +24,22 @@ Go to the path where you want to save your genomics database and clone the easyG
 
     git clone https://github.com/noefp/easyGDB_docker.git
 
+    cd easyGDB_docker
+
 
 Then, build the container:
 
-    docker-compose build
+    easyGDB_docker$ docker-compose build
 
 and start the container using `docker-compose` or the Docker desktop application:
 
-    docker-compose up
+    easyGDB_docker$ docker-compose up
 
 
 Using the Docker container we install easy GDB at `/var/www/html/` (`src/` in the Docker container).
 Open the easy_GDB Docker container terminal or the Docker desktop application.
 
-    docker-compose exec easy_gdb /bin/bash
+    easyGDB_docker$ docker-compose exec easy_gdb /bin/bash
 
 Clone the easy_GBD code from Github:
 
