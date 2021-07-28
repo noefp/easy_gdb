@@ -24,6 +24,7 @@ Go to the path where you want to save your genomics database and clone the easyG
 
     git clone https://github.com/noefp/easyGDB_docker.git
 
+
     cd easyGDB_docker
 
 
