@@ -616,6 +616,12 @@ sudo a2ensite easy_gdb.conf
 systemctl reload apache2
 ```
 
+For example, you can add the database directory as DocumentRoot to serve easy_gdb in your server (server_address/easy_gdb)
+
+    DocumentRoot /home/user/example_db
+
+Remember to change the paths in the configuration file.
+
 In many cases, after applying some changes you will need to restart the server to make the changes effective:
 ```bash
 sudo service apache2 restart
