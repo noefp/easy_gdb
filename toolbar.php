@@ -64,6 +64,11 @@ if ($tb_login) {
               }
             ?>
             <?php
+              if ($tb_custom) {
+                include_once realpath("$custom_text_path/custom_toolbar.php");
+              }
+            ?>
+            <?php
               if ($tb_private) {
                 echo '<li class="nav-item"><a id="tbp_link" class="nav-link" href="#"><b>Private links</b></a></li>';
               }
