@@ -51,3 +51,8 @@ h4 {
 .p_font18 {
   font-size:18px;
 }
+
+.data_table_frame {
+  width: 100%;
+  overflow: scroll;
+}
