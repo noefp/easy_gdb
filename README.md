@@ -477,6 +477,8 @@ sudo service apache2 restart
 Lets install git to download the easy GDB code, PHP to be able to run the web and some other useful tools.
 ```bash
 sudo apt-get update
+apt-get install gcc
+apt-get install libpq-dev
 apt-get install git
 apt-get install php
 apt-get install zlib1g-dev
