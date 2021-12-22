@@ -505,6 +505,8 @@ apt-get install zip
 Add the line below at the end of the file. Remember to change your user name.
 
     export PERL5LIB=/home/your_username/local-lib/lib/perl5:$PERL5LIB
+
+Enable the changes in the opened terminal.
     source ~/.bashrc
 
 
@@ -517,11 +519,10 @@ The next commands worked well at the time this documentation was writen:
 ```bash
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get -y install postgresql-10
 
-sudo apt-get install libpq-dev
-sudo apt-get install php7.2-pgsql
+sudo apt-get update
+sudo apt-get -y install postgresql
+sudo apt-get install php-pgsql
 ```
 
 
