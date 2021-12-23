@@ -5,7 +5,7 @@
 function get_dir_and_files($root, $dir_name, $sub_structure) {
 
   $dir_list = array(); //create hash to store directories
-  
+  $counter = 1;
   // echo "<p>DIR: $root/$dir_name</p>";
   
     if (is_dir($root."/".$dir_name)){
@@ -34,7 +34,8 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
             echo "</ul>";
           }
           else {//print first dirs and load subdirs
-            echo "<h3>$file_name/</h3><div class=\"card bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
+            $counter++;
+            echo "<h3><a href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             get_dir_and_files($root, $dir_name, 1);
             echo "</ul></div></div><br>";
           }
@@ -47,7 +48,6 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
 get_dir_and_files($root_path, $downloads_path, 0); // call the function for the downloads dir
 
 ?>
-
 
 <style>
 
@@ -67,6 +67,14 @@ ul ul ul {
   margin-top: 10px;
   margin-bottom: 0px;
   color: #555;
+}
+
+[data-toggle="collapse"] .fa:before {   
+  content: "\f13a";
+}
+
+[data-toggle="collapse"].collapsed .fa:before {
+  content: "\f138";
 }
 
 </style>
