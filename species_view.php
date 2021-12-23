@@ -1,12 +1,13 @@
 <?php include_once realpath("header.php");?>
 <?php include_once 'tools/common_functions.php';?>
 
-<div style="max-width:900px; margin:auto">
+<div style="max-width:900px; margin:auto; text-align: justify;">
   <br>
   <?php
     
   $sps_name = test_input($_GET["sps_name"]);
-  // echo "<h1>$sps_name</h1>"
+  $common_name = test_input($_GET["common_name"]);
+  $sps_img = test_input($_GET["sps_img"]);
     
   ?>
 
@@ -19,26 +20,13 @@
             // var_dump($sps_json_file);
             $species_hash = json_decode($sps_json_file, true);
             // var_dump($species_hash);
-        
-            // foreach($species_hash[$sps_name] as $one_sps) {
-
-              // echo '<a href="species_view.php?sps_name='.$one_sps["sps_name"].'" target="_blank" class="float-left egdb_person_card rounded" style="color:#333">';
-              // echo '<img class="float-left egdb_person_img rounded" src="'.$images_path.'/species/'.$one_sps["image"].'" alt="'.$one_sps["sps_name"].'">';
-              // echo '<div style="margin:5px; margin-left:160px; white-space: nowrap;">';
-              // echo '<h4 class="card-title"><i>'.$species_hash[$sps_name]["link"].'</i></h4>';
-              // echo '<p class="person-card-text">'.$one_sps["common_name"].'</p>';
-              // echo '</div>';
-              // echo '</a>';
-
-            // }
-        
-            // echo '</div></div><br>';
-        
-            //print downloadable files
-            // echo "<li>$file_name</li>";
           }
-      ?>      
+      ?>
       
+      <img class="float-right" height="150" src="<?php echo $images_path.'/species/'.$sps_img ?>" >
+      <h1><?php echo $common_name ?></h1>
+      <h3 style="color:#666"><i><?php echo $sps_name ?></i></h3>
+      <br>
       <?php include_once realpath("$species_path/".$species_hash[$sps_name]["link"]);?>
     </div>
   </div>
