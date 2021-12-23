@@ -1,7 +1,3 @@
-<!-- <?php //include_once realpath("header.php");?> -->
-
-
-<!-- <div style="max-width:900px; margin:auto"> -->
   <br>
   <h1>People</h1>
 
@@ -22,11 +18,14 @@
               echo '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">';
               
               foreach($lab["people"] as $person) {
-                
-                echo '<a href="'.$person["link"].'" target="_blank" class="float-left egdb_person_card rounded" style="color:#333">';
-                echo '<img class="float-left egdb_person_img rounded" src="'.$images_path.'/people/'.$person["picture"].'" alt="Lab member">';
-                echo '<div style="margin:5px; margin-left:160px; white-space: nowrap;">';
-                echo '<h4 class="card-title">'.$person["person_name"].'</h4>';
+                if ($person["link"]) {
+                  echo '<a href="person_view.php?person_file='.$person["link"].'" class="float-left card egdb_person_card" style="color:#333">';
+                } else {
+                  echo '<a href="" class="float-left card egdb_person_card" style="color:#333">';
+                }
+                echo '<img class="card-img-top egdb_person_img" src="'.$images_path.'/people/'.$person["picture"].'" alt="Lab member">';
+                echo '<div class="card-body" style="white-space: nowrap; padding: 5px;">';
+                echo '<h4 style="margin-bottom: 5px">'.$person["person_name"].'</h4>';
                 echo '<p class="person-card-text">'.$person["position"].'</p>';
                 if ($person["more_info"]) {
                   foreach($person["more_info"] as $person_item) {
@@ -40,13 +39,10 @@
               
               echo '</div></div><br>';
               
-              //print downloadable files
-              // echo "<li>$file_name</li>";
             }
           }
           
         }
-        // echo "</ul>";
       }
       ?>      
 
@@ -56,23 +52,19 @@
   <br>
 <style>
   .egdb_person_card {
-/*    width:350px;*/
     min-height:150px;
     margin-right: 5px;
     margin-bottom: 5px;
     border: 1px solid #ddd;
+    padding: 10px 10px 0px;
   }
   
   .person-card-text {
     margin-bottom:2px;
   }
   .egdb_person_img {
-    height:140px;
-    width: 150px;
-    margin: 5px;
-    position:absolute;
-    object-fit: cover;
-/*    left:0px;*/
+    height:200px;
+    object-fit: scale-down;
   }
   
   .egdb_person_card a:link {
@@ -87,6 +79,3 @@
 </style>
 
 
-<!-- </div> -->
-
-<!-- <?php// include_once realpath("$easy_gdb_path/footer.php");?> -->
