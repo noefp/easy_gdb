@@ -26,6 +26,8 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           }
         } // end of while loop
         
+        asort($dir_list);
+        
         //iterate and print all subdirectories found
         foreach ($dir_list as $dir_name => $file_name) {
           if ($sub_structure) {//print and load subdirs
@@ -35,7 +37,9 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           }
           else {//print first dirs and load subdirs
             $counter++;
-            echo "<h3><a class=\"collapsed\" href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
+            $link_name = str_replace(" ", "", $file_name);
+            echo "<h3><a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"$link_name\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
+            // echo "<h3><a class=\"collapsed\" href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             get_dir_and_files($root, $dir_name, 1);
             echo "</ul></div></div><br>";
           }
