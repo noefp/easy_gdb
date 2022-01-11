@@ -35,7 +35,7 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           }
           else {//print first dirs and load subdirs
             $counter++;
-            echo "<h3><a href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
+            echo "<h3><a class=\"collapsed\" href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             get_dir_and_files($root, $dir_name, 1);
             echo "</ul></div></div><br>";
           }
@@ -69,7 +69,7 @@ ul ul ul {
   color: #555;
 }
 
-[data-toggle="collapse"] .fa:before {   
+[data-toggle="collapse"] .fa:before {
   content: "\f13a";
 }
 
