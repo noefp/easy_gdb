@@ -23,7 +23,7 @@ if ($tb_login) {
             <!-- <li><a href="about.php">About</a></li> -->
             <?php 
               if ($tb_about) {
-                echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About Us</a></li>';
+                echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About</a></li>';
               }
               if ($tb_species) {
                 echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
