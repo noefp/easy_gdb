@@ -37,7 +37,7 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           }
           else {//print first dirs and load subdirs
             $counter++;
-            $link_name = str_replace(" ", "", $file_name);
+            $link_name = preg_replace('/\s|\./', '', $file_name);
             echo "<h3><a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"$link_name\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             // echo "<h3><a class=\"collapsed\" href=\"#sect_$counter\" data-toggle=\"collapse\"><i class=\"fa\" aria-hidden=\"true\"></i></i> $file_name</a></h3><div id=\"sect_$counter\" class=\"card collapse bg-light\"><div class=\"card-body\"><ul class=\"download_list\" >";
             get_dir_and_files($root, $dir_name, 1);
