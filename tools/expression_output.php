@@ -281,6 +281,7 @@ var options = {
       type: 'xy'
     }
   },
+  colors: ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546E7A'],
   title: {
     text: scatter_title,
     align: 'center',
@@ -359,9 +360,70 @@ var options = {
     type: 'heatmap',
   },
   dataLabels: {
-    enabled: false
+    enabled: true
   },
-  colors: ["#FF0000"],
+  colors: ["#777777"],
+  plotOptions: {
+    heatmap: {
+      shadeIntensity: 0.5,
+      radius: 0,
+      useFillColorAsStroke: true,
+      colorScale: {
+        ranges: [{
+            from: 0,
+            to: 0.99,
+            name: '0 - 0.99',
+            color: '#ffffff'
+          },
+          {
+            from: 1,
+            to: 2.99,
+            name: '1 - 2.99',
+            color: '#f0c320'
+          },
+          {
+            from: 3,
+            to: 9.99,
+            name: '3 - 9.99',
+            color: '#ff8800'
+          },
+          {
+            from: 10,
+            to: 49.99,
+            name: '10 - 49.99',
+            color: '#ff7469'
+            // color: '#ff6180'
+          },
+          {
+            from: 50,
+            to: 99.99,
+            name: '50 - 99.99',
+            color: '#de2515'
+          },
+          {
+            from: 100,
+            to: 199.99,
+            name: '100 - 199.99',
+            color: '#b71005'
+            // color: '#c42121'
+            // color: '#b30000'
+          },
+          {
+            from: 200,
+            to: 4999.99,
+            name: '200 - 4999.99',
+            color: '#0bb4ff'
+          },
+          {
+            from: 5000,
+            to: 20000,
+            name: '5000 - infinite',
+            color: '#aaaaaa'
+          }
+        ]
+      }
+    }
+  },
   title: {
     text: 'Expression values of gene selection (RPKM)'
   },
