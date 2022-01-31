@@ -46,13 +46,16 @@ if ($tb_login) {
                     echo '<a class="dropdown-item jbrowse_link" href="/jbrowse" target="_blank">Genome Browser</a>';
                   }
                   if ($tb_seq_ext) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence extraction</a>';
+                    echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
                   }
                   if ($tb_annot_ext) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation extraction</a>';
+                    echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
+                  }
+                  if ($tb_gene_expr) {
+                    echo '<a class="dropdown-item" href="/easy_gdb/tools/expression_input.php">Gene Expression</a>';
                   }
                   if ($tb_lookup) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene version lookup</a>';
+                    echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
                   }
                 ?>
               </div>
