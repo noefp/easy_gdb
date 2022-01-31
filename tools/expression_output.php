@@ -25,9 +25,17 @@
 
 
   <center>
-  <div id="chart1" style="min-height: 365px;width:90%; border:2px solid #666;"></div><br>
-
-  <div id="chart2_frame" style="width:90%; border:2px solid #666; padding-top:7px"">
+  <div id="chart1_frame" style="width:90%; border:2px solid #666; padding-top:7px">
+    <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
+    <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
+    <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
+    
+    <div id="chart1" style="min-height: 400px;"></div>
+    
+  </div>
+  <br>
+  
+  <div id="chart2_frame" style="width:90%; border:2px solid #666; padding-top:7px">
     <div class="form-group d-inline-flex" style="width: 450px;">
       <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
       <select class="form-control" id="sel1">
@@ -38,7 +46,7 @@
         ?>
       </select>
     </div>
-    <div id="chart2" style="min-height: 365px;"></div><br>
+    <div id="chart2" style="min-height: 365px;"></div>
   </div>
   </center>
 
@@ -203,6 +211,56 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
   }
   
+  var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#ffffff"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#aaaaaa"}];
+  
+  $( "#red_color_btn" ).click(function() {
+    // alert("hi");
+    heatmap_chart.updateOptions({
+      colors: ["#ff0000"],
+      plotOptions: {
+        heatmap: {
+          shadeIntensity: 0.5,
+          radius: 0,
+          useFillColorAsStroke: true,
+          colorScale: {
+            ranges: []
+          }
+        }
+      }
+    });
+    
+  });
+  
+  $( "#blue_color_btn" ).click(function() {
+    // alert("hi");
+    heatmap_chart.updateOptions({
+      colors: ["#008FFB"],
+      plotOptions: {
+        heatmap: {
+          colorScale: {
+            ranges: []
+          }
+        }
+      }
+    });
+    
+  });
+  
+  $( "#range_color_btn" ).click(function() {
+    // alert("hi: "+color_ranges);
+    heatmap_chart.updateOptions({
+      colors: ["#777777"],
+      plotOptions: {
+        heatmap: {
+          colorScale: {
+            ranges: color_ranges
+          }
+        }
+      }
+    });
+    
+  });
+  
   $( "#sel1" ).change(function() {
     // alert( this.value );
     scatter_title = this.value+' Expression values';
@@ -225,50 +283,6 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   // alert("scatter_one_gene: "+JSON.stringify(scatter_one_gene) );
   // alert("heatmap_series: "+heatmap_series);
   
-  var test = [{
-      name: "Sample1",
-      data: [
-        [1,2.99],[1, 8.89],[1, 5.2]
-      ]},
-      {name: "Sample2",
-      data: [
-        [2,5.93],[2, 22],[2, 17.03]
-      ]},
-      {name: "Sample3",
-      data: [
-        [3,5.93],[3, 22],[3, 17.03]
-      ]},
-      {name: "Sample4",
-      data: [
-        [4,15.5],[4, 16],[4, 17.03]
-      ]},
-      {name: "Sample5",
-      data: [
-        [5,5.93],[5, 22],[5, 17.03]
-      ]},
-      {name: "Sample6",
-      data: [
-        [6,5.93],[6, 6],[6, 5.53]
-      ]},
-      {name: "Sample7",
-      data: [
-        [7,5.93],[7, 22],[7, 17.03]
-      ]},
-      {name: "Sample8",
-      data: [
-        [8,0.93],[8, 0.222],[8, 1.03]
-      ]},
-      {name: "Sample9",
-      data: [
-        [9,5.93],[9, 22],[9, 17.03]
-      ]},
-      {name: "Sample10",
-      data: [
-        [10,5.16],[10, 0.18],[10, 21.58]
-      ]
-    }];
-
-    // alert("scatter_one_gene: "+JSON.stringify(test) );
   
 var options = {
   series: scatter_one_gene,
@@ -313,48 +327,6 @@ var options = {
 
 var options = {
   series: heatmap_series,
-  // series: [
-  //   {
-  //     name: 'Gene1',
-  //     data: [12,4,3,15,2,4,17,2,0.54,2.30]
-  //   },
-  //   {
-  //     name: 'Gene2',
-  //     data: [1,4.5,3.9,11,5,4.5,14,2,2.54,3.30]
-  //   },
-  //   {
-  //     name: 'Gene3',
-  //     data: [12,4,3,15,2,4,17,2,0.54,2.30]
-  //   },
-  //   {
-  //     name: 'Gene4',
-  //     data: [1,4.5,3.9,11,5,4.5,14,2,2.54,3.30]
-  //   },
-  //   {
-  //     name: 'Gene5',
-  //     data: [12,4,3,15,2,4,17,2,0.54,2.30]
-  //   },
-  //   {
-  //     name: 'Gene6',
-  //     data: [1,4.5,3.9,11,5,4.5,14,2,2.54,3.30]
-  //   },
-  //   {
-  //     name: 'Gene7',
-  //     data: [12,4,3,15,2,4,17,2,0.54,2.30]
-  //   },
-  //   {
-  //     name: 'Gene8',
-  //     data: [12,4,3,15,2,4,17,2,0.54,2.30]
-  //   },
-  //   {
-  //     name: 'Gene9',
-  //     data: [1,4.5,3.9,11,5,4.5,14,2,2.54,3.30]
-  //   },
-  //   {
-  //     name: 'Gene10',
-  //     data: [9,3,3,14,5,6,12,4,3,13]
-  //   }
-  // ],
   chart: {
     height: 350,
     type: 'heatmap',
@@ -369,63 +341,12 @@ var options = {
       radius: 0,
       useFillColorAsStroke: true,
       colorScale: {
-        ranges: [{
-            from: 0,
-            to: 0.99,
-            name: '0 - 0.99',
-            color: '#ffffff'
-          },
-          {
-            from: 1,
-            to: 2.99,
-            name: '1 - 2.99',
-            color: '#f0c320'
-          },
-          {
-            from: 3,
-            to: 9.99,
-            name: '3 - 9.99',
-            color: '#ff8800'
-          },
-          {
-            from: 10,
-            to: 49.99,
-            name: '10 - 49.99',
-            color: '#ff7469'
-            // color: '#ff6180'
-          },
-          {
-            from: 50,
-            to: 99.99,
-            name: '50 - 99.99',
-            color: '#de2515'
-          },
-          {
-            from: 100,
-            to: 199.99,
-            name: '100 - 199.99',
-            color: '#b71005'
-            // color: '#c42121'
-            // color: '#b30000'
-          },
-          {
-            from: 200,
-            to: 4999.99,
-            name: '200 - 4999.99',
-            color: '#0bb4ff'
-          },
-          {
-            from: 5000,
-            to: 20000,
-            name: '5000 - infinite',
-            color: '#aaaaaa'
-          }
-        ]
+        ranges: color_ranges
       }
     }
   },
   title: {
-    text: 'Expression values of gene selection (RPKM)'
+    text: 'Expression values of gene selection'
   },
   
   xaxis: {
@@ -456,4 +377,15 @@ heatmap_chart.render();
 
 </script>
 
+<style>
+  #range_color_btn{
+/*  height: 50px;*/
+  border-color: #b71005;
+  background: -moz-linear-gradient(-90deg, #f0c320 0%,#f0c320 25%,#ff8800 50%,#ff7469 51%,#ff0000 100%);
+  background: -webkit-linear-gradient(-90deg, #f0c320 0%,#f0c320 25%,#ff8800 50%,#ff7469 51%,#ff0000 100%);
+  background: linear-gradient(90deg, #f0c320 0%,#f0c320 25%,#ff8800 50%,#ff7469 51%,#ff0000 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0c320', endColorstr='#ff0000',GradientType=1 );
+  }
+</style>
+  
 
