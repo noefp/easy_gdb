@@ -6,6 +6,7 @@ cp -r ../templates/egdb_custom_text ../../egdb_files/;
 cp -r ../templates/egdb_images ../../egdb_files/;
 cp -r ../templates/egdb_labs ../../egdb_files/;
 cp -r ../templates/egdb_species ../../egdb_files/;
+cp -r ../templates/expression_data ../../;
 cp -r ../templates/egdb_conf ../../egdb_files/;
 mkdir ../../blast_dbs;
 cp ../templates/blast/*fasta ../../blast_dbs/;
