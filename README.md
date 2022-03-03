@@ -241,6 +241,8 @@ Logos are displayed in all pages at the footer.
 Below, in the toolbar variables, you can customize wich links will be displayed in the toolbar, enabling and disabling the tools and sections available.
 A value `1` enable the link and `0` disable it. Choose the links you want to show or hide.
 
+Additionally, you can enable the variable `$tb_custom` to add your own links to the tool bar just by editing the `custom_toolbar.php` file in the `egdb_custom_text` directory.
+
 Lets take a look to each one of the links below.
 
 ##### Home page
@@ -352,7 +354,14 @@ For more information about how to add a new species and to add tracks see `Insta
 To enable the annotation extraction first we must install the PostgreSQL database and import the annotations.
 See https://github.com/noefp/easy_gdb#install-postgresql-1
 
-##### Gene version lookup:
+##### Gene expression
+
+Place expression data as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column).
+All replicates should have the same name in the header to be group together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
+The expression datasets (the previously mentioned text files) should be placed in the `expression data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
+Remember to turn `$tb_gene_expr` to 1 in the configuration file (`easyGDB_conf.php`).
+
+##### Gene version lookup
 
 It should work correctly if some lookup files are placed in the `lookup` folder.
 Remove the provided examples and create your own lookup files following the same format.
@@ -370,6 +379,12 @@ The name shown in the toolbar will be taken from the file name, and the content 
 
 Here, for example you can include statistics of your genome assembly, news and events page or anything you like.
 
+###### Tables
+
+In the `custom_pages` directory we can find an example of a custom page to visualize tab delimited files as formatted tables. 
+The file `table_menu.php` provides the code to list all the files in the folder `custom_pages/tables`, and the file `table_to_page.php` is a template to format the file passed in the URL using the variable `table_name`.
+The variable `link_field` passed in the URL defines which column contains an unique id that can be used to link to the page `row_data.php`, 
+which is a template to show the data contained in the row of the table where the linked id belongs to.
 
 ####  Customize JBrowse
 
