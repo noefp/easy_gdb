@@ -5,6 +5,46 @@ This tool will help you to create your own genomic database with tools such as B
 Genome browser (JBrowse), file downloads, sequence extraction, annotation search, 
 bulk annotation extraction and gene list lookup.
 
+## Table of contents
+* [Installation](#installation)
+  + [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker)
+    - [Set up easy_gdb database](#set-up-easy-gdb-database)
+      * [Set up password](#set-up-password)
+      * [Create a new database](#create-a-new-database)
+      * [Create a new role (DB user)](#create-a-new-role--db-user-)
+      * [Import annotation schema to database](#import-annotation-schema-to-database)
+    - [Import annotations](#import-annotations)
+    - [Customize file paths](#customize-file-paths)
+    - [Customize your site](#customize-your-site)
+      * [Customize application name and header image](#customize-application-name-and-header-image)
+      * [Customize logos](#customize-logos)
+      * [Customize the toolbar](#customize-the-toolbar)
+      * [Home page](#home-page)
+      * [About Us](#about-us)
+      * [Species](#species)
+      * [Downloads](#downloads)
+      * [Tools](#tools)
+      * [Search](#search)
+      * [BLAST](#blast)
+      * [Sequence extraction](#sequence-extraction)
+      * [Genome browser](#genome-browser)
+      * [Annotation extraction](#annotation-extraction)
+      * [Gene expression](#gene-expression)
+      * [Gene version lookup](#gene-version-lookup)
+      * [More custom pages](#more-custom-pages)
+        + [Tables](#tables)
+    - [Customize JBrowse](#customize-jbrowse)
+    - [Private application](#private-application)
+    - [Start local server](#start-local-server)
+  + [Instalation in linux system (without Docker)](#instalation-in-linux-system--without-docker-)
+    - [Install Git, PHP, BLAST and useful tools](#install-git--php--blast-and-useful-tools)
+    - [Install Perl dependencies (for JBrowse and importing scripts)](#install-perl-dependencies--for-jbrowse-and-importing-scripts-)
+    - [load local-lib in Perl5lib](#load-local-lib-in-perl5lib)
+    - [Install PostgreSQL](#install-postgresql)
+    - [Install easy GDB](#install-easy-gdb)
+      * [Set up password](#set-up-password-1)
+    - [Set up server](#set-up-server)
+
 ##  Installation
 
 Easy GDB requires PHP and PostgreSQL to run. 
