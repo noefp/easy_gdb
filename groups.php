@@ -19,7 +19,12 @@
               
               foreach($lab["people"] as $person) {
                 if ($person["link"]) {
-                  echo '<a href="person_view.php?person_file='.$person["link"].'" class="float-left card egdb_person_card" style="color:#333">';
+                  if (preg_match('/www|http/', $person["link"])) { //external link
+                  
+                    echo '<a href="'.$person["link"].'" target="blank" class="float-left card egdb_person_card" style="color:#333">';
+                  } else {
+                    echo '<a href="person_view.php?person_file='.$person["link"].'" class="float-left card egdb_person_card" style="color:#333">';
+                  }
                 } else {
                   echo '<a href="" class="float-left card egdb_person_card" style="color:#333">';
                 }
