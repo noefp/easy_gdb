@@ -36,9 +36,9 @@ bulk annotation extraction and gene list lookup.
     - [Customize JBrowse](#customize-jbrowse)
     - [Private application](#private-application)
     - [Start local server](#start-local-server)
-  + [Instalation in linux system (without Docker)](#instalation-in-linux-system--without-docker-)
+  + [Installation in linux system without Docker](#installation-in-linux-system-without-docker)
     - [Install Git, PHP, BLAST and useful tools](#install-git--php--blast-and-useful-tools)
-    - [Install Perl dependencies (for JBrowse and importing scripts)](#install-perl-dependencies--for-jbrowse-and-importing-scripts-)
+    - [Install Perl dependencies for JBrowse and importing scripts](#install-perl-dependencies-for-jbrowse-and-importing-scripts)
     - [load local-lib in Perl5lib](#load-local-lib-in-perl5lib)
     - [Install PostgreSQL](#install-postgresql)
     - [Install easy GDB](#install-easy-gdb)
@@ -105,7 +105,7 @@ You can take a look using your file browser at `src` or in the terminal using th
 You should be able to see the folders `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files`, `jbrowse` and `lookup`, 
 and inside them there are some example templates to help you customize your own genomic web portal.
 
-At this moment most of the features of easy_gdb should be alredy available (all but the parts depending on the annotation database).
+At this moment most of the features of easy_gdb should be already available (all but the parts depending on the annotation database).
 
 
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
@@ -160,7 +160,7 @@ You will be asked to type your new password
 Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
 you can create a new one nad point to it in the file `egdb_files/egdb_conf/database_access.php`.
 
-Open a terminal using docker-compose, docker exec or Docker desktop if you needto and create a new database:
+Open a terminal using docker-compose, docker exec or Docker desktop if you need to and create a new database:
 
 ```sql
 CREATE DATABASE annot1;
@@ -174,7 +174,7 @@ It is recommended to use a different user than postgres to access the database (
 Here, we will create the user `web_usr`. Note that in this example the password you type will be visible in the terminal,
 and the history, so we will create a temporal password and then we will change it in the next step.
 
-Open a terminal using docker-compose, docker exec or Docker desktop if you needto and create a new database:
+Open a terminal using docker-compose, docker exec or Docker desktop if you need to and create a new database:
 
 ```sql
 CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
@@ -525,27 +525,28 @@ In a server:
 sudo service apache2 restart
 ```
 
-### Instalation in linux system (without Docker)
+### Installation in linux system without Docker
 
 #### Install Git, PHP, BLAST and useful tools
 
 Lets install git to download the easy GDB code, PHP to be able to run the web and some other useful tools.
 ```bash
 sudo apt-get update
-apt-get install gcc
-apt-get install libpq-dev
-apt-get install git
-apt-get install php
-apt-get install zlib1g-dev
-apt-get install libexpat1-dev
-apt-get install ncbi-blast+
-apt-get install vim
-apt-get install less
-apt-get install wget
-apt-get install zip
+sudo apt-get install gcc
+sudo apt-get install libpq-dev
+sudo apt-get install git
+sudo apt-get install php
+sudo apt-get install zlib1g-dev
+sudo apt-get install libexpat1-dev
+sudo apt-get install ncbi-blast+
+sudo apt-get install vim
+sudo apt-get install less
+sudo apt-get install wget
+sudo apt-get install zip
+sudo apt-get install make
 ```
 
-#### Install Perl dependencies (for JBrowse and importing scripts)
+#### Install Perl dependencies for JBrowse and importing scripts
 
     apt-get install cpanminus
     cpanm -L ~/local-lib/ DBI
@@ -598,14 +599,19 @@ but directly in your terminal, not using any of the docker commands.
 
     example_db/easy_gdb/install$ bash setup.sh
 
-    example_db/easy_gdb/install$ ls -lh /var/www/html
-
     example_db/easy_gdb/install$ cd ../../
     
 You can run this command in a screen or in the background:
     example_db$ php -S localhost:8000
 
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
+
+Do not forget to change configuration path in the file `easy_gdb/configuration_path.php`. 
+By default it is `/var/www/html`, for the Docker installation. If you used a different path, you should change the variable
+from `$conf_path = "/var/www/html/egdb_files/egdb_conf"` to your path, for example `$conf_path = "/home/user/example_db/egdb_files/egdb_conf"`.
+
+Then open the file `easyGDB_conf.php` in the folder `egdb_files/egdb_conf/` and change the `$root_path` to the path where you installed the example_db,
+ in the previous example `/home/user`.
 
 open the file `egdb_files/egdb_conf/database_access.php`.
 
