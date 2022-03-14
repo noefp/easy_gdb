@@ -3,7 +3,7 @@
 Welcome to easy GDB. 
 This tool will help you to create your own genomic database with tools such as BLAST, 
 Genome browser (JBrowse), file downloads, sequence extraction, annotation search, 
-bulk annotation extraction and gene list lookup.
+bulk annotation extraction and gene list lookup. For more information check [this YouTube playlist](https://youtu.be/JTE-8zR5ogk)
 
 ## Table of contents
 * [Installation](#installation)
