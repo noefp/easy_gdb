@@ -601,7 +601,7 @@ but directly in your terminal, not using any of the docker commands.
 
     example_db/easy_gdb/install$ cd ../../
     
-You can run this command in a screen or in the background:
+To start the PHP server that run the service to show the web, you can run this command where you installed the example_db:
     example_db$ php -S localhost:8000
 
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
@@ -611,7 +611,7 @@ By default it is `/var/www/html`, for the Docker installation. If you used a dif
 from `$conf_path = "/var/www/html/egdb_files/egdb_conf"` to your path, for example `$conf_path = "/home/user/example_db/egdb_files/egdb_conf"`.
 
 Then open the file `easyGDB_conf.php` in the folder `egdb_files/egdb_conf/` and change the `$root_path` to the path where you installed the example_db,
- in the previous example `/home/user`.
+ in the previous example `$root_path = "/home/user"`.
 
 open the file `egdb_files/egdb_conf/database_access.php`.
 
