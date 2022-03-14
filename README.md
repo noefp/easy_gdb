@@ -602,6 +602,7 @@ but directly in your terminal, not using any of the docker commands.
     example_db/easy_gdb/install$ cd ../../
     
 To start the PHP server that run the service to show the web, you can run this command where you installed the example_db:
+
     example_db$ php -S localhost:8000
 
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
