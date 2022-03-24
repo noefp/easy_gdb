@@ -123,7 +123,7 @@ You should be able to see an example of easy_gdb running.
 #### Set up easy_gdb database
 
 We need to set up the database so the easy GDB code is able to find it. 
-Remember to change the password by the password you will use for web_usr below (https://github.com/noefp/easy_gdb#create-a-new-role-db-user)
+Remember to change the password by the password you will use for web_usr [below](#create-a-new-role-db-user)
 
 open the file `egdb_files/egdb_conf/database_access.php`.
 
@@ -346,7 +346,7 @@ Turn the variables to `1` or to `0` to enable or disable them.
 ##### Search
 
 To enable the search and the toolbar search box first we must install the PostgreSQL database 
-and import the annotations. See https://github.com/noefp/easy_gdb#install-postgresql-1
+and import the annotations. See [Install PostgreSQL](#install-postgresql-1)
 
 ##### BLAST
 
@@ -387,12 +387,12 @@ As we ran the setup file after cloning easy GDB, at this point, and example of J
 You should be able to check it following the `Tools/Genome Browser` link in the menu bar, or at http://localhost:8000/jbrowse/.
 
 
-For more information about how to add a new species and to add tracks see `Install and set up JBrowse` below (https://github.com/noefp/easy_gdb#install-and-set-up-jbrowse).
+For more information about how to add a new species and to add tracks see `Install and set up JBrowse` [below](#customize-jbrowse).
 
 ##### Annotation extraction
 
 To enable the annotation extraction first we must install the PostgreSQL database and import the annotations.
-See https://github.com/noefp/easy_gdb#install-postgresql-1
+See [Install PostgreSQL](#install-postgresql-1)
 
 ##### Gene expression
 
@@ -590,7 +590,7 @@ Or you can just go to /var/www/html/ and clone easy GDB there.
     $ mkdir example_db
     $ cd example_db
 
-Then follow the steps as in https://github.com/noefp/easy_gdb#set-up-easy-gdb-using-the-template-example-and-docker, 
+Then follow the steps as in [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker), 
 but directly in your terminal, not using any of the docker commands.
 
     example_db$ git clone https://github.com/noefp/easy_gdb.git
