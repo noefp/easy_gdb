@@ -354,6 +354,17 @@ In the web browser, follow the link to `BLAST` in the tools toolbar menu. There 
 In `egdb_files/egdb_conf/easyGDB_conf.php`, you can change the input example sequence changing the variable `$blast_example`.
 
 To add BLAST datasets we need to copy the blast databases in the `blast_dbs` folder (path can be changed in `easyGDB_conf.php`).
+The BLAST databases should copied inside a category folder, such as `category_1` and `category_2` in the example template. 
+If all the BLAST databases are included in a single category folder, 
+there will be only a dropdown menu to select the BLAST database in the select Dataset section in the BLAST input page.
+If the BLAST databases are organized in two or more category folders, 
+there will be an extra dropdown menu to select the category and then it will be posible to select the databases within the category.
+
+BLAST database files and category folders MUST NOT include spaces in their names. 
+Underscores can be used in the file and folder names and they will be displayed as spaces in the web.
+
+The template example include the folders `category_1` and `category_2`, but any other name can be used to name the category folders (without spaces or special characters).
+For example, we could create folders to organize BLAST databases for several species such as `Danio_rerio`, `Mola_mola`, `Salmo_salar`, etc.
 
 You can use the next command lines to create your own blast databases from fasta sequence files:
 
