@@ -8,7 +8,7 @@ bulk annotation extraction and gene list lookup. For more information check [thi
 ## Table of contents
 * [Installation](#installation)
   + [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker)
-    - [Set up easy_gdb database](#set-up-easy-gdb-database)
+    - [Set up easyGDB database](#set-up-easyGDB-database)
       * [Set up password](#set-up-password)
       * [Create a new database](#create-a-new-database)
       * [Create a new role (DB user)](#create-a-new-role--db-user-)
@@ -120,7 +120,7 @@ You should be able to see an example of easy_gdb running.
 >    example_db$ php -S localhost:8000
 
 
-#### Set up easy_gdb database
+#### Set up easyGDB database
 
 We need to set up the database so the easy GDB code is able to find it. 
 Remember to change the password by the password you will use for web_usr [below](#create-a-new-role-db-user)
@@ -346,7 +346,7 @@ Turn the variables to `1` or to `0` to enable or disable them.
 ##### Search
 
 To enable the search and the toolbar search box first we must install the PostgreSQL database 
-and import the annotations. See [Install PostgreSQL](#install-postgresql-1)
+and import the annotations. See [Install PostgreSQL](#install-postgresql)
 
 ##### BLAST
 
@@ -392,7 +392,7 @@ For more information about how to add a new species and to add tracks see `Insta
 ##### Annotation extraction
 
 To enable the annotation extraction first we must install the PostgreSQL database and import the annotations.
-See [Install PostgreSQL](#install-postgresql-1)
+See [Install PostgreSQL](#install-postgresql)
 
 ##### Gene expression
 
