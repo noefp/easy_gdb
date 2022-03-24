@@ -8,7 +8,7 @@ bulk annotation extraction and gene list lookup. For more information check [thi
 ## Table of contents
 * [Installation](#installation)
   + [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker)
-    - [Set up easyGDB database](#set-up-easyGDB-database)
+    - [Set up easyGDB database](#set-up-easygdb-database)
       * [Set up password](#set-up-password)
       * [Create a new database](#create-a-new-database)
       * [Create a new role (DB user)](#create-a-new-role--db-user-)
@@ -41,7 +41,7 @@ bulk annotation extraction and gene list lookup. For more information check [thi
     - [Install Perl dependencies for JBrowse and importing scripts](#install-perl-dependencies-for-jbrowse-and-importing-scripts)
     - [load local-lib in Perl5lib](#load-local-lib-in-perl5lib)
     - [Install PostgreSQL](#install-postgresql)
-    - [Install easy GDB](#install-easy-gdb)
+    - [Install easyGDB](#install-easygdb)
       * [Set up password](#set-up-password-1)
     - [Set up server](#set-up-server)
 
@@ -158,7 +158,7 @@ You will be asked to type your new password
 ##### Create a new database
 
 Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
-you can create a new one nad point to it in the file `egdb_files/egdb_conf/database_access.php`.
+you can create a new one and point to it in the file `egdb_files/egdb_conf/database_access.php`.
 
 Open a terminal using docker-compose, docker exec or Docker desktop if you need to and create a new database:
 
@@ -582,7 +582,7 @@ sudo apt-get install php-pgsql
 ```
 
 
-#### Install easy GDB
+#### Install easyGDB
 
 Then, let's create a folder to contain your genomic database. Use the name you like. For this example we will use `example_db`. 
 Or you can just go to /var/www/html/ and clone easy GDB there.
@@ -645,16 +645,31 @@ You will be asked to type your new password
 
 In Postgres console
 
+Here, we will create a new database `annot1`. Any time you want to create a new database to test some data or new versions, 
+you can create a new one and point to it in the file `egdb_files/egdb_conf/database_access.php`.
+
     CREATE DATABASE annot1;
+
 
     CREATE ROLE web_usr WITH LOGIN ENCRYPTED PASSWORD 'tmp_password' CREATEDB;
     \password web_usr
 
     \q
 
-Back in your bash terminal:
+Back in your bash terminal
+
+In this step we will create the database schema:
 
     example_db$ psql -U postgres -d annot1 -h localhost -a -f easy_gdb/scripts/create_annot_schema2.sql
+
+Here, we will learn how to import annotations to the database.
+First we will import all the gene names, for that we will need a file such as
+`easy_gdb/templates/anotations/gene_list.txt` with all the gene identifiers from our organism. 
+It is recommended to use the transcript name (gene1.1).
+
+We will import all the gene names using the script `import_genes.pl` and we will provide the gene list file, 
+species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
+This way we can link the genes with the genome browser.
 
     example_db$ perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
     
