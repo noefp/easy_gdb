@@ -10,6 +10,8 @@
 $bdb_path = $blast_dbs_path;
 $dir_found = get_dir_and_files($bdb_path); // call the function
 
+asort($dir_found);
+
 //foreach ($sps_found as $bdb) {
 foreach ($dir_found as $blast_dir) {
 	
@@ -17,6 +19,7 @@ foreach ($dir_found as $blast_dir) {
 		//echo "<h5>$blast_dir</h5>";
 	
 		$dbs_found = get_dir_and_files($bdb_path.'/'.$blast_dir);
+		asort($dbs_found);
 	
 		foreach ($dbs_found as $bdb) {
 			//echo "<h5>$bdb</h5>";
@@ -28,21 +31,25 @@ foreach ($dir_found as $blast_dir) {
 
 		    exec("blastdbcmd -db {$full_path_db} -entry " . escapeshellarg($gene_name) ."| sed 's/lcl|//'" ,$ret);
 
-		    $blast_db = str_replace(".fasta","",$bdb);
-		    $blast_db = str_replace("_"," ",$blast_db);
-
 		    if ($ret) {
-		      echo "<h5>$blast_db</h5>";
-		      echo "<div class=\"card bg-light\">";
-		      echo "<div class=\"card-body\" style=\"font-family:courier\">".implode("<br>",$ret)."</div>";
-		      echo "</div><br>";
+			    $blast_db = str_replace(".fasta","",$bdb);
+			    $blast_db = str_replace("_"," ",$blast_db);
+
+					if (preg_match('/^category_\d/', $blast_dir, $match) ) {
+			      echo "<h5>$blast_db</h5>";
+					} else {
+				    $blast_category = str_replace("_"," ",$blast_dir);
+			      echo "<h5>$blast_category, $blast_db</h5>";
+					}
+			      echo "<div class=\"card bg-light\">";
+			      echo "<div class=\"card-body\" style=\"font-family:courier\">".implode("<br>",$ret)."</div>";
+			      echo "</div><br>";
 		    }
 		    $ret=null;
 		  }
 	  
-		}
+		} // close foreach
 	}
-
 }
 
 
