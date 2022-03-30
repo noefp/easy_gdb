@@ -652,7 +652,7 @@ You will be asked to type your new password
 
 
 
-    example_db$ psql -U postgres
+    example_db$ psql -U postgres -h localhost -W
 
 In Postgres console
 
