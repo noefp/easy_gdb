@@ -61,6 +61,9 @@ open (my $fh2, $gene_file) || die ("\nERROR: the file $gene_file could not be fo
 while (my $line = <$fh2>) {
   chomp($line);
   
+  $line =~ s/^\s*//;
+  $line =~ s/\s*$//;
+  
   my $gene_name = $line;
   my $gene_id = ImportModule::check_gene($dbh,$gene_name,$species_id,$annot_v_id);
   
