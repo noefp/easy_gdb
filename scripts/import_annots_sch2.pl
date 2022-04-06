@@ -69,6 +69,13 @@ while (my $line = <$fh2>) {
     next;
   }
   
+  $gene_name =~ s/^[\s\"]*//;
+  $gene_name =~ s/[\s\"]*$//;
+  $annot_term =~ s/^[\s\"]*//;
+  $annot_term =~ s/[\s\"]*$//;
+  $annot_desc =~ s/^[\s\"]*//;
+  $annot_desc =~ s/[\s\"]*$//;
+  
   # Check gene exists and get gene id in database
   my $gene_id = ImportModule::check_gene($dbh,$gene_name,$species_id,$annot_v_id);
   
