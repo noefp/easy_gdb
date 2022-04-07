@@ -31,16 +31,15 @@
   $evalue = $_POST["evalue"];
   $blast_matrix = $_POST["blast_matrix"];
   $blast_filter = $_POST["blast_filter"];
-  // $blast_filter = "no";
 
-  // echo "$query<br><br>";
   $num_input_seqs = substr_count($query,">");
-  // echo "$num_input_seqs<br><br>";
-  // echo "$blast_db<br><br>";
-  // echo "$blast_prog<br><br>";
-  // echo "$max_hits<br><br>";
-  // echo "$evalue<br><br>";
-  // echo "$blast_matrix<br><br>";
+
+  $links_hash;
+    
+  if ( file_exists("$blast_dbs_path/blast_links.json") ) {
+      $links_json_file = file_get_contents("$blast_dbs_path/blast_links.json");
+      $links_hash = json_decode($links_json_file, true);
+  }
 
   if ($blast_filter == "on") {
     $blast_filter = "yes";
@@ -48,8 +47,6 @@
   else {
     $blast_filter = "no";
   }
-
-  // echo "$blast_filter  It should be yes or no <br><br>";
 
   if ($blast_prog == "blastn") {
     $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
@@ -62,11 +59,36 @@
     $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
   }
 
-  // echo "$blast_cmd<br><br>";
-
   $blast_res = shell_exec('printf '.$blast_cmd);
-
+  $blast_res = str_replace('<a name=',"<a id=", $blast_res);
+  
   echo "<div style=\"margin:20px;min-width:1020px\">$blast_res</div>";
+
+  function _get_subject_link($s_link_hash,$db_name,$subject_name,$s_start,$s_end) {
+    
+    $db_name = str_replace(' ',"_", $db_name);
+    $s_link = "/easy_gdb/gene.php?name={$subject_name}";
+    $target_type="_blank";
+    
+    //if ($s_link_hash[$db_name]) {
+    if (array_key_exists($db_name, $s_link_hash)) {
+      $s_link = $s_link_hash[$db_name];
+      
+      if (preg_match('/\{subject\}/', $s_link, $match)) {
+        $s_link = preg_replace('/\{subject\}/',$subject_name,$s_link);
+      }
+      else if (preg_match('/\{chr\}/', $s_link, $match)) {
+        $s_link = preg_replace('/\{chr\}/',$subject_name,$s_link);
+        $s_link = preg_replace('/\{start\}/',$s_start,$s_link);
+        $s_link = preg_replace('/\{end\}/',$s_end,$s_link);
+      }
+      else {
+        $target_type="_self";
+      }
+    }
+    
+    return array($s_link,$target_type);
+  }
 
 
   function _check_coordinates($tmp_start,$tmp_end) {
@@ -122,15 +144,11 @@
 
       $query = $match[1];
 
-      // echo "$line<br><br>query: $query<br><br>";
       $blast_db_name = preg_replace('/.*\//',"", $blast_db);
       $blast_db_name = str_replace('_'," ", $blast_db_name);
 
       array_unshift($res_html, "<center><h3>".$query." vs ".$blast_db_name."</h3></center>");
       $query_line_on = 1;
-
-      // echo "<br><br>blast_db_name: $blast_db_name<br><br>";
-      // echo '<pre>'; print_r($res_html); echo '</pre>';
     }
 
       if ($query_line_on){
@@ -154,12 +172,16 @@
         $append_desc = 1;
 
         if ($subject) {
+          
+          list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
+          
           $coordinates_checked = _check_coordinates($sstart,$send);
           $sstart = $coordinates_checked[0];
           $send = $coordinates_checked[1];
 
           $mm = $mismatch-$gaps;
-          array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+          array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+          //array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
           array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
 
           if (strlen($desc) > 150) {
@@ -196,30 +218,26 @@
           $subject = $match[1];
           $desc = $match[2];
           $desc = trim($desc, " ");
-        //  echo "<br><br>subject: $subject<br><br>";
-        //  echo "<br><br>desc: $desc<br><br>";
        }
      }
 
       if (preg_match('/Score\s*=/', $line, $match)) {
 
-        // echo "<br><br>in: hello<br><br>";
-        // echo "<br><br>one_hsp: $one_hsp<br><br>";
-
         if($one_hsp == 1) {
            $coordinates_checked = _check_coordinates($sstart,$send);
            $sstart = $coordinates_checked[0];
            $send = $coordinates_checked[1];
-// echo "<br><br>in2: hello<br><br>";
+
+           list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
 
            $mm = $mismatch-$gaps;
-           array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+           array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+           // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
            array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
 
            if (strlen($desc) > 150) {
              $desc = substr($desc,0,150)." ...";
            }
-
 
            $description_hash = array();
 
@@ -249,13 +267,10 @@
            $score = $match[1];
            $one_hsp = 1;
            $append_desc = 0;
-          //  echo "<br><br>score: $score<br><br>";
       }
-
 
      if (preg_match('/Expect\s*=\s*([\d\.\-e]+)/', $line, $match)) {
        $evalue = $match[1];
-      //  echo "<br><br>evalue: $evalue<br><br>";
      }
 
      if (preg_match('/Identities\s*=\s*(\d+)\/(\d+)/', $line, $match)) {
@@ -264,9 +279,6 @@
         $aln = "$aln_matched/$aln_total";
         $id = sprintf("%.2f", $aln_matched*100/$aln_total);
         $mismatch = $aln_total - $aln_matched;
-        // echo "<br><br>aln_matched: $aln_matched<br><br>";
-        // echo "<br><br>aln_total: $aln_total<br><br>";
-        // echo "<br><br>aln: $aln<br><br>";
      }
 
      if (preg_match('/Gaps\s*=\s*(\d+)\/\d+/', $line, $match)) {
@@ -291,7 +303,6 @@
 
           $gap_num = preg_match_all("/\-+/",$line);
           $gapopen = $gapopen + $gap_num;
-          // echo "<p class=\"yellow_col\">gapopen3:$subject<br> $line<br>$gap_num $gapopen<br></p>";
         }
       }
 
@@ -301,7 +312,6 @@
 
           $gap_num = preg_match_all("/\-+/",$line);
           $gapopen = $gapopen + $gap_num;
-          // echo "<p class=\"yellow_col\">gapopen4:$subject<br> $line<br>$gap_num $gapopen<br></p>";
         }
       }
 
@@ -310,10 +320,12 @@
   $coordinates_checked = _check_coordinates($sstart,$send);
   $sstart = $coordinates_checked[0];
   $send = $coordinates_checked[1];
-  // echo "<br><br>in2: hello<br><br>";
+
+  list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
 
   $mm = $mismatch-$gaps;
-  array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+  array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
+  // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
   array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
 
   if (strlen($desc) > 150) {
@@ -342,16 +354,12 @@
 <script>
   var num_input_seqs = '<?php echo $num_input_seqs ?>';
   var blast_table_string = '<?php echo $blast_out_txt ?>';
-  // alert("num_input_seqs: "+num_input_seqs);
 
   if (num_input_seqs == 1) {
     var seq_length = '<?php echo $query_length ?>';
     var blast_table_html = '<?php echo $blast_table ?>';
     var sgn_graph_array = <?php echo json_encode($json_array) ?>;
 
-  // alert("sgn_graph_array: "+sgn_graph_array[1]);
-  // alert("sgn_graph_array: "+sgn_graph_array[0]["score"]);
-  // alert("sgn_graph_array: "+sgn_graph_array);
     jQuery('#sgn_blast_graph').css("display", "inline");
     jQuery("#SGN_output").html(blast_table_html);
     draw_blast_graph(sgn_graph_array, seq_length);

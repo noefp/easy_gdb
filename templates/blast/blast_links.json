@@ -1,0 +1,6 @@
+
+{
+  "sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}",
+  "sample_blast_DB_proteins.fasta":"#",
+  "sample_uniprot.fasta":"https://www.uniprot.org/uniprot/{subject}"
+}

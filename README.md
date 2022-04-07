@@ -382,6 +382,24 @@ which will be used by the gene views and the `Sequence extraction` tool.
 The variable `$max_blast_input` (in `egdb_files/egdb_conf/easyGDB_conf.php`) 
 controls the maximum number of sequences allowed as input in `BLAST`.
 
+You can also add custom links for the BLAST output by customizing the blast_links.json file in the `blast_dbs` folder:
+
+```json
+{
+  "sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}",
+  "sample_blast_DB_proteins.fasta":"#",
+  "sample_uniprot.fasta":"https://www.uniprot.org/uniprot/{subject}"
+}
+```
+
+Just include the name of your database on the left and the link on the right. By default if the database name is not included in the JSON file, the BLAST output will link to the easy GDB gene page.
+You can provide any other links and use the variables in the example (`{subject}`, `{chr}`, `{start}`, `{end}`) to add gene names or coordinates extracted from the BLAST results.
+In this file several link examples are shown:
+
+* Link to genome browser: the variables `{chr}`, `{start}`, `{end}` will be replaced by the ones found in the results. Very useful for genome sequence BLAST databases.
+* No link: using a value of `#` will produce self links. For example for genes not included in your easy GDB database.
+* Gene name external links: the variable `{subject}` will be replaced by the subject gene name. It can be use to link to external databases, such as UniProt in the example above.
+
 
 ##### Sequence extraction
 
@@ -479,6 +497,7 @@ Below there is an example of the gene model track with link to the database (`ur
 
 To allow multiple genome browser species, accessions or versions we need to modify the file `data/easy_gdb_sample/tracks.conf`
 to include the folder name where the data are stored (remember the jbrowse folder name in import_genes.pl)
+
     [general]
     dataset_id = easy_gdb_sample
 
@@ -486,6 +505,7 @@ to include the folder name where the data are stored (remember the jbrowse folde
 
 In the file `jbrowse/jbrowse.conf` we can include as many species as we want. It is possible also to include external links in the URL field.
 Here we use the easy GDB example and the volvox and yeast examples from JBrowse:
+
     [datasets.easyGDB]
     url  = ?data=data/easy_gdb_sample
     name = Easy GDB Example
