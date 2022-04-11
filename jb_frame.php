@@ -6,7 +6,7 @@
     $gene_row = pg_fetch_array($jb_res,0,PGSQL_ASSOC);
     $jb_dataset = $gene_row["jbrowse_folder"];
     
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true">Genome Browser</div>';
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true"><i class="fas fa-sort" style="color:#229dff"></i> Genome Browser</div>';
     echo '<div id="jb_section" class="collapse show">';
 
     $jb_gene_name = $gene_name;

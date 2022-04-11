@@ -36,16 +36,18 @@ h4 {
 
 .collapse_section {
   background-color: #eee;
+  color:#229dff;
   font-size: 24px;
   padding-left: 10px;
   margin-top: 15px;
   margin-bottom: 10px;
+  text-align: left;
 }
 
 .collapse_section:hover {
-  text-decoration: underline;
-  background-color: #d1d7d1;
-  color:#337ab7;
+/*  text-decoration: underline;*/
+  background-color: #999;
+  color:#fff;
 }
 
 .p_font18 {

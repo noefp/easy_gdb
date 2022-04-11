@@ -1,5 +1,5 @@
 <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#annot_section" aria-expanded="true">
-  Functional descriptions
+  <i class="fas fa-sort" style="color:#229dff"></i> Functional descriptions
 </div>
 
 <div id="annot_section" class="collapse show">

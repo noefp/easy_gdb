@@ -1,5 +1,5 @@
 <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#seq_section" aria-expanded="true">
-  Sequences
+  <i class="fas fa-sort" style="color:#229dff"></i> Sequences
 </div>
 
 <div id="seq_section" class="collapse show">
