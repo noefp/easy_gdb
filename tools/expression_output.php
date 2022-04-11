@@ -18,6 +18,10 @@
   
 ?>
 
+<br>
+<a href="/easy_gdb/tools/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+
+
 <div class="page_container" style="margin-top:20px">
   <h1 id="dataset_title" class="text-center"><?php echo "$dataset_name" ?></h1>
   <br>
@@ -35,22 +39,43 @@
   </div>
   <br>
   
-  <div id="chart2_frame" style="width:90%; border:2px solid #666; padding-top:7px">
-    <div class="form-group d-inline-flex" style="width: 450px;">
-      <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
-      <select class="form-control" id="sel1">
-        <?php
-          foreach ($gids as $gene) {
-            echo "<option value=\"$gene\">$gene</option>";
-          }
-        ?>
-      </select>
+  
+  <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+    <i class="fas fa-sort" style="color:#229dff"></i> Replicates
+  </div>
+
+  <div id="replicates_graph" class="collapse hide">
+  
+  
+  
+  
+    <div id="chart2_frame" style="width:90%; border:2px solid #666; padding-top:7px">
+      <div class="form-group d-inline-flex" style="width: 450px;">
+        <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
+        <select class="form-control" id="sel1">
+          <?php
+            foreach ($gids as $gene) {
+              echo "<option value=\"$gene\">$gene</option>";
+            }
+          ?>
+        </select>
+      </div>
+      <div id="chart2" style="min-height: 365px;"></div>
     </div>
-    <div id="chart2" style="min-height: 365px;"></div>
+  
+  
+  
+  
   </div>
   </center>
 
   <br>
+
+  <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
+    <i class="fas fa-sort" style="color:#229dff"></i> Average values
+  </div>
+
+  <div id="avg_table" class="collapse hide">
 
 <?php
 
@@ -189,6 +214,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 ?>
 
+  </div>
+  
   </div>
 </div>
 
