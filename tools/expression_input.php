@@ -143,7 +143,19 @@ echo   "</div>";
       var selected_gene = $('#autocomplete_gene').val();
       // alert("selected_gene: "+selected_gene);
       event.preventDefault(); // cancel submission default behavior
-      $('#InputGenes').append("\n"+selected_gene)
+      
+      var box_val = $('#InputGenes').val();
+      
+      if ( box_val ) {
+        $('#InputGenes').val(box_val+"\n"+selected_gene);
+        //alert("full");
+      }
+      else {
+        $('#InputGenes').val(selected_gene);
+        //alert("empty");
+      }
+      
+      
     });
     
     

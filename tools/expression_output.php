@@ -21,7 +21,6 @@
 <br>
 <a href="/easy_gdb/tools/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 
-
 <div class="page_container" style="margin-top:20px">
   <h1 id="dataset_title" class="text-center"><?php echo "$dataset_name" ?></h1>
   <br>
@@ -29,47 +28,52 @@
 
 
   <center>
-  <div id="chart1_frame" style="width:90%; border:2px solid #666; padding-top:7px">
-    <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
-    <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
-    <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
     
-    <div id="chart1" style="min-height: 400px;"></div>
     
-  </div>
-  <br>
-  
-  
-  <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
-    <i class="fas fa-sort" style="color:#229dff"></i> Replicates
-  </div>
+    <div id="line_chart_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+    
+      <div id="chart_lines" style="min-height: 550px;"></div>
+    
+    </div>
+    
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
+    </div>
 
-  <div id="replicates_graph" class="collapse hide">
-  
-  
-  
-  
-    <div id="chart2_frame" style="width:90%; border:2px solid #666; padding-top:7px">
-      <div class="form-group d-inline-flex" style="width: 450px;">
-        <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
-        <select class="form-control" id="sel1">
-          <?php
-            foreach ($gids as $gene) {
-              echo "<option value=\"$gene\">$gene</option>";
-            }
-          ?>
-        </select>
+    <div id="heatmap_graph" class="collapse hide">
+    
+      <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+        <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
+        <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
+        <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
+    
+        <div id="chart1" style="min-height: 400px;"></div>
+    
       </div>
-      <div id="chart2" style="min-height: 365px;"></div>
     </div>
   
-  
-  
-  
-  </div>
-  </center>
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Replicates
+    </div>
 
-  <br>
+    <div id="replicates_graph" class="collapse hide">
+  
+      <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+        <div class="form-group d-inline-flex" style="width: 450px;">
+          <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
+          <select class="form-control" id="sel1">
+            <?php
+              foreach ($gids as $gene) {
+                echo "<option value=\"$gene\">$gene</option>";
+              }
+            ?>
+          </select>
+        </div>
+        <div id="chart2" style="min-height: 365px;"></div>
+      </div>
+  
+    </div>
+  </center>
 
   <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
     <i class="fas fa-sort" style="color:#229dff"></i> Average values
@@ -91,7 +95,7 @@ $found_genes = [];
 if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
   
-   echo "<div style=\"width:90%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">";
+   echo "<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">";
 
     $columns = [];
     $replicates = [];
@@ -345,8 +349,8 @@ var options = {
   }
 };
 
-          var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
-          scatter_chart.render();
+var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
+scatter_chart.render();
 
 
 // alert("heatmap_series: "+JSON.stringify(heatmap_series) );
@@ -373,7 +377,7 @@ var options = {
     }
   },
   title: {
-    text: 'Expression values of gene selection'
+    text: 'Heatmap'
   },
   
   xaxis: {
@@ -401,6 +405,59 @@ heatmap_chart.render();
 
 
 
+
+
+var options = {
+  series: heatmap_series,
+  chart: {
+  height: 500,
+  type: 'line',
+  zoom: {
+    enabled: false,
+    type: 'xy'
+  },
+  toolbar: {
+    show: true
+  }
+  },
+  colors: ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546E7A'],
+  dataLabels: {
+    enabled: true,
+    offsetY: -5
+  },
+  stroke: {
+    curve: 'straight'
+  },
+  title: {
+    text: 'Lines',
+    align: 'left'
+  },
+  markers: {
+    size: 3
+  },
+  xaxis: {
+    categories: sample_array
+  },
+  yaxis: {
+    title: {
+      text: 'Expression value'
+    }
+  },
+  legend: {
+    position: 'top',
+    horizontalAlign: 'center',
+    inverseOrder: true,
+    floating: true,
+    offsetY: -30,
+    offsetX: 25
+  },
+  tooltip: {
+    inverseOrder: true
+  }
+};
+
+  var line_chart = new ApexCharts(document.querySelector("#chart_lines"), options);
+  line_chart.render();
 
 </script>
 
