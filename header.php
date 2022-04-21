@@ -93,7 +93,7 @@ include_once "$conf_path/easyGDB_conf.php";
         </p>
       </div>
       <div class="modal-footer">
-        <a href="/jbrowse" type="button" class="btn btn-default">OK</a>
+        <a id="jb_ok_cookies" href="/jbrowse/" target="_blank" type="button" class="btn btn-default">OK</a>
       </div>
     </div>
 
@@ -106,6 +106,10 @@ include_once "$conf_path/easyGDB_conf.php";
     $(".jbrowse_link").click(function(event){
       event.preventDefault();
       $("#jb_cookies_Modal").modal();
+    });
+    
+    $("#jb_ok_cookies").click(function(event){
+      $("#jb_cookies_Modal").modal("hide");
     });
 
   });
