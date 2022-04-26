@@ -43,7 +43,7 @@ if ($tb_login) {
                     echo '<a class="dropdown-item" href="/easy_gdb/tools/blast/blast_input.php">BLAST</a>';
                   }
                   if ($tb_jbrowse) {
-                    echo '<a class="dropdown-item jbrowse_link" href="/jbrowse" target="_blank">Genome Browser</a>';
+                    echo '<a class="dropdown-item jbrowse_link" href="/jbrowse/" target="_blank">Genome Browser</a>';
                   }
                   if ($tb_seq_ext) {
                     echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
