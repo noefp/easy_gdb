@@ -10,12 +10,6 @@
     echo '<div id="jb_section" class="collapse show">';
 
     $jb_gene_name = $gene_name;
-    // $jb_gene_name = $gene_name_displayed;
-    // if (preg_match('/\.\d$/',$gene_name_displayed) ) {
-      // $jb_gene_name = preg_replace('/\.\d+$/','',$gene_name_displayed);
-    // }
-    
-    // $jb_dataset = "easy_gdb_sample";
     
     echo "<a class=\"float-right jbrowse_link\" href=\"/jbrowse/?data=data%2F$jb_dataset&loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a>";
     echo "<iframe class=\"jb_iframe\" src=\"/jbrowse/?data=data%2F$jb_dataset&loc=$jb_gene_name&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\">";

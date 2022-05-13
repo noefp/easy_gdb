@@ -102,9 +102,13 @@ include_once "$conf_path/easyGDB_conf.php";
 
 <script>
   jQuery(document).ready(function() {
-
+    
+    var jb_link = "/jbrowse/";
+    
     $(".jbrowse_link").click(function(event){
       event.preventDefault();
+      jb_link = $(this).attr('href');
+      $("#jb_ok_cookies").attr('href', jb_link);
       $("#jb_cookies_Modal").modal();
     });
     
