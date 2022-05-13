@@ -15,7 +15,7 @@ $search_input = test_input($_GET["search_keywords"]);
 echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
 
 function test_input($data) {
-  $data = preg_replace('/[\<\>]+/',' ',$data);
+  $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
   $data = htmlspecialchars($data);
 
   if ( preg_match('/\s+/',$data) ) {
