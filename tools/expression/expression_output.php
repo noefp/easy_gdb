@@ -6,8 +6,8 @@
 <?php 
   $expr_file = $_POST["expr_file"];
   $gene_list = $_POST["gids"];
-  $dataset_name = preg_replace('/.+\//',"",$expr_file);
-  $dataset_name = preg_replace('/_/'," ",$dataset_name);
+  $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
+  $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
   
   if(isset($gene_list)) {
@@ -15,6 +15,11 @@
       return rtrim($row);
     },explode("\n",$gene_list));
   }
+  
+	if ( file_exists("$expression_path/expression_info.json") ) {
+	    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+	    $annot_hash = json_decode($annot_json_file, true);
+	}
   
 ?>
 
@@ -147,7 +152,26 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           $sample_names = array_keys($replicates);
         }
         
-        echo "<tr><td>$gene_name</td>";
+        $q_link = "";
+        if ($annot_hash[$dataset_name_ori]) {
+          if ($annot_hash[$dataset_name_ori]["link"]) {
+            if ($annot_hash[$dataset_name_ori]["link"] == "#") {
+              echo "<tr><td>$gene_name</td>";
+            }
+            else {
+              $q_link = $annot_hash[$dataset_name_ori]["link"];
+              $q_link = preg_replace('/query_id/',$gene_name,$q_link);
+              echo "<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>";
+            }
+          }
+          else {
+            echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>";
+          }
+        }
+        else {
+          echo "<tr><td>$gene_name</td>";
+        }
+        
         
         $scatter_pos = 1;
         

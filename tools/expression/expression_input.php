@@ -32,7 +32,9 @@ asort($all_datasets);
 foreach ($all_datasets as $expr_dataset) {
   $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
   $data_set_name = str_replace("_"," ",$data_set_name);
-  echo "<option value=\"$expression_path/$expr_dataset\">$data_set_name</option>";
+  if ( !preg_match('/\.php$/i', $expr_dataset) && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
+    echo "<option value=\"$expression_path/$expr_dataset\">$data_set_name</option>";
+  }
 }
 
 echo   "</select>";

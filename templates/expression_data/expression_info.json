@@ -1,0 +1,10 @@
+{
+  "Example1 - Plant_gene_expression (RPKM).txt":
+    {"link":"/easy_gdb/gene.php?name=query_id",
+      "description":"example1_description.php"
+    },
+  "Example2 - Organism dataset name (Units).txt":
+    {"link":"#",
+      "description":"example2_description.php"
+    }
+}
