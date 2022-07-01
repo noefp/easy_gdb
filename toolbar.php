@@ -52,7 +52,7 @@ if ($tb_login) {
                     echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
                   }
                   if ($tb_gene_expr) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/expression_input.php">Gene Expression</a>';
+                    echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Gene Expression</a>';
                   }
                   if ($tb_lookup) {
                     echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';

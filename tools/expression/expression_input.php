@@ -1,4 +1,4 @@
-<?php include realpath('../header.php'); ?>
+<?php include realpath('../../header.php'); ?>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
@@ -62,7 +62,6 @@ echo   "</div>";
     
           <label for="InputGenes">Paste a list of gene IDs</label>
 <textarea class="form-control" id="InputGenes" rows="8" name="gids">
-<?php echo "$expr_input_gene_list" ?>
 </textarea>
           <br>
     
@@ -78,7 +77,7 @@ echo   "</div>";
 
 </div>
 
-<?php include realpath('../footer.php'); ?>
+<?php include realpath('../../footer.php'); ?>
 
 
 <style>
@@ -115,6 +114,7 @@ echo   "</div>";
           
           var names = JSON.parse(names_array);
           
+          $("#InputGenes").val(names.slice(0, 5).join("\n"));
           $( "#autocomplete_gene" ).autocomplete({
             source: function(request, response) {
               var results = $.ui.autocomplete.filter(names, request.term);

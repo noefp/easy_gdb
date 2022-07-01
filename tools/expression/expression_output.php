@@ -1,4 +1,4 @@
-<?php include realpath('../header.php'); ?>
+<?php include realpath('../../header.php'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
@@ -19,7 +19,7 @@
 ?>
 
 <br>
-<a href="/easy_gdb/tools/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 
 <div class="page_container" style="margin-top:20px">
   <h1 id="dataset_title" class="text-center"><?php echo "$dataset_name" ?></h1>
@@ -225,7 +225,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 <br>
 
-<?php include realpath('../footer.php'); ?>
+<?php include realpath('../../footer.php'); ?>
 
 <script type="text/javascript">
   var sample_array = <?php echo json_encode($sample_names) ?>;

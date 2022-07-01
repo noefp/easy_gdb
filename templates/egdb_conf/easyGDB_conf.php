@@ -42,16 +42,6 @@ $input_gene_list="gene1.1
 gene2.1
 gene3.1";
 
-$expr_input_gene_list="gene1
-gene2
-gene3
-gene4
-gene5
-gene6
-gene7
-gene8
-gene9
-gene10";
 
 // Tools
 $max_lookup_input = 10000;
