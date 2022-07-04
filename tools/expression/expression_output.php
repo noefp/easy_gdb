@@ -16,19 +16,38 @@
     },explode("\n",$gene_list));
   }
   
-	if ( file_exists("$expression_path/expression_info.json") ) {
-	    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
-	    $annot_hash = json_decode($annot_json_file, true);
-	}
   
 ?>
 
-<br>
 <a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 
 <div class="page_container" style="margin-top:20px">
-  <h1 id="dataset_title" class="text-center"><?php echo "$dataset_name" ?></h1>
   <br>
+<?php
+  if ( file_exists("$expression_path/expression_info.json") ) {
+    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+    $annot_hash = json_decode($annot_json_file, true);
+    
+    if ($annot_hash[$dataset_name_ori]["description"]) {
+    
+      $desc_file = $annot_hash[$dataset_name_ori]["description"];
+
+      if ( file_exists("$expression_path/$desc_file") ) {
+        
+        echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
+        
+        echo "<h2 style=\"font-size:20px\">$r_key</h2>";
+        include("$expression_path/$desc_file");
+        echo"<br>";
+      }
+      else {
+        echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
+      }
+    }
+    
+  }
+?>
+  
   <div class="data_table_frame">
 
 

@@ -1,29 +1,23 @@
-<a href="/easy_gdb/tools/expression_input.php" class="float-right" style="text-decoration: underline;" target="_blank">Go to gene expression atlas</a>
+<h1 style="font-size:26px">Expression Datasets</h1>
 <br>
+<?php
 
-<div class="page_container" style="margin-top:20px">
-  <h1 class="text-center">Expression datasets</h1>
-  <br>
-  <ul>
-    <?php 
-      if ($dh = opendir("$custom_text_path/custom_pages/expression_dataset_info")){
-
-        while (($file_name = readdir($dh)) !== false){ //iterate all files in dir
-          
-          if (!preg_match('/^\./', $file_name) && preg_match('/\.php/', $file_name) ){
-            $data_set_name = str_replace(".php","",$file_name);
-            
-            echo '<li><a href="/easy_gdb/custom_view.php?file_name=expression_dataset_info/'.$file_name.'">'.$data_set_name.'</a></li>';
-          }
-          
-        }
+if ( file_exists("$expression_path/expression_info.json") ) {
+  $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+  $annot_hash = json_decode($annot_json_file, true);
+  
+  foreach ($annot_hash as $r_key => $r_value) {
+    if ($annot_hash[$r_key]["description"]) {
+      
+      $desc_file = $annot_hash[$r_key]["description"];
+      if ( file_exists("$expression_path/$desc_file") ) {
         
+        echo "<h2 style=\"font-size:20px\">$r_key</h2>";
+        include("$expression_path/$desc_file");
+        echo"<br>";
       }
-    ?>
-  </ul>
+    }
+  }
+}
 
-</div>
-
-<br>
-
-
+?>
