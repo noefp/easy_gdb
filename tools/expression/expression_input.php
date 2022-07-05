@@ -157,7 +157,6 @@ echo   "</div>";
         //alert("empty");
       }
       
-      
     });
     
     

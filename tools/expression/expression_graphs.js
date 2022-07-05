@@ -1,4 +1,4 @@
-var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546E7A'];
+var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546ead','#666','#999','#ccc','#000',"#a61101", "#c89", "#ab5700", "#798b00", "#437801", "#036aab", "#d0f", "#700982", "#fe9989", "#f8aedf", "#ffdf64", "#cbff89", "#6befff", "#f77ffa",'#b66'];
 
 // ######################################################## Lines
 
@@ -142,7 +142,6 @@ var options = {
 };
 
 var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
-heatmap_chart.render();
 
 
 // ######################################################## Replicates
@@ -205,5 +204,24 @@ var options = {
 };
 
 var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
-scatter_chart.render();
+
+$(document).ready(function () {
+  
+  $("#heatmap_graph").on('shown.bs.collapse', function(){
+    heatmap_chart.render();
+  });
+  
+  $("#replicates_graph").on('shown.bs.collapse', function(){
+    scatter_chart.render();
+  });
+  
+  // $('#heatmap_section').click(function () {
+  // });
+  //
+  // $('#replicates_section').click(function () {
+  // });
+  
+});
+
+
 

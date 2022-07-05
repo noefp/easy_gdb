@@ -62,7 +62,7 @@
   
 <!-- #####################             Heatmap             ################################ -->
   
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
+    <div id="heatmap_section" class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
     </div>
 
@@ -80,7 +80,7 @@
   
     <!-- #####################             Replicates             ################################ -->
   
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+    <div id="replicates_section" class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
     </div>
 
