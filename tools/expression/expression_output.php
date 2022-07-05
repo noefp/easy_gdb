@@ -2,7 +2,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-
 <?php 
   $expr_file = $_POST["expr_file"];
   $gene_list = $_POST["gids"];
@@ -16,7 +15,6 @@
     },explode("\n",$gene_list));
   }
   
-  
 ?>
 
 <a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
@@ -24,6 +22,8 @@
 <div class="page_container" style="margin-top:20px">
   <br>
 <?php
+  // ############################################################### DATASET TITLE AND DESCRIPTION
+  
   if ( file_exists("$expression_path/expression_info.json") ) {
     $annot_json_file = file_get_contents("$expression_path/expression_info.json");
     $annot_hash = json_decode($annot_json_file, true);
@@ -48,40 +48,44 @@
   }
 ?>
   
-  <div class="data_table_frame">
-
-
   <center>
-    
-    
-    <div id="line_chart_frame" style="width:95%; border:2px solid #666; padding-top:7px">
-    
-      <div id="chart_lines" style="min-height: 550px;"></div>
-    
+
+<!-- #####################             Lines             ################################ -->
+  
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Lines
     </div>
-    
+
+    <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
+      <div id="chart_lines" style="min-height: 550px;"></div>
+    </div>
+  
+<!-- #####################             Heatmap             ################################ -->
+  
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
     </div>
 
     <div id="heatmap_graph" class="collapse hide">
-    
+
       <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
         <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
         <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
         <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
-    
+
         <div id="chart1" style="min-height: 400px;"></div>
-    
+
       </div>
     </div>
+  
+    <!-- #####################             Replicates             ################################ -->
   
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
     </div>
 
     <div id="replicates_graph" class="collapse hide">
-  
+
       <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
         <div class="form-group d-inline-flex" style="width: 450px;">
           <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
@@ -95,15 +99,21 @@
         </div>
         <div id="chart2" style="min-height: 365px;"></div>
       </div>
-  
+
     </div>
+  
+  
+  
   </center>
+  
+  
+  <div class="data_table_frame">
 
-  <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
-    <i class="fas fa-sort" style="color:#229dff"></i> Average values
-  </div>
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Average values
+    </div>
 
-  <div id="avg_table" class="collapse hide">
+    <div id="avg_table" class="collapse hide">
 
 <?php
 
@@ -115,6 +125,7 @@ $scatter_one_sample = [];
 $scatter_all_genes = [];
 
 $found_genes = [];
+
 
 if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
@@ -261,22 +272,25 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 ?>
 
-  </div>
+    </div> <!-- avg_table end -->
   
-  </div>
+  </div> <!-- data_table_frame end -->
 </div>
 
 <br>
 
 <?php include realpath('../../footer.php'); ?>
 
+
+
 <script type="text/javascript">
+  
   var sample_array = <?php echo json_encode($sample_names) ?>;
   var heatmap_series = <?php echo json_encode(array_reverse($heatmap_series)) ?>;
+  
+  var gene_list = <?php echo json_encode($found_genes) ?>;
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
-  var gene_list = <?php echo json_encode($found_genes) ?>;
-  var scatter_title = gene_list[0]+' Expression values';
   
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
@@ -285,157 +299,6 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
   }
   
-  var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#ffffff"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#aaaaaa"}];
-  
-  $( "#red_color_btn" ).click(function() {
-    // alert("hi");
-    heatmap_chart.updateOptions({
-      colors: ["#ff0000"],
-      plotOptions: {
-        heatmap: {
-          shadeIntensity: 0.5,
-          radius: 0,
-          useFillColorAsStroke: true,
-          colorScale: {
-            ranges: []
-          }
-        }
-      }
-    });
-    
-  });
-  
-  $( "#blue_color_btn" ).click(function() {
-    // alert("hi");
-    heatmap_chart.updateOptions({
-      colors: ["#008FFB"],
-      plotOptions: {
-        heatmap: {
-          colorScale: {
-            ranges: []
-          }
-        }
-      }
-    });
-    
-  });
-  
-  $( "#range_color_btn" ).click(function() {
-    // alert("hi: "+color_ranges);
-    heatmap_chart.updateOptions({
-      colors: ["#777777"],
-      plotOptions: {
-        heatmap: {
-          colorScale: {
-            ranges: color_ranges
-          }
-        }
-      }
-    });
-    
-  });
-  
-  $( "#sel1" ).change(function() {
-    // alert( this.value );
-    scatter_title = this.value+' Expression values';
-    scatter_one_gene = scatter_all_genes[this.value];
-    
-    
-    scatter_chart.updateOptions({
-      title: {
-        text: scatter_title,
-         align: 'center'
-      }
-    })
-    scatter_chart.updateSeries(
-      scatter_one_gene
-    )
-
-  });
-  
-  
-  // alert("scatter_one_gene: "+JSON.stringify(scatter_one_gene) );
-  // alert("heatmap_series: "+heatmap_series);
-  
-  
-var options = {
-  series: scatter_one_gene,
-  // series: test,
-   chart: {
-    height: 350,
-    type: 'scatter',
-    zoom: {
-      enabled: false,
-      type: 'xy'
-    }
-  },
-  colors: ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546E7A'],
-  title: {
-    text: scatter_title,
-    align: 'center',
-    style: {
-      fontSize: '24'
-    }
-  },
-  xaxis: {
-    type: 'category',
-    categories: sample_array,
-    // categories: ["Sample1", "Sample2", "Sample3","Sample4", "Sample5", "Sample6","Sample7", "Sample8", "Sample9", "Sample10"],
-    tickAmount: sample_array.length-1
-  },
-  yaxis: {
-    tickAmount: 5
-  },
-  legend: {
-    show: false
-    // position: 'top'
-  }
-};
-
-var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
-scatter_chart.render();
-
-
-// alert("heatmap_series: "+JSON.stringify(heatmap_series) );
-
-
-var options = {
-  series: heatmap_series,
-  chart: {
-    height: 350,
-    type: 'heatmap',
-  },
-  dataLabels: {
-    enabled: true
-  },
-  colors: ["#777777"],
-  plotOptions: {
-    heatmap: {
-      shadeIntensity: 0.5,
-      radius: 0,
-      useFillColorAsStroke: true,
-      colorScale: {
-        ranges: color_ranges
-      }
-    }
-  },
-  title: {
-    text: 'Heatmap'
-  },
-  
-  xaxis: {
-    type: 'category',
-    categories: sample_array,
-    tickAmount: sample_array.length-1
-  }
-  
-};
-
-var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
-heatmap_chart.render();
-
-
-      
   $("#tblResults").dataTable({
     "dom":'Bfrtip',
     "ordering": false,
@@ -446,63 +309,9 @@ heatmap_chart.render();
   $("#tblResults_info").addClass("float-left");
   $("#tblResults_paginate").addClass("float-right");
 
-
-
-
-
-var options = {
-  series: heatmap_series,
-  chart: {
-  height: 500,
-  type: 'line',
-  zoom: {
-    enabled: false,
-    type: 'xy'
-  },
-  toolbar: {
-    show: true
-  }
-  },
-  colors: ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546E7A'],
-  dataLabels: {
-    enabled: true,
-    offsetY: -5
-  },
-  stroke: {
-    curve: 'straight'
-  },
-  title: {
-    text: 'Lines',
-    align: 'left'
-  },
-  markers: {
-    size: 3
-  },
-  xaxis: {
-    categories: sample_array
-  },
-  yaxis: {
-    title: {
-      text: 'Expression value'
-    }
-  },
-  legend: {
-    position: 'top',
-    horizontalAlign: 'center',
-    inverseOrder: true,
-    floating: true,
-    offsetY: -30,
-    offsetX: 25
-  },
-  tooltip: {
-    inverseOrder: true
-  }
-};
-
-  var line_chart = new ApexCharts(document.querySelector("#chart_lines"), options);
-  line_chart.render();
-
 </script>
+  
+<script src="expression_graphs.js"></script>
 
 <style>
   #range_color_btn{
@@ -514,5 +323,3 @@ var options = {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0c320', endColorstr='#ff0000',GradientType=1 );
   }
 </style>
-  
-
