@@ -476,6 +476,9 @@ in the JSON file `expression_info.json`. It is important that the sample name in
 The variable `$expr_menu` can be enabled in the configuration file to activate a link to the datasets information, 
 which will display the information from all the datasets based on the information in the JSON file.
 
+Dataset description PHP files should be placed in `egdb_custom_text/custom_pages/expr_datasets/`.
+Expression images should be placed in `egdb_images/expr/`.
+
 
 ##### Gene version lookup
 
