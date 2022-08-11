@@ -31,47 +31,49 @@ if ($tb_login) {
               if ($tb_downloads) {
                 echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
               }
-            ?>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>
-              <div class="dropdown-menu">
-                <?php 
-                  if ($tb_search) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/search/search_input.php">Search</a>';
-                  }
-                  if ($tb_blast) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/blast/blast_input.php">BLAST</a>';
-                  }
-                  if ($tb_jbrowse) {
-                    echo '<a class="dropdown-item jbrowse_link" href="/jbrowse/" target="_blank">Genome Browser</a>';
-                  }
-                  if ($tb_seq_ext) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
-                  }
-                  if ($tb_annot_ext) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
-                  }
-                  if ($tb_gene_expr) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Gene Expression</a>';
-                  }
-                  if ($tb_lookup) {
-                    echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
-                  }
-                ?>
-              </div>
-            </li>
-            
-            <?php
+              
+              if ($tb_tools) {
+                echo '<li class="nav-item dropdown">';
+                echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>';
+                echo '<div class="dropdown-menu">';
+                
+                
+                if ($tb_search) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/search/search_input.php">Search</a>';
+                }
+                if ($tb_blast) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/blast/blast_input.php">BLAST</a>';
+                }
+                if ($tb_jbrowse) {
+                  echo '<a class="dropdown-item jbrowse_link" href="/jbrowse/" target="_blank">Genome Browser</a>';
+                }
+                if ($tb_seq_ext) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
+                }
+                if ($tb_annot_ext) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
+                }
+                if ($tb_gene_expr) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Gene Expression</a>';
+                }
+                if ($tb_lookup) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
+                }
+                
+                
+                echo '</div>';
+                echo '</li>';
+              }
+
+
               if ($tb_more) {
                 include_once realpath("$easy_gdb_path/more.php");
               }
-            ?>
-            <?php
+
               if ($tb_custom) {
                 include_once realpath("$custom_text_path/custom_toolbar.php");
               }
-            ?>
-            <?php
+
               if ($tb_private) {
                 echo '<li class="nav-item"><a id="tbp_link" class="nav-link" href="#"><b>Private links</b></a></li>';
               }
