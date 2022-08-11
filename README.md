@@ -102,7 +102,7 @@ You can take a look using your file browser at `src` or in the terminal using th
 
     ls -lh /var/www/html
 
-You should be able to see the folders `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files`, `jbrowse` and `lookup`, 
+You should be able to see the folders `blast_dbs`, `downloads`, `expression_data`, `easy_gdb`, `egdb_files`, `jbrowse` and `lookup`, 
 and inside them there are some example templates to help you customize your own genomic web portal.
 
 At this moment most of the features of easy_gdb should be already available (all but the parts depending on the annotation database).
@@ -262,6 +262,10 @@ You could easily change between them having different file folders and just chan
 #### Customize your site
 
 In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` together with other data files you can customize your site.
+One way to manage multiple sites is to create a copy of the `egdb_files` folder with its content and adding it to the path in the configuration file,
+writing the new name in the value of the `$egdb_files_folder` variable. It is a good practice to create always a copy of the `egdb_files` folder to keep
+always a reference of the example configuration.
+
 
 Below we will see how to customize each page of the genomic portal step by step.
 
@@ -410,6 +414,7 @@ You can modify the example input gene list changing the variable `$input_gene_li
 
 The variable `$max_extract_seq_input` (in `easyGDB_conf.php`) controls the maximum number of input gene names to extract.
 
+
 ##### Genome browser
 
 As we ran the setup file after cloning easy GDB, at this point, and example of JBrowse should be ready.
@@ -423,12 +428,54 @@ For more information about how to add a new species and to add tracks see `Insta
 To enable the annotation extraction first we must install the PostgreSQL database and import the annotations.
 See [Install PostgreSQL](#install-postgresql)
 
-##### Gene expression
 
-Place expression data as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column).
+##### Gene expression atlas
+
+Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the tools dropdown menu of the toolbar.
+The expression datasets should be placed in the `expression data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
+
+In the `expression_data` folder you can find two examples of tab-delimited files, with extension `.txt`, containing expression data, and a JSON file (`expression_info.json`) including
+the names of the dataset description files, a link to the gene annotation page (by default it will check in the local database, but it is possible to add external links or remove links), 
+and names of images used for each sample in case of enabling the expression card visualization. Link will appear in the gene names of the Average values table.
+
+Place your expression data files in the `expression_data` folder, as tab delimited text files with normalized data for each replicates in the columns (header), 
+and each gene in the rows (first column), as shown in the examples.
 All replicates should have the same name in the header to be group together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
-The expression datasets (the previously mentioned text files) should be placed in the `expression data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
-Remember to turn `$tb_gene_expr` to 1 in the configuration file (`easyGDB_conf.php`).
+
+Additionally, you can switch the variable `$expr_cards` to 1 in the `easyGDB_conf.php` file to enable the expression card visualization. 
+In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image
+in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the tab-delimited expression data file,
+ and the image file name correspond with the name in the images path.
+
+```json
+  {
+    "Example1 - Plant_gene_expression (RPKM).txt":
+      {"link":"/easy_gdb/gene.php?name=query_id",
+        "description":"example1_description.php",
+        "images":
+          {
+            "Leaf":"leaf.jpeg",
+            "Fruit":"fruit.jpeg",
+            "Root":"root.jpeg",
+            "Peel":"peel.jpeg",
+            "Seed":"seed.jpeg",
+            "Germinating Seed":"germinating_seed.jpeg",
+            "Darkness":"darkness.jpeg",
+            "Drought":"drought.jpeg",
+            "Heat":"heat.jpeg",
+            "Cold":"cold.jpeg"
+          }
+      },
+    "Example2 - Organism dataset name (Units).txt":
+      {"link":"#",
+        "description":"example2_description.php"
+      }
+  }
+```
+
+The variable `$expr_menu` can be enabled in the configuration file to activate a link to the datasets information, 
+which will display the information from all the datasets based on the information in the JSON file.
+
 
 ##### Gene version lookup
 
