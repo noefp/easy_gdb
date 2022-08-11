@@ -1,3 +1,5 @@
+<?php include realpath('../../header.php'); ?>
+<br>
 <h1 style="font-size:26px">Expression Datasets</h1>
 <br>
 <?php
@@ -10,10 +12,12 @@ if ( file_exists("$expression_path/expression_info.json") ) {
     if ($annot_hash[$r_key]["description"]) {
       
       $desc_file = $annot_hash[$r_key]["description"];
-      if ( file_exists("$expression_path/$desc_file") ) {
+      if ( file_exists("$custom_text_path/expr_datasets/$desc_file") ) {
+        $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$r_key);
+        $data_set_name = str_replace("_"," ",$data_set_name);
         
-        echo "<h2 style=\"font-size:20px\">$r_key</h2>";
-        include("$expression_path/$desc_file");
+        echo "<h2 style=\"font-size:20px\">$data_set_name</h2>";
+        include("$custom_text_path/expr_datasets/$desc_file");
         echo"<br>";
       }
     }
@@ -21,3 +25,4 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 }
 
 ?>
+<?php include realpath('../../footer.php'); ?>

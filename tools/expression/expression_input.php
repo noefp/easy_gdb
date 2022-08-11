@@ -20,8 +20,8 @@ $all_datasets = get_dir_and_files($expression_path); // call the function
 echo "<div class=\"form-group\">";
 echo "<label for=\"sel1\">Select Dataset</label>";
 
-if ( file_exists($custom_text_path."/custom_pages/expression_menu.php") ) {
-  echo "<a href=\"/easy_gdb/custom_view.php?file_name=expression_menu.php\" class=\"float-right\" style=\"text-decoration: underline;\" target=\"_blank\">Dataset Information</a>";
+if ($expr_menu && file_exists("expression_menu.php") ) {
+  echo "<a href=\"expression_menu.php\" class=\"float-right\" style=\"text-decoration: underline;\" target=\"_blank\">Dataset Information</a>";
 }
 
 

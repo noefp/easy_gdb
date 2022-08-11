@@ -207,19 +207,89 @@ var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
 
 $(document).ready(function () {
   
+// ######################################################## Heatmap
+  
   $("#heatmap_graph").on('shown.bs.collapse', function(){
     heatmap_chart.render();
+    //$(".flip-card-inner").css("transform", "rotateY(180deg)");
+  });
+    
+    
+    
+    
+    
+    
+// ######################################################## Cards
+
+
+  //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
+  function ajax_change_card_gene(expr_file,db_title,db_logo,img_path,sample_array,expr_img_array) {
+    
+    jQuery.ajax({
+      type: "POST",
+      url: 'ajax_cards.php',
+      data: {'expr_file': expr_file, 'db_title': db_title, 'db_logo': db_logo, 'img_path': img_path, 'sample_array': sample_array, 'expr_img_array': expr_img_array},
+
+      success: function (php_array) {
+        
+        var php_code = JSON.parse(php_array);
+        $("#card_code").html(php_code.join("\n"));
+        
+        $('.flip-card-inner').delay(800).animate({  borderSpacing: 180 }, {
+            step: function(now,fx) {
+              $(".flip-card-inner").css('transform','rotateY('+now+'deg)');  
+            },
+            duration:'slow'
+        },'swing');
+        
+      }
+    });
+    
+  }; // end ajax_call
+  
+  // get data for cards from the first gene
+  function get_gene_data(gene_name) {
+    card_one_gene_data = [];
+    for (let i = 0; i < heatmap_series.length; i++) {
+      
+      card_one_gene_name = heatmap_series[i]['name'];
+      
+      if (card_one_gene_name == gene_name) {
+        card_one_gene_data = heatmap_series[i]['data'];
+      }
+      
+    }
+    return card_one_gene_data
+  }
+  
+  // Change cards when selecting a new gene
+  $( "#card_sel1" ).change(function() {
+    
+    card_active_gene = $('#card_sel1').val();
+    
+    card_one_gene_data = get_gene_data(card_active_gene);
+    
+    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array);
+    
   });
   
+  // render expr cards graph when opening Expression Cards section
+  $("#cards_frame").on('shown.bs.collapse', function(){
+  
+    //get first gene to render expression cards
+    first_gene = $('#card_sel1').val();
+    card_one_gene_data = get_gene_data(first_gene);
+    
+    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array);
+  });
+  
+  
+  
+  
+  // render replicates graph when opening replicates section
   $("#replicates_graph").on('shown.bs.collapse', function(){
     scatter_chart.render();
   });
-  
-  // $('#heatmap_section').click(function () {
-  // });
-  //
-  // $('#replicates_section').click(function () {
-  // });
   
 });
 

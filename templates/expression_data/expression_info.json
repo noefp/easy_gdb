@@ -1,7 +1,20 @@
 {
   "Example1 - Plant_gene_expression (RPKM).txt":
     {"link":"/easy_gdb/gene.php?name=query_id",
-      "description":"example1_description.php"
+      "description":"example1_description.php",
+      "images":
+        {
+          "Leaf":"leaf.jpeg",
+          "Fruit":"fruit.jpeg",
+          "Root":"root.jpeg",
+          "Peel":"peel.jpeg",
+          "Seed":"seed.jpeg",
+          "Germinating Seed":"germinating_seed.jpeg",
+          "Darkness":"darkness.jpeg",
+          "Drought":"drought.jpeg",
+          "Heat":"heat.jpeg",
+          "Cold":"cold.jpeg"
+        }
     },
   "Example2 - Organism dataset name (Units).txt":
     {"link":"#",

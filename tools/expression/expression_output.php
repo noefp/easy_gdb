@@ -24,6 +24,8 @@
 <?php
   // ############################################################### DATASET TITLE AND DESCRIPTION
   
+  $expr_img_array = [];
+  
   if ( file_exists("$expression_path/expression_info.json") ) {
     $annot_json_file = file_get_contents("$expression_path/expression_info.json");
     $annot_hash = json_decode($annot_json_file, true);
@@ -32,12 +34,12 @@
     
       $desc_file = $annot_hash[$dataset_name_ori]["description"];
 
-      if ( file_exists("$expression_path/$desc_file") ) {
+      if ( file_exists("$custom_text_path/expr_datasets/$desc_file") ) {
         
         echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
         
         echo "<h2 style=\"font-size:20px\">$r_key</h2>";
-        include("$expression_path/$desc_file");
+        include("$custom_text_path/expr_datasets/$desc_file");
         echo"<br>";
       }
       else {
@@ -45,75 +47,18 @@
       }
     }
     
+    
+    if ($annot_hash[$dataset_name_ori]["images"]) {
+      $expr_img_array = $annot_hash[$dataset_name_ori]["images"];
+    }
+    
+    // print("<pre>".print_r($expr_img_array,true)."</pre>");
+    
   }
 ?>
   
-  <center>
-
-<!-- #####################             Lines             ################################ -->
   
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Lines
-    </div>
 
-    <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
-      <div id="chart_lines" style="min-height: 550px;"></div>
-    </div>
-  
-<!-- #####################             Heatmap             ################################ -->
-  
-    <div id="heatmap_section" class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
-    </div>
-
-    <div id="heatmap_graph" class="collapse hide">
-
-      <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
-        <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
-        <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
-        <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
-
-        <div id="chart1" style="min-height: 400px;"></div>
-
-      </div>
-    </div>
-  
-    <!-- #####################             Replicates             ################################ -->
-  
-    <div id="replicates_section" class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Replicates
-    </div>
-
-    <div id="replicates_graph" class="collapse hide">
-
-      <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
-        <div class="form-group d-inline-flex" style="width: 450px;">
-          <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
-          <select class="form-control" id="sel1">
-            <?php
-              foreach ($gids as $gene) {
-                echo "<option value=\"$gene\">$gene</option>";
-              }
-            ?>
-          </select>
-        </div>
-        <div id="chart2" style="min-height: 365px;"></div>
-      </div>
-
-    </div>
-  
-  
-  
-  </center>
-  
-  
-  <div class="data_table_frame">
-
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Average values
-    </div>
-
-    <div id="avg_table" class="collapse hide">
 
 <?php
 
@@ -126,11 +71,13 @@ $scatter_all_genes = [];
 
 $found_genes = [];
 
+$table_code_array = [];
 
 if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
   
-   echo "<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">";
+   // echo "<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">";
+   array_push($table_code_array,"<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">");
 
     $columns = [];
     $replicates = [];
@@ -173,11 +120,16 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         
         //print header with sample names
         if (!$header_printed) {
-          echo "<thead><tr><th>".$header[0]."</th>";
+          // echo "<thead><tr><th>".$header[0]."</th>";
+          array_push($table_code_array,"<thead><tr><th>".$header[0]."</th>");
+          
           foreach ($replicates as $r_key => $r_value) {
-            echo "<th>$r_key</th>";
+            // echo "<th>$r_key</th>";
+            array_push($table_code_array,"<th>$r_key</th>");
           }
-          echo "</tr></thead>";
+          // echo "</tr></thead>";
+          array_push($table_code_array,"</tr></thead>");
+          
           $header_printed = 1;
           $sample_names = array_keys($replicates);
         }
@@ -186,20 +138,24 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         if ($annot_hash[$dataset_name_ori]) {
           if ($annot_hash[$dataset_name_ori]["link"]) {
             if ($annot_hash[$dataset_name_ori]["link"] == "#") {
-              echo "<tr><td>$gene_name</td>";
+              // echo "<tr><td>$gene_name</td>";
+              array_push($table_code_array,"<tr><td>$gene_name</td>");
             }
             else {
               $q_link = $annot_hash[$dataset_name_ori]["link"];
               $q_link = preg_replace('/query_id/',$gene_name,$q_link);
-              echo "<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>";
+              // echo "<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>";
+              array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
             }
           }
           else {
-            echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>";
+            // echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>";
+            array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
           }
         }
         else {
-          echo "<tr><td>$gene_name</td>";
+          // echo "<tr><td>$gene_name</td>";
+          array_push($table_code_array,"<tr><td>$gene_name</td>");
         }
         
         
@@ -212,7 +168,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           $a_reps = count($r_value);
         
           $average = sprintf("%1\$.2f",$a_sum/$a_reps);
-          echo "<td>$average</td>";
+          // echo "<td>$average</td>";
+          array_push($table_code_array,"<td>$average</td>");
           
           //save heatmap data
           $heatmap_one_gene["name"] = $gene_name;
@@ -249,7 +206,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           }
           $scatter_one_sample = [];
         }
-        echo "</tr>";
+        // echo "</tr>";
+        array_push($table_code_array,"</tr>");
         
         array_push($heatmap_series, $heatmap_one_gene);
         
@@ -264,13 +222,245 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       
       
     } // each line, each gene foreach
-    echo "</table></div>";
-
+    // echo "</table></div>";
+    array_push($table_code_array,"</table></div>");
+    
   // } // if gene_list
   
 } // if expr file exists
 
 ?>
+
+
+  
+  
+  
+  
+  
+  
+  <center>
+
+<!-- #####################             Lines             ################################ -->
+  
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Lines
+    </div>
+
+    <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
+      <div id="chart_lines" style="min-height: 550px;"></div>
+    </div>
+  </center>
+  
+<!-- #####################             Cards             ################################ -->
+    
+<?php
+
+  if ($expr_cards) {
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
+      echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
+    echo '</div>';
+
+    echo '<div id="cards_frame" class="row collapse hide" style="padding-top:7px">';
+
+
+      echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
+        echo '<label for="card_sel1" style="width: 150px;">Select gene:</label>';
+        echo '<select class="form-control" id="card_sel1">';
+          
+            foreach ($gids as $gene) {
+              echo "<option value=\"$gene\">$gene</option>";
+            }
+        
+        echo '</select>';
+      echo '</div>';
+
+      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
+    echo '</div>';
+    
+  }
+?>
+
+<style>
+  
+  .expr_card_body {
+/*    background-color: #363;*/
+    background-image: url("card_pattern.png");
+    background-repeat: repeat;
+    background-color: #f63;
+    height: 280px;
+    width: 220px;
+    padding: 10px;
+    border: 1px solid #000;
+    margin-right:5px;
+  }
+  
+  .expr_card_title {
+    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    background-color: #ec7;
+    text-align: center;
+    vertical-align: middle;
+    width: 200px;
+    height: 50px;
+    margin-bottom:10px;
+    padding-left:3px;
+    padding-right:3px;
+    border: 1px solid #000;
+    line-height: 50px;
+  }
+  
+  .expr_card_image {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #000;
+  }
+  
+  .expr_card_value {
+    text-align: center;
+    vertical-align: middle;
+    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    background-color: #ec7;
+    width: 50px;
+    height: 50px;
+    left: 9px;
+    position: relative;
+    bottom: 42px;
+    border: 1px solid #000;
+    line-height: 50px;
+  }
+  
+  
+  .gold {
+    background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
+  }
+  
+  
+  
+  
+  
+/* FLIP CARD EFFECT*/
+  
+  /* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+  .flip-card {
+    background-color: transparent;
+
+    height: 280px;
+    width: 220px;
+/*    padding: 10px;*/
+    margin-right:5px;
+    margin-bottom:5px;
+ 
+/*    width: 300px;
+    height: 200px;
+    border: 1px solid #f1f1f1;
+*/    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+
+  /* This container is needed to position the front and back side */
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+  }
+
+  /* Do an horizontal flip when you move the mouse over the flip box container */
+/*  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+*/  
+  
+  /* Position the front and back side */
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+  }
+
+  /* Style the front side (fallback if image is missing) */
+  .flip-card-front {
+    background-color: #363;
+    color: white;
+  }
+
+  /* Style the back side */
+  .flip-card-back {
+/*    background-image: linear-gradient(180deg, #8f6B29, #FDE08D, #DF9F28);*/
+    color: black;
+    transform: rotateY(180deg);
+  }
+  
+</style>
+    
+  
+<!-- #####################             Heatmap             ################################ -->
+
+  <center>
+  
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
+    </div>
+
+    <div id="heatmap_graph" class="collapse hide">
+
+      <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+        <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
+        <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
+        <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
+
+        <div id="chart1" style="min-height: 400px;"></div>
+
+      </div>
+    </div>
+  
+    <!-- #####################             Replicates           ################################ -->
+  
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Replicates
+    </div>
+
+    <div id="replicates_graph" class="collapse hide">
+
+      <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+        <div class="form-group d-inline-flex" style="width: 450px;">
+          <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
+          <select class="form-control" id="sel1">
+            <?php
+              foreach ($gids as $gene) {
+                echo "<option value=\"$gene\">$gene</option>";
+              }
+            ?>
+          </select>
+        </div>
+        <div id="chart2" style="min-height: 365px;"></div>
+      </div>
+
+    </div>
+  
+  
+  
+  </center>
+  
+  
+  <div class="data_table_frame">
+
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Average values
+    </div>
+
+    <div id="avg_table" class="collapse hide">
+
+
+
+<?php
+  
+  echo implode("\n", $table_code_array);
+  
+?>
+
 
     </div> <!-- avg_table end -->
   
@@ -292,6 +482,12 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
   
+  var db_title = <?php echo json_encode($dbTitle) ?>;
+  var db_logo = <?php echo json_encode("$images_path/$db_logo") ?>;
+  var img_path = <?php echo json_encode($images_path) ?>;
+  var expr_img_array = <?php echo json_encode($expr_img_array) ?>;
+    
+    
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
     $( "#chart2_frame" ).css("display","none");
