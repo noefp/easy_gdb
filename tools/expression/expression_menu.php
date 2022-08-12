@@ -18,6 +18,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
         
         echo "<h2 style=\"font-size:20px\">$data_set_name</h2>";
         include("$custom_text_path/expr_datasets/$desc_file");
+        echo"<hr>";
         echo"<br>";
       }
     }
