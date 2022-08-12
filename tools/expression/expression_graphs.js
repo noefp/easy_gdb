@@ -31,7 +31,13 @@ var options = {
     size: 3
   },
   xaxis: {
-    categories: sample_array
+    categories: sample_array,
+    labels: {
+      rotate: -45,
+      rotateAlways: true,
+      hideOverlappingLabels: false,
+      trim: false
+    }
   },
   yaxis: {
     title: {
@@ -191,8 +197,13 @@ var options = {
   xaxis: {
     type: 'category',
     categories: sample_array,
-    // categories: ["Sample1", "Sample2", "Sample3","Sample4", "Sample5", "Sample6","Sample7", "Sample8", "Sample9", "Sample10"],
-    tickAmount: sample_array.length-1
+    tickAmount: sample_array.length-1,
+    labels: {
+      rotate: -45,
+      rotateAlways: true,
+      hideOverlappingLabels: false,
+      trim: false
+    }
   },
   yaxis: {
     tickAmount: 5
