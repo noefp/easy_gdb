@@ -21,7 +21,7 @@
         ?>
         
         <p style="display:inline">
-          <a href="cookies.php">Cookie policy</a>.
+          <a href="/easy_gdb/cookies.php">Cookie policy</a>.
           This site is based on <a href="https://github.com/noefp/easy_gdb" target="_blank">easyGDB</a> software.
         </p>
       </div>
