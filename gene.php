@@ -31,18 +31,35 @@ $query = "SELECT * FROM gene FULL OUTER JOIN annotation_version USING(annotation
 // $query = "SELECT gene_id,gene_version FROM gene join gene_version ON (gene.gene_version_id=gene_version.gene_version_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
 $res = pg_query($query) or die("The gene $gene_name was not found in the database. Please, check the spelling carefully or try to find it in the search tool.");
 // $res = pg_query($query) or die('Query failed: ' . pg_last_error());
-$gene_row = pg_fetch_array($res,0,PGSQL_ASSOC);
-$gene_id = $gene_row["gene_id"];
-$species_id= $gene_row["species_id"];
 
-$species_name = $gene_row["species_name"];
-$annot_version = $gene_row["annotation_version"];
+$ori_gene_name = $gene_name;
+
+if (pg_num_rows($res) == 0) {
+  $gene_name = preg_replace("/$/", ".1", $gene_name);
+  $query = "SELECT * FROM gene FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE gene_name='".pg_escape_string($gene_name)."'";
+  $res = pg_query($query) or die("The gene $gene_name was not found in the database. Please, check the spelling carefully or try to find it in the search tool.");
+  if (pg_num_rows($res) == 0) {
+    echo "\n\n<br><br><h3>The gene $ori_gene_name was not found in the database. Please, check the spelling carefully or try to find it in the search tool.</h3><br><br>\n\n";
+  }
+}
+
+if (pg_num_rows($res) > 0) {
+  $gene_row = pg_fetch_array($res,0,PGSQL_ASSOC);
+  if ($gene_row) {
+    $gene_id = $gene_row["gene_id"];
+    $species_id= $gene_row["species_id"];
+
+    $species_name = $gene_row["species_name"];
+    $annot_version = $gene_row["annotation_version"];
 
 
-  include_once 'jb_frame.php';
-  include_once 'annot_desc.php';
-  include_once 'gene_seq.php';
+    include_once 'jb_frame.php';
+    include_once 'annot_desc.php';
+    include_once 'gene_seq.php';
+  }
+}
 
+  
 ?>
 
 
