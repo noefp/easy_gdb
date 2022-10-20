@@ -1,5 +1,7 @@
 <?php include realpath('../header.php'); ?>
 
+<a href="/easy_gdb/tools/gene_lookup.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+
 <div class="page_container" style="margin-top:40px">
   <h1 class="text-center">Gene Version Lookup</h1>
   
