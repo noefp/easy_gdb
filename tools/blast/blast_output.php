@@ -214,11 +214,23 @@
        $desc = "";
        $one_hsp = 0;
 
-       if (preg_match('/^>([^\s\<]+).+\<\/a\>(.*)/', $line, $match)) {
+       if (preg_match('/^>/', $line, $match)) {
+         
+         //NCBI terms
+         if (preg_match('/\<a title\=\"Show report for ([^\"]+).+\<\/a\>(.+)/', $line, $match)) {
+           $subject = $match[1];
+           $desc = $match[2];
+           $desc = trim($desc, " ");
+         }
+         else if (preg_match('/^>([^\s\<]+).+\<\/a\>(.*)/', $line, $match)) {
           $subject = $match[1];
           $desc = $match[2];
           $desc = trim($desc, " ");
+         }
+
        }
+       
+       
      }
 
       if (preg_match('/Score\s*=/', $line, $match)) {
