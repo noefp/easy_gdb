@@ -274,6 +274,20 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         echo '</select>';
       echo '</div>';
 
+
+      echo '<div class="d-inline-flex" style="margin:10px">';
+        echo '<span class="circle" style="background-color:#000000"></span> 0 - 0.99';
+        echo '<span class="circle" style="background-color:#ffe999"></span> 1 - 1.99';
+        echo '<span class="circle" style="background-color:#fb4"></span> 2 - 9.99';
+        echo '<span class="circle" style="background-color:#ff7469"></span> 10 - 49.99';
+        echo '<span class="circle" style="background-color:#de2515"></span> 50 - 99.99';
+        echo '<span class="circle" style="background-color:#b71005"></span> 100 - 199.99';
+        echo '<span class="circle" style="background-color:#7df"></span> 200 - 4999.99';
+        echo '<span class="circle" style="background-color:#0f0"></span> >5000';
+        echo '<span class="circle gold"></span> Highest';
+      echo '</div>';
+
+
       echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
     echo '</div>';
     
@@ -333,7 +347,14 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
   }
   
-  
+  .circle {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 5px;
+    margin-top: 7px;
+  }
   
   
   
