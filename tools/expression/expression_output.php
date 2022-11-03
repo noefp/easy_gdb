@@ -276,7 +276,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 
       echo '<div class="d-inline-flex" style="margin:10px">';
-        echo '<span class="circle" style="background-color:#000000"></span> 0 - 0.99';
+        echo '<span class="circle" style="background-color:#000000"></span> Lowest or <1';
         echo '<span class="circle" style="background-color:#ffe999"></span> 1 - 1.99';
         echo '<span class="circle" style="background-color:#fb4"></span> 2 - 9.99';
         echo '<span class="circle" style="background-color:#ff7469"></span> 10 - 49.99';
