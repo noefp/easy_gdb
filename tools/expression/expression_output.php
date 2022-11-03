@@ -276,14 +276,15 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 
       echo '<div class="d-inline-flex" style="margin:10px">';
-        echo '<span class="circle" style="background-color:#000000"></span> Lowest or <1';
-        echo '<span class="circle" style="background-color:#ffe999"></span> 1 - 1.99';
-        echo '<span class="circle" style="background-color:#fb4"></span> 2 - 9.99';
-        echo '<span class="circle" style="background-color:#ff7469"></span> 10 - 49.99';
-        echo '<span class="circle" style="background-color:#de2515"></span> 50 - 99.99';
-        echo '<span class="circle" style="background-color:#b71005"></span> 100 - 199.99';
-        echo '<span class="circle" style="background-color:#7df"></span> 200 - 4999.99';
-        echo '<span class="circle" style="background-color:#0f0"></span> >5000';
+        echo '<span class="circle" style="background-color:#000000"></span> Lowest <2';
+        echo '<span class="circle" style="background-color:#fff"></span> <1';
+        echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
+        echo '<span class="circle" style="background-color:#fb4"></span> >=2';
+        echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
+        echo '<span class="circle" style="background-color:#de2515"></span> >=50';
+        echo '<span class="circle" style="background-color:#b71005"></span> >=100';
+        echo '<span class="circle" style="background-color:#7df"></span> >=200';
+        echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
         echo '<span class="circle gold"></span> Highest';
       echo '</div>';
 
@@ -348,12 +349,14 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   }
   
   .circle {
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
+    border-style: solid;
+    border-color: #ccc;
     display: inline-block;
     margin: 5px;
-    margin-top: 7px;
+    margin-left: 15px;
   }
   
   
