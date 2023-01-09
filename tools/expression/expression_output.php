@@ -295,7 +295,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         echo '<label for="card_sel1" style="width: 150px;">Select gene:</label>';
         echo '<select class="form-control" id="card_sel1">';
           
-            foreach ($gids as $gene) {
+            foreach ($found_genes as $gene) {
               echo "<option value=\"$gene\">$gene</option>";
             }
         
@@ -481,7 +481,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
           <select class="form-control" id="sel1">
             <?php
-              foreach ($gids as $gene) {
+              foreach ($found_genes as $gene) {
                 echo "<option value=\"$gene\">$gene</option>";
               }
             ?>
