@@ -9,10 +9,38 @@
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
   
+  $gids = [];
+  
+  
   if(isset($gene_list)) {
-    $gids=array_map(function($row) {
-      return rtrim($row);
-    },explode("\n",$gene_list));
+    
+    $time_start = microtime(true); 
+    
+    foreach (explode("\n",$gene_list) as $one_gene) {
+      $one_gene = rtrim($one_gene);
+      
+      if (preg_match('/\.\d+$/',$one_gene)) {
+        $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
+        array_push($gids,$one_gene2);
+      }
+      if (!preg_match('/\.\d+$/',$one_gene)) {
+        $one_gene2 = $one_gene.".1";
+        array_push($gids,$one_gene2);
+      }
+      array_push($gids,$one_gene);
+    }
+    
+    // $time_end = microtime(true);
+    // $execution_time = ($time_end - $time_start);
+    // echo '<p><b>Total Execution Time:</b> '.$execution_time.'</p>';
+    
+    
+    //$gids = explode("\n", rtrim($gene_list));
+    
+    // $gids=array_map(function($row) {
+    //   return rtrim($row);
+    // },explode("\n",$gene_list));
+    
   }
   
 ?>
@@ -153,10 +181,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
           }
         }
-        else {
+//        else {
           // echo "<tr><td>$gene_name</td>";
-          array_push($table_code_array,"<tr><td>$gene_name</td>");
-        }
+//          array_push($table_code_array,"<tr><td>$gene_name</td>");
+//        }
         
         
         $scatter_pos = 1;
@@ -514,7 +542,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
-    $( "#chart2_frame" ).css("display","none");
+    $( "#chart2" ).css("display","none");
     $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
     
   }
