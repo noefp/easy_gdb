@@ -12,6 +12,10 @@ if(sizeof($gNamesArr)==0) {
 	echo "<h1>No genes to search provided.</h1>";
 }
 else {
+  
+  //TEST
+  //print("<pre>".print_r($gNamesArr,true)."</pre>");
+ 
  
 	// Connecting to db
   $dbconn = pg_connect(getConnectionString());
@@ -56,7 +60,12 @@ else {
   }
   // echo implode("",array_map(function($type) {return "<th style=\"min-width:200px\">{$type}</th>";},$annotTypes));
   echo "</tr></thead><tbody>";
+  
+  
   while($row=pg_fetch_array($dbRes,null, PGSQL_ASSOC)) {
+
+    //TEST
+    //print("<pre>".print_r($row,true)."</pre>");
 
 
   // Creating Gene columns:
@@ -74,6 +83,10 @@ else {
       preg_match("/([^,]*),(.+),(\d+)/",$annotRow,$matches);
       return array(0=>$matches[1],1=>$matches[2],2=>$matches[3]);
     },explode(")\",\"(",substr($row["annot"],3,-3)));
+
+
+    //TEST
+    //print("<pre>".print_r($row["input"],true)."</pre>");
 
 
 echo "<tr><td><a href=\"/easy_gdb/gene.php?name={$row["input"]}\" target=\"_blank\">{$row["input"]}</a></td>";
@@ -128,6 +141,7 @@ echo "</tr>";
 
 <script type="text/javascript">
 $("#tblResults").dataTable({
+  "order": [],
 	dom:'Bfrtip',
   buttons: [
       'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
