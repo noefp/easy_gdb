@@ -31,9 +31,16 @@
   $evalue = $_POST["evalue"];
   $blast_matrix = $_POST["blast_matrix"];
   $blast_filter = $_POST["blast_filter"];
-
+  
+  
   $num_input_seqs = substr_count($query,">");
-
+  
+  if ($num_input_seqs == 0) {
+    $num_input_seqs = 1;
+    $query = ">query_seq\n".$query;
+  }
+  
+  
   $links_hash;
     
   if ( file_exists("$blast_dbs_path/blast_links.json") ) {
