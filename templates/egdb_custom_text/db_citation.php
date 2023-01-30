@@ -3,8 +3,8 @@
 
     <h4>Please, when using this web site or its data, cite us using the reference:</h4>
 
-    <div class="card bg-light" style="padding: 1rem;">
-      <div class= "card-body">    
+    <div class="card bg-light">
+      <div class= "card-body" style="padding: 1rem;">
         Last_name, N., Last_name, N., Last_name, N., Last_name, N., Last_name, N. (year).
         Title of the publication<br>
         <a href="paper_link" target="blank">Journal, 1(1), 111</a><br>
