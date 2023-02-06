@@ -4,7 +4,8 @@
 
 function get_dir_and_files($root, $dir_name, $sub_structure) {
 
-  $dir_list = array(); //create hash to store directories
+  $dir_list = array(); //create a hash to store directories
+  $file_list = array(); //create an array to store files
   $counter = 1;
   // echo "<p>DIR: $root/$dir_name</p>";
   
@@ -16,8 +17,11 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
           if (!preg_match('/^\./', $file_name)) { //discard hidden files
             
             if (!is_dir($root."/".$dir_name."/".$file_name)){
+              //save downloadable files
+              array_push($file_list,"<li><a href=\"/$dir_name/$file_name\" download>$file_name</a></li>");
+              
               //print downloadable files
-              echo "<li><a href=\"/$dir_name/$file_name\" download>$file_name</a></li>";
+              //echo "<li><a href=\"/$dir_name/$file_name\" download>$file_name</a></li>";
             }
             else {
               //save directory path and name in hash
@@ -25,6 +29,11 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
             } 
           }
         } // end of while loop
+        
+        asort($file_list);
+        
+        //print downloadable files
+        echo join("\n",$file_list);
         
         asort($dir_list);
         
