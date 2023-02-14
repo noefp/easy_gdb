@@ -14,7 +14,7 @@
   
   if(isset($gene_list)) {
     
-    $time_start = microtime(true); 
+    //$time_start = microtime(true); 
     
     foreach (explode("\n",$gene_list) as $one_gene) {
       $one_gene = rtrim($one_gene);
