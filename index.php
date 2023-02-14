@@ -1,6 +1,6 @@
 <?php include_once realpath("header.php");?>
 
-<div style="max-width:900px; margin:auto">
+<div id="index_container">
   <br>
 
   <div class="row">
@@ -10,8 +10,10 @@
   </div>
   <br>
   <?php 
-    if (file_exists(realpath("$custom_text_path/db_citation.php")) && filesize(realpath("$custom_text_path/db_citation.php")) >0) {
-      include_once realpath("$custom_text_path/db_citation.php");
+    if (!$rm_citation) {
+      if (file_exists(realpath("$custom_text_path/db_citation.php")) && filesize(realpath("$custom_text_path/db_citation.php")) >0) {
+        include_once realpath("$custom_text_path/db_citation.php");
+      }
     }
   ?>
 
@@ -20,3 +22,12 @@
 </div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
+
+<style>
+  
+  #index_container {
+    max-width:900px; 
+    margin:auto;
+  }
+  
+</style>
