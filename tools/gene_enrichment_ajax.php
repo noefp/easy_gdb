@@ -36,4 +36,11 @@ if ( file_exists("$lookup_file") ) {
 
   echo json_encode($file_array);
 }
+
+if ($lookup_file == "none") {
+  $gNamesArr=array_filter(explode("\n",trim($_POST["gene_list"])),function($gName) {return ! empty($gName);});
+  echo json_encode($gNamesArr);
+}
+
+
 ?>
