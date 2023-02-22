@@ -1,19 +1,23 @@
 <?php include realpath('../header.php'); ?>
 <script src="/easy_gdb/js/openGPlink.js"></script>
 
+<div class="margin-20">
+  <a class="float-right" href="/easy_gdb/help/04_gene_enrichment.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+</div>
 <br>
-
-<div id="dlgDownload">
   <h1 class="text-center">Gene Set Enrichment</h1>
-  <div class="form margin-20">
 
+<div>
+
+  <div class="form margin-20">
+    
     <label for="txtGenes">Paste a list of gene IDs</label>
     <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10">
 <?php echo "$input_gene_list" ?>
     </textarea>
     <br>
 
-    <label>Please, choose one of the species available for Gene Ontolgy enrichment:</label>
+    <label>Please, choose one of the species available for Gene Ontolgy enrichment analysis:</label>
     <br>
 
 <?php
@@ -50,6 +54,10 @@ if ( file_exists("$lookup_path/enrichment.json") ) {
       </select>
     </div>
 
+<p>
+  The gene set enrichment analsysis will be redirected to <a href="https://biit.cs.ut.ee/gprofiler/gost" target="_blank">g:Profiler</a>, 
+  Developed by <a href="https://doi.org/10.1093/nar/gkz369" target="_blank">Raudvere et al 2019</a>.
+</p>
 
     <button id="submit_enrichment" type="submit" class="btn btn-success float-right">Submit</button>
 
