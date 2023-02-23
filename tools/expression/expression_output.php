@@ -45,6 +45,10 @@
   
 ?>
 
+  <div class="margin-20">
+    <a class="float-right" href="/easy_gdb/help/01_gene_expression.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  </div>
+
 <a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 
 <div class="page_container" style="margin-top:20px">
@@ -181,10 +185,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
           }
         }
-//        else {
-          // echo "<tr><td>$gene_name</td>";
-//          array_push($table_code_array,"<tr><td>$gene_name</td>");
-//        }
+        else {
+           echo "<tr><td>$gene_name</td>";
+          array_push($table_code_array,"<tr><td>$gene_name</td>");
+        }
         
         
         $scatter_pos = 1;
