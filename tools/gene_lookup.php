@@ -1,8 +1,12 @@
 <?php include realpath('../header.php'); ?>
 
+<div class="margin-20">
+  <a class="float-right" href="/easy_gdb/help/03_gene_lookup.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+</div>
 <br>
-
-<div id="dlgDownload">
+  
+<div>
+  
   <h1 class="text-center">Gene Version Lookup</h1>
   <div class="form margin-20">
 
@@ -47,13 +51,6 @@ echo   "</div>";
 <br>
 <br>
 <?php include realpath('../footer.php'); ?>
-
-
-<style>
-  .margin-20 {
-    margin: 20px;
-  }
-</style>
 
 
 <script>

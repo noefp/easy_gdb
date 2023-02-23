@@ -3,9 +3,14 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
 <div id="dlgDownload">
+  <div class="margin-20">
+    <a class="float-right" href="/easy_gdb/help/02_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  </div>
   <br>
+  
   <h3 class="text-center">Expression Comparator</h3>
   <div class="form margin-20">
+    
     <form id="comparator_form" action="comparator_output.php" method="post">
     <br>
       

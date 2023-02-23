@@ -58,3 +58,13 @@ h4 {
   width: 100%;
   overflow: scroll;
 }
+
+
+.width900 {
+  max-width:900px; 
+  margin:auto;
+}
+  
+.margin-20 {
+  margin: 20px;
+}

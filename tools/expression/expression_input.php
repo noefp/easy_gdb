@@ -2,10 +2,16 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
-<div id="dlgDownload">
+<div>
+  <div class="margin-20">
+    <a class="float-right" href="/easy_gdb/help/01_gene_expression.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  </div>
   <br>
-  <h3 class="text-center">Gene Expression Atlas</h3>
+  <h3 class="text-center">Gene Expression Viewer</h3>
+  
+  
   <div class="form margin-20">
+    
     <form id="get_expression_form" action="expression_output.php" method="post">
     
     
@@ -83,10 +89,6 @@ echo   "</div>";
 
 
 <style>
-  
-  .margin-20 {
-    margin: 20px;
-  }
   
   .ui-autocomplete {
     max-height: 160px;
