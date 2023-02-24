@@ -16,7 +16,7 @@
         Clicking on the <kbd>Get Expression</kbd> button will return the expression output for those genes.
 			</p>
 			<center>
-				<img id="input_fig1" src='<?php echo "$images_path/help/input.png";?>' width="100%"></a>
+				<img id="input_fig1" src='<?php echo "help_images/input.png";?>' width="100%"></a>
 				<br>
 				Figure 1. Expression viewer main page.
 				<br>
