@@ -8,11 +8,11 @@
 			<br>
       <h1 style="font-size:26px">Gene Version Lookup</h4>
 			<br>
-			<p>
+			<p style="text-align:justify">
 				The gene version lookup tool (<a href="#input_fig1">Figure 1</a>) allows the user to provide a list of genes and select one of the available datasets to get those gene IDs in the version of the required genome. Clicking on the <kbd>search</kbd> button will return the table output for those genes. This table can be downloaded in several formats (CSV, Excel, PDF), can be copied to the clipboard, filtering out unwanted columns and searching within the information in the table.
 			</p>
 			<center>
-				<img id="input_fig1" src='<?php echo "$images_path/help/input_lookup.png";?>' width="100%"></a>
+				<img id="input_fig1" src='<?php echo "/easy_gdb/help/help_images/input_lookup.png";?>' width="100%"></a>
 				<br>
 				Figure 1. Gene version lookup main page.
 				<br>

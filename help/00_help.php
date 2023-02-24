@@ -5,7 +5,7 @@
   <br>
   <h1 style="font-size:26px;text-align:center">Expression Atlas Help</h4>
 	<br>
-  <p  style="text-align:justify">
+  <p style="text-align:justify">
     The Expression Atlas is an interactive tool to visualize gene expression data. 
     These help pages explain the way to query the expression data and to visualize the results, enabling the comparison of the expression profiles of several genes simultaneously. 
   </p>
