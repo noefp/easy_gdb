@@ -59,6 +59,9 @@ if ($tb_login) {
                 if ($tb_lookup) {
                   echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
                 }
+                if ($tb_enrichment) {
+                  echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_enrichment.php">Gene Set Enrichment</a>';
+                }
                 
                 
                 echo '</div>';
