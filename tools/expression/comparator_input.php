@@ -250,7 +250,14 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
           alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
           return false;
       }
-
+      
+      var numberOfChecked = $('input:checkbox:checked').length;
+      
+      if (numberOfChecked == 0) {
+        alert("Please, select some samples.");
+        return false;
+      }
+      
       return true;
     });
 
