@@ -1,6 +1,6 @@
 <?php include_once realpath("header.php");?>
 
-<div id="index_container">
+<div class="width900">
   <br>
 
   <div class="row">
@@ -22,12 +22,3 @@
 </div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
-
-<style>
-  
-  #index_container {
-    max-width:900px; 
-    margin:auto;
-  }
-  
-</style>
