@@ -187,6 +187,12 @@
           $send = $coordinates_checked[1];
 
           $mm = $mismatch-$gaps;
+          
+          // remove quotes from descriptions
+          $desc = preg_replace('/[\'\"]+/','',$desc);
+          
+          
+          
           array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
           //array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
           array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
@@ -194,7 +200,8 @@
           if (strlen($desc) > 150) {
             $desc = substr($desc,0,150)." ...";
           }
-
+          
+          
           $description_hash = array();
 
           $description_hash{"name"} = $subject;
@@ -250,6 +257,11 @@
            list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
 
            $mm = $mismatch-$gaps;
+           
+           // remove quotes from descriptions
+           $desc = preg_replace('/[\'\"]+/','',$desc);
+           
+           
            array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
            // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
            array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
@@ -257,7 +269,8 @@
            if (strlen($desc) > 150) {
              $desc = substr($desc,0,150)." ...";
            }
-
+           
+           
            $description_hash = array();
 
            $description_hash{"name"} = $subject;
@@ -343,6 +356,11 @@
   list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
 
   $mm = $mismatch-$gaps;
+  
+  // remove quotes from descriptions
+  $desc = preg_replace('/[\'\"]+/','',$desc);
+  
+  
   array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
   // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$evalue</td><td>$score</td><td>$desc</td></tr>");
   array_push($res_tab_txt, "$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$evalue\t$score\t$desc");
@@ -350,6 +368,8 @@
   if (strlen($desc) > 150) {
     $desc = substr($desc,0,150)." ...";
   }
+
+
 
   $description_hash = array();
 
