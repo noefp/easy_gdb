@@ -7,7 +7,7 @@
   
 <div>
   
-  <h1 class="text-center">Gene Version Lookup</h1>
+  <h1 class="text-center">Gene Lookup</h1>
   <div class="form margin-20">
 
     <form id="gene_version_lookup">
