@@ -120,8 +120,17 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   if ($dbconn) {
     include_once("../get_annotation_types.php");
+    
+  	// load annotation links in hash
+  	$external_db_annot_hash;
 
-  	// Getting all annotation types.
+  	if ( file_exists("$annotation_links_path/annotation_links.json") ) {
+  	    $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
+  	    $external_db_annot_hash = json_decode($annot_json_file, true);
+  	}
+    
+    
+    // Getting all annotation types.
     $query="SELECT annotation_type_id,annotation_type from annotation_type"; // array with annotation type ids
 
     $res=pg_query($query) or die("Couldn't query database.");
@@ -144,7 +153,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     $dbRes=pg_query($query) or die('Query failed: ' . pg_last_error());
   
   
-    $annotations_hash;
+    $annotations_hash2;
   
     while($row=pg_fetch_array($dbRes,null, PGSQL_ASSOC)) {
       // Parse gene array returned by database - removing 3 characters in the end and at the beginning.
@@ -172,8 +181,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             if ($annot_type == "TAIR10" || $annot_type == "Araport11") {
               $annot_row[0] = preg_replace('/\.\d$/','',$annot_row[0]);
             }
-            if ($annot_hash[$annot_type]) {
-              $q_link = $annot_hash[$annot_type];
+            if ($external_db_annot_hash[$annot_type]) {
+              $q_link = $external_db_annot_hash[$annot_type];
               $q_link = preg_replace('/query_id/',$annot_row[0],$q_link);
             }
 
@@ -184,14 +193,14 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       
         $gene_name = $row["input"];
       
-        $annotations_hash[$gene_name] .= "<td>".implode($terms_array,"; <br>")."</td><td>";
+        $annotations_hash2[$gene_name] .= "<td>".implode($terms_array,"; <br>")."</td><td>";
       
         foreach ($annotEntries as $annot_row) {
           if ($annot_row[2] == $type) {
             array_push( $annots_array, str_replace("\\\"","",$annot_row[1]) );
           }
         }
-        $annotations_hash[$gene_name] .= implode($annots_array,"; <br>")."</td>";
+        $annotations_hash2[$gene_name] .= implode($annots_array,"; <br>")."</td>";
 
       } // close foreach type
     } // end while
@@ -355,7 +364,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         //################################################################################################## ADD ANNOTATIONS
         if ($dbconn) {
         
-          array_push($table_code_array,$annotations_hash[$gene_name]);
+          array_push($table_code_array,$annotations_hash2[$gene_name]);
         }
         //##################################################################################################
         
