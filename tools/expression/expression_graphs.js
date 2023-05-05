@@ -33,10 +33,11 @@ var options = {
   xaxis: {
     categories: sample_array,
     labels: {
-      rotate: -45,
-      rotateAlways: true,
+      rotate: -70,
+      rotateAlways: false,
       hideOverlappingLabels: false,
-      trim: false
+      trim: false,
+      maxHeight: 450
     }
   },
   yaxis: {
