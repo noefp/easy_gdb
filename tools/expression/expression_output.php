@@ -11,7 +11,6 @@
   
   $gids = [];
   
-  
   if(isset($gene_list)) {
     
     //$time_start = microtime(true); 
@@ -58,6 +57,10 @@
   
   $expr_img_array = [];
   
+  if ($dataset_name) {
+    echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
+  }
+  
   if ( file_exists("$expression_path/expression_info.json") ) {
     $annot_json_file = file_get_contents("$expression_path/expression_info.json");
     $annot_hash = json_decode($annot_json_file, true);
@@ -68,17 +71,16 @@
 
       if ( file_exists("$custom_text_path/expr_datasets/$desc_file") ) {
         
-        echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
+        // echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
         
         echo "<h2 style=\"font-size:20px\">$r_key</h2>";
         include("$custom_text_path/expr_datasets/$desc_file");
         echo"<br>";
       }
-      else {
-        echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
-      }
+      // else {
+      //   echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
+      // }
     }
-    
     
     if ($annot_hash[$dataset_name_ori]["images"]) {
       $expr_img_array = $annot_hash[$dataset_name_ori]["images"];
@@ -87,6 +89,7 @@
     // print("<pre>".print_r($expr_img_array,true)."</pre>");
     
   }
+
 ?>
   
   
@@ -109,14 +112,16 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
   
   
-  
-  
   //################################################################################################## ADD ANNOTATIONS
   
   // Get annotation types
   include_once realpath ("$conf_path/database_access.php");
   
-  $dbconn = pg_connect(getConnectionString());
+  $dbconn = 0;
+  
+  if (getConnectionString()) {
+    $dbconn = pg_connect(getConnectionString());
+  }
   
   if ($dbconn) {
     include_once("../get_annotation_types.php");
@@ -209,9 +214,6 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   //##################################################################################################
   
-  
-  
-  
    array_push($table_code_array,"<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">");
 
     $columns = [];
@@ -278,13 +280,12 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           //##################################################################################################
           
           
-          
-          
           array_push($table_code_array,"</tr></thead>");
           
           $header_printed = 1;
           $sample_names = array_keys($replicates);
         }
+        
         
         $q_link = "";
         if ($annot_hash[$dataset_name_ori]) {
@@ -306,9 +307,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           }
         }
         else {
-           echo "<tr><td>$gene_name</td>";
+           //echo "<tr><td>$gene_name</td>";
           array_push($table_code_array,"<tr><td>$gene_name</td>");
         }
+        
         
         
         $scatter_pos = 1;
@@ -386,11 +388,12 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     array_push($table_code_array,"</table></div>");
     
   
-  
   //################################################# ADD ANNOTATIONS
 	// Freeing result and closing connection.
-	pg_free_result($dbRes);
-	pg_close($dbconn);
+  if ($dbconn) {
+    pg_free_result($dbRes);
+    pg_close($dbconn);
+  }
   
 } // if expr file exists
 
