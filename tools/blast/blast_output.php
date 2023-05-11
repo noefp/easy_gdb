@@ -204,12 +204,12 @@
           
           $description_hash = array();
 
-          $description_hash{"name"} = $subject;
-          $description_hash{"id_percent"} = $id;
-          $description_hash{"score"} = $score;
-          $description_hash{"description"} = $desc;
-          $description_hash{"qstart"} = $qstart;
-          $description_hash{"qend"} = $qend;
+          $description_hash["name"] = $subject;
+          $description_hash["id_percent"] = $id;
+          $description_hash["score"] = $score;
+          $description_hash["description"] = $desc;
+          $description_hash["qstart"] = $qstart;
+          $description_hash["qend"] = $qend;
           array_push($json_array, $description_hash);
 
        }
@@ -273,12 +273,12 @@
            
            $description_hash = array();
 
-           $description_hash{"name"} = $subject;
-           $description_hash{"id_percent"} = $id;
-           $description_hash{"score"} = $score;
-           $description_hash{"description"} = $desc;
-           $description_hash{"qstart"} = $qstart;
-           $description_hash{"qend"} = $qend;
+           $description_hash["name"] = $subject;
+           $description_hash["id_percent"] = $id;
+           $description_hash["score"] = $score;
+           $description_hash["description"] = $desc;
+           $description_hash["qstart"] = $qstart;
+           $description_hash["qend"] = $qend;
            array_push($json_array, $description_hash);
 
            $id = 0.0;
@@ -373,12 +373,12 @@
 
   $description_hash = array();
 
-  $description_hash{"name"} = $subject;
-  $description_hash{"id_percent"} = $id;
-  $description_hash{"score"} = $score;
-  $description_hash{"description"} = $desc;
-  $description_hash{"qstart"} = $qstart;
-  $description_hash{"qend"} = $qend;
+  $description_hash["name"] = $subject;
+  $description_hash["id_percent"] = $id;
+  $description_hash["score"] = $score;
+  $description_hash["description"] = $desc;
+  $description_hash["qstart"] = $qstart;
+  $description_hash["qend"] = $qend;
   array_push($json_array, $description_hash);
 
   $blast_table = join('', $res_html);
