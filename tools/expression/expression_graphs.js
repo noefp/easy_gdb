@@ -63,7 +63,7 @@ line_chart.render();
 
 // ######################################################## Heatmap
 
-  var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#ffffff"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#aaaaaa"}];
+  var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#c8c8c8"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#0f0"}];
   
   $( "#red_color_btn" ).click(function() {
     // alert("hi");
@@ -171,6 +171,7 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
     )
 
   });
+  
   
   // alert("scatter_one_gene: "+JSON.stringify(scatter_one_gene) );
   // alert("heatmap_series: "+heatmap_series);
@@ -298,12 +299,82 @@ $(document).ready(function () {
   
   
   
-  // render replicates graph when opening replicates section
+  
+  
+// ######################################################## Cartoons gene selection
+
+  
+  
+  //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
+  // function ajax_change_cartoon_gene(cartoon_active_gene,img_path) {
+  //
+  //   jQuery.ajax({
+  //     type: "POST",
+  //     url: 'ajax_cartoons.php',
+  //     data: {'expr_file': expr_file, 'db_title': db_title, 'db_logo': db_logo, 'img_path': img_path, 'sample_array': sample_array, 'expr_img_array': expr_img_array},
+  //
+  //     success: function (php_array) {
+  //
+  //       var php_code = JSON.parse(php_array);
+  //       $("#card_code").html(php_code.join("\n"));
+  //
+  //       $('.flip-card-inner').delay(800).animate({  borderSpacing: 180 }, {
+  //           step: function(now,fx) {
+  //             $(".flip-card-inner").css('transform','rotateY('+now+'deg)');
+  //           },
+  //           duration:'slow'
+  //       },'swing');
+  //
+  //     }
+  //   });
+  //
+  // }; // end ajax_call
+  
+  
+  
+  
+  $( "#sel_cartoons" ).change(function() {
+    // alert( this.value );
+    //cartoon_one_gene = cartoons_all_genes[this.value];
+    
+    cartoon_active_gene = $('#sel_cartoons').val();
+    
+    //alert("Cartoon gene: "+cartoon_active_gene);
+    //cartoon_one_gene_data = get_gene_data(cartoon_active_gene);
+    
+    draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,cartoon_active_gene);
+    
+    gene_expr_values = cartoons_all_genes[cartoon_active_gene];
+    
+    //var html_array = ["<ul id=\"cartoon_values\" style=\"text-align:left\">"];
+    var html_array = [];
+    
+    for (var sample in gene_expr_values){
+      //alert(sample+": "+gene_expr_values[sample]);
+      html_array.push("<li>"+sample+": "+gene_expr_values[sample]+"</li>");
+    }
+    //html_array.push("</ul>");
+    
+    $("#cartoon_values").html(html_array.join("\n"));
+  });
+  
+  
+  
+  
+  
+  
+  
+  
+  // ################################### render replicates graph when opening replicates section
+  
   $("#replicates_graph").on('shown.bs.collapse', function(){
     scatter_chart.render();
   });
   
+  
+  
+  
+  
+  
 });
-
-
 

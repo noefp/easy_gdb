@@ -1,6 +1,8 @@
 <?php include realpath('../../header.php'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script type="text/javascript" src="/easy_gdb/js/kinetic-v5.1.0.min.js"></script>
+
 
 <?php 
   $expr_file = $_POST["expr_file"];
@@ -103,6 +105,7 @@ $heatmap_series = [];
 // $scatter_one_gene = [];
 $scatter_one_sample = [];
 $scatter_all_genes = [];
+$cartoons_all_genes = [];
 
 $found_genes = [];
 
@@ -359,7 +362,50 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
           }
           $scatter_one_sample = [];
-        }
+          
+          
+          
+          
+          
+          
+          
+          
+              
+
+          //save cartoons data
+          if ($expr_cartoons && $annot_hash) {
+            
+            if ($annot_hash[$dataset_name_ori]["cartoons"]) {
+              //$cartoons_json = $annot_hash[$dataset_name_ori]["cartoons"];
+              //cartoons_sk1.json
+              
+              //echo "<p>gene_name: ".$gene_name." r_key: ".$r_key." average: ".$average."</p>";
+              
+              if ($cartoons_all_genes[$gene_name] ) {
+                  $cartoons_all_genes[$gene_name][$r_key] = $average;
+              } else {
+                $cartoons_all_genes[$gene_name] = [];
+                $cartoons_all_genes[$gene_name][$r_key] = $average;
+              }
+                
+                
+                
+                
+                
+                
+            }
+          
+          }
+          
+          
+          
+          
+          
+          
+          
+          
+          
+        } //end foreach
         // echo "</tr>";
         
         
@@ -406,9 +452,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   
   
-  <center>
 
 <!-- #####################             Lines             ################################ -->
+  <center>
   
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Lines
@@ -445,7 +491,6 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
       echo '<div class="d-inline-flex" style="margin:10px">';
         echo '<span class="circle" style="background-color:#000000"></span> Lowest <2';
-        echo '<span class="circle" style="background-color:#fff"></span> <1';
         echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
         echo '<span class="circle" style="background-color:#fb4"></span> >=2';
         echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
@@ -588,6 +633,153 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 </style>
     
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<!-- #####################             Cartoons             ################################ -->
+
+<center>
+
+<?php
+  
+  if ($expr_cartoons && file_exists($expression_path."/cartoons_sk1.json")) {
+    
+      $cartoons_json = file_get_contents($expression_path."/cartoons_sk1.json");
+      //var_dump($cartoons_json);
+      $jcartoons = json_decode($cartoons_json, true);
+  
+      $max_w = 100;
+      $max_h = 100;
+      $max_x = 10;
+      $max_y = 10;
+      
+      foreach($jcartoons["cartoons"] as $img) {
+        echo "<img id='".$img["img_id"]."' src='".$images_path."/expr/cartoons/".$img["image"]."' style=\"display:none\">";
+    
+        if ($img["width"] > $max_w) {
+          $max_w = $img["width"];
+        }
+        if ($img["height"] > $max_h) {
+          $max_h = $img["height"];
+        }
+        if ($img["x"] > $max_x) {
+          $max_x = $img["x"];
+        }
+        if ($img["y"] > $max_y) {
+          $max_y = $img["y"];
+        }
+      } //end foreach
+  
+      $canvas_w = $max_w + $max_x;
+      $canvas_h = $max_h + $max_y;
+
+
+
+
+
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cartoons_frame" aria-expanded="true">';
+      echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
+    echo '</div>';
+
+    echo '<div id="cartoons_frame" class="row collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">';
+    
+    echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
+      echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\">Select gene:</label>";
+      echo "<select class=\"form-control\" id=\"sel_cartoons\">";
+          foreach ($found_genes as $gene) {
+            echo "<option value=\"$gene\">$gene</option>";
+          }
+      echo "</select>";
+    echo "</div>";
+
+    echo '<div class="d-inline-flex" style="margin:10px">';
+      echo '<span class="circle" style="background-color:#C8C8C8"></span> Lowest <2';
+      echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
+      echo '<span class="circle" style="background-color:#fb4"></span> >=2';
+      echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
+      echo '<span class="circle" style="background-color:#de2515"></span> >=50';
+      echo '<span class="circle" style="background-color:#b71005"></span> >=100';
+      echo '<span class="circle" style="background-color:#7df"></span> >=200';
+      echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
+    echo '</div>';
+
+    echo "<div class=\"row\">";
+    
+      echo "<div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">";
+        echo "<div class=\"cartoons_canvas_frame\">";
+          echo "<div id=\"canvas_div\">";
+            echo '<div id=myCanvas>';
+              echo "Your browser does not support the HTML5 canvas";
+            echo "</div>";
+          echo "</div>";
+          echo "<br>";
+        echo "</div>";
+      echo "</div>";
+    
+      echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
+      
+      echo "<ul id=\"cartoon_values\" style=\"text-align:left\">";
+      foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
+        
+        echo "<li>".$sample_name.": ".$ave_value."</li>";
+        
+      }
+      echo "</ul>";
+      
+      echo "</div>";
+    
+    echo "</div>";
+    
+    
+
+
+
+    echo '</div>';
+
+  }
+?>
+</center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- #####################             Heatmap             ################################ -->
 
   <center>
@@ -673,12 +865,21 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   var gene_list = <?php echo json_encode($found_genes) ?>;
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
+  var cartoons_all_genes = <?php echo json_encode($cartoons_all_genes) ?>;
   
   var db_title = <?php echo json_encode($dbTitle) ?>;
   var db_logo = <?php echo json_encode("$images_path/$db_logo") ?>;
   var img_path = <?php echo json_encode($images_path) ?>;
   var expr_img_array = <?php echo json_encode($expr_img_array) ?>;
-    
+  
+  var cartoons = <?php echo json_encode($expr_cartoons) ?>;
+  
+  if (cartoons) {
+    var imgObj = <?php echo json_encode($jcartoons) ?>;
+    var canvas_h = <?php echo json_encode($canvas_h) ?>;
+    var canvas_w = <?php echo json_encode($canvas_w) ?>;
+    //alert("cartoons_all_genes: "+JSON.stringify(cartoons_all_genes) );
+  }
     
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
@@ -697,9 +898,21 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   $("#tblResults_info").addClass("float-left");
   $("#tblResults_paginate").addClass("float-right");
 
+
 </script>
   
+<script type="text/javascript" src="cartoons_kinetic.js"></script>
 <script src="expression_graphs.js"></script>
+
+<script type="text/javascript">
+  
+  if (cartoons) {
+  
+    canvas = create_canvas(canvas_h,canvas_w);
+    draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,gene_list[0]);
+  }
+  
+</script>
 
 <style>
   #range_color_btn{
