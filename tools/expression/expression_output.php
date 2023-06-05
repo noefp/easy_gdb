@@ -736,10 +736,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
       echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
       
-      echo "<ul id=\"cartoon_values\" style=\"text-align:left\">";
+      echo "<ul style=\"text-align:left\">";
       foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
         
-        echo "<li>".$sample_name.": ".$ave_value."</li>";
+        echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
         
       }
       echo "</ul>";
@@ -923,4 +923,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   background: linear-gradient(90deg, #f0c320 0%,#f0c320 25%,#ff8800 50%,#ff7469 51%,#ff0000 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0c320', endColorstr='#ff0000',GradientType=1 );
   }
+  
+  .cartoon_values:hover {
+    color: red;
+  }
+  
 </style>

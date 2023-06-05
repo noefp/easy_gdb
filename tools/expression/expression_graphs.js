@@ -359,8 +359,61 @@ $(document).ready(function () {
   });
   
   
+//   $( "#cartoon_values" ).click(function() {
+//
+// //    var obj = canvas.get('#Achilles_tendon_kj_image');
+//     var obj = canvas.get('#Achilles_tendon_kj_image')[0];
+//     var obj_text = JSON.stringify(obj, null, 2);
+//
+//     alert("image: "+obj_text);
+//     // alert("image: "+obj.attrs.id);
+//     var i_red = obj.attrs.red;
+//     var i_green = obj.attrs.green;
+//     var i_blue = obj.attrs.blue;
+// //    image: "{\"attrs\":{\"id\":\"Achilles_tendon_kj_image\",\"x\":10,\"y\":10,\"filters\":[null],\"red\":222,\"green\":37,\"blue\":21},\"className\":\"Image\"}"
+//
+//     obj.cache();
+//     obj.filters([Kinetic.Filters.RGB]);
+//     obj.red(150).green(150).blue(150);
+//     // kj_image.red(210).green(34).blue(34);
+//     obj.draw();
+//
+//
+//   });
+  
+var i_red = 0;
+var i_green = 0;
+var i_blue = 0;
+var obj;
   
   
+  $(".cartoon_values").mouseover(function(){
+    image_id = this.id;
+    //alert("image: "+image_id);
+    
+    obj = canvas.get('#'+image_id)[0];
+
+    i_red = obj.attrs.red;
+    i_green = obj.attrs.green;
+    i_blue = obj.attrs.blue;
+    
+    obj.cache();
+    obj.filters([Kinetic.Filters.RGB]);
+    obj.red(150).green(150).blue(150);
+    obj.draw();
+    
+  });
+  
+  $(".cartoon_values").mouseout(function(){
+    
+    //var obj = canvas.get('#'+image_id)[0];
+    
+    obj.cache();
+    obj.filters([Kinetic.Filters.RGB]);
+    obj.red(i_red).green(i_green).blue(i_blue);
+    obj.draw();
+    
+  });
   
   
   

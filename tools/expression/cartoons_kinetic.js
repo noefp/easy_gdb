@@ -53,6 +53,7 @@ function load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sampl
    tmp_imgObj.onload = function() {
 
      var kj_image = new Kinetic.Image({
+       id: sample_name+"_kj_image",
        x: img_x,
        y: img_y,
        image: tmp_imgObj,
@@ -70,6 +71,13 @@ function load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sampl
      kj_image.red(expr_color[0]).green(expr_color[1]).blue(expr_color[2]);
      // kj_image.red(210).green(34).blue(34);
      kj_image.draw();
+ 
+ 
+ 
+     // clicking on gene names (only finds top layer)
+    // kj_image.on('mousedown', function() {
+    //   alert("sample_id: "+kj_image.getAttr("id"));
+    // });
  
    };
 
