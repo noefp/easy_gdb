@@ -660,10 +660,21 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 <?php
   
-  if ($expr_cartoons && file_exists($expression_path."/cartoons_sk1.json")) {
-    
-      $cartoons_json = file_get_contents($expression_path."/cartoons_sk1.json");
+if ( file_exists("$expression_path/expression_info.json") ) {
+  
+  if ($annot_hash[$dataset_name_ori]["cartoons"]) {
+  
+    $cartoon_conf = $annot_hash[$dataset_name_ori]["cartoons"];
+
+    // echo "<p>annot_hash cartoons exists and was found!</p>";
+
+    if ($expr_cartoons && file_exists($expression_path."/$cartoon_conf") ) {
+      
+      $cartoons_json = file_get_contents($expression_path."/$cartoon_conf");
+      
+      // echo "<p>annot_hash cartoons_json exists and was found!</p>";
       //var_dump($cartoons_json);
+
       $jcartoons = json_decode($cartoons_json, true);
   
       $max_w = 100;
@@ -691,26 +702,22 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       $canvas_w = $max_w + $max_x;
       $canvas_h = $max_h + $max_y;
 
-
-
-
-
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cartoons_frame" aria-expanded="true">';
+      echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cartoons_frame" aria-expanded="true">';
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
-    echo '</div>';
+      echo '</div>';
 
-    echo '<div id="cartoons_frame" class="row collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">';
+      echo '<div id="cartoons_frame" class="row collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">';
     
-    echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
+      echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
       echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\">Select gene:</label>";
       echo "<select class=\"form-control\" id=\"sel_cartoons\">";
-          foreach ($found_genes as $gene) {
-            echo "<option value=\"$gene\">$gene</option>";
-          }
+      foreach ($found_genes as $gene) {
+        echo "<option value=\"$gene\">$gene</option>";
+      }
       echo "</select>";
-    echo "</div>";
+      echo "</div>";
 
-    echo '<div class="d-inline-flex" style="margin:10px">';
+      echo '<div class="d-inline-flex" style="margin:10px">';
       echo '<span class="circle" style="background-color:#C8C8C8"></span> Lowest <2';
       echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
       echo '<span class="circle" style="background-color:#fb4"></span> >=2';
@@ -719,9 +726,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       echo '<span class="circle" style="background-color:#b71005"></span> >=100';
       echo '<span class="circle" style="background-color:#7df"></span> >=200';
       echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
-    echo '</div>';
+      echo '</div>';
 
-    echo "<div class=\"row\">";
+      echo "<div class=\"row\">";
     
       echo "<div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">";
         echo "<div class=\"cartoons_canvas_frame\">";
@@ -734,27 +741,25 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         echo "</div>";
       echo "</div>";
     
-      echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
+        echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
       
-      echo "<ul style=\"text-align:left\">";
-      foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
+        echo "<ul style=\"text-align:left\">";
+        foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
         
-        echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+          echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+        }
         
-      }
-      echo "</ul>";
+        echo "</ul>";
       
+        echo "</div>";
+    
       echo "</div>";
-    
-    echo "</div>";
-    
-    
 
+      echo '</div>';
 
-
-    echo '</div>';
-
-  }
+    }//end cartoons conf
+  }//end cartoons hash
+} //end expression_info.json
 ?>
 </center>
 
