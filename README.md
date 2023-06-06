@@ -70,28 +70,31 @@ Go into the easyGDB_docker folder
     cd easyGDB_docker
 
 
-Then, build the container:
+Then, build the container (in the easyGDB_docker folder):
 
-    easyGDB_docker$ docker-compose build
+    docker-compose build
 
-and start the container using `docker-compose` or the Docker desktop application:
+and start the container using `docker-compose` or the Docker desktop application (in the easyGDB_docker folder):
 
-    easyGDB_docker$ docker-compose up
+    docker-compose up
 
 
 Using the Docker container we install easy GDB at `/var/www/html/` (`src/` in the Docker container).
-Open the easy_GDB Docker container terminal or the Docker desktop application.
+Open the easy_GDB Docker container terminal or the Docker desktop application (in the easyGDB_docker folder).
 
-    easyGDB_docker$ docker-compose exec easy_gdb /bin/bash
+    docker-compose exec easy_gdb /bin/bash
 
 Clone the easy_GBD code from Github:
 
     git clone https://github.com/noefp/easy_gdb.git
 
 Now, we will create the configuration and example folder structure.
-Go to `easy_gdb/install` and run the `setup.sh` script:
+Go to the install folder inside easy_gdb (`easy_gdb/install`):
 
     cd easy_gdb/install/
+
+and run the `setup.sh` script:
+
     bash setup.sh
 
 When running the easy GDB setup, installing JBrowse Perl pre-requisites might take some minutes.
@@ -127,9 +130,18 @@ Remember to change the password by the password you will use for web_usr [below]
 
 open the file `egdb_files/egdb_conf/database_access.php`.
 
+And setup the database connection based on the user, password and database name you used. The host is `DB` for the Docker installation and `localhost` for linux installations in servers or personal computers:
+
 ```php
 function getConnectionString(){return "host=DB dbname=annot1 user=web_usr password=password";};
 ```
+
+Or in the case you will not use the relational database (for gene annotations):
+
+```php
+function getConnectionString(){return null;};
+```
+
 
 > If not using the Docker container the host for the postgreSQL database is usually `localhost`
 
@@ -140,6 +152,9 @@ function getConnectionString(){return "host=DB dbname=annot1 user=web_usr passwo
 Open a terminal using docker-compose, docker exec or Docker desktop
 
     docker-compose exec DB /bin/bash
+
+enter the postgres console:
+
     psql -U postgres
 
 or
@@ -206,6 +221,8 @@ Open a terminal using docker-compose or Docker desktop
 
     docker-compose exec easy_gdb /bin/bash
 
+use a Perl script to import the gene list:
+
     perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
 
 It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
@@ -218,7 +235,11 @@ and a third column with the annotation description.
 As an example we will import annotations for SwissProt and TAIR10 (for model plant arabidopsis).
 The script needs the annotations file, name of the annotation (SwissProt, TAIR10, etc.), species name and annotation version.
 
+Example for SwissProt annotations:
+
     perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+
+Example for TAIR10 annotations:
 
     perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
@@ -625,6 +646,7 @@ sudo apt-get install less
 sudo apt-get install wget
 sudo apt-get install zip
 sudo apt-get install make
+sudo apt-get install lsb-release
 ```
 
 #### Install Perl dependencies for JBrowse and importing scripts
@@ -674,13 +696,23 @@ Or you can just go to /var/www/html/ and clone easy GDB there.
 Then follow the steps as in [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker), 
 but directly in your terminal, not using any of the docker commands.
 
-    example_db$ git clone https://github.com/noefp/easy_gdb.git
+in example_db:
 
-    example_db$ cd easy_gdb/install/
+clone the repository:
 
-    example_db/easy_gdb/install$ bash setup.sh
+     git clone https://github.com/noefp/easy_gdb.git
 
-    example_db/easy_gdb/install$ cd ../../
+go to the install folder:
+
+    cd easy_gdb/install/
+
+Run the setup script (in the install folder):
+
+    bash setup.sh
+
+Go back from the install folder to the example_db folder:
+
+    cd ../../
     
 To start the PHP server that run the service to show the web, you can run this command where you installed the example_db:
 
@@ -689,17 +721,24 @@ To start the PHP server that run the service to show the web, you can run this c
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
 
 Do not forget to change configuration path in the file `easy_gdb/configuration_path.php`. 
-By default it is `/var/www/html`, for the Docker installation. If you used a different path, you should change the variable
+By default it is `/var/www/html`, for the Docker installation and for linux servers. If you used a different path, you should change the variable
 from `$conf_path = "/var/www/html/egdb_files/egdb_conf"` to your path, for example `$conf_path = "/home/user/example_db/egdb_files/egdb_conf"`.
 
 Then open the file `easyGDB_conf.php` in the folder `egdb_files/egdb_conf/` and change the `$root_path` to the path where you installed the example_db,
- in the previous example `$root_path = "/home/user"`.
+ in the previous example `$root_path = "/home/user/example_db"`.
 
-open the file `egdb_files/egdb_conf/database_access.php`.
+open the file `egdb_files/egdb_conf/database_access.php` and setup the database connection based on the user, password and database name you used. The host is `DB` for the Docker installation and `localhost` for linux installations in servers or personal computers:
 
 ```php
 function getConnectionString(){return "host=localhost dbname=annot1 user=web_usr password=password";};
 ```
+
+Or in the case you will not use the relational database (for gene annotations):
+
+```php
+function getConnectionString(){return null;};
+```
+
 
 ##### Set up password
 
