@@ -35,8 +35,13 @@
       // alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
 
       //check input genes from gene lookup before sending form
-      if (gene_count > 100) {
-          alert("A maximum of 100 sequences can be provided as input, your input has: "+gene_count);
+      var max_input = "<?php echo $max_annotation_input ?>";
+      if (!max_input) {
+        max_input = 200;
+      }
+      
+      if (gene_count > max_input) {
+          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
           return false;
       }
 
