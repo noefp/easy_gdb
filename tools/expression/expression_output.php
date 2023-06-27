@@ -718,14 +718,14 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo "</div>";
 
       echo '<div class="d-inline-flex" style="margin:10px">';
-      echo '<span class="circle" style="background-color:#C8C8C8"></span> Lowest <2';
-      echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
-      echo '<span class="circle" style="background-color:#fb4"></span> >=2';
-      echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
-      echo '<span class="circle" style="background-color:#de2515"></span> >=50';
-      echo '<span class="circle" style="background-color:#b71005"></span> >=100';
-      echo '<span class="circle" style="background-color:#7df"></span> >=200';
-      echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
+      echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
+      echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
+      echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
+      echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
+      echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
+      echo '<span class="circle" style="background-color:#C70039"></span> >=100';
+      echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
+      echo '<span class="circle" style="background-color:#581845"></span> >=5000';
       echo '</div>';
 
       echo "<div class=\"row\">";

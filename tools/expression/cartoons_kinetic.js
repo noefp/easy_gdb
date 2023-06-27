@@ -1,35 +1,36 @@
 
 
 function get_expr_color(expr_val) {
-   var expr_color = [200,200,200];
+  //#C7FFED
+   var expr_color = [199,255,237];
    
    if (expr_val >= 1 && expr_val <= 1.99) {
-     // expr_color = "#ffe999";
-     expr_color = [255,233,153];
+     // expr_color = "#ffe999" #CCFFBD #DFFF94;
+     expr_color = [223,255,148];
    }
    else if (expr_val >= 2 && expr_val <= 9.99) {
-     // expr_color = "#fb4";
-     expr_color = [255,187,68];
+     // expr_color = "#fb4"#FFFF5C;
+     expr_color = [255,255,92];
    }
    else if (expr_val >= 10 && expr_val <= 49.99) {
-     // expr_color = "#ff7469";
-     expr_color = [255,116,105];
+     // expr_color = "#ff7469 #FFC300";
+     expr_color = [255,195,0];
    }
    else if (expr_val >= 50 && expr_val <= 99.99) {
-     // expr_color = "#de2515";
-     expr_color = [222,37,21];
+     // expr_color = "#de2515 #FF5733";
+     expr_color = [255,87,51];
    }
    else if (expr_val >= 100 && expr_val <= 199.99) {
-     // expr_color = "#b71005";
-     expr_color = [183,16,5];
+     // expr_color = "#b71005 #C70039";
+     expr_color = [199,0,57];
    }
    else if (expr_val >= 200 && expr_val <= 4999.99) {
-     // expr_color = "#7df";
-     expr_color = [119,221,255];
+     // expr_color = "#7df #900C3F";
+     expr_color = [144,12,63];
    }
    else if (expr_val > 5000) {
-     // expr_color = "#0f0";
-     expr_color = [0,255,0];
+     // expr_color = "#0f0 #581845";
+     expr_color = [88,24,69];
    }
    // alert("color: "+expr_color);
    return expr_color;
