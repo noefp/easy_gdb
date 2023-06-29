@@ -32,15 +32,16 @@ if ($hk_genes) {
   $sample_hash = [];
   
   foreach ($_POST['sample_names'] as $sample) {
-    [$file,$exp] = explode("@", $sample);
+    if (preg_match('/\@/',$sample)) {
+      [$file,$exp] = explode("@", $sample);
     
-    if ($sample_hash[$file]) {
-      array_push($sample_hash[$file],$exp);
-    } else {
-      $sample_hash[$file] = [];
-      array_push($sample_hash[$file],$exp);
+      if ($sample_hash[$file]) {
+        array_push($sample_hash[$file],$exp);
+      } else {
+        $sample_hash[$file] = [];
+        array_push($sample_hash[$file],$exp);
+      }
     }
-    
   }
 
 // get input genes
