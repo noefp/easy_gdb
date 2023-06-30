@@ -32,17 +32,30 @@ else {
   $count = 1;
   foreach ($tab_file as $line) {
     $trimmed_line = trim($line);
-      $columns = str_getcsv($trimmed_line,"\t");
+    $columns = str_getcsv($trimmed_line,"\t");
     
-      $count++;
+    $count++;
     
       // if ($count < 5) {
       //   echo "<p>line.".$line.".line</p>";
       //   echo "<p>line.".$trimmed_line.".line</p>";
       //
       //   echo "<p>gene1: $columns[0], gene2: $columns[1]</p>";
-        $gene_hash[trim($columns[0])] = trim($columns[1]);
-        $gene_hash[trim($columns[1])] = trim($columns[0]);
+      
+    if ($gene_hash[trim($columns[0])]) {
+      $gene_hash[trim($columns[0])] = $gene_hash[trim($columns[0])].";".trim($columns[1]);
+    } else {
+      $gene_hash[trim($columns[0])] = trim($columns[1]);
+    }
+
+    if ($gene_hash[trim($columns[1])]) {
+      $gene_hash[trim($columns[1])] = $gene_hash[trim($columns[1])].";".trim($columns[0]);
+    } else {
+      $gene_hash[trim($columns[1])] = trim($columns[0]);
+    }
+      
+        // $gene_hash[trim($columns[0])] = trim($columns[1]);
+        // $gene_hash[trim($columns[1])] = trim($columns[0]);
       
       // }
   }
