@@ -9,14 +9,28 @@ include_once realpath ("$conf_path/database_access.php");
 $dbconn = pg_connect(getConnectionString())
     or die('Could not connect: ' . pg_last_error());
 
-$search_input = test_input($_GET["search_keywords"]);
+
+$raw_input = $_GET["search_keywords"];
+
+$quoted_search = 0;
+
+if ( preg_match('/^".+"$/',$raw_input ) ) {
+  $quoted_search = 1;
+  // echo "<p>RAW $raw_input</p>";
+}
+
+$search_input = test_input($raw_input);
 // $max_row = 25;
+
 
 echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
 
 function test_input($data) {
+  
   $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
   $data = htmlspecialchars($data);
+  
+  
 
   if ( preg_match('/\s+/',$data) ) {
     $data_array = explode(' ',$data,99);
@@ -55,13 +69,13 @@ pg_close($dbconn);
   //   buttons:[{
   //     extend:'csv',
   //     text:'Download',
-  //     title:"AETAR_annotations",
+  //     title:"egdb_annotations",
   //     fieldBoundary: '',
   //     fieldSeparator:"\t"},
   //     {
   //       extend:'excel',
   //       text:'Excel',
-  //       title:"AETAR_annotations",
+  //       title:"egdb_annotations",
   //       fieldSeparator:"\t"
   //     },
   //     'copy'],
@@ -69,7 +83,10 @@ pg_close($dbconn);
   //   });
     
     $("#tblAnnotations").dataTable({
-    	dom:'Bfrtip',
+    	dom:'Bfrtlpi',
+      "oLanguage": {
+         "sSearch": "Filter by:"
+       },
       buttons: [
           'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
       ]
