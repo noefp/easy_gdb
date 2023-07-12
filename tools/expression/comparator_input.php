@@ -39,9 +39,9 @@
 
 <textarea class="form-control" id="housekeeping_input" rows="3" name="denominator_genes">
 </textarea>
-            <span class="form-check-label float-right">
-              <input type="checkbox" class="form-check-input" name="fc_log2" value=1> Apply log2
-            </span>
+          <label class="form-check-label float-right">
+            <input type="checkbox" class="form-check-input" name="fc_log2" value=1> Apply log2
+          </label>
           
         </div>
 
@@ -49,8 +49,19 @@
       <div class="col-sm-6 col-md-6 col-lg-6">
 
         <label for="InputGenes">Paste a list of query gene IDs</label>
-<textarea class="form-control" id="InputGenes" rows="8" name="gids">
-</textarea>
+        
+<?php
+if ($comparator_lookup) {
+echo "<textarea class=\"form-control\" id=\"InputGenes\" rows=\"7\" name=\"gids\">";
+echo "</textarea>";
+        echo "<label class=\"form-check-label float-right\">";
+          echo "<input type=\"checkbox\" class=\"form-check-input\" name=\"newest_v\" value=1 checked> Convert to latest gene version";
+        echo "</label>";
+} else {
+  echo "<textarea class=\"form-control\" id=\"InputGenes\" rows=\"8\" name=\"gids\">";
+  echo "</textarea>";
+}
+?>
         <br>
 
       </div>
@@ -81,7 +92,7 @@ asort($all_datasets);
 foreach ($all_datasets as $expr_dataset) {
   $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
   $data_set_name = str_replace("_"," ",$data_set_name);
-  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
+  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
     
     $f = fopen("$expression_path/$expr_dataset", 'r');
     $first_line = fgets($f);

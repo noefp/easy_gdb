@@ -37,6 +37,7 @@ $tb_custom = 0;
 // Expression Atlas
 $expr_cards = 1;
 $expr_menu = 1;
+$comparator_lookup = 0;
 
 // About
 $ab_citation = 1;
@@ -54,7 +55,7 @@ $max_lookup_input = 10000;
 $max_extract_seq_input = 10000;
 $max_blast_input = 20;
 $max_expression_input = 15;
-$max_annotation_input = 200;
+$max_annotation_input = 5000;
 
 
 // BLAST
