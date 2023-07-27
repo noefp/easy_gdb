@@ -158,7 +158,8 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
   $( "#sel1" ).change(function() {
     // alert( this.value );
     scatter_title = this.value+' Expression values';
-    scatter_one_gene = scatter_all_genes[this.value];
+    //scatter_one_gene = scatter_all_genes[this.value];
+    replicates_one_gene = replicates_all_genes[this.value];
     
     scatter_chart.updateOptions({
       title: {
@@ -167,18 +168,20 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
       }
     })
     scatter_chart.updateSeries(
-      scatter_one_gene
+      // scatter_one_gene
+      replicates_one_gene
     )
 
   });
   
   
   // alert("scatter_one_gene: "+JSON.stringify(scatter_one_gene) );
-  // alert("heatmap_series: "+heatmap_series);
+  // alert("one gene replicates: "+replicates_one_gene);
   
   
 var options = {
-  series: scatter_one_gene,
+  //series: scatter_one_gene,
+  series: replicates_one_gene,
   // series: test,
   chart: {
     height: 350,
@@ -198,8 +201,10 @@ var options = {
   },
   xaxis: {
     type: 'category',
-    categories: sample_array,
-    tickAmount: sample_array.length-1,
+    categories: samples_found,
+    tickAmount: samples_found.length-1,
+//    categories: sample_array,
+//    tickAmount: sample_array.length-1,
     labels: {
       rotate: -45,
       rotateAlways: true,

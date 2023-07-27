@@ -249,7 +249,7 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
       var max_input = "<?php echo $max_expression_input ?>";
       
       if (!max_input) {
-        max_input = 15;
+        max_input = 20;
       }
       
       if (gene_count > max_input) {

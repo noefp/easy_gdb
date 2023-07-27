@@ -73,6 +73,7 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
       }
       
       // ############################ Lookup code
+      // add newest gene versions to gids
       if ($to_newest_v) {
       
         //Add the newest version of the genes 
@@ -84,7 +85,7 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
           array_push($gids,$one_gene2);
         }
         
-        //MUST figure out how to get data from old genes if new ones are used as input
+        // get data from old genes if new ones are used as input
         $old_gene = array_search($one_gene, $lookup_hash);
         
         if ($old_gene) {
@@ -97,7 +98,7 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
     }// end foreach
     
   } //end isset
-  // echo var_dump($gids) . "<br>";
+/////////////////////////////////////////////////////////////////echo var_dump($gids) . "<br>";
   
 ?>
 
@@ -110,6 +111,7 @@ $heatmap_one_gene = [];
 $heatmap_series = [];
 $scatter_one_sample = [];
 $scatter_all_genes = [];
+$replicates_all_genes = [];
 $table_code_array = [];
 
 
@@ -121,12 +123,6 @@ $average = [];
 $full_header = [];
 $header = [];
 $found_genes = [];
-$annot_hash = [];
-
-if ( file_exists("$expression_path/expression_info.json") ) {
-  $annot_json_file = file_get_contents("$expression_path/expression_info.json");
-  $annot_hash = json_decode($annot_json_file, true);
-}
 
 
 // iterate each dataset selected in the comparator input
@@ -134,11 +130,6 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
 // check dataset file exists and open it. Get header line and save sample names in header
   if ( file_exists("$expr_file") ) {
-    
-    // IT IS NOT POSSIBLE TO ADD MULTIPLE LINKS FOR THE SAME GENES, so this is not needed.
-    // $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
-    // $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
-    // $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
     
     $tab_file = file("$expr_file");
     
@@ -151,6 +142,11 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
       }
     }
     
+    // echo "comparator samples array<br>";
+    // print_r($comparator_samples_array);
+    // echo "<br>";
+    
+    
 //gets each replicate value for each gene
     foreach ($tab_file as $line) {
       $columns = explode("\t", rtrim($line));
@@ -159,23 +155,25 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
       $gene_name = $columns[0];
       
       // if gene found in input list save it in found_genes hash
-      if ( in_array($gene_name,$gids) ||  ($hk_genes && in_array($gene_name,$hk_genes)) ) {
+      // when datasets have different gene IDs it is possible that genes are not found in some of the selected datasets
+      if ( in_array($gene_name,$gids) || ($hk_genes && in_array($gene_name,$hk_genes)) ) {
         
         if ( in_array($gene_name,$gids) ) {
           $found_genes[$gene_name] = 1;
         }
+        //echo "1 replicates -> $gene_name $sample_name $col <br>";
 
         // create object with replicates of each sample and gene
         foreach ($columns as $col) {
          
           $sample_name = $header[$col_count];
           
+          //echo "2 replicates -> $gene_name $sample_name $col <br>";
+          
           if ( in_array($gene_name,$gids) && in_array($sample_name, $comparator_samples_array) && $col_count != 0 ) {
             
             
-            
-            
-            ########################################### Lookup code
+            //########################################### Lookup code
             if ($to_newest_v) {
 
               // convert old versions to new ones
@@ -201,6 +199,8 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
             }
             else {
             
+            //echo " replicates in -> $gene_name $sample_name $col <br>";
+            
               if ($replicates[$sample_name][$gene_name]) {
                array_push($replicates[$sample_name][$gene_name], $col);
               } else {
@@ -209,29 +209,18 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
               }
               
             }
-            ###########################################
           }
+          //########################################### end lookup code
           
           
           
           
-          
+          // ############################### Housekeeping normalization
           
           if ($hk_genes) {
-            // print_r($hk_genes);
-            // echo " hk true -> $gene_name $sample_name $col_count";
-            // foreach ($hk_genes as $test) {
-            //   echo ".$test. :$gene_name:<br>";
-            // }
-            // if ( in_array($gene_name,$hk_genes) ) {
-              // echo "hk found -> $gene_name<br>";
-            // }
-            // if ( in_array($sample_name,$comparator_samples_array) ) {
-            //   echo "sample found -> $sample_name";
-            // }
             
             if ( in_array($gene_name,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
-              // echo "hk true2 -> $gene_name";
+              //echo "hk true1 -> $gene_name";
               
               if ($hk_replicates[$sample_name][$gene_name]) {
                array_push($hk_replicates[$sample_name][$gene_name], $col);
@@ -240,8 +229,67 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
                array_push($hk_replicates[$sample_name][$gene_name], $col);
               }
             }
+            else {
+            
+            
+            
+            
+              //########################################### Lookup code
+              if ($to_newest_v) {
+
+                // convert old versions to new ones
+                $newest_gene = $lookup_hash{$gene_name};
+                
+                
+                // echo "comparator samples array<br>";
+                // print_r($comparator_samples_array);
+                // echo "<br>";
+                
+                // get data from old genes if new ones are used as input
+                $old_gene = array_search($gene_name, $lookup_hash);
+                
+                // echo "hk -> ori: $gene_name new: $newest_gene old:$old_gene sample: $sample_name <br>";
+                
+                if ( in_array($newest_gene,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+                  // echo "hk true new -> $newest_gene $sample_name <br>";
+            
+                  if ($hk_replicates[$sample_name][$newest_gene]) {
+                   array_push($hk_replicates[$sample_name][$newest_gene], $col);
+                  } else  {
+                   $hk_replicates[$sample_name][$newest_gene] = [];
+                   array_push($hk_replicates[$sample_name][$newest_gene], $col);
+                  } 
+                }
+                else if ( in_array($old_gene,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+                  // echo "hk true old -> $old_gene $sample_name <br>";
+                  
+                  if ($hk_replicates[$sample_name][$old_gene]) {
+                   array_push($hk_replicates[$sample_name][$old_gene], $col);
+                  } else {
+                   $hk_replicates[$sample_name][$old_gene] = [];
+                   array_push($hk_replicates[$sample_name][$old_gene], $col);
+                  }
+                }
+                
+              
+              }
+              //################## End Lookup code
+            
+            } // end else
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             // echo "<br>";
           }
+          // ############################### End Housekeeping normalization
           
           $col_count++;
         } // end column foreach
@@ -254,8 +302,13 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
   
 } // end foreach sample_hash
 
-//print_r($replicates);
+// echo "REPLICATES<br>";
+// print_r($replicates);
+// echo "<br>";
 
+// echo "HK REPLICATES<br>";
+// print_r($hk_replicates);
+// echo "<br>";
 
 
 
@@ -272,22 +325,35 @@ foreach ($full_header as $exp_name) {
 }
 array_push($table_code_array,"</tr></thead>");
 
+// echo "Found genes 1<br>";
+// print_r($found_genes);
+// echo "<br>";
+  
 
-// add links to average table genes. CREATE CONF VARIABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//########################################### Lookup code
+// remove old gene version ids if they were converted to the newest
+if ($to_newest_v) {
 foreach ($found_genes as $gene_name => $kk) {
 
-  ########################################### Lookup code
-  if ($to_newest_v) {
     
     // convert old versions to new ones
     if ($lookup_hash{$gene_name} && $found_genes{$gene_name}) {
       unset($found_genes{$gene_name});
+      $newest_gene = $lookup_hash{$gene_name};
+      $found_genes{$newest_gene} = 1;
       continue;
-      #$gene_name = $lookup_hash{$gene_name};
+      //$gene_name = $lookup_hash{$gene_name};
     }
     
   }
-  ###########################################
+}
+//###########################################
+
+// echo "Found genes2<br>";
+// print_r($found_genes);
+// echo "<br>";
+
+foreach ($found_genes as $gene_name => $kk) {
 
   //$q_link = "";
   // if ($annot_hash[$dataset_name_ori]) {
@@ -311,12 +377,11 @@ foreach ($found_genes as $gene_name => $kk) {
   
   $scatter_pos = 1;
   
-  
-    
+  foreach ($sample_names as $sample_name) {
+    $gene_reps_array = $replicates[$sample_name];
+
   // get expression average values like "Sample1" and values are like gene => [4.4,2.3,8.1]
-  foreach ($replicates as $sample_name => $gene_reps_array) {
-    // echo var_dump($gene_name) . "<br>";
-    // echo var_dump($gene_reps_array[$gene_name]) . "!<br>";
+  //foreach ($replicates as $sample_name => $gene_reps_array) {
     
     $average = null;
     
@@ -328,20 +393,73 @@ foreach ($found_genes as $gene_name => $kk) {
       $average = sprintf("%1\$.2f",$a_sum/$a_reps);
     }
     
+    
+    
+    
+    // ############################### Housekeeping normalization
     if ($hk_genes) {
       $hk_total_sum = 0;
       $hk_total_reps = 0;
       
       foreach ($hk_genes as $hk_genename) {
         
-        $hk_sum = array_sum($hk_replicates[$sample_name][$hk_genename]);
-        $hk_reps = count($hk_replicates[$sample_name][$hk_genename]);
+        // #### Lookup code
+        // remove old gene version ids if they were converted to the newest
+        if ($to_newest_v) {
         
-        $hk_total_sum = $hk_total_sum + $hk_sum;
-        $hk_total_reps = $hk_total_reps + $hk_reps;
+          // get data from old genes if new ones are used as input
+          $hk_old_gene = array_search($hk_genename, $lookup_hash);
+          $hk_newest_gene = $lookup_hash{$gene_name};
+          
+          if ($hk_newest_gene && $hk_replicates[$sample_name][$hk_newest_gene]) {
+            $hk_sum = array_sum($hk_replicates[$sample_name][$hk_newest_gene]);
+            $hk_reps = count($hk_replicates[$sample_name][$hk_newest_gene]);
+            
+            // echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
+          } else if ($hk_old_gene && $hk_replicates[$sample_name][$hk_old_gene]) {
+            $hk_sum = array_sum($hk_replicates[$sample_name][$hk_old_gene]);
+            $hk_reps = count($hk_replicates[$sample_name][$hk_old_gene]);
+            
+            // echo "HK genes old: $hk_old_gene: $hk_sum , $hk_reps <br>";
+            
+          } else if ($hk_replicates[$sample_name][$hk_genename]) {
+            $hk_sum = array_sum($hk_replicates[$sample_name][$hk_genename]);
+            $hk_reps = count($hk_replicates[$sample_name][$hk_genename]);
+            
+            // echo "HK genes as it comes: $hk_genename: $sample_name , $hk_sum , $hk_reps <br>";
+          }
+          else if ($hk_replicates[$sample_name][$hk_genename]) {
+            // echo "HK genes :\ $hk_genename: $sample_name , $hk_old_gene <br>";
+            
+            
+            $hk_sum = array_sum($hk_replicates[$sample_name][$hk_newest_gene]);
+            $hk_reps = count($hk_replicates[$sample_name][$hk_newest_gene]);
+            
+            // echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
+            
+          }
+
+        
+          $hk_total_sum = $hk_total_sum + $hk_sum;
+          $hk_total_reps = $hk_total_reps + $hk_reps;
+          
+        } else {
+        
+          $hk_sum = array_sum($hk_replicates[$sample_name][$hk_genename]);
+          $hk_reps = count($hk_replicates[$sample_name][$hk_genename]);
+        
+          $hk_total_sum = $hk_total_sum + $hk_sum;
+          $hk_total_reps = $hk_total_reps + $hk_reps;
+          
+          // echo "HK genes3: $hk_genename: $hk_sum , $hk_reps <br>";
+        }
       }
       
-      $hk_ave = sprintf("%1\$.2f",$hk_total_sum/$hk_total_reps);
+      $hk_ave = 0;
+      
+      if ($hk_total_reps >0) {
+        $hk_ave = sprintf("%1\$.2f",$hk_total_sum/$hk_total_reps);
+      }
       // echo "$gene_name: $average / $hk_ave ";
       
       if ($hk_ave != $average && $hk_ave == 0) {
@@ -363,9 +481,15 @@ foreach ($found_genes as $gene_name => $kk) {
       // echo "log =  $average<br>";
       
     }
+    // ################################# End Housekeeping normalization
     
     
-    array_push($table_code_array,"<td>$average</td>");
+    
+    if ($gene_reps_array[$gene_name]) {
+      array_push($table_code_array,"<td>$average</td>");
+    } else {
+      array_push($table_code_array,"<td>-</td>");
+    }
     
     //save heatmap data
     $heatmap_one_gene["name"] = $gene_name;
@@ -404,6 +528,22 @@ foreach ($found_genes as $gene_name => $kk) {
       $scatter_all_genes[$gene_name] = [];
       array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
     }
+    
+    
+    // exception to get data for replicate plot when samples without data because of different gene versions
+    if ($replicates[$sample_name]) {
+      if ($replicates_all_genes[$gene_name]) {
+        array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
+      } else {
+        $replicates_all_genes[$gene_name] = [];
+        array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
+      }
+      
+    }
+    
+    
+    
+    
     $scatter_one_sample = [];
   }
   
@@ -416,6 +556,8 @@ foreach ($found_genes as $gene_name => $kk) {
 array_push($table_code_array,"</tr>");
 array_push($table_code_array,"</table></div>");
 
+$samples_found = array_keys($replicates);
+  
 ?>
 
 
@@ -432,65 +574,6 @@ array_push($table_code_array,"</table></div>");
     </div>
   </center>
   
-<!-- #####################             Cards             ################################ -->
-    
-<?php
-$expr_cards = 0;
-  if ($expr_cards) {
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
-    echo '  <i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
-    echo '</div>';
-
-    echo '<div id="cards_frame" class="row collapse hide" style="padding-top:7px">';
-
-    echo '  <div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
-    echo '    <label for="card_sel1" style="width: 150px;">Select gene:</label>';
-    echo '    <select class="form-control" id="card_sel1">';
-        
-    foreach ($found_genes as $gene => $kk) {
-      echo "      <option value=\"$gene\">$gene</option>";
-    }
-        
-    echo '    </select>';
-    echo '  </div>';
-
-    echo '  <div class="d-inline-flex" style="margin:10px">';
-    echo '    <span class="circle" style="background-color:#000000"></span> Lowest <2';
-    echo '    <span class="circle" style="background-color:#fff"></span> <1';
-    echo '    <span class="circle" style="background-color:#ffe999"></span> >=1';
-    echo '    <span class="circle" style="background-color:#fb4"></span> >=2';
-    echo '    <span class="circle" style="background-color:#ff7469"></span> >=10';
-    echo '    <span class="circle" style="background-color:#de2515"></span> >=50';
-    echo '    <span class="circle" style="background-color:#b71005"></span> >=100';
-    echo '    <span class="circle" style="background-color:#7df"></span> >=200';
-    echo '    <span class="circle" style="background-color:#0f0"></span> >=5000';
-    echo '    <span class="circle gold"></span> Highest';
-    echo '  </div>';
-
-    echo '  <div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
-    echo '</div>';
-    
-  }
-?>
-
-<style>
-  
-  .gold {
-    background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
-  }
-  
-  .circle {
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-    border-style: solid;
-    border-color: #ccc;
-    display: inline-block;
-    margin: 5px;
-    margin-left: 15px;
-  }
-  
-</style>
     
   
 <!-- #####################             Heatmap             ################################ -->
@@ -555,6 +638,10 @@ $expr_cards = 0;
   echo implode("\n", $table_code_array);
   $found_genes = array_keys($found_genes);
   
+  // echo "replicates_all_genes<br>";
+  // print_r($replicates_all_genes[$found_genes[3]]);
+  // echo "<br>";
+  
 ?>
 
     </div> <!-- avg_table end -->
@@ -570,17 +657,14 @@ $expr_cards = 0;
 <script type="text/javascript">
   
   var sample_array = <?php echo json_encode($sample_names) ?>;
+  var samples_found = <?php echo json_encode($samples_found) ?>;
   var heatmap_series = <?php echo json_encode(array_reverse($heatmap_series)) ?>;
   
   var gene_list = <?php echo json_encode($found_genes) ?>;
+  var replicates_one_gene = <?php echo json_encode($replicates_all_genes[$found_genes[0]]) ?>;
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
-  
-  // var db_title = <?php //echo json_encode($dbTitle) ?>;
-  // var db_logo = <?php //echo json_encode("$images_path/$db_logo") ?>;
-  // var img_path = <?php //echo json_encode($images_path) ?>;
-  // var expr_img_array = <?php //echo json_encode($expr_img_array) ?>;
-    
+  var replicates_all_genes = <?php echo json_encode($replicates_all_genes) ?>;
     
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
