@@ -106,6 +106,7 @@ $heatmap_series = [];
 $scatter_one_sample = [];
 $scatter_all_genes = [];
 $cartoons_all_genes = [];
+$replicates_all_genes = [];
 
 $found_genes = [];
 
@@ -361,6 +362,16 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             $scatter_all_genes[$gene_name] = [];
             array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
           }
+          
+          // if ($replicates[$sample_name]) {
+          //   if ($replicates_all_genes[$gene_name]) {
+          //     array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
+          //   } else {
+          //     $replicates_all_genes[$gene_name] = [];
+          //     array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
+          //   }
+          // }
+          
           $scatter_one_sample = [];
           
           
@@ -865,12 +876,17 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 <script type="text/javascript">
   
   var sample_array = <?php echo json_encode($sample_names) ?>;
+  var samples_found = <?php echo json_encode($sample_names) ?>;
   var heatmap_series = <?php echo json_encode(array_reverse($heatmap_series)) ?>;
   
   var gene_list = <?php echo json_encode($found_genes) ?>;
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
   var cartoons_all_genes = <?php echo json_encode($cartoons_all_genes) ?>;
+  // var replicates_one_gene = <?php echo json_encode($replicates_all_genes[$found_genes[0]]) ?>;
+  // var replicates_all_genes = <?php echo json_encode($replicates_all_genes) ?>;
+  var replicates_one_gene = scatter_one_gene;
+  var replicates_all_genes = scatter_all_genes;
   
   var db_title = <?php echo json_encode($dbTitle) ?>;
   var db_logo = <?php echo json_encode("$images_path/$db_logo") ?>;
