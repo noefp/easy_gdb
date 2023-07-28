@@ -241,7 +241,7 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
     
     $('#comparator_form').submit(function () {
       var gene_lookup_input = $('#InputGenes').val();
-      var gene_count = (gene_lookup_input.match(/\w+\n*/g)||[]).length
+      var gene_count = (gene_lookup_input.match(/\n/g)||[]).length
 
       //alert("gene_lookup_input: "+gene_lookup_input+", gene_count: "+gene_count);
 
