@@ -38,7 +38,7 @@ asort($all_datasets);
 foreach ($all_datasets as $expr_dataset) {
   $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
   $data_set_name = str_replace("_"," ",$data_set_name);
-  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
+  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
     echo "<option value=\"$expression_path/$expr_dataset\">$data_set_name</option>";
   }
 }
