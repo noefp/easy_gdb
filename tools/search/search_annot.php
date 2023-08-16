@@ -12,26 +12,23 @@
 include_once("../get_annotation_types.php");
 
 if ( $quoted_search ) {
-  $desc_input = preg_replace('/[\"\<\>\t\;]+/','',$raw_input);
+  $desc_input = preg_replace('/[\"\<\>\t\;]+/','',strtolower($raw_input) );
   // echo "<p>filtered $desc_input</p>";
   
 } elseif ( preg_match('/\s+/',$search_input) ) {
   $desc_input = preg_replace('/\s+/','%|%',strtolower($search_input) );
 } else {
-  $desc_input = $search_input;
+  $desc_input = strtolower($search_input);
 }
 
+echo "\n<br><h3>modified Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$desc_input</div></div><br>\n";
 
 //latest estable search query
-// $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_term) ILIKE '%".pg_escape_string($search_input)."%'";
+//$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_term) ILIKE '%".pg_escape_string($search_input)."%'";
 
 
 //full text search test
 $query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR annotation_term ILIKE '%".pg_escape_string($search_input)."%'";
-
-
-
-
 
 
 
