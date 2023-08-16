@@ -21,7 +21,7 @@ if ( $quoted_search ) {
   $desc_input = strtolower($search_input);
 }
 
-echo "\n<br><h3>modified Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$desc_input</div></div><br>\n";
+//echo "\n<br><h3>modified Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$desc_input</div></div><br>\n";
 
 //latest estable search query
 //$query = "SELECT * FROM gene FULL OUTER JOIN gene_annotation USING(gene_id) FULL OUTER JOIN annotation USING(annotation_id) FULL OUTER JOIN annotation_version USING(annotation_version_id) FULL OUTER JOIN species USING(species_id) WHERE lower(gene_name) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_desc) SIMILAR TO '%".pg_escape_string($desc_input)."%' OR lower(annotation_term) ILIKE '%".pg_escape_string($search_input)."%'";
