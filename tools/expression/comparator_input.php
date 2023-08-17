@@ -104,7 +104,8 @@ foreach ($all_datasets as $expr_dataset) {
     $link_name = preg_replace('/\s|\.|\d/', '', $data_set_name);
     
     echo "<div class=\"col-sm-6 col-md-4 col-lg-3\">";
-    echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\">";
+    echo "<input type=\"checkbox\" class=\"form-check-input selectall\" style=\"margin-left:0px\" name=\"$link_name\">";
+    echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\" style=\"margin-left:15px\" >";
     echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $data_set_name";
     echo "</a>";
     echo "<div id=\"$link_name\" class=\"form-check collapse\">";
@@ -112,7 +113,7 @@ foreach ($all_datasets as $expr_dataset) {
     
     foreach ($header as $sample) {
         echo "<label class=\"form-check-label\">";
-        echo "<input type=\"checkbox\" class=\"form-check-input\" name=\"sample_names[]\" value=\"$expression_path/$expr_dataset@$sample\">$sample";
+        echo "<input type=\"checkbox\" class=\"form-check-input sample_checkbox\" name=\"sample_names[]\" value=\"$expression_path/$expr_dataset@$sample\">$sample";
         echo "</label>";
         echo "<br>";
     }
@@ -271,6 +272,21 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
       
       return true;
     });
-
+    
+    
+    //select and unselect all checkbox on comparator datasets
+    $('.selectall').click(function () {
+      //alert(this.name);
+      var dataset = this.name;
+      //alert( $("#"+dataset+" input").val() );
+      if (this.checked) {
+        $("#"+dataset+" input").prop('checked', true)
+      } else {
+        $("#"+dataset+" input").prop('checked', false)
+      }
+      
+    });
+    
+    
   });
 </script>
