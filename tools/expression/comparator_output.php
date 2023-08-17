@@ -56,6 +56,7 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
 // get input genes
   $gene_list = $_POST["gids"];
   $gids = [];
+  $one_gene2;
   
   if(isset($gene_list)) {
     
@@ -65,16 +66,26 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
       
       if (preg_match('/\.\d+$/',$one_gene)) {
         $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
-        array_push($gids,$one_gene2);
+        if (!in_array($one_gene2,$gids)) {
+          array_push($gids,$one_gene2);
+        }
+      }
+      if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
+        $one_gene3 = $one_gene2.".1";
+        if (!in_array($one_gene3,$gids)) {
+          array_push($gids,$one_gene3);
+        }
       }
       if (!preg_match('/\.\d+$/',$one_gene)) {
         $one_gene2 = $one_gene.".1";
-        array_push($gids,$one_gene2);
+        if (!in_array($one_gene2,$gids)) {
+          array_push($gids,$one_gene2);
+        }
       }
       
       // ############################ Lookup code
       // add newest gene versions to gids
-      if ($to_newest_v) {
+      if ($to_newest_v && $lookup_hash) {
       
         //Add the newest version of the genes 
         if ($lookup_hash{$one_gene}) {
@@ -94,8 +105,13 @@ if ( file_exists("$expression_path/comparator_lookup.txt") ) {
       }
       ###########################################
       
-      array_push($gids,$one_gene);
+      if (!in_array($one_gene,$gids)) {
+        array_push($gids,$one_gene);
+      }
     }// end foreach
+    
+    //print("<pre>".print_r($gids,true)."</pre>");
+    
     
   } //end isset
 /////////////////////////////////////////////////////////////////echo var_dump($gids) . "<br>";

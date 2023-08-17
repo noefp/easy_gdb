@@ -12,6 +12,7 @@
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
   
   $gids = [];
+  $one_gene2;
   
   if(isset($gene_list)) {
     
@@ -22,14 +23,28 @@
       
       if (preg_match('/\.\d+$/',$one_gene)) {
         $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
-        array_push($gids,$one_gene2);
+        if (!in_array($one_gene2,$gids)) {
+          array_push($gids,$one_gene2);
+        }
+      }
+      if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
+        $one_gene3 = $one_gene2.".1";
+        if (!in_array($one_gene3,$gids)) {
+          array_push($gids,$one_gene3);
+        }
       }
       if (!preg_match('/\.\d+$/',$one_gene)) {
         $one_gene2 = $one_gene.".1";
-        array_push($gids,$one_gene2);
+        if (!in_array($one_gene2,$gids)) {
+          array_push($gids,$one_gene2);
+        }
       }
-      array_push($gids,$one_gene);
+      if (!in_array($one_gene,$gids)) {
+        array_push($gids,$one_gene);
+      }
     }
+    
+    //print("<pre>".print_r($gids,true)."</pre>");
     
     // $time_end = microtime(true);
     // $execution_time = ($time_end - $time_start);
