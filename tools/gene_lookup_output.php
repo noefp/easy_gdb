@@ -93,7 +93,10 @@ else {
 <br>
 <script type="text/javascript">
   $("#tblResults").dataTable({
-  	"dom":'Bfrtip',
+  	"dom":'Bfrtlpi',
+    "oLanguage": {
+       "sSearch": "Filter by:"
+     },
     "ordering": false,
     "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   });

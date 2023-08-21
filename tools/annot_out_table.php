@@ -142,7 +142,10 @@ echo "</tr>";
 <script type="text/javascript">
 $("#tblResults").dataTable({
   "order": [],
-	dom:'Bfrtip',
+	dom:'Bfrtlpi',
+  "oLanguage": {
+     "sSearch": "Filter by:"
+   },
   buttons: [
       'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
   ]
