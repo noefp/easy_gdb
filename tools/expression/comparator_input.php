@@ -18,7 +18,7 @@
       <div class="col-sm-6 col-md-6 col-lg-6">
 
         <div class="form-group">
-          <label for="usr">Find your gene/metabolite by name:</label>
+          <label for="autocomplete_gene">Find your gene/metabolite by name:</label>
 
           <div class="input-group mb-3">
             <div class="input-group-prepend" style="width:48px">
@@ -30,7 +30,7 @@
             </div>
           </div>
 
-          <label for="InputGenes" style="width:100%">
+          <label for="housekeeping_input" style="width:100%">
             Paste a gene ID or list of gene IDs to be used for fold change calculation.
             <!-- <span class="form-check-label float-right">
               <input type="checkbox" class="form-check-input" name="fc_log2" value=1> Apply log2
