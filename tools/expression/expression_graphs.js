@@ -33,8 +33,8 @@ var options = {
   xaxis: {
     categories: sample_array,
     labels: {
-      rotate: -70,
-      rotateAlways: false,
+      rotate: -50,
+      rotateAlways: true,
       hideOverlappingLabels: false,
       trim: false,
       maxHeight: 450
