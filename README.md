@@ -687,16 +687,21 @@ sudo apt-get install php-pgsql
 
 #### Install easyGDB
 
-Then, let's create a folder to contain your genomic database. Use the name you like. For this example we will use `example_db`. 
-Or you can just go to /var/www/html/ and clone easy GDB there.
+Ideally in a server or Linux system you should clone easy GDB at /var/www/html
 
-    $ mkdir example_db
-    $ cd example_db
+
+Alternatively, if you do not have permissions or prefer otherwise, you could create a folder to contain your genomic database, using the location and name you like. For example you could use `example_db`, and you could create the folder with next command:
+
+    mkdir example_db
+    
+Enter into the folder:
+
+    cd example_db
 
 Then follow the steps as in [Set up easy GDB using the template example and Docker](#set-up-easy-gdb-using-the-template-example-and-docker), 
 but directly in your terminal, not using any of the docker commands.
 
-in example_db:
+at /var/www/html or example_db:
 
 clone the repository:
 
@@ -714,9 +719,9 @@ Go back from the install folder to the example_db folder:
 
     cd ../../
     
-To start the PHP server that run the service to show the web, you can run this command where you installed the example_db:
+To start the PHP server that run the service to show the web, you can run this command in the same location where you installed easy_gdb:
 
-    example_db$ php -S localhost:8000
+    php -S localhost:8000
 
 In web browser (Chrome, Firefox, etc) go to: `localhost:8000/easy_gdb/`
 
@@ -761,7 +766,7 @@ You will be asked to type your new password
 
 
 
-    example_db$ psql -U postgres -h localhost -W
+    psql -U postgres -h localhost -W
 
 In Postgres console
 
@@ -780,7 +785,7 @@ Back in your bash terminal
 
 In this step we will create the database schema:
 
-    example_db$ psql -U postgres -d annot1 -h localhost -a -f easy_gdb/scripts/create_annot_schema2.sql
+    psql -U postgres -d annot1 -h localhost -a -f easy_gdb/scripts/create_annot_schema2.sql
 
 Here, we will learn how to import annotations to the database.
 First we will import all the gene names, for that we will need a file such as
@@ -791,11 +796,14 @@ We will import all the gene names using the script `import_genes.pl` and we will
 species name, gene annotation version, and folder name for JBrowse (remember this name to use it when you set up JBrowse).
 This way we can link the genes with the genome browser.
 
-    example_db$ perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
+in (/var/www/html):
+
+
+    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
     
-    example_db$ perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
     
-    example_db$ perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
 
 #### Set up server
@@ -815,7 +823,13 @@ systemctl reload apache2
 
 For example, you can add the database directory as DocumentRoot to serve easy_gdb in your server (server_address/easy_gdb)
 
+    DocumentRoot /var/www/html
+
+or:
+
     DocumentRoot /home/user/example_db
+
+
 
 Remember to change the paths in the configuration file.
 
