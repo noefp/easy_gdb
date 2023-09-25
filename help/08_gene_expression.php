@@ -117,9 +117,9 @@
 				<br>
 			</center>
 			<br>
-			<h6 style="text-align:right">
-				<a href="/easy_gdb/help/02_expression_comparator.php">Continue to expression comparator <i class='fas fa-share' style='color:#229dff'></i></a>
-			</h4>
+      <!-- <h6 style="text-align:right">
+        <a href="/easy_gdb/help/09_expression_comparator.php">Continue to expression comparator <i class='fas fa-share' style='color:#229dff'></i></a>
+      </h6> -->
 </div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>

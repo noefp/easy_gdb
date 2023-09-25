@@ -64,9 +64,9 @@
 			<br>
 			<br>
 			<br>
-			<h6 style="text-align:right">
-				<a href="/easy_gdb/help/03_gene_lookup.php">Continue to gene version lookup <i class='fas fa-share' style='color:#229dff'></i></a>
-			</h4>
+      <!-- <h6 style="text-align:right">
+        <a href="/easy_gdb/help/03_gene_lookup.php">Continue to gene version lookup <i class='fas fa-share' style='color:#229dff'></i></a>
+      </h6> -->
 </div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
