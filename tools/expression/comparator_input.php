@@ -82,51 +82,146 @@ if ($expr_menu && file_exists("expression_menu.php") ) {
 echo "<div class=\"form-group\">";
 echo "<h4>Select samples</h4>";
 
-echo "<div class=\"card\">";
-  // echo "<div class=\"card-body\" style=\"column-count: 4\">";
-echo "<div class=\"card-body\" style=\"widht: 100%\">";
-echo "<div class=\"row\">";
-
 asort($all_datasets);
 
+
+
+$dir_counter = 0;
+
 foreach ($all_datasets as $expr_dataset) {
-  $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
-  $data_set_name = str_replace("_"," ",$data_set_name);
-  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
-    
-    $f = fopen("$expression_path/$expr_dataset", 'r');
-    $first_line = fgets($f);
-    $header = explode("\t", rtrim($first_line));
-    array_shift($header);
-    $header = array_unique($header);
-    fclose($f);
-    
-    $link_name = preg_replace('/\s|\.|\d/', '', $data_set_name);
-    
-    echo "<div class=\"col-sm-6 col-md-4 col-lg-3\">";
-    echo "<input type=\"checkbox\" class=\"form-check-input selectall\" style=\"margin-left:0px\" name=\"$link_name\">";
-    echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\" style=\"margin-left:15px\" >";
-    echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $data_set_name";
-    echo "</a>";
-    echo "<div id=\"$link_name\" class=\"form-check collapse\">";
-    // echo "<div id=\"$link_name\" class=\"form-check collapse show\">";
-    
-    foreach ($header as $sample) {
-        echo "<label class=\"form-check-label\">";
-        echo "<input type=\"checkbox\" class=\"form-check-input sample_checkbox\" name=\"sample_names[]\" value=\"$expression_path/$expr_dataset@$sample\">$sample";
-        echo "</label>";
-        echo "<br>";
-    }
-    echo "</div>";
-    echo "</div>";
-    echo "<br>";
-    
+  
+  if (is_dir($expression_path."/".$expr_dataset)){ // get dirs and print categories
+    $dir_counter++;
   }
 }
 
-echo   "</div>";
-echo   "</div>";
-echo   "</div>";
+//category organization
+if ($dir_counter) {
+  
+  foreach ($all_datasets as $dirs_and_files) {
+
+    if (is_dir($expression_path."/".$dirs_and_files)){ // get dirs and print categories
+      $all_dir_datasets = get_dir_and_files($expression_path."/".$dirs_and_files); // call the function
+
+      $dir_name = str_replace("_"," ",$dirs_and_files);
+      echo "<div class=\"card\">";
+      echo "<div class=\"card-body\" style=\"widht: 100%\">";
+      echo "<div class=\"row\"><h4>$dir_name</h4></div>";
+      echo "<div class=\"row\">";
+  
+      sort($all_dir_datasets);
+  
+      foreach ($all_dir_datasets as $expr_dataset) {
+        if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$dirs_and_files.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists($expression_path.'/'.$dirs_and_files.'/'.$expr_dataset) ) {
+          
+          $f = fopen("$expression_path/$dirs_and_files/$expr_dataset", 'r');
+          $first_line = fgets($f);
+          $header = explode("\t", rtrim($first_line));
+          array_shift($header);
+          $header = array_unique($header);
+          fclose($f);
+    
+          $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
+          $data_set_name = str_replace("_"," ",$data_set_name);
+
+          $link_name = preg_replace('/\s|\.|\d/', '', $data_set_name);
+    
+          echo "<div class=\"col-sm-6 col-md-4 col-lg-3\">";
+          echo "<input type=\"checkbox\" class=\"form-check-input selectall\" style=\"margin-left:0px\" name=\"$link_name\">";
+          echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\" style=\"margin-left:15px\" >";
+          echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $dir_name/$data_set_name";
+          echo "</a>";
+          echo "<div id=\"$link_name\" class=\"form-check collapse\">";
+          // echo "<div id=\"$link_name\" class=\"form-check collapse show\">";
+    
+          foreach ($header as $sample) {
+              echo "<label class=\"form-check-label\">";
+              echo "<input type=\"checkbox\" class=\"form-check-input sample_checkbox\" name=\"sample_names[]\" value=\"$expression_path/$dirs_and_files/$expr_dataset@$sample\">$sample";
+              echo "</label>";
+              echo "<br>";
+          }
+          echo "<br>";
+          
+          echo "</div>";
+          echo "</div>";
+          echo "<br>";
+    
+        } // close if
+      } //end foreach expr_file
+      
+      echo "</div>";
+      echo "</div>";
+      echo "</div>";
+      echo "<br>";
+      
+    }//close if is_dir
+    
+    
+    
+  }//end foreach dir
+  
+  
+  
+
+  
+  
+} else {
+
+  echo "<div class=\"card\">";
+  echo "<div class=\"card-body\" style=\"widht: 100%\">";
+  echo "<div class=\"row\">";
+
+
+  foreach ($all_datasets as $expr_dataset) {
+    $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
+    $data_set_name = str_replace("_"," ",$data_set_name);
+    if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
+    
+      $f = fopen("$expression_path/$expr_dataset", 'r');
+      $first_line = fgets($f);
+      $header = explode("\t", rtrim($first_line));
+      array_shift($header);
+      $header = array_unique($header);
+      fclose($f);
+    
+      $link_name = preg_replace('/\s|\.|\d/', '', $data_set_name);
+    
+      echo "<div class=\"col-sm-6 col-md-4 col-lg-3\">";
+      echo "<input type=\"checkbox\" class=\"form-check-input selectall\" style=\"margin-left:0px\" name=\"$link_name\">";
+      echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\" style=\"margin-left:15px\" >";
+      echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $data_set_name";
+      echo "</a>";
+      echo "<div id=\"$link_name\" class=\"form-check collapse\">";
+      // echo "<div id=\"$link_name\" class=\"form-check collapse show\">";
+    
+      foreach ($header as $sample) {
+          echo "<label class=\"form-check-label\">";
+          echo "<input type=\"checkbox\" class=\"form-check-input sample_checkbox\" name=\"sample_names[]\" value=\"$expression_path/$expr_dataset@$sample\">$sample";
+          echo "</label>";
+          echo "<br>";
+      }
+      echo "<br>";
+      echo "</div>";
+      echo "</div>";
+      echo "<br>";
+      echo "<br>";
+    
+    }
+  } //end foreach
+  
+  
+  echo "</div>";
+  echo "</div>";
+  echo "</div>";
+  echo "<br>";
+  
+  
+} // close else
+
+
+// echo   "</div>";
+// echo   "</div>";
+// echo   "</div>";
 echo   "</div>";
 
 

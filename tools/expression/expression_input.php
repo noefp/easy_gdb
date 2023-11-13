@@ -23,29 +23,91 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");
 
 $all_datasets = get_dir_and_files($expression_path); // call the function
 
-echo "<div class=\"form-group\">";
 echo "<label for=\"sel1\">Select Dataset</label>";
 
 if ($expr_menu && file_exists("expression_menu.php") ) {
   echo "<a href=\"expression_menu.php\" class=\"float-right\" style=\"text-decoration: underline;\" target=\"_blank\">Dataset Information</a>";
 }
 
-
-echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
-
 asort($all_datasets);
 
+$dir_counter = 0;
+
 foreach ($all_datasets as $expr_dataset) {
-  $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
-  $data_set_name = str_replace("_"," ",$data_set_name);
-  if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
-    echo "<option value=\"$expression_path/$expr_dataset\">$data_set_name</option>";
+  
+  if (is_dir($expression_path."/".$expr_dataset)){ // get dirs and print categories
+    $dir_counter++;
   }
 }
 
-echo   "</select>";
-echo   "</div>";
+//category organization
+if ($dir_counter) {
+  
+  $dir_hash = array();
+  $datasets_array = array();
+  
+  echo "<select class=\"form-control\" id=\"cat1\" name=\"expr_dir\">";
+  
+  $dir_counter2 = 0;
+  $first_category = "";
+    
+  //check each dir and file
+  foreach ($all_datasets as $dirs_and_files) {
+  
+    if (is_dir($expression_path."/".$dirs_and_files)){ // get dirs and print categories
+      $all_dir_datasets = get_dir_and_files($expression_path."/".$dirs_and_files); // call the function
+      
+      $dir_name = str_replace("_"," ",$dirs_and_files);
+      echo "<option>$dir_name</option>";
+      
+      if ($dir_counter2 == 0) {
+        $first_category = $dir_name;
+      }
+      
+      //get expression datasets from each dir
+      foreach ($all_dir_datasets as $one_dataset) {
+        $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$one_dataset);
+        $data_set_name = str_replace("_"," ",$data_set_name);
+        if ( !preg_match('/\.php$/i', $one_dataset) && !is_dir("$expression_path/$dirs_and_files/$one_dataset") && ($one_dataset != "comparator_gene_list.txt") && ($one_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $one_dataset) && file_exists("$expression_path/$dirs_and_files/$one_dataset") ) {
+          array_push($datasets_array, "<option value=\"$expression_path/$dirs_and_files/$one_dataset\">$data_set_name</option>");
+        }
+      }
+      
+      sort($datasets_array);
+      $dir_hash[$dir_name]=$datasets_array;
+      $datasets_array = array();
+      
+      $dir_counter2++;
+    } // end if dir
+    
+  } //end foreach dir and file
+  
+  echo   "</select><br>";
+  
+  // print datasets of first category
+  echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
+  foreach ($dir_hash[$first_category] as $html_option) {
+    echo $html_option;
+  }
+  echo   "</select>";
+  
+  
+} else {
+  // no dir organization
+  echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
 
+  foreach ($all_datasets as $expr_dataset) {
+    $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
+    $data_set_name = str_replace("_"," ",$data_set_name);
+  
+    if ( !preg_match('/\.php$/i', $expr_dataset) && !is_dir($expression_path.'/'.$expr_dataset) && ($expr_dataset != "comparator_gene_list.txt") && ($expr_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $expr_dataset) && file_exists("$expression_path/$expr_dataset") ) {
+      echo "<option value=\"$expression_path/$expr_dataset\">$data_set_name</option>";
+    }
+  }
+
+  echo   "</select>";
+  
+}
 ?>
       </div>
       
@@ -78,9 +140,10 @@ echo   "</div>";
       
 
       <button class="button btn btn-info float-right" id="btnSend" type="submit" form="get_expression_form" formmethod="post">Get Expression</button>
-      </form>
-      <br>
-      <br>
+      
+    </form>
+    <br>
+    <br>
   </div>
 
 </div>
@@ -134,11 +197,28 @@ echo   "</div>";
     first_dataset = $('#sel1').val();
     ajax_call(first_dataset);
     
-    // Change available blast dbs in selected category
+    // Get dataset genes when changing dataset
     $('#sel1').change(function () {
       selected_dataset = $('#sel1').val();
       
       ajax_call(selected_dataset);
+    });
+
+    // Get datasets when changing category
+    
+    var categories = <?php echo json_encode($dir_hash) ?>;
+    
+    $('#cat1').change(function () {
+      
+      selected_category = $('#cat1').val();
+      dataset_options = categories[selected_category];
+      // console.dir("selected_dataset: "+selected_dataset);
+      // console.dir("dataset_options: "+dataset_options);
+      
+      jQuery('#sel1').html(dataset_options);
+      selected_dataset = $('#sel1').val();
+      ajax_call(selected_dataset);
+      
     });
     
     
