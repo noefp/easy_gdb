@@ -11,6 +11,7 @@
 
 
 <?php 
+//check if relative gene normalization is enabled and get genes
 $hk_genes=[];
 if ($_POST['denominator_genes']) {
   $hk_genes = explode("\n",$_POST['denominator_genes']);
@@ -18,6 +19,7 @@ if ($_POST['denominator_genes']) {
   $hk_genes = array_map('trim', $hk_genes);
 }
 
+//check if log2 and conversion to newest version enabled
 $fc_log2 = $_POST['fc_log2'];
 $to_newest_v = $_POST['newest_v'];
 
@@ -33,45 +35,45 @@ if ($to_newest_v) {
   echo "<p> Your gene list was converted to the latest gene version available.</p>";
 }
 
+//if conversion to newest version was enabled and the comparator lookup file exist, save gene lookup in hash
 
-if ( file_exists("$expression_path/comparator_lookup.txt") ) {
+if ( file_exists("$expression_path/comparator_lookup.txt") && $to_newest_v) {
   $lookup_file = file_get_contents("$expression_path/comparator_lookup.txt");
   $lookup_hash = json_decode($lookup_file, true);
-}
 
-//get conversion from newest version to older ones
-$lookup_reverse_hash = [];
-foreach ($lookup_hash as $old_g => $new_g) {
+  //get conversion from newest version to older ones
+  $lookup_reverse_hash = [];
+  foreach ($lookup_hash as $old_g => $new_g) {
   
-  // if an older version matches with multiple genes of the newest version
-  if ( preg_match('/\;/', $lookup_hash{$old_g}) ) {
+    // if an older version matches with multiple genes of the newest version
+    if ( preg_match('/\;/', $lookup_hash{$old_g}) ) {
     
-    $genes_array = explode(";",$lookup_hash{$old_g});
-    // split and iterate by each one of the new genes
-    foreach ($genes_array as $one_new_gene) {
+      $genes_array = explode(";",$lookup_hash{$old_g});
+      // split and iterate by each one of the new genes
+      foreach ($genes_array as $one_new_gene) {
       
+        // save new gene correspondence to old genes, using ; if more than one found
+        if (!$lookup_reverse_hash{$one_new_gene}) {
+          $lookup_reverse_hash{$one_new_gene} = $old_g;
+        } else {
+          $lookup_reverse_hash{$one_new_gene} = $lookup_reverse_hash{$one_new_gene}.";$old_g";
+        }
+      }
+    } else {
       // save new gene correspondence to old genes, using ; if more than one found
-      if (!$lookup_reverse_hash{$one_new_gene}) {
-        $lookup_reverse_hash{$one_new_gene} = $old_g;
+      if (!$lookup_reverse_hash{$new_g}) {
+        $lookup_reverse_hash{$new_g} = $old_g;
       } else {
-        $lookup_reverse_hash{$one_new_gene} = $lookup_reverse_hash{$one_new_gene}.";$old_g";
+        $lookup_reverse_hash{$new_g} = $lookup_reverse_hash{$new_g}.";$old_g";
       }
     }
-  } else {
-    // save new gene correspondence to old genes, using ; if more than one found
-    if (!$lookup_reverse_hash{$new_g}) {
-      $lookup_reverse_hash{$new_g} = $old_g;
-    } else {
-      $lookup_reverse_hash{$new_g} = $lookup_reverse_hash{$new_g}.";$old_g";
-    }
-  }
   
+  }
+
 }
 
-
+// function to retrieve multiple lookup genes and add them to the input gene list $gids
 function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse_hash) {
-  
-  // echo "MULTIPLE VERSIONS FOUND: <b>$other_gene</b> -> $gene_string <br>";
   
   $genes_array = explode(";",$gene_string);
   
@@ -79,30 +81,27 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
     if (!in_array($one_gene,$gids)) {
       array_push($gids,$one_gene);
     }
-    // echo "MULTIPLE VERSIONS FOUND: $other_gene -> $one_gene <br>";
-    
     
     $old_gene = $lookup_reverse_hash{$one_gene};
     
     if ($old_gene) {
-      echo "----older versions found for <b>$one_gene</b> -> $old_gene<br>";
       
       //---------------------------------------------------- multiple gene lookup
       if ( preg_match('/\;/', $old_gene) ) {
-
+        echo "--Multiple older versions found for <b>$one_gene</b> -> $old_gene<br>";
+        
         $genes_array = explode(";",$old_gene);
 
         foreach ($genes_array as $one_gene_multi2) {
           if (!in_array($one_gene_multi2,$gids)) {
             array_push($gids,$one_gene_multi2);
           }
-          // echo "OLD1  $one_gene_multi -> $one_gene_multi2 <br>";
         }
       }
       //-----------------------------------------------------
       else {
-        // echo "OLD2  $one_gene -> $old_gene<br>";
-  
+        echo "--Older version found for <b>$one_gene</b> -> $old_gene<br>";
+        
         array_push($gids,$old_gene);
       }
     }// old gene
@@ -114,14 +113,21 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
 }
 
 
-
-
-
 // get each sample and their dataset and save it in a hash key=dataset-file value=array of experiments from that dataset
   $sample_hash = [];
+  $found_categories = [];
+  $newer_found = 0;
   
   foreach ($_POST['sample_names'] as $sample) {
     list($file,$exp) = explode("@", $sample);
+  
+    if ($_POST['categories']) {
+      //echo "Categories $file <br>";
+      $path_array = explode("/", rtrim($file));
+      $category = $path_array[count($path_array)-2];
+      $found_categories[$category]=1;
+      //echo "Category $category <br>";
+    }
   
     if ($sample_hash[$file]) {
       array_push($sample_hash[$file],$exp);
@@ -131,18 +137,28 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
     }
   }
 
-// get input genes
+  // check if more than one category was selected
+  $category_number = count(array_keys($found_categories));
+
+  if ($category_number > 1) {
+    echo "<p style=\"color:red\"><b>WARNING!</b> samples from different categories were selected (".join(", ",array_keys($found_categories) )."). Consider if their comparison make sense</p>";
+  }
+
+
+  // get input genes
   $gene_list = $_POST["gids"];
   $gids = [];
   $one_gene2;
   
   if(isset($gene_list)) {
     
-//iterate by each gene and add genes with/without isoform version (.1) to the list $gids
+    
+    //iterate by each gene and add genes with/without isoform version (.1) to the list $gids
     foreach (explode("\n",$gene_list) as $one_gene) {
       $one_gene = rtrim($one_gene);
-      
+  
       if ($one_gene) {
+        array_push($gids,$one_gene);
         
         if (preg_match('/\.\d+$/',$one_gene)) {
           $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
@@ -150,12 +166,12 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
             array_push($gids,$one_gene2);
           }
         }
-        if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
-          $one_gene3 = $one_gene2.".1";
-          if (!in_array($one_gene3,$gids)) {
-            array_push($gids,$one_gene3);
-          }
-        }
+        // if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
+        //   $one_gene3 = $one_gene2.".1";
+        //   if (!in_array($one_gene3,$gids)) {
+        //     array_push($gids,$one_gene3);
+        //   }
+        // }
         if (!preg_match('/\.\d+$/',$one_gene)) {
           $one_gene2 = $one_gene.".1";
           if (!in_array($one_gene2,$gids)) {
@@ -163,7 +179,14 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
           }
         }
         
+      }
+    }
+    
+    //iterate each gene
+    foreach ($gids as $one_gene) {
       
+      if ($one_gene) {
+        
         // ############################ Lookup code
         // add newest gene versions to gids
         if ($to_newest_v && $lookup_hash) {
@@ -178,52 +201,17 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
               $genes_string = $lookup_hash{$one_gene};
               
               // multiple newer versions found
-              echo "Multiple newer versions found for <b>$one_gene</b> -> $genes_string <br>";
+              echo "<b>$one_gene</b>: Multiple newer versions found -> $genes_string <br>";
+              $newer_found = 1;
               
               $gids = process_multiple_genes($genes_string, $one_gene, $gids, $lookup_reverse_hash);
-              
-              
-              // $genes_array = explode(";",$genes_string);
-              //
-              // foreach ($genes_array as $one_gene_multi) {
-              //   if (!in_array($one_gene_multi,$gids)) {
-              //     array_push($gids,$one_gene_multi);
-              //   }
-              //   echo "MULTI  $one_gene -> $one_gene_multi <br>";
-              //
-              //
-              //   $old_gene = $lookup_reverse_hash{$one_gene_multi};
-              //
-              //   if ($old_gene) {
-              //     //---------------------------------------------------- multiple gene lookup
-              //     if ( preg_match('/\;/', $old_gene) ) {
-              //
-              //       $genes_array = explode(";",$old_gene);
-              //
-              //       foreach ($genes_array as $one_gene_multi2) {
-              //         if (!in_array($one_gene_multi2,$gids)) {
-              //           array_push($gids,$one_gene_multi2);
-              //         }
-              //         echo "MULTI Old  $one_gene_multi -> $one_gene_multi2 <br>";
-              //       }
-              //     }
-              //     //-----------------------------------------------------
-              //     else {
-              //       echo "OLD2  $one_gene -> $old_gene<br>";
-              //
-              //       array_push($gids,$old_gene);
-              //     }
-              //   }// old gene
-              //
-              //
-              //
-              // }// foreach
             }
             //-----------------------------------------------------
             else {
               $one_gene2 = $lookup_hash{$one_gene};
               // Newer version found
-              echo "Newer version found for <b>$one_gene</b> -> $one_gene2 <br>";
+              echo "<b>$one_gene</b>: Newer version found -> $one_gene2 <br>";
+              $newer_found = 1;
               
               if (!in_array($one_gene2,$gids)) {
                 array_push($gids,$one_gene2);
@@ -238,30 +226,19 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
                   $gids = process_multiple_genes($old_gene, $one_gene2, $gids,$lookup_reverse_hash);
                   
                   // Multiple older versions found
-                  echo "Multiple older versions found for <b>$one_gene2</b> -> $old_gene <br>";
-                  
-                //   $genes_array = explode(";",$old_gene);
-                //
-                //   foreach ($genes_array as $one_gene_multi) {
-                //     if (!in_array($one_gene_multi,$gids)) {
-                //       array_push($gids,$one_gene_multi);
-                //     }
-                //     echo "Multi Old  $one_gene2 -> $one_gene_multi <br>";
-                //   }
-                // }
-                // //-----------------------------------------------------
-                // else {
-                //   echo "OLD  $old_gene -> $one_gene<br>";
-                //
-                //   array_push($gids,$old_gene);
+                  echo "-Multiple older versions found for <b>$one_gene2</b> -> $old_gene <br>";
+                  $newer_found = 1;
                 }
               }// old gene if
               
             } // end else ;
-          
+            
+            //separate each gene
+            echo "<br>";
+            
           } else {
             // not found in lookup hash
-            echo "No newer version found for <b>$one_gene</b><br>";
+            //echo "No newer version found for <b>$one_gene</b><br>";
             
             if ($lookup_reverse_hash{$one_gene}) {
               $old_gene = $lookup_reverse_hash{$one_gene};
@@ -270,40 +247,27 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
               if ( preg_match('/\;/', $old_gene) ) {
                 
                 $gids = process_multiple_genes($old_gene, $one_gene, $gids,$lookup_reverse_hash);
-                echo "--Multiple older versions found for <b>$one_gene</b> -> $old_gene <br>";
                 
-              //   $genes_array = explode(";",$old_gene);
-              //
-              //   foreach ($genes_array as $one_gene_multi) {
-              //     if (!in_array($one_gene_multi,$gids)) {
-              //       array_push($gids,$one_gene_multi);
-              //     }
-              //     echo "Previous versions found:  $one_gene2 -> $one_gene_multi <br>";
-              //   }
+                //NEW genes as input, find older versions for old datasets
+                if ($category_number > 1) {
+                  echo "<b>$one_gene</b>: Multiple older versions found -> $old_gene<br>";
+                }
               }
               //-----------------------------------------------------
               else {
-                echo "--Older version found for <b>$one_gene</b> -> $old_gene <br>";
-
+                //NEW genes as input, find older versions for old datasets
+                if ($category_number > 1) {
+                  echo "<b>$one_gene</b>: Older version found -> $old_gene<br>";
+                }
                 array_push($gids,$old_gene);
               }
               
-              
             }
           }
-        
-          // get data from old genes if new ones are used as input
-          // $old_gene = array_search($one_gene, $lookup_hash);
-          
-          
           
           
         }//end newest and lookup hash
-        ###########################################
-      
-        // if (!in_array($one_gene,$gids)) {
-        //   array_push($gids,$one_gene);
-        // }
+        
       
       }// end if gene
     }// end foreach
@@ -454,7 +418,6 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
                 // convert old versions to new ones
                 $newest_gene = $lookup_hash{$gene_name};
                 
-                
                 // echo "comparator samples array<br>";
                 // print_r($comparator_samples_array);
                 // echo "<br>";
@@ -497,10 +460,6 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
             
             
             
-            
-            
-            
-            
             // echo "<br>";
           }
           // ############################### End Housekeeping normalization
@@ -515,6 +474,11 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
   } // end if expression file exists
   
 } // end foreach sample_hash
+
+if ($hk_genes && $to_newest_v && $newer_found) {
+  echo "<p><b>WARNING!</b> only genes in the newest version are normalized. Genes from older annotation versions with multiple gene matches in the newest version and viceversa should not be considered. In those cases consider to use the newest gene version as input</p>";
+}
+
 
 // echo "REPLICATES<br>";
 // print_r($replicates);
@@ -548,7 +512,6 @@ array_push($table_code_array,"</tr></thead>");
 // remove old gene version ids if they were converted to the newest
 if ($to_newest_v) {
 foreach ($found_genes as $gene_name => $kk) {
-
     
     // convert old versions to new ones
     if ($lookup_hash{$gene_name} && $found_genes{$gene_name} && !preg_match('/\;/', $lookup_hash{$gene_name}) ) {
@@ -567,27 +530,41 @@ foreach ($found_genes as $gene_name => $kk) {
 // print_r($found_genes);
 // echo "<br>";
 
-foreach ($found_genes as $gene_name => $kk) {
 
-  //$q_link = "";
-  // if ($annot_hash[$dataset_name_ori]) {
-  //   if ($annot_hash[$dataset_name_ori]["link"]) {
-  //     if ($annot_hash[$dataset_name_ori]["link"] == "#") {
-  //       array_push($table_code_array,"<tr><td>$gene_name</td>");
-  //     }
-  //     else {
-  //       $q_link = $annot_hash[$dataset_name_ori]["link"];
-  //       $q_link = preg_replace('/query_id/',$gene_name,$q_link);
-  //       array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
-  //     }
-  //   }
-  //   else {
-  //     array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
-  //   }
-  // }
-  // else {
-    array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
-  // }
+
+
+$q_link = "";
+if ( file_exists("$expression_path/comparator_link.json") ) {
+  $link_json_file = file_get_contents("$expression_path/comparator_link.json");
+  $link_hash = json_decode($link_json_file, true);
+  
+  if ($link_hash["link"]) {
+    $q_link = $link_hash["link"];
+  }
+}
+
+
+// echo "<p>link: $q_link</p>";
+
+
+$warning_switch = 0;
+
+
+foreach ($found_genes as $gene_name => $kk) {
+  
+  if ($q_link) {
+    if ($q_link == "#") {
+      array_push($table_code_array,"<tr><td>$gene_name</td>");
+    }
+    else {
+      $q_link = preg_replace('/query_id/',$gene_name,$q_link);
+      array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
+    }
+  }
+  else {
+   array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
+  }
+  
   
   $scatter_pos = 1;
   
@@ -625,34 +602,42 @@ foreach ($found_genes as $gene_name => $kk) {
           $hk_old_gene = array_search($hk_genename, $lookup_hash);
           $hk_newest_gene = $lookup_hash{$gene_name};
           
+          
           if ($hk_newest_gene && $hk_replicates[$sample_name][$hk_newest_gene]) {
             $hk_sum = array_sum($hk_replicates[$sample_name][$hk_newest_gene]);
             $hk_reps = count($hk_replicates[$sample_name][$hk_newest_gene]);
             
-            // echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
+            //echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
           } else if ($hk_old_gene && $hk_replicates[$sample_name][$hk_old_gene]) {
             $hk_sum = array_sum($hk_replicates[$sample_name][$hk_old_gene]);
             $hk_reps = count($hk_replicates[$sample_name][$hk_old_gene]);
             
-            // echo "HK genes old: $hk_old_gene: $hk_sum , $hk_reps <br>";
+            //echo "HK genes old: $hk_old_gene: $hk_sum , $hk_reps <br>";
             
           } else if ($hk_replicates[$sample_name][$hk_genename]) {
             $hk_sum = array_sum($hk_replicates[$sample_name][$hk_genename]);
             $hk_reps = count($hk_replicates[$sample_name][$hk_genename]);
             
-            // echo "HK genes as it comes: $hk_genename: $sample_name , $hk_sum , $hk_reps <br>";
+            //echo "HK genes as it comes: $hk_genename: $sample_name , $hk_sum , $hk_reps <br>";
           }
           else if ($hk_replicates[$sample_name][$hk_genename]) {
-            // echo "HK genes :\ $hk_genename: $sample_name , $hk_old_gene <br>";
+            //echo "HK genes :\ $hk_genename: $sample_name , $hk_old_gene <br>";
             
             
             $hk_sum = array_sum($hk_replicates[$sample_name][$hk_newest_gene]);
             $hk_reps = count($hk_replicates[$sample_name][$hk_newest_gene]);
             
-            // echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
+            //echo "HK genes new: $hk_newest_gene: $sample_name , $hk_sum , $hk_reps <br>";
+            
+          } else {
+            
+            if (!$hk_replicates[$sample_name][$hk_genename]) {
+              // echo "------------> $sample_name <br>";
+              $warning_switch = 1;
+            }
             
           }
-
+        
         
           $hk_total_sum = $hk_total_sum + $hk_sum;
           $hk_total_reps = $hk_total_reps + $hk_reps;
@@ -665,7 +650,7 @@ foreach ($found_genes as $gene_name => $kk) {
           $hk_total_sum = $hk_total_sum + $hk_sum;
           $hk_total_reps = $hk_total_reps + $hk_reps;
           
-          // echo "HK genes3: $hk_genename: $hk_sum , $hk_reps <br>";
+          //echo "HK genes3: $hk_genename: $hk_sum , $hk_reps <br>";
         }
       }
       
@@ -674,7 +659,6 @@ foreach ($found_genes as $gene_name => $kk) {
       if ($hk_total_reps >0) {
         $hk_ave = sprintf("%1\$.2f",$hk_total_sum/$hk_total_reps);
       }
-      // echo "$gene_name: $average / $hk_ave ";
       
       if ($hk_ave != $average && $hk_ave == 0) {
         $hk_ave = 0.001;
@@ -684,7 +668,6 @@ foreach ($found_genes as $gene_name => $kk) {
       } else {
         $average = sprintf("%1\$.2f",$average/$hk_ave);
       }
-      // echo "= $average<br>";
       
        if ($fc_log2) {
          $average = sprintf( "%1\$.2f",log($average, 2) );
@@ -771,6 +754,11 @@ array_push($table_code_array,"</tr>");
 array_push($table_code_array,"</table></div>");
 
 $samples_found = array_keys($replicates);
+  
+  
+  if ($warning_switch) {
+     echo "<p style=\"color:red\"><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p>";
+  }
   
 ?>
 
