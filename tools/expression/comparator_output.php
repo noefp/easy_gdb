@@ -3,7 +3,7 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/02_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <a href="/easy_gdb/tools/expression/comparator_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 <br>

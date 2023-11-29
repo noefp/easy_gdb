@@ -4,7 +4,7 @@
 
 <div id="dlgDownload">
   <div class="margin-20">
-    <a class="float-right" href="/easy_gdb/help/02_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+    <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
   <br>
   
