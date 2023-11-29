@@ -557,8 +557,8 @@ foreach ($found_genes as $gene_name => $kk) {
       array_push($table_code_array,"<tr><td>$gene_name</td>");
     }
     else {
-      $q_link = preg_replace('/query_id/',$gene_name,$q_link);
-      array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
+      $q_link2 = preg_replace('/query_id/',$gene_name,$q_link);
+      array_push($table_code_array,"<tr><td><a href=\"$q_link2\" target=\"_blank\">$gene_name</a></td>");
     }
   }
   else {
