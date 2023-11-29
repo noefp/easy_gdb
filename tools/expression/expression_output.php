@@ -290,7 +290,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           //################################################################################################## ADD ANNOTATIONS
           
           if ($dbconn) {
-          
+            
             foreach ($annotTypes as $type) {
               array_push($table_code_array, "<th style=\"min-width:100px\">".$all_annotation_types[$type]." ID</th>");
               array_push($table_code_array, "<th style=\"min-width:200px\">".$all_annotation_types[$type]." Description</th>");
@@ -378,26 +378,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
             array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
           }
           
-          // if ($replicates[$sample_name]) {
-          //   if ($replicates_all_genes[$gene_name]) {
-          //     array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
-          //   } else {
-          //     $replicates_all_genes[$gene_name] = [];
-          //     array_push($replicates_all_genes[$gene_name], $scatter_one_sample );
-          //   }
-          // }
           
           $scatter_one_sample = [];
           
           
-          
-          
-          
-          
-          
-          
-              
-
           //save cartoons data
           if ($expr_cartoons && $annot_hash) {
             
@@ -416,18 +400,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
                 
                 
                 
-                
-                
-                
             }
           
           }
-          
-          
-          
-          
-          
-          
           
           
           
