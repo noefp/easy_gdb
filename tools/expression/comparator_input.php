@@ -98,6 +98,8 @@ foreach ($all_datasets as $expr_dataset) {
 //category organization
 if ($dir_counter) {
   
+  echo "<input style=\"display:none\" name=\"categories\" value=1>";
+  
   foreach ($all_datasets as $dirs_and_files) {
 
     if (is_dir($expression_path."/".$dirs_and_files)){ // get dirs and print categories
@@ -107,6 +109,7 @@ if ($dir_counter) {
       echo "<div class=\"card\">";
       echo "<div class=\"card-body\" style=\"widht: 100%\">";
       echo "<div class=\"row\"><h4>$dir_name</h4></div>";
+      
       echo "<div class=\"row\">";
   
       sort($all_dir_datasets);
@@ -129,7 +132,7 @@ if ($dir_counter) {
           echo "<div class=\"col-sm-6 col-md-4 col-lg-3\">";
           echo "<input type=\"checkbox\" class=\"form-check-input selectall\" style=\"margin-left:0px\" name=\"$link_name\">";
           echo "<a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"false\" style=\"margin-left:15px\" >";
-          echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $dir_name/$data_set_name";
+          echo "<i class=\"fa fa-chevron-circle-right\"></i><i class=\"fa fa-chevron-circle-down\"></i> $data_set_name";
           echo "</a>";
           echo "<div id=\"$link_name\" class=\"form-check collapse\">";
           // echo "<div id=\"$link_name\" class=\"form-check collapse show\">";
@@ -170,6 +173,7 @@ if ($dir_counter) {
   echo "<div class=\"card\">";
   echo "<div class=\"card-body\" style=\"widht: 100%\">";
   echo "<div class=\"row\">";
+  echo "<input style=\"display:none\" name=\"categories\" value=0>";
 
 
   foreach ($all_datasets as $expr_dataset) {
@@ -358,7 +362,8 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
           return false;
       }
       
-      var numberOfChecked = $('input:checkbox:checked').length;
+      //var numberOfChecked = $('input:sample_checkbox:checked').length;
+      var numberOfChecked = $('input.sample_checkbox:checked').length;
       
       if (numberOfChecked == 0) {
         alert("Please, select some samples.");
