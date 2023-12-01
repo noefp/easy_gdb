@@ -244,8 +244,12 @@ if ($dir_counter) {
     
     $('#get_expression_form').submit(function () {
       var gene_lookup_input = $('#InputGenes').val();
-      var gene_count = (gene_lookup_input.match(/\n/g)||[]).length
-
+      var gene_count = (gene_lookup_input.match(/.+\n?/g)||[]).length
+      
+      if (gene_count == 0) {
+          alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          return false;
+      }
       //check input genes from gene lookup before sending form
       var max_input = "<?php echo $max_expression_input ?>";
       
