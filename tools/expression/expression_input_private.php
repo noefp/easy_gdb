@@ -12,7 +12,7 @@
   
   <div class="form margin-20">
     
-    <form id="get_expression_form" action="expression_output.php" method="post">
+    <form id="get_expression_form" action="expression_output_private.php" method="post">
     
     
       <div class="form-group">
