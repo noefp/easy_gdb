@@ -31,7 +31,15 @@
   $evalue = $_POST["evalue"];
   $blast_matrix = $_POST["blast_matrix"];
   $blast_filter = $_POST["blast_filter"];
+  $task = $_POST["task"];
   
+  $blast_task = "";
+  
+  if ($task == "none") {
+    $blast_task = "";
+  } else {
+    $blast_task = "-task $task";
+  }
   
   $num_input_seqs = substr_count($query,">");
   
@@ -56,18 +64,20 @@
   }
 
   if ($blast_prog == "blastn") {
-    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
   }
   if ($blast_prog == "tblastn") {
-    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
   }
 
   if ($blast_prog == "blastp" || $blast_prog == "blastx" || $blast_prog == "tblastx") {
-    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
+    $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
   }
 
   $blast_res = shell_exec('printf '.$blast_cmd);
   $blast_res = str_replace('<a name=',"<a id=", $blast_res);
+  
+  //echo "<p>$blast_cmd</p>";
   
   echo "<div style=\"margin:20px;min-width:1020px\">$blast_res</div>";
 

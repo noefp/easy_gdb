@@ -73,15 +73,28 @@
             <option value='BLOSUM80'>BLOSUM80</option>
             <option value='BLOSUM90'>BLOSUM90</option>
           </select>
-        </div>
-        <br>
-        <br>
-        <div class="col-sm-6 col-md-6 col-lg-6">
+          
+          <br>
           <div class="checkbox" style="margin:0px">
             <label class="yellow_col"><input type="checkbox" id="blast_filter" name="blast_filter"> Filter low complexity</label>
           </div>
         </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-">
+          <label for="blast_task">Task</label>
+          <select class="form-control" id="blast_task" name="task">
+          <option value='none' selected>default</option>
+          <option value='blastn-short'>blastn-short</option>
+          <option value='dc-megablast'>dc-megablast (more sensitive but slower)</option>
+          <option value='megablast'>megablast (fast but only for very similar hits)</option>
+          <option value='blastp-fast'>blastp-fast</option>
+          <option value='blastp-short'>blastp-short</option>
+          <option value='blastx-fast'>blastx-fast</option>
 
+          </select>
+          
+        </div>
+        
       </div>
 
     </div>
