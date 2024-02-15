@@ -339,7 +339,7 @@ $(document).ready(function () {
   
   
   $( "#sel_cartoons" ).change(function() {
-    // alert( this.value );
+    //alert( this.value );
     //cartoon_one_gene = cartoons_all_genes[this.value];
     
     cartoon_active_gene = $('#sel_cartoons').val();
@@ -356,11 +356,14 @@ $(document).ready(function () {
     
     for (var sample in gene_expr_values){
       //alert(sample+": "+gene_expr_values[sample]);
-      html_array.push("<li>"+sample+": "+gene_expr_values[sample]+"</li>");
+      html_array.push("<li class=\"cartoon_values pointer_cursor\" id=\""+sample+"_kj_image\">"+sample+": "+gene_expr_values[sample]+"</li>");
+      
+      //echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+      
     }
     //html_array.push("</ul>");
     
-    $("#cartoon_values").html(html_array.join("\n"));
+    $("#cartoon_labels").html(html_array.join("\n"));
   });
   
   
