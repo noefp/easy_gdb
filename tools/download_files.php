@@ -14,7 +14,7 @@ function get_dir_and_files($root, $dir_name, $sub_structure) {
       if ($dh = opendir($root."/".$dir_name)){
         while (($file_name = readdir($dh)) !== false){ //iterate all files in dir
 
-          if (!preg_match('/^\./', $file_name)) { //discard hidden files
+          if ( !preg_match('/^\./', $file_name) && !preg_match('/^_h5ai/', $file_name) ) { //discard hidden files
             
             if (!is_dir($root."/".$dir_name."/".$file_name)){
               //save downloadable files
