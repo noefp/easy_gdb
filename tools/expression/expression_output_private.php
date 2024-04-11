@@ -462,7 +462,15 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     </div>
 
     <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
-      <div id="chart_lines" style="min-height: 550px;"></div>
+      
+      <div id="lines_frame">
+          <button id="lines_btn" type="button" class="btn btn-danger">Lines</button>
+          <button id="bars_btn" type="button" class="btn btn-primary">Bars</button>
+
+        <div id="chart_lines" style="min-height: 550px;"></div>
+        
+      </div>
+      
     </div>
   </center>
   
@@ -744,7 +752,7 @@ if ( file_exists("$private_expression_path/expression_info.json") ) {
     
         echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
       
-        echo "<ul style=\"text-align:left\">";
+        echo "<ul id=\"cartoon_labels\" style=\"text-align:left\">";
         foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
         
           echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";

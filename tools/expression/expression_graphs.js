@@ -18,7 +18,8 @@ var options = {
   colors: color_array,
   dataLabels: {
     enabled: true,
-    offsetY: -5
+    offsetY: -5,
+    colors:["#FF0000"]
   },
   stroke: {
     curve: 'straight'
@@ -60,6 +61,48 @@ var options = {
 
 var line_chart = new ApexCharts(document.querySelector("#chart_lines"), options);
 line_chart.render();
+
+
+
+$( "#lines_btn" ).click(function() {
+  
+  line_chart.updateOptions({
+    chart: {
+      type: 'line'
+    },
+    stroke: {
+      width: 5
+    },
+    title: {
+      text: 'Lines',
+    }
+  });
+  
+});
+
+
+$( "#bars_btn" ).click(function() {
+  
+  line_chart.updateOptions({
+    chart: {
+      type: 'bar'
+    },
+    stroke: {
+      width: 1
+    },
+    title: {
+      text: 'Bars'
+    }
+  });
+  
+});
+
+
+
+
+
+
+
 
 // ######################################################## Heatmap
 
@@ -234,9 +277,6 @@ $(document).ready(function () {
     
     
     
-    
-    
-    
 // ######################################################## Cards
 
 
@@ -307,35 +347,41 @@ $(document).ready(function () {
   
   
 // ######################################################## Cartoons gene selection
+  
+  
+  var i_red = 0;
+  var i_green = 0;
+  var i_blue = 0;
+  var obj;
+  
+  
+    $(".cartoon_values").mouseover(function(){
+      image_id = this.id;
+      //alert("image: "+image_id);
+    
+      obj = canvas.get('#'+image_id)[0];
 
+      i_red = obj.attrs.red;
+      i_green = obj.attrs.green;
+      i_blue = obj.attrs.blue;
+    
+      obj.cache();
+      obj.filters([Kinetic.Filters.RGB]);
+      obj.red(150).green(150).blue(150);
+      obj.draw();
+    
+    });
   
-  
-  //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-  // function ajax_change_cartoon_gene(cartoon_active_gene,img_path) {
-  //
-  //   jQuery.ajax({
-  //     type: "POST",
-  //     url: 'ajax_cartoons.php',
-  //     data: {'expr_file': expr_file, 'db_title': db_title, 'db_logo': db_logo, 'img_path': img_path, 'sample_array': sample_array, 'expr_img_array': expr_img_array},
-  //
-  //     success: function (php_array) {
-  //
-  //       var php_code = JSON.parse(php_array);
-  //       $("#card_code").html(php_code.join("\n"));
-  //
-  //       $('.flip-card-inner').delay(800).animate({  borderSpacing: 180 }, {
-  //           step: function(now,fx) {
-  //             $(".flip-card-inner").css('transform','rotateY('+now+'deg)');
-  //           },
-  //           duration:'slow'
-  //       },'swing');
-  //
-  //     }
-  //   });
-  //
-  // }; // end ajax_call
-  
-  
+    $(".cartoon_values").mouseout(function(){
+    
+      //var obj = canvas.get('#'+image_id)[0];
+    
+      obj.cache();
+      obj.filters([Kinetic.Filters.RGB]);
+      obj.red(i_red).green(i_green).blue(i_blue);
+      obj.draw();
+    
+    });
   
   
   $( "#sel_cartoons" ).change(function() {
@@ -355,75 +401,12 @@ $(document).ready(function () {
     var html_array = [];
     
     for (var sample in gene_expr_values){
-      //alert(sample+": "+gene_expr_values[sample]);
-      html_array.push("<li class=\"cartoon_values pointer_cursor\" id=\""+sample+"_kj_image\">"+sample+": "+gene_expr_values[sample]+"</li>");
       
-      //echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+      $("#"+sample+"_kj_image").html(sample+": "+gene_expr_values[sample]);
       
     }
-    //html_array.push("</ul>");
-    
-    $("#cartoon_labels").html(html_array.join("\n"));
-  });
-  
-  
-//   $( "#cartoon_values" ).click(function() {
-//
-// //    var obj = canvas.get('#Achilles_tendon_kj_image');
-//     var obj = canvas.get('#Achilles_tendon_kj_image')[0];
-//     var obj_text = JSON.stringify(obj, null, 2);
-//
-//     alert("image: "+obj_text);
-//     // alert("image: "+obj.attrs.id);
-//     var i_red = obj.attrs.red;
-//     var i_green = obj.attrs.green;
-//     var i_blue = obj.attrs.blue;
-// //    image: "{\"attrs\":{\"id\":\"Achilles_tendon_kj_image\",\"x\":10,\"y\":10,\"filters\":[null],\"red\":222,\"green\":37,\"blue\":21},\"className\":\"Image\"}"
-//
-//     obj.cache();
-//     obj.filters([Kinetic.Filters.RGB]);
-//     obj.red(150).green(150).blue(150);
-//     // kj_image.red(210).green(34).blue(34);
-//     obj.draw();
-//
-//
-//   });
-  
-var i_red = 0;
-var i_green = 0;
-var i_blue = 0;
-var obj;
-  
-  
-  $(".cartoon_values").mouseover(function(){
-    image_id = this.id;
-    //alert("image: "+image_id);
-    
-    obj = canvas.get('#'+image_id)[0];
-
-    i_red = obj.attrs.red;
-    i_green = obj.attrs.green;
-    i_blue = obj.attrs.blue;
-    
-    obj.cache();
-    obj.filters([Kinetic.Filters.RGB]);
-    obj.red(150).green(150).blue(150);
-    obj.draw();
     
   });
-  
-  $(".cartoon_values").mouseout(function(){
-    
-    //var obj = canvas.get('#'+image_id)[0];
-    
-    obj.cache();
-    obj.filters([Kinetic.Filters.RGB]);
-    obj.red(i_red).green(i_green).blue(i_blue);
-    obj.draw();
-    
-  });
-  
-  
   
   
   // ################################### render replicates graph when opening replicates section

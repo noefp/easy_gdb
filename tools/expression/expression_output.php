@@ -462,7 +462,18 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     </div>
 
     <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
-      <div id="chart_lines" style="min-height: 550px;"></div>
+      
+
+      <div id="lines_frame">
+          <button id="lines_btn" type="button" class="btn btn-danger">Lines</button>
+          <button id="bars_btn" type="button" class="btn btn-primary">Bars</button>
+
+        <div id="chart_lines" style="min-height: 550px;"></div>
+        
+      </div>
+        
+      
+      
     </div>
   </center>
   
@@ -667,7 +678,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
   
     $cartoon_conf = $annot_hash[$dataset_name_ori]["cartoons"];
 
-    // echo "<p>annot_hash cartoons exists and was found!</p>";
+    //echo "<p>annot_hash cartoons exists and was found!</p>";
 
     if ($expr_cartoons && file_exists($expression_path."/$cartoon_conf") ) {
       
@@ -759,8 +770,19 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo '</div>';
 
     }//end cartoons conf
+    // else {
+    //   echo "<p>cartoons.json file was not found!</p>";
+    // }
+    
   }//end cartoons hash
+  // else {
+  //   echo "<p>cartoons hash was not found!</p>";
+  // }
+  
 } //end expression_info.json
+// else {
+//   echo "<p>expression_info.json was not found!</p>";
+// }
 ?>
 </center>
 
