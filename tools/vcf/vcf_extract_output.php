@@ -15,13 +15,14 @@
 <!-- HTML -->
 <div class="page_container">
 
-<!-- GET INPUT -->
 <?php
+  //get input variables
   $vcf_chr = $_GET["vcf_chr"];
   $vcf_start = trim($_GET["vcf_start"]);
   $vcf_end = trim($_GET["vcf_end"]);
   
-  $tabix_command = "tabix $root_path"."/"."$downloads_path"."/vcf/test.chickpea.chr.hardfiltered.snp.chr1.vcf.gz ".$vcf_chr.":".$vcf_start."-".$vcf_end;
+  // run tabix
+  $tabix_command = "tabix $root_path"."/"."$downloads_path"."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz ".$vcf_chr.":".$vcf_start."-".$vcf_end;
   //echo "<br><p>command: $tabix_command</p>";
   ini_set( 'memory_limit', '1024M' );
   $tabix_out = shell_exec($tabix_command);
@@ -30,20 +31,17 @@
   
   $lines_array = explode("\n",$tabix_out);
   $tabix_out = "";
-  // hash vcf_res[chr-pos] = [] add array of acc data in html
   
+  //print SNPs table
   echo '<div class="row">';
-  echo '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">';
+  echo '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6" style="overflow: scroll">';
   
   echo "<div class=\"card bg-light text-dark\">";
   echo "  <div class=\"card-body\"><b>SNPs found</b> in $vcf_chr $vcf_start-$vcf_end</div>";
   echo "</div><br>";
   
-  //echo "<br><p>region: $vcf_chr:$vcf_start-$vcf_end</p>";
-  
-  
-  echo "<table id=\"snp_table\" class=\"table table-striped table-bordered\">\n";
-  echo "<thead><tr><th>CHR</th><th>POS</th><th>ID</th><th>REF</th><th>ALT</th><th>QUAL</th><th>ACCs</th></tr></thead>\n";
+  echo "<table id=\"snp_table\" class=\"table table-striped table-bordered\" style=\"line-height: 1; font-size:14px\">\n";
+  echo "<thead><tr><th>CHR</th><th>POS</th><th>REF</th><th>ALT</th><th>QUAL</th><th>SNPeff</th><th>ACCs</th></tr></thead>\n";
   echo "<tbody>\n";
   
   $table_counter = 1;
@@ -52,7 +50,7 @@
     
     $data_array = explode("\t",$vcf_line);
     
-    $snp_info = array_slice($data_array,0,6);
+    $snp_info = array_slice($data_array,0,8);
     $data_array = [];
     
     echo "<tr>";
@@ -66,6 +64,15 @@
         $jbrowse_link = str_replace("{end}",$snp_info[1]+50,$jbrowse_link);
         
         echo "<td><a href=\"$jbrowse_link\">$snp_val</a></td>";
+      } else if ($index == 2 || $index == 6) {
+      } else if ($index == 5) {
+        echo "<td style='font-size:12px'>$snp_val</td>";
+      } else if ($index == 7) {
+        $snp_eff = preg_replace("/.+ANN=/",'',$snp_val);
+        $eff_array = explode("|",$snp_eff);
+        
+        echo "<td style='font-size:12px;width:0%'>$eff_array[4] $eff_array[1]</td>";
+        
       } else {
         echo "<td>$snp_val</td>";
       }
@@ -80,27 +87,20 @@
   $snp_info = [];
   $lines_array = [];
   
-  
-  // $header_array = [];
-  // if ( file_exists("$root_path"."/"."$downloads_path"."/vcf/acc_header.txt")) {
-  //   $header_file = file_get_contents("$root_path"."/"."$downloads_path"."/vcf/acc_header.txt");
-  //   $header_array = explode("\t",$header_file);
-  // }
-  
 ?>
 
 
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
     
-      <table id="selected_snp_table" class="table table-bordered">
-        <thead><tr><th>CHR</th><th>POS</th><th>ID</th><th>REF</th><th>ALT</th><th>QUAL</th><th>ACCs</th></tr></thead>
+      <table id="selected_snp_table" class="table table-bordered" style="line-height: 1; font-size:14px">
+        <thead><tr><th>CHR</th><th>POS</th><th>REF</th><th>ALT</th><th>QUAL</th><th>SNPeff</th><th>ACCs</th></tr></thead>
         <tbody>
           <tr id="selected_snp"></tr>
         </tbody>
       </table>
       
-      <table id="acc_table" class="table table-striped table-bordered">
-        <!-- <thead><tr><th>ACC</th><th>GT</th><th>AD</th><th>DP</th><th>GQ</th><th>PGT</th><th>PID</th><th>PL</th></tr></thead> -->
+      <table id="acc_table" class="table table-striped table-bordered"  style="line-height: 1; font-size:14px">
+        <thead><tr><th>Click on ACC info to visualize accession details</th></tr></thead>
       </table>
       
     </div>
@@ -115,7 +115,7 @@
 
 <!-- JS DATATABLE -->
 <script type="text/javascript">
-  var counter = 0;
+  //var counter = 0;
   
   $('.acc_link').click(function () {
     //alert( $(this).parent().parent().html() );
@@ -123,20 +123,22 @@
     $('#selected_snp').html($(this).parent().parent().html());
 
     var snp_pos = $(this).attr('value');
-    var tabix_cmd = "<?php echo "tabix $root_path"."/".$downloads_path."/vcf/test.chickpea.chr.hardfiltered.snp.chr1.vcf.gz"." ".$vcf_chr.":" ?>"+snp_pos+"-"+snp_pos;
-    var acc_path = "<?php echo "$root_path"."/".$downloads_path."/vcf/acc_header.txt" ?>";
+    var tabix_cmd = "<?php echo "tabix $root_path"."/".$downloads_path."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz"." ".$vcf_chr.":" ?>"+snp_pos+"-"+snp_pos;
+    //var acc_path = "<?php //echo "$root_path"."/".$downloads_path."/vcf/acc_header.txt" ?>";
+    var vcf_file = "<?php echo "$root_path"."/".$downloads_path."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz" ?>";
    
     //alert("acc_path: "+acc_path );
 
     //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-    function ajax_call(tabix_cmd,acc_path) {
+    function ajax_call(tabix_cmd,vcf_file) {
     
       jQuery.ajax({
         type: "POST",
         url: 'vcf_ajax_acc_data.php',
-        data: {'tabix_cmd': tabix_cmd, 'acc_path': acc_path},
+        data: {'tabix_cmd': tabix_cmd, 'vcf_file': vcf_file},
 
         success: function (html_array) {
+          //alert("hi: "+html_array);
           
           var table_rows = JSON.parse(html_array);
           
@@ -168,18 +170,19 @@
             $("#acc_table_info").addClass("float-left");
             $("#acc_table_paginate").addClass("float-right");
             //}
-          counter = 1;
+          //counter = 1;
           
         }
       });
     
     }; // end ajax_call
     
-    ajax_call(tabix_cmd,acc_path);
+    ajax_call(tabix_cmd,vcf_file);
     // return true;
   });
   
-  
+  //    dom:'Bfrtlpi',
+
   
   $("#snp_table").dataTable({
     dom:'Bfrtlpi',

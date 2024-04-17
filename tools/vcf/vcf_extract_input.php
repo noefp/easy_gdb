@@ -1,11 +1,7 @@
 <!-- HEADER -->
 <?php include_once realpath("../../header.php");?>
-<!-- CARTELITO -->
-<!-- <?php //include_once realpath("search_info_modal.php");?> -->
-
 <br>
 <br>
-
 
 <!-- FORMULARIO -->
 <div style="margin:auto; max-width:900px">
@@ -28,8 +24,8 @@
             <option value='chr8'>chr8</option>
           </select>
         </div>
-        <input type="text" class="form-control" placeholder="region start" name="vcf_start">
-        <input type="text" class="form-control" placeholder="region end" name="vcf_end">
+        <input id="vcf_input_start" type="text" class="form-control" placeholder="region start" name="vcf_start">
+        <input id="vcf_input_end" type="text" class="form-control" placeholder="region end" name="vcf_end">
         <button type="submit" class="btn btn-info float-right">Extract</button>
       </div>
       
@@ -43,7 +39,7 @@
 
 
 <!-- CARTELITO DE ERROR -->
-<div class="modal fade" id="no_gene_modal" role="dialog">
+<div class="modal fade" id="vcf_error_modal" role="dialog">
   <div class="modal-dialog modal-sm">
 
     <div class="modal-content">
@@ -52,7 +48,7 @@
       </div>
       <div class="modal-body">
         <div style="text-align: center;">
-          <p id="search_input_modal"></p>
+          <p id="error_p_modal"></p>
         </div>
       </div>
       <div class="modal-footer">
@@ -67,4 +63,24 @@
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
 
+<script> 
 
+$(document).ready(function () {
+
+  //check input before sending form
+  $('#egdb_vcf_form').submit(function() {
+    var vcf_start = $('#vcf_input_start').val();
+    var vcf_end = $('#vcf_input_end').val();
+    
+    if (!vcf_start || !vcf_end) {
+      $("#error_p_modal").html( "No input provided in the region search coordinates" );
+      $('#vcf_error_modal').modal();
+      return false;
+    }
+    else {
+      return true;
+    }
+  });
+
+});
+</script>
