@@ -41,7 +41,7 @@
   echo "</div><br>";
   
   echo "<table id=\"snp_table\" class=\"table table-striped table-bordered\" style=\"line-height: 1; font-size:14px\">\n";
-  echo "<thead><tr><th>CHR</th><th>POS</th><th>REF</th><th>ALT</th><th>QUAL</th><th>SNPeff</th><th>ACCs</th></tr></thead>\n";
+  echo "<thead><tr><th>CHR</th><th>POS</th><th>ID</th><th>REF</th><th>ALT</th><th>SNPeff</th><th>ACCs</th></tr></thead>\n";
   echo "<tbody>\n";
   
   $table_counter = 1;
@@ -64,9 +64,9 @@
         $jbrowse_link = str_replace("{end}",$snp_info[1]+50,$jbrowse_link);
         
         echo "<td><a href=\"$jbrowse_link\">$snp_val</a></td>";
-      } else if ($index == 2 || $index == 6) {
-      } else if ($index == 5) {
-        echo "<td style='font-size:12px'>$snp_val</td>";
+      } else if ($index == 5 || $index == 6) {
+      } else if ($index == 2) {
+        echo "<td style='font-size:12px'>Ca1_$snp_info[1]</td>";
       } else if ($index == 7) {
         $snp_eff = preg_replace("/.+ANN=/",'',$snp_val);
         $eff_array = explode("|",$snp_eff);
@@ -93,7 +93,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
     
       <table id="selected_snp_table" class="table table-bordered" style="line-height: 1; font-size:14px">
-        <thead><tr><th>CHR</th><th>POS</th><th>REF</th><th>ALT</th><th>QUAL</th><th>SNPeff</th><th>ACCs</th></tr></thead>
+        <thead><tr><th>CHR</th><th>POS</th><th>ID</th><th>REF</th><th>ALT</th><th>SNPeff</th><th>ACCs</th></tr></thead>
         <tbody>
           <tr id="selected_snp"></tr>
         </tbody>
@@ -162,7 +162,7 @@
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
                   },
-                'print', 'colvis'
+                 'colvis'
                 ]
               });
 
@@ -196,7 +196,7 @@
           orientation: 'landscape',
           pageSize: 'LEGAL'
         },
-      'print', 'colvis'
+       'colvis'
       ]
     });
 
