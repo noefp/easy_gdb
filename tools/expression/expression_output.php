@@ -337,11 +337,34 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         // print expression average values $r_key is like "Sample1" and $r_value is like [4.4,2.3,8.1]
         foreach ($replicates as $r_key => $r_value) {
           
-          $a_sum = array_sum($r_value);
-          $a_reps = count($r_value);
-        
-          $average = sprintf("%1\$.2f",$a_sum/$a_reps);
-          // echo "<td>$average</td>";
+          $average = 0;
+          $zero_values = array_count_values($r_value)['0'];
+          $empty_values = count($r_value) - (count(array_filter($r_value)) + $zero_values);
+          
+          // echo "array size: ".count($r_value)."<br>";
+          // echo "empty_values: $empty_values<br>";
+          // echo "zero_values: $zero_values<br>";
+          
+          if (count($r_value) == $zero_values) {
+            $average = 0;
+          }
+          else if(count($r_value) == $empty_values-$zero_values) {
+            $average = null;
+          }
+          else if($empty_values) {
+            $a_sum = array_sum($r_value);
+            $a_reps = count($r_value) - $empty_values;
+          
+            $average = sprintf("%1\$.2f",$a_sum/$a_reps);
+          }
+          else {
+            
+            $a_sum = array_sum($r_value);
+            $a_reps = count($r_value);
+          
+            $average = sprintf("%1\$.2f",$a_sum/$a_reps);
+          }
+          
           array_push($table_code_array,"<td>$average</td>");
           
           //save heatmap data
