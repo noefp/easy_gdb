@@ -68,3 +68,31 @@ h4 {
 .margin-20 {
   margin: 20px;
 }
+
+
+.info_icon {
+  background-color:#4387FD;
+  border-radius:20px;
+  vertical-align: top;
+  border:0px;
+  display:inline-block;
+  color:#ffffff;
+  font-family:"Georgia",Georgia,Serif;
+  font-size:12px;
+  font-weight:bold;
+  font-style:normal;
+  width:18px;
+  height:18px;
+  line-height:18px;
+  text-align:center;
+}
+.info_icon:hover {
+  background-color:#5EA1FF;
+  color:#0000CC;
+}
+
+.info_icon:active {
+  position:relative;
+  top:1px;
+}
+
