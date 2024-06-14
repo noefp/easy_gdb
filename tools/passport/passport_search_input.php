@@ -66,7 +66,7 @@
         echo "<div class=\"row\" style=\"margin:0px\">";
       
         echo "<div class=\"col-xs-12 col-sm-12 col-md-6 col-lg-6\">";
-        echo "<select id=\"sel1\" name=\"$no_spc_file\" class=\"form-control\">";
+        echo "<select class=\"sel_opt\" id=\"sel1\" name=\"$no_spc_file\" class=\"form-control\">";
         foreach ($header_array as $index => $value) {
           if ($value != $acc_header_name) {
             echo "<option name=\"$index\">$value</option>";
@@ -146,106 +146,106 @@
     </form>
 
 <br>
-<h3 class="text-center">Advanced Search</h3>
+<!-- <h3 class="text-center">Advanced Search</h3>
 
 <form id="egdb_passport_form" action="passport_search_output.php" method="get">
 
   <div class="row">
     <div class="col-sm-6 col-md-6 col-lg-6">
-    
+
       <div class="form-group">
         <label for="autocomplete_acc" >Find your accession ID:</label>
-      
+
         <div class="input-group mb-3">
           <input id="autocomplete_acc" type="text" class="form-control form-control-lg" placeholder="Accession ID">
           <div class="input-group-append">
             <button id="add_gene_btn" class="btn btn-success"><i class="fas fa-angle-double-right" style="font-size:28px;color:white"></i></button>
           </div>
         </div>
-      
+
       </div>
-    
+
     </div>
     <div class="col-sm-6 col-md-6 col-lg-6">
-    
+
       <label for="InputGenes">Paste a list of accession IDs</label>
       <textarea class="form-control" id="InputGenes" rows="6" name="gids">
       </textarea>
       <br>
-    
+
     </div>
-  </div>
+  </div> -->
       
 <?php
-  
-  $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
-  asort($all_datasets);
-  
-//  $dir_counter = 0;
-
-//  foreach ($all_datasets as $one_dir) {
-//    if (is_dir($passport_path."/".$one_dir)){ // get dirs and print categories
-//      $dir_counter++;
-//    }
-//  }
-
-  //category organization
-//  if ($dir_counter) {
-    
-    foreach ($all_datasets as $dir_or_file) {
-      if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories
-        
-        $dir_name = str_replace("_"," ",$dir_or_file);
-        echo "<h4>$dir_name</h4>";
-
-//        $pass_files = get_dir_and_files($passport_path."/".$dir_or_file); // call the function
-//        sort($pass_files);
-        
-//        foreach ($pass_files as $passport_file) {
-          
-          //echo "passport_path: $passport_path/$dir_or_file/passport.json<br>";
-          
-          // get info from passport.json
-          if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
-            $pass_json_file = file_get_contents("$passport_path/$dir_or_file/passport.json");
-            $pass_hash = json_decode($pass_json_file, true);
-  
-            $passport_file = $pass_hash["passport_file"];
-            $phenotype_file_array = $pass_hash["phenotype_files"];
-            $unique_link = $pass_hash["acc_link"];
-          
-          
-          
-          // if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path.'/'.$dir_or_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path.'/'.$dir_or_file.'/'.$passport_file)   ) {
-            
-            // echo "passport_path: $passport_path<br>";
-            // echo "dir_or_file: $dir_or_file<br>";
-            // echo "passport_file: $passport_file<br>";
-            // echo "unique_link: $unique_link<br>";
-            
-            read_passport_file("$passport_path/$dir_or_file",$passport_file,$unique_link);
-            
-            foreach ($phenotype_file_array as $phenotype_file) {
-              read_passport_file("$passport_path/$dir_or_file",$phenotype_file,$unique_link);
-            }
-          }
-          
-          // }//if preg_match
-        }//foreach all_dir
-      }//if is_dir
-//    }// foreach dir
-//  }//if dir_counter
-//  else {
-    // without categories
-//    read_passport_file($passport_path,$passport_file);
-//  }
+//
+//   $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
+//   asort($all_datasets);
+//
+// //  $dir_counter = 0;
+//
+// //  foreach ($all_datasets as $one_dir) {
+// //    if (is_dir($passport_path."/".$one_dir)){ // get dirs and print categories
+// //      $dir_counter++;
+// //    }
+// //  }
+//
+//   //category organization
+// //  if ($dir_counter) {
+//
+//     foreach ($all_datasets as $dir_or_file) {
+//       if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories
+//
+//         $dir_name = str_replace("_"," ",$dir_or_file);
+//         echo "<h4>$dir_name</h4>";
+//
+// //        $pass_files = get_dir_and_files($passport_path."/".$dir_or_file); // call the function
+// //        sort($pass_files);
+//
+// //        foreach ($pass_files as $passport_file) {
+//
+//           //echo "passport_path: $passport_path/$dir_or_file/passport.json<br>";
+//
+//           // get info from passport.json
+//           if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
+//             $pass_json_file = file_get_contents("$passport_path/$dir_or_file/passport.json");
+//             $pass_hash = json_decode($pass_json_file, true);
+//
+//             $passport_file = $pass_hash["passport_file"];
+//             $phenotype_file_array = $pass_hash["phenotype_files"];
+//             $unique_link = $pass_hash["acc_link"];
+//
+//
+//
+//           // if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path.'/'.$dir_or_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path.'/'.$dir_or_file.'/'.$passport_file)   ) {
+//
+//             // echo "passport_path: $passport_path<br>";
+//             // echo "dir_or_file: $dir_or_file<br>";
+//             // echo "passport_file: $passport_file<br>";
+//             // echo "unique_link: $unique_link<br>";
+//
+//             read_passport_file("$passport_path/$dir_or_file",$passport_file,$unique_link);
+//
+//             foreach ($phenotype_file_array as $phenotype_file) {
+//               read_passport_file("$passport_path/$dir_or_file",$phenotype_file,$unique_link);
+//             }
+//           }
+//
+//           // }//if preg_match
+//         }//foreach all_dir
+//       }//if is_dir
+// //    }// foreach dir
+// //  }//if dir_counter
+// //  else {
+//     // without categories
+// //    read_passport_file($passport_path,$passport_file);
+// //  }
 ?>
-    <br>
+    <!-- <br>
     <button type="submit" class="btn btn-info float-right" style="margin-top: -5px">Search</button>
     <br>
     <br>
     <br>
-    </form>
+    </form> -->
   </div>
 </div>
 
@@ -353,10 +353,10 @@ $(document).ready(function () {
   var file_path1 = "<?php echo "$passport_path" ?>";
   //alert("file1: "+file_path1);
 
-  $('#sel1').change(function() {
+  $('.sel_opt').change(function() {
     
-    var column_name = $('#sel1').val();
-    var passport_full_path = $('#sel1').attr("name");
+    var column_name = $('.sel_opt').val();
+    var passport_full_path = $('.sel_opt').attr("name");
     
     var col_index = $(this).find('option:selected').attr("name");
     //var gff_file = "<?php //echo "$root_path"."/"."$downloads_path"."/vcf/Car.genes.gff.zip"; ?>";
@@ -368,6 +368,22 @@ $(document).ready(function () {
   });
 
 
+  // var file_path1 = "<?php //echo "$passport_path" ?>";
+  // //alert("file1: "+file_path1);
+  //
+  // $('#sel1').change(function() {
+  //
+  //   var column_name = $('#sel1').val();
+  //   var passport_full_path = $('#sel1').attr("name");
+  //
+  //   var col_index = $(this).find('option:selected').attr("name");
+  //   //var gff_file = "<?php //echo "$root_path"."/"."$downloads_path"."/vcf/Car.genes.gff.zip"; ?>";
+  //   //alert("Selected: "+column_name+" "+col_index+" "+file_path1);
+  //   //alert("file2: "+file_path1+", "+passport_dir);
+  //
+  //   get_ajax_options(col_index,passport_full_path);
+  //
+  // });
 
 
 

@@ -6,7 +6,7 @@
   <a class="float-right" href="/easy_gdb/help/01_search.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
-<a href="search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<a href="passport_search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 <br>
 
 <!-- HTML -->
@@ -41,35 +41,28 @@
     return $data;
   }
 
-  $search_input = test_input2($raw_input);
-?>
+  
+  
+  
+  
+  function print_search_table($grep_input, $annot_file, $dataset_name, $table_counter, $dir_or_file) {
+    
+    $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
+    $dataset_name = str_replace("_"," ",$dataset_name);
+    
+    $annot_file = str_replace(" ", "\\ ", $annot_file);
 
+    $head_command = "head -n 1 $annot_file";
+    $output_head = exec($head_command);
 
-<!-- SHOW INPUT -->
-<?php
-  echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
-?>
+    $grep_command = "grep -n -i '$grep_input' $annot_file";
+    exec($grep_command, $output);
 
-
-<!-- INCLUDE TABLE  -->
-<?php
-  if(empty($raw_input)) {
-    echo "<h1>No words to search provided.</h1>";
-  }
-
-  else { //DECLARE THE FUNCTION  include_once realpath("search_annot_file.php");
-    function print_search_table($grep_input, $annot_file, $annot_hash, $dataset_name, $table_counter) {
-
+    if ($output) {
+      
       echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
-      $annot_file = str_replace(" ", "\\ ", $annot_file);
-
-      $head_command = "head -n 1 $annot_file";
-      $output_head = exec($head_command);
-
-      $grep_command = "grep -i '$grep_input' $annot_file";
-      exec($grep_command, $output);
-
-
+      
+      
       // TABLE BEGIN
       echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
 
@@ -92,38 +85,14 @@
         echo "<tr>\n";
         $data = explode("\t", $line);
         for ($n = 0; $n <= $col_number-1; $n++) {
-          if ($data[$n]) {
-            if ($n == 0) {
-              echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]\" target=\"_blank\">$data[$n]</a></td>\n";
-            }
-            else {
-              $header_name = $columns[$n];
-              if ($header_name == "TAIR10" || $header_name == "Araport11") {
-                $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
-              }
-              elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
-                $ipr_data = explode(';', $data[$n]);
-                $ipr_links = '';
-                foreach ($ipr_data as $ipr_id) {
-                  $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                  $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
-                }
-                $ipr_links = rtrim($ipr_links, ';<br>');
-                echo "<td>$ipr_links</td>\n";
-              }
-              elseif (strpos($data[$n], ';') && $header_name == "Description") {
-                $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
-                echo "<td>$data_semicolon</td>\n";
-              }
-              elseif ($annot_hash[$header_name]) {
-                $query_id = str_replace('query_id', $data[$n], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
-              }
-              else {
-                echo "<td>$data[$n]</td>\n";
-              }
-            }
+          if ($n == 0) {
+            list($line,$acc) = explode(":", $data[0]);
+            $acc_line = $line-2;
+            //echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
+            echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&row_num=$acc_line\" target=\"_blank\">$acc</a></td>\n";
+          }
+          else if ($data[$n]) {
+            echo "<td>$data[$n]</td>\n";
           }
           else {
             echo "<td></td>\n";
@@ -132,17 +101,28 @@
         echo "</tr>\n";
       }
       echo "</tbody></table></div></div><br>\n";
-      $output = [];
-    } // TABLE END
+      
+    } //end if output
+    
+    
+    $output = [];
+  } // End of function
+  
+  
+?>
 
 
-    // HASH ANNOTATION
-    if (file_exists("$annotation_links_path/annotation_links.json")) {
-      $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
-      $annotation_hash = json_decode($annot_json_file, true);
-    }
 
-
+<!-- INCLUDE TABLE  -->
+<?php
+  if(empty($raw_input)) {
+    echo "<h1>No words to search provided.</h1>";
+  }
+  else {
+    $search_input = test_input2($raw_input);
+    
+    echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
+    
     // QUOTED INPUTS
     if ($quoted_search) {
       $search_query = preg_replace('/[\"\<\>\t\;]+/','',strtolower($raw_input) );
@@ -154,26 +134,45 @@
       $search_query = strtolower($search_input);
     }
 
-
-    // COMMANDS AND PRINT
     $table_counter = 1;
 
-    if ($_GET['sample_names']) {
-      foreach ($_GET['sample_names'] as $sample) {
-        list($annot_file,$dataset_name) = explode("@", $sample);
-        print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
-        $table_counter++;
-      }
-    } else {
-      include_once realpath("$easy_gdb_path/tools/common_functions.php");
-      $all_datasets = get_dir_and_files($annotations_path);
-      $annot_file = $annotations_path."/".$all_datasets[0];
-      $dataset_name = $all_datasets[0];
-      $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$all_datasets[0]);
-      $dataset_name = str_replace("_"," ",$dataset_name);
-      print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
-    }
-  }
+    include_once realpath("$easy_gdb_path/tools/common_functions.php");
+      
+    $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
+    asort($all_datasets);
+      
+    foreach ($all_datasets as $dir_or_file) {
+      if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories
+        
+        $dir_name = str_replace("_"," ",$dir_or_file);
+        echo "<h4>$dir_name</h4>";
+          
+        // get info from passport.json
+        if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
+          $pass_json_file = file_get_contents("$passport_path/$dir_or_file/passport.json");
+          $pass_hash = json_decode($pass_json_file, true);
+  
+          $passport_file = $pass_hash["passport_file"];
+          print_search_table($search_query, $passport_path."/".$dir_or_file."/".$passport_file, $passport_file, $table_counter, $dir_or_file);
+          
+          $table_counter++;
+          
+          $phenotype_file_array = $pass_hash["phenotype_files"];
+            
+          foreach ($phenotype_file_array as $phenotype_file) {
+            print_search_table($search_query, $passport_path."/".$dir_or_file."/".$phenotype_file, $phenotype_file, $table_counter, $dir_or_file);
+            
+            //read_passport_file("$passport_path/$dir_or_file",$phenotype_file,$unique_link);
+          }
+        }
+        
+      }// close if is_dir
+          
+    }//foreach all_dir
+      
+      
+      
+  } //close else
 ?>
 <!-- END TABLE  -->
 
