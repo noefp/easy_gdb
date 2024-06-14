@@ -80,7 +80,13 @@
         }//if dir_counter
 
         elseif ($dir_counter === 0 && $data_counter === 1) {
-          echo "<div class=\"form-group\">";
+          echo "<div class=\"form-group\" style=\"display:none\">";
+          // $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$all_datasets[0]);
+          // $dataset_name = str_replace("_"," ",$dataset_name);
+          // //echo "<option value=\"$annotations_path/$dataset@$dataset_name\">$dataset_name</option>";
+          //
+          // echo "<input type=\"checkbox\" class=\"form-check-input sample_checkbox\" name=\"sample_names[]\" value=\"$annotations_path/$dataset@$dataset_name\">$dataset_name";
+          
           echo "</div>";
         }
 
@@ -133,37 +139,6 @@
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
-
-
-<!-- IS BETTER TO ADD TO THE GENERAL CSS -->
-<style>  
-  .info_icon {
-    background-color:#4387FD;
-    border-radius:20px;
-    vertical-align: top;
-    border:0px;
-    display:inline-block;
-    color:#ffffff;
-    font-family:"Georgia",Georgia,Serif;
-    font-size:12px;
-    font-weight:bold;
-    font-style:normal;
-    width:18px;
-    height:18px;
-    line-height:18px;
-    text-align:center;
-  }
-  .info_icon:hover {
-    background-color:#5EA1FF;
-    color:#0000CC;
-  }
-
-  .info_icon:active {
-    position:relative;
-    top:1px;
-  }
-</style>
-
 
 <!-- JAVASCRIPT -->
 <script> 
