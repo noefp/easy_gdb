@@ -13,7 +13,7 @@
 ?>
 
 <?php 
-  if ($tb_home) {
+  if (!$tb_rm_home) {
     echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\"> $dbTitle</a>";
   }
 ?>
