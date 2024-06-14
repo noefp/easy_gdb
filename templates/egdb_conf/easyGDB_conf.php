@@ -2,9 +2,11 @@
 // File paths
 $root_path = "/var/www/html"; //use absolute path
 $egdb_files_folder = "egdb_files";
+
 $easy_gdb_path = "$root_path/easy_gdb";
 $blast_dbs_path = "$root_path/blast_dbs";
 $expression_path = "$root_path/expression_data";
+$private_expression_path = "$root_path/private_expression_data";
 $downloads_path = "downloads";
 $lookup_path = "$root_path/lookup"; //from root 
 $images_path = "/$egdb_files_folder/egdb_images";
@@ -12,6 +14,10 @@ $custom_text_path = "$root_path/$egdb_files_folder/egdb_custom_text";
 $species_path = "$root_path/$egdb_files_folder/egdb_species";
 $lab_path = "$root_path/$egdb_files_folder/egdb_labs";
 $annotation_links_path = "$root_path/$egdb_files_folder/annotations";
+$annotations_path = "$root_path/annotations";
+
+// Select 1 to store annotations in files or 0 to store annotations in a relational database.
+$file_database = 1;
 
 // header
 $dbTitle = "Easy GDB";
@@ -33,6 +39,7 @@ $tb_gene_expr = 1;
 $tb_lookup = 1;
 $tb_more = 0;
 $tb_custom = 0;
+$tb_enrichment = 0;
 
 // Expression Atlas
 $expr_cards = 1;
