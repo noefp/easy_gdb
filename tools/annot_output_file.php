@@ -39,20 +39,9 @@
 ?>
 
 
-<!-- INCLUDE TABLE -->
+
+<!-- Declare function to print table -->
 <?php
-  if(empty($gNamesArr)) {
-    echo "<br>";
-    echo "<h2>No genes to search provided</h2>";
-  }
-
-  else { //DECLARE THE FUNCTION  include_once realpath("annot_file.php");
-  $search_query = [];
-    foreach ($gNamesArr as $gene_name) {
-      $one_gene = test_input3($gene_name);
-      array_push($search_query, $one_gene);
-    }
-
     function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter) {
 
       echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
@@ -130,15 +119,30 @@
       }
       echo "</tbody></table></div></div><br>\n";
       $output = [];
-      } // TABLE END
+    } // TABLE END
+?>
 
 
-    // HASH ANNOTATION
-    if (file_exists("$annotation_links_path/annotation_links.json")) {
-      $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
-      $annotation_hash = json_decode($annot_json_file, true);
+
+
+<?php
+  if(empty($gNamesArr)) {
+    echo "<br>";
+    echo "<h2>No genes to search provided</h2>";
+  }
+  else {
+    $search_query = [];
+    
+    foreach ($gNamesArr as $gene_name) {
+      $one_gene = test_input3($gene_name);
+      array_push($search_query, $one_gene);
     }
 
+    // create HASH with ANNOTATION links
+    if (file_exists("$annotations_path/annotation_links.json")) {
+      $annot_json_file = file_get_contents("$annotations_path/annotation_links.json");
+      $annotation_hash = json_decode($annot_json_file, true);
+    }
 
     // COMMANDS AND PRINT
     $table_counter = 1;
