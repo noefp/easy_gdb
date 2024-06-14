@@ -14,7 +14,7 @@
 
 <?php 
   if ($tb_home) {
-    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\"><?php echo \"$dbTitle\";?></a>";
+    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\"> $dbTitle</a>";
   }
 ?>
 
