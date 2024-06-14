@@ -145,13 +145,13 @@ function file_to_table($file_path, $acc_name) {
     $header_line = array_shift($tab_file);
     $header = explode("\t", $header_line);
     
-    echo "<div style=\"overflow: scroll\";>"; //print data table
+    echo "<div style=\"overflow:scroll\">"; //print data table
     echo "<table class=\"table\" id=\"tblResults\"><thead><tr>"; //print data table
     
     foreach ($header as $col_name) {
       echo "<th>$col_name</th>";
     }
-    echo "</tr></thead><body>";
+    echo "</tr></thead><tbody>";
     
     foreach ($tab_file as $line) {
       $columns = explode("\t", $line);
@@ -165,7 +165,7 @@ function file_to_table($file_path, $acc_name) {
         echo "</tr>";
       } // acc found in line
     } // each line
-    echo "</table>";
+    echo "</tbody></table>";
     echo "</div>";
   } // file exist
 }
@@ -282,7 +282,7 @@ function file_to_table($file_path, $acc_name) {
         echo "<br>Country name: $country_name<br>";        
 
 
-          if (file_exists("$custom_text_path/custom_pages/$country_coord_file") ) {
+          if ($country_coord_file && file_exists("$custom_text_path/custom_pages/$country_coord_file") ) {
 
             $country_coord_file = file_get_contents("$custom_text_path/custom_pages/convert_countrycode_to_coord.txt");
             //echo $country_coord_file; // funciona
@@ -395,11 +395,13 @@ function file_to_table($file_path, $acc_name) {
   latitude = "<?php echo $latitude; ?>"
   longitude = "<?php echo $longitude; ?>"
   
-  var map = L.map('map').setView([latitude, longitude], 5);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
-  
-  var marker = L.marker([latitude, longitude]).addTo(map); 
-  marker.bindPopup('<b>"collection_site"</b><br>Latitud: '+latitude+'<br> Longitud: '+longitude).openPopup();
+  if (latitude && longitude) {
+    var map = L.map('map').setView([latitude, longitude], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
+
+    var marker = L.marker([latitude, longitude]).addTo(map);
+    marker.bindPopup('<b>"collection_site"</b><br>Latitud: '+latitude+'<br> Longitud: '+longitude).openPopup();
+  }
   
   
   $("#tblResults").dataTable({
