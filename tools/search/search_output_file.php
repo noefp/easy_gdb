@@ -82,7 +82,7 @@
       for ($n = 0; $n <= $col_number-1; $n++) {
         if ($data[$n]) {
           if ($n == 0) {
-            echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]\" target=\"_blank\">$data[$n]</a></td>\n";
+            echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
           }
           else {
             $header_name = $columns[$n];
