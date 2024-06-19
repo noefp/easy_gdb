@@ -179,8 +179,9 @@ function file_to_table($file_path, $acc_name) {
 <?php
   
   $pass_dir = test_input($_GET["pass_dir"]);
-  $row_count = test_input($_GET["row_num"]);
-  $acc_name = "";
+  //$row_count = test_input($_GET["row_num"]);
+  $acc_id = test_input($_GET["acc_id"]);
+  $acc_name = $acc_id;
   
   if ( file_exists("$passport_path/$pass_dir/passport.json") ) {
     $pass_json_file = file_get_contents("$passport_path/$pass_dir/passport.json");
@@ -199,12 +200,34 @@ function file_to_table($file_path, $acc_name) {
           
     $passport_lines = file("$passport_path/$pass_dir/$passport_file");
     $header_line = array_shift($passport_lines);
-    $cols = explode("\t", $passport_lines[$row_count]);
     $header = explode("\t", $header_line);
     
-    $title_col = array_search($acc_header,$header);
+    // echo "<p>acc_header: $acc_header</p>";
+    // echo "header:<br>";
+    // print_r($header);
     
-    $acc_name = $cols[$title_col];
+    $title_col = (array_search($acc_header,$header)+1);
+    
+    //echo "<p>title_col: $title_col</p>";
+    
+    $passport_cmd = "awk -F \"\\t\" '$$title_col == \"$acc_id\" {print $0}' $passport_path/$pass_dir/$passport_file";
+    
+    //awk -F "\t" '$1 == "ICC 10544" {print $0}' Chickpea_10K_Passport.txt
+      
+    //echo "<p>passport_cmd: $passport_cmd</p>";
+    
+    $acc_line = shell_exec($passport_cmd);
+    //echo "<p>acc_line: $acc_line</p>";
+    
+    
+    
+    
+    $cols = explode("\t", $acc_line);
+    // $cols = explode("\t", $passport_lines[$row_count]);
+    $header = explode("\t", $header_line);
+    
+    
+    // $acc_name = $cols[$title_col];
     echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
     echo "<div class=\"row\">";
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";

@@ -62,7 +62,8 @@ if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
       
       if ( !in_array($col_index,$hide_array) ) {
         if ($col_index == $field_number) {
-          echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&row_num=$row_count\">$col</a></td>";
+          echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&acc_id=$col\">$col</a></td>";
+          // echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&row_num=$row_count\">$col</a></td>";
           // echo "<td><a href=\"row_data.php?row_data=".$table_file.",".$row_count.",".($field_number-1)."\">$col</a></td>";
         } else {
           echo "<td>$col</td>";
