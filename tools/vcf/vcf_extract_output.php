@@ -17,12 +17,25 @@
 
 <?php
   //get input variables
+  
   $vcf_chr = $_GET["vcf_chr"];
   $vcf_start = trim($_GET["vcf_start"]);
   $vcf_end = trim($_GET["vcf_end"]);
   
+  
+  
+  if (file_exists("$vcf_path/vcf.json")) {
+    $vcf_json_file = file_get_contents("$vcf_path/vcf.json");
+    $vcf_hash = json_decode($vcf_json_file, true);
+  }
+
+  $passport_dir = $vcf_hash["passport_folder"];
+  $jb_data_folder = $vcf_hash["jb_data_folder"];
+  $vcf_chr_file = $chr_file_array = $vcf_hash["chr_files"][$vcf_chr];
+
+  
   // run tabix
-  $tabix_command = "tabix $root_path"."/"."$downloads_path"."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz ".$vcf_chr.":".$vcf_start."-".$vcf_end;
+  $tabix_command = "tabix $vcf_path"."/$vcf_chr_file ".$vcf_chr.":".$vcf_start."-".$vcf_end;
   //echo "<br><p>command: $tabix_command</p>";
   ini_set( 'memory_limit', '1024M' );
   $tabix_out = shell_exec($tabix_command);
@@ -58,12 +71,12 @@
     foreach ($snp_info as $index => $snp_val) {
       
       if ($index == 1) {
-        $jbrowse_link = "/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}";
+        $jbrowse_link = "/jbrowse/?data=data%2F$jb_data_folder&loc={chr}%3A{start}..{end}";
         $jbrowse_link = str_replace("{chr}",$snp_info[0],$jbrowse_link);
         $jbrowse_link = str_replace("{start}",$snp_info[1]-50,$jbrowse_link);
         $jbrowse_link = str_replace("{end}",$snp_info[1]+50,$jbrowse_link);
         
-        echo "<td><a href=\"$jbrowse_link\">$snp_val</a></td>";
+        echo "<td><a href=\"$jbrowse_link\" target=\"_blank\">$snp_val</a></td>";
       } else if ($index == 5 || $index == 6) {
       } else if ($index == 2) {
         echo "<td style='font-size:12px'>Ca1_$snp_info[1]</td>";
@@ -123,19 +136,23 @@
     $('#selected_snp').html($(this).parent().parent().html());
 
     var snp_pos = $(this).attr('value');
-    var tabix_cmd = "<?php echo "tabix $root_path"."/".$downloads_path."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz"." ".$vcf_chr.":" ?>"+snp_pos+"-"+snp_pos;
+    
+    
+    
+    var tabix_cmd = "<?php echo "tabix $vcf_path"."/$vcf_chr_file"." ".$vcf_chr.":" ?>"+snp_pos+"-"+snp_pos;
     //var acc_path = "<?php //echo "$root_path"."/".$downloads_path."/vcf/acc_header.txt" ?>";
-    var vcf_file = "<?php echo "$root_path"."/".$downloads_path."/vcf/test2.chickpea.chr.hardfiltered.snp.chr1.ann.vcf.gz" ?>";
+    var vcf_file = "<?php echo "$vcf_path"."/$vcf_chr_file" ?>";
+    var passport_dir = "<?php echo "$passport_dir" ?>";
    
     //alert("acc_path: "+acc_path );
 
     //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-    function ajax_call(tabix_cmd,vcf_file) {
+    function ajax_call(tabix_cmd,vcf_file,passport_dir) {
     
       jQuery.ajax({
         type: "POST",
         url: 'vcf_ajax_acc_data.php',
-        data: {'tabix_cmd': tabix_cmd, 'vcf_file': vcf_file},
+        data: {'tabix_cmd': tabix_cmd, 'vcf_file': vcf_file, 'passport_dir': passport_dir},
 
         success: function (html_array) {
           //alert("hi: "+html_array);
@@ -177,7 +194,7 @@
     
     }; // end ajax_call
     
-    ajax_call(tabix_cmd,vcf_file);
+    ajax_call(tabix_cmd,vcf_file,passport_dir);
     // return true;
   });
   

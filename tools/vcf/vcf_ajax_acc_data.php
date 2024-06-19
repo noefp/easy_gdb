@@ -3,6 +3,10 @@
 // GET selected line (one position SNP) tabix command and vcf_file with path from AJAX call
 $tabix_cmd = $_POST["tabix_cmd"];
 $vcf_file = $_POST["vcf_file"];
+$passport_dir = $_POST["passport_dir"];
+
+//$passport_dir = "Chickpea_10K";
+
 
 // create array to store results in html format, ready to join for printing
 $html_array = array();
@@ -46,7 +50,11 @@ $data_array = [];
 //iterate each matching column
 foreach ($acc_data as $index => $col) {
   // print ACC linked to passport using the column index as key to find the ACC name in the header line
-  array_push($html_array,"<tr><td><a href=\"#\">$header_array[$index]</a></td>");
+  
+  $acc_name = $header_array[$index];
+  
+  array_push($html_array,"<tr><td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir&acc_id=$acc_name\">$acc_name</a></td>");
+  
   
   // save accession results in an array
   $acc_snp_array = explode(':',$col);

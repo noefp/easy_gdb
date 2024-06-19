@@ -8,7 +8,20 @@
 
 <?php
 
-$gene_names_file = "$root_path"."/"."$downloads_path"."/vcf/gene_names.txt";
+if (file_exists("$vcf_path/vcf.json")) {
+  $vcf_json_file = file_get_contents("$vcf_path/vcf.json");
+  $vcf_hash = json_decode($vcf_json_file, true);
+}
+
+$chr_file_array = $vcf_hash["chr_files"];
+$gene_names_file = "$vcf_path"."/".$vcf_hash["gene_names_file"];
+$gff_file = "$vcf_path"."/".$vcf_hash["gff_file"];
+
+// echo "gene_names_file: $gene_names_file <br>";
+// print_r($chr_file_array);
+// echo "gff_file: $gff_file <br>";
+
+
 $genes_array = [];
 
 if ( file_exists($gene_names_file) ) {
@@ -66,19 +79,38 @@ if ( file_exists($gene_names_file) ) {
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
         <div class="input-group-prepend">
           <select class="form-control form-control-lg" id="chr_select" name="vcf_chr">
-            <option value='chr1' selected>chr1</option>
-            <option value='chr2'>chr2</option>
-            <option value='chr3'>chr3</option>
-            <option value='chr4'>chr4</option>
-            <option value='chr5'>chr5</option>
-            <option value='chr6'>chr6</option>
-            <option value='chr7'>chr7</option>
-            <option value='chr8'>chr8</option>
+            
+            <?php
+            foreach ($chr_file_array as $chr => $chr_file) {
+              echo "<option value=\"$chr\">$chr</option>";
+            }
+            ?>
+            
           </select>
         </div>
         <input id="vcf_input_start" type="text" class="form-control form-control-lg" placeholder="region start" name="vcf_start">
         <input id="vcf_input_end" type="text" class="form-control form-control-lg" placeholder="region end" name="vcf_end">
-        <button type="submit" class="btn btn-info float-right">Extract</button>
+        <button type="submit" class="btn btn-info float-right">Search</button>
+      </div>
+      
+  </div>
+
+</form>
+
+  <br>
+  <hr>
+  <br>
+
+
+
+<form id="egdb_vcf_id_form" action="vcf_id_extract_output.php" method="get">
+  <div class="form-group">
+    <label for="search_box">Type a SNP ID</label> 
+    <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
+
+      <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
+        <input id="vcf_snip_id" type="text" class="form-control form-control-lg" placeholder="SNP ID" name="snp_id">
+        <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
       
   </div>
@@ -87,6 +119,8 @@ if ( file_exists($gene_names_file) ) {
   <br>
   <br>
 </form>
+
+
 </div>
 
 
@@ -168,7 +202,7 @@ $(document).ready(function () {
   $('#get_gene_coords').click(function() {
     
     var query_gene = $('#autocomplete_gene').val();
-    var gff_file = "<?php echo "$root_path"."/"."$downloads_path"."/vcf/Car.genes.gff.zip"; ?>";
+    var gff_file = "<?php echo "$gff_file"; ?>";
     //alert("Car.genes.gff: "+query_gene+", "+gff_file);
     
     get_gff_ajax_call(query_gene,gff_file);
