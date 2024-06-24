@@ -89,7 +89,7 @@
             list($line,$acc) = explode(":", $data[0]);
             $acc_line = $line-2;
             //echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
-            echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&row_num=$acc_line\" target=\"_blank\">$acc</a></td>\n";
+            echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&acc_id=$acc\" target=\"_blank\">$acc</a></td>\n";
           }
           else if ($data[$n]) {
             echo "<td>$data[$n]</td>\n";
