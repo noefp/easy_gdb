@@ -271,85 +271,96 @@ function file_to_table($file_path, $acc_name) {
 <!-- COORDENADAS HARDCODE -->
 <?php
   
-  $latitude = $cols[10];
-  $longitude = $cols[11];
-  $country_name = $cols[7];
-  $collection_site = $cols[9];
+$latitude_index = array_search('Latitude', $header);
+$longitude_index = array_search('Longitude', $header);
+$country_name_index = array_search('Country', $header);
+$country_code_index = array_search('Country code', $header);
+$collection_site_index = array_search('Collection site', $header);
 
-  echo $country_code;
+$latitude = $cols[$latitude_index];
+$longitude = $cols[$longitude_index];
+$country_name = $cols[$country_name_index];
+$country_code = $cols[$country_code_index];
+$collection_site = $cols[$collection_site_index];
 
-  $numeric_pattern = "/[0-9]/";
 
-  if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
-        
-        
-        
-        //echo "<br> Latitude: $latitude";
-        //echo "Longitude: $longitude";
-        //echo "<br>$country_name";
-        
-        //echo "<br><iframe height=\"350\" src=\"https://www.openstreetmap.org/export/embed.html?bbox=".$longitude."%2C".$latitude."%2C".$longitude."%2C".$latitude."&amp;layer=mapnik\" style=\"border: 1px solid black; width:100%\"></iframe><br/><small><a href=\"https://www.openstreetmap.org/#map=17/".$latitude."/".$longitude."\" target=\"_blank\"> View Larger Map </a></small><br>"; // Print map with exact coordinates
-        
-          // PRUEBA CHATGPT - permite ajustar el zoom
-          echo "<br>";
-          echo "<div id=\"map\" style=\"height: 350px;\"></div>";
-          //echo "<br> The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>.<br>";
+$numeric_pattern = "/[0-9]/";
+
+if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
+  
+  echo "<br>";
+  echo "<div id=\"map\" style=\"height: 350px;\"></div>";
+  
+} else if ($country_name) { // Close 'if' - real coords
+  
+  echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
+  
+  $coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt"; // file with coords info
+
+  if ( file_exists("$coords_file") ) {
           
+    $country_to_coords_file = file_get_contents("$coords_file");        
+    //echo $country_to_coords_file; // print file content
+    $rows_coords = explode("\n", $country_to_coords_file);
+    $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
+    $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
+
+
+    //        Defining $var of $coords_file - all options
+    $full_name = "";
+    //$alpha2_code = "";
+    //$alpha3_code = ""; // útil para IHSM_SDB, puesto que incluyen el código en el archivo de datos
+    //$num_code = "";
+    $country_latitude = "";
+    $country_longitude = "";
+
+    // Associate lat&long with $country_name
+    foreach ( $rows_coords as $row ) {
+      $cols_coords = explode("\t", $row);
+      if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]){
+        // GET var independent values - it depends on the file distribution
+        $full_name = $cols_coords[0];  
+        // $alpha2_code = $cols_coords[1];
+        // $alpha3_code = $cols_coords[2];
+        // $num_code = $cols_coords[3];
+        $country_latitude = $cols_coords[4]; 
+        $country_longitude = $cols_coords[5]; 
+        break; // ??? se podría quitar porque solo se están definiendo los valores
+      }
+    }
+
+    // COMPROBACIÓN
+    if ($country_latitude != null) { 
+      // echo "<b>Country match info:</b><br>";
+      // echo "Full Name: $full_name<br>";
+      // //echo "Alpha2 Code: $alpha2_code<br>";
+      // //echo "Alpha3 Code: $alpha3_code<br>";
+      // //echo "Numeric Code: $num_code<br>";
+      // echo "Latitude: $country_latitude<br>";
+      // echo "Longitude: $country_longitude<br>";
+
+    } else {
+        echo "<br>No location data available.";
+    }
+
+    // if (empty($latitude&$longitude) ) { // llenar variable para Javascript
+    //   $latitude = $country_latitude;
+    //   $longitude = $country_longitude;
+    // }
+
+    echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
+  } // close if $coords_file exists 
+  
+  
+} // Use CountryCode
+  else {
+    echo "No location data available.";
+}
         
-      } else if ($country_name) { // Close 'if' - real coords
-        
-        echo "<br> The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>.<br>";
-        
-            
-        //echo "<br> We use ISO3166 (alpha 3) for country code <br>";
-        echo "<br>Country name: $country_name<br>";        
+// Frame Reference 
+echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
 
-
-          if ($country_coord_file && file_exists("$custom_text_path/custom_pages/$country_coord_file") ) {
-
-            $country_coord_file = file_get_contents("$custom_text_path/custom_pages/convert_countrycode_to_coord.txt");
-            //echo $country_coord_file; // funciona
-            $rows = explode ("\n", $country_coord_file);
-            $cols = explode ("\t", $rows[$row_count]);
-            $header = explode ("\t", $rows[0]);
-
-
-            $country_value = $cols[0];
-            $code_value = $cols[1];
-            $country_latitude = $cols[2];
-            $country_longitude = $cols[3];
-
-            $country_code_pattern = "/[$country_name]/";
-
-            //print_r($rows);
-            echo "<br><br>";
-            print_r($header);
-
-            echo "<br><br>$code_value<br><br>";
-            echo "<br>lat: $country_latitude";
-            echo "<br>long: $country_longitude<br>";
-
-            echo "<br>$col_count";
-            echo "<br>$row_count";
-
-            
-            if (preg_match("$country_code_pattern", $country_coord_file) ) {
-              echo "<br>sí encuentra el country_code";
-            //  echo array_search($country_code_pattern, $array, true);
-            //  //echo "<br><br> $country_code = $code_value";
-            }
-
-            
-            echo "<br><iframe height=\"350\" src=\"https://www.openstreetmap.org/export/embed.html?bbox=".$country_longitude."%2C".$country_latitude."%2C".$country_longitude."%2C".$country_latitude."&amp;layer=mapnik\" style=\"border: 1px solid black; width:100%\"></iframe><br/><small><a href=\"https://www.openstreetmap.org/#map=17/".$country_latitude."/".$country_longitude."\" target=\"_blank\"> View Larger Map </a></small><br>"; // Print map with country coordinates
-
-            echo "Using Nominatim: Use of any OSMF provided service is further governed by the <a href=\"https://wiki.osmfoundation.org/wiki/Terms_of_Use\">OSMF Terms of Use</a>";
-          }
-
-        } // Use CountryCode
-        else {
-          echo "No location data available.";
-        }
-    ?>
+?>
 
     <br>
     <br>
@@ -415,16 +426,24 @@ function file_to_table($file_path, $acc_name) {
   new QRCode(qr_id,url_qrcode); 
 // });
   
-  latitude = "<?php echo $latitude; ?>"
-  longitude = "<?php echo $longitude; ?>"
+latitude = "<?php echo $latitude; ?>";
+longitude = "<?php echo $longitude; ?>";
   
   if (latitude && longitude) {
-    var map = L.map('map').setView([latitude, longitude], 5);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(map);
-
-    var marker = L.marker([latitude, longitude]).addTo(map);
-    marker.bindPopup('<b>"collection_site"</b><br>Latitud: '+latitude+'<br> Longitud: '+longitude).openPopup();
+    marker_label = "<b>Collection site</b><br>Latitud: "+latitude+"<br> Longitud: "+longitude;
   }
+  else {
+    latitude = "<?php echo $country_latitude; ?>";
+    longitude = "<?php echo $country_longitude; ?>";
+    marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
+  }
+  
+  var map = L.map('map').setView([latitude, longitude], 5);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+
+  var marker = L.marker([latitude, longitude]).addTo(map);
+  marker.bindPopup(marker_label).openPopup();
+  
   
   
   $("#tblResults").dataTable({
