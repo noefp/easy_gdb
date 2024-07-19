@@ -11,6 +11,12 @@
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
   
+  if ($file_database) {
+    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+    $annot_hash = json_decode($annot_json_file, true);
+    $annot_file = $annotations_path.'/'.$annot_hash[$dataset_name_ori]["annotation_file"];
+  }
+
   $gids = [];
   $one_gene2;
   
@@ -108,8 +114,67 @@
   }
 
 ?>
+  </div> <!-- end of page_container -->
   
   
+<?php
+  if ($file_database) {
+    $annotations_hash_file = [];
+    $grep_input = implode("\|", $gids);
+    $grep_command = "grep -i '$grep_input' $annot_file";
+    exec($grep_command, $output);
+
+    $annot_file = str_replace(" ", "\\ ", $annot_file);
+
+    $head_command = "head -n 1 $annot_file";
+    $output_head = exec($head_command);
+    $columns = explode("\t", $output_head);
+    array_shift($columns);
+    $col_number = count($columns);
+  
+    $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
+    $annotation_hash = json_decode($annot_json_file, true);
+
+    foreach ($output as $annot_line) {
+      $annot_col = explode("\t", $annot_line);
+      $gene_key = $annot_col[0];
+      array_shift($annot_col);
+
+      for ($n = 0; $n < $col_number; $n++) {
+        $header_name = $columns[$n];
+
+        if ($header_name == "TAIR10" || $header_name == "Araport11") {
+          $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$annot_col[$n], ''], $annotation_hash[$header_name ]);
+          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
+        }
+        elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
+          $ipr_data = explode(';', $annot_col[$n]);
+          $ipr_links = '';
+          foreach ($ipr_data as $ipr_id) {
+            $query_id = str_replace('query_id', $ipr_id, $annotation_hash[$header_name]);
+            $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+          }
+          $ipr_links = rtrim($ipr_links, ';<br>');
+          $annot_col[$n] = $ipr_links;
+        }
+        elseif (strpos($annot_col[$n], ';') ) {
+          $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
+          $annot_col[$n] = $data_semicolon;
+        }
+        elseif ($annotation_hash[$header_name]) {
+          $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
+          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
+        }
+        else {
+          $annot_col[$n] = $annot_col[$n];
+        }
+      }
+
+      $annot_string = implode("</td><td>", $annot_col);
+      $annotations_hash_file[$gene_key] = "<td>$annot_string</td>";
+    }
+  }
+?>
 
 
 <?php
@@ -233,7 +298,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   //##################################################################################################
   
-   array_push($table_code_array,"<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">");
+   array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
 
     $columns = [];
     $replicates = [];
@@ -277,11 +342,28 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         //print header with sample names
         if (!$header_printed) {
           // echo "<thead><tr><th>".$header[0]."</th>";
-          array_push($table_code_array,"<thead><tr><th>".$header[0]."</th>");
+          $header_content = $header[0];
           
+          if ($file_database) {
+            $header_content = "Gene ID";
+            array_push($table_code_array, "<thead><tr><th>".$header_content."</th>");
+          }
+          else {
+            array_push($table_code_array, "<thead><tr><th>".$header_content."</th>");
+          }
+
           foreach ($replicates as $r_key => $r_value) {
             // echo "<th>$r_key</th>";
             array_push($table_code_array,"<th>$r_key</th>");
+          }
+
+          if ($file_database) {
+            $columns = explode("\t", $output_head);
+            array_shift($columns);
+
+            foreach ($columns as $col) {
+              array_push($table_code_array,"<th>$col</th>");
+            }
           }
           // echo "</tr></thead>";
           
@@ -299,7 +381,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           //##################################################################################################
           
           
-          array_push($table_code_array,"</tr></thead>");
+          array_push($table_code_array,"</tr></thead><tbody>");
           
           $header_printed = 1;
           $sample_names = array_keys($replicates);
@@ -322,7 +404,13 @@ if ( file_exists("$expr_file") && isset($gids) ) {
           }
           else {
             // echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>";
-            array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
+            if ($file_database){
+              $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+              array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name&annot=$annot_encode\" target=\"_blank\">$gene_name</a></td>");
+            }
+            else {
+              array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
+            }
           }
         }
         else {
@@ -434,8 +522,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         
         
         //################################################################################################## ADD ANNOTATIONS
-        if ($dbconn) {
-        
+        if ($file_database) {
+          array_push($table_code_array,$annotations_hash_file[$gene_name]);
+        }
+        else {
           array_push($table_code_array,$annotations_hash2[$gene_name]);
         }
         //##################################################################################################
@@ -455,7 +545,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       
       
     } // each line, each gene foreach
-    array_push($table_code_array,"</table></div>");
+    array_push($table_code_array,"</tbody></table></div>");
     
   
   //################################################# ADD ANNOTATIONS
@@ -484,7 +574,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       <i class="fas fa-sort" style="color:#229dff"></i> Lines
     </div>
 
-    <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
+    <div id="line_chart_frame" class="collapse show" style="border:2px solid #666; padding-top:7px">
       
 
       <div id="lines_frame">
@@ -741,7 +831,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
       echo '</div>';
 
-      echo '<div id="cartoons_frame" class="row collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">';
+      echo '<div id="cartoons_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
     
       echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
       echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\">Select gene:</label>";
@@ -765,7 +855,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 
       echo "<div class=\"row\">";
     
-      echo "<div class=\"col-xs-12 col-sm-12 col-md-8 col-lg-8\">";
+      echo "<div class=\"pull-left\">";
         echo "<div class=\"cartoons_canvas_frame\">";
           echo "<div id=\"canvas_div\">";
             echo '<div id=myCanvas>';
@@ -776,7 +866,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
         echo "</div>";
       echo "</div>";
     
-        echo "<div class=\"col-xs-12 col-sm-12 col-md-4 col-lg-4\">";
+        echo "<div class=\"pull-right\">";
       
         echo "<ul id=\"cartoon_labels\" style=\"text-align:left\">";
         foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
@@ -841,7 +931,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 
     <div id="heatmap_graph" class="collapse hide">
 
-      <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+      <div id="chart1_frame" style="border:2px solid #666; padding-top:7px">
         <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
         <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
         <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
@@ -859,7 +949,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 
     <div id="replicates_graph" class="collapse hide">
 
-      <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+      <div id="chart2_frame" style="border:2px solid #666; padding-top:7px">
         <div class="form-group d-inline-flex" style="width: 450px;">
           <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
           <select class="form-control" id="sel1">
@@ -874,10 +964,10 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       </div>
 
     </div>
-  
-  
-  
   </center>
+  
+  
+  
   
   
   <div class="data_table_frame">
@@ -900,7 +990,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
     </div> <!-- avg_table end -->
   
   </div> <!-- data_table_frame end -->
-</div>
+<!-- </div> old end of page_container-->
 
 <br>
 
