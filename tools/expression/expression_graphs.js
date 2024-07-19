@@ -269,9 +269,13 @@ var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
 $(document).ready(function () {
   
 // ######################################################## Heatmap
+  var heatmap_shown = 0;
   
   $("#heatmap_graph").on('shown.bs.collapse', function(){
-    heatmap_chart.render();
+    if (!heatmap_shown) {
+      heatmap_chart.render();
+      heatmap_shown = 1;
+    }
     //$(".flip-card-inner").css("transform", "rotateY(180deg)");
   });
     
