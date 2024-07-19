@@ -108,6 +108,8 @@ $( "#bars_btn" ).click(function() {
 
   var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#c8c8c8"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#0f0"}];
   
+  var legend_color_ranges=["#c8c8c8","#f0c320","#ff8800","#ff7469","#de2515","#b71005","#0bb4ff","#0f0"];
+  
   $( "#red_color_btn" ).click(function() {
     // alert("hi");
     heatmap_chart.updateOptions({
@@ -144,7 +146,7 @@ $( "#bars_btn" ).click(function() {
   $( "#range_color_btn" ).click(function() {
     // alert("hi: "+color_ranges);
     heatmap_chart.updateOptions({
-      colors: ["#777777"],
+      colors: legend_color_ranges,
       plotOptions: {
         heatmap: {
           colorScale: {
@@ -168,7 +170,7 @@ var options = {
   dataLabels: {
     enabled: true
   },
-  colors: ["#777777"],
+  colors: legend_color_ranges,
   plotOptions: {
     heatmap: {
       shadeIntensity: 0.5,
