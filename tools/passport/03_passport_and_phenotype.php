@@ -324,7 +324,8 @@ if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
         // $alpha3_code = $cols_coords[2];
         // $num_code = $cols_coords[3];
         $country_latitude = $cols_coords[4]; 
-        $country_longitude = $cols_coords[5]; 
+        $country_longitude = $cols_coords[5];
+        // $country_longitude = str_replace(PHP_EOL, '', $long);
         break; // ??? se podría quitar porque solo se están definiendo los valores
       }
     }
