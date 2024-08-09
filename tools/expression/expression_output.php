@@ -317,7 +317,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       $gene_name = $columns[0];
       
       // if gene found in input list
-      if (in_array($gene_name,$gids)) {
+      if ( in_array(strtolower($gene_name), array_map("strtolower", $gids)) ) {
         
         array_push($found_genes,$gene_name);
         
