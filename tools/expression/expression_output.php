@@ -10,61 +10,6 @@
   $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
-  
-  if ($file_database) {
-    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
-    $annot_hash = json_decode($annot_json_file, true);
-    $annot_file = $annotations_path.'/'.$annot_hash[$dataset_name_ori]["annotation_file"];
-  }
-
-  $gids = [];
-  $one_gene2;
-  
-  if(isset($gene_list)) {
-    
-    //$time_start = microtime(true); 
-    
-    foreach (explode("\n",$gene_list) as $one_gene) {
-      $one_gene = rtrim($one_gene);
-      
-      if (preg_match('/\.\d+$/',$one_gene)) {
-        $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
-        if (!in_array($one_gene2,$gids)) {
-          array_push($gids,$one_gene2);
-        }
-      }
-      if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
-        $one_gene3 = $one_gene2.".1";
-        if (!in_array($one_gene3,$gids)) {
-          array_push($gids,$one_gene3);
-        }
-      }
-      if (!preg_match('/\.\d+$/',$one_gene)) {
-        $one_gene2 = $one_gene.".1";
-        if (!in_array($one_gene2,$gids)) {
-          array_push($gids,$one_gene2);
-        }
-      }
-      if (!in_array($one_gene,$gids)) {
-        array_push($gids,$one_gene);
-      }
-    }
-    
-    //print("<pre>".print_r($gids,true)."</pre>");
-    
-    // $time_end = microtime(true);
-    // $execution_time = ($time_end - $time_start);
-    // echo '<p><b>Total Execution Time:</b> '.$execution_time.'</p>';
-    
-    
-    //$gids = explode("\n", rtrim($gene_list));
-    
-    // $gids=array_map(function($row) {
-    //   return rtrim($row);
-    // },explode("\n",$gene_list));
-    
-  }
-  
 ?>
 
   <div class="margin-20">
@@ -75,109 +20,46 @@
 
 <div class="page_container" style="margin-top:20px">
   <br>
-<?php
-  // ############################################################### DATASET TITLE AND DESCRIPTION
-  
-  $expr_img_array = [];
-  
-  if ($dataset_name) {
-    echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
-  }
-  
-  if ( file_exists("$expression_path/expression_info.json") ) {
-    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
-    $annot_hash = json_decode($annot_json_file, true);
-    
-    if ($annot_hash[$dataset_name_ori]["description"]) {
-    
-      $desc_file = $annot_hash[$dataset_name_ori]["description"];
+<?php include realpath('01_expr_load_dataset_description.php'); ?>
 
-      if ( file_exists("$custom_text_path/expr_datasets/$desc_file") ) {
-        
-        // echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
-        
-        echo "<h2 style=\"font-size:20px\">$r_key</h2>";
-        include("$custom_text_path/expr_datasets/$desc_file");
-        echo"<br>";
+</div> <!-- end of page_container -->
+  
+  
+<?php
+
+$gids = [];
+$one_gene2;
+
+if(isset($gene_list)) {
+  
+  //$time_start = microtime(true); 
+  
+  foreach (explode("\n",$gene_list) as $one_gene) {
+    $one_gene = rtrim($one_gene);
+    
+    if (preg_match('/\.\d+$/',$one_gene)) {
+      $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
+      if (!in_array($one_gene2,$gids)) {
+        array_push($gids,$one_gene2);
       }
-      // else {
-      //   echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
-      // }
     }
-    
-    if ($annot_hash[$dataset_name_ori]["images"]) {
-      $expr_img_array = $annot_hash[$dataset_name_ori]["images"];
-    }
-    
-    // print("<pre>".print_r($expr_img_array,true)."</pre>");
-    
-  }
-
-?>
-  </div> <!-- end of page_container -->
-  
-  
-<?php
-  if ($file_database) {
-    $annotations_hash_file = [];
-    $grep_input = implode("\|", $gids);
-    $grep_command = "grep -i '$grep_input' $annot_file";
-    exec($grep_command, $output);
-
-    $annot_file = str_replace(" ", "\\ ", $annot_file);
-
-    $head_command = "head -n 1 $annot_file";
-    $output_head = exec($head_command);
-    $columns = explode("\t", $output_head);
-    array_shift($columns);
-    $col_number = count($columns);
-  
-    $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
-    $annotation_hash = json_decode($annot_json_file, true);
-
-    foreach ($output as $annot_line) {
-      $annot_col = explode("\t", $annot_line);
-      $gene_key = $annot_col[0];
-      array_shift($annot_col);
-
-      for ($n = 0; $n < $col_number; $n++) {
-        $header_name = $columns[$n];
-
-        if ($header_name == "TAIR10" || $header_name == "Araport11") {
-          $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$annot_col[$n], ''], $annotation_hash[$header_name ]);
-          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
-        }
-        elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
-          $ipr_data = explode(';', $annot_col[$n]);
-          $ipr_links = '';
-          foreach ($ipr_data as $ipr_id) {
-            $query_id = str_replace('query_id', $ipr_id, $annotation_hash[$header_name]);
-            $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
-          }
-          $ipr_links = rtrim($ipr_links, ';<br>');
-          $annot_col[$n] = $ipr_links;
-        }
-        elseif (strpos($annot_col[$n], ';') ) {
-          $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
-          $annot_col[$n] = $data_semicolon;
-        }
-        elseif ($annotation_hash[$header_name]) {
-          $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
-          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
-        }
-        else {
-          $annot_col[$n] = $annot_col[$n];
-        }
+    if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
+      $one_gene3 = $one_gene2.".1";
+      if (!in_array($one_gene3,$gids)) {
+        array_push($gids,$one_gene3);
       }
-
-      $annot_string = implode("</td><td>", $annot_col);
-      $annotations_hash_file[$gene_key] = "<td>$annot_string</td>";
+    }
+    if (!preg_match('/\.\d+$/',$one_gene)) {
+      $one_gene2 = $one_gene.".1";
+      if (!in_array($one_gene2,$gids)) {
+        array_push($gids,$one_gene2);
+      }
+    }
+    if (!in_array($one_gene,$gids)) {
+      array_push($gids,$one_gene);
     }
   }
-?>
-
-
-<?php
+}
 
 $sample_names = [];
 $heatmap_one_gene = [];
@@ -195,110 +77,11 @@ $table_code_array = [];
 if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
   
-  
-  //################################################################################################## ADD ANNOTATIONS
-  
-  // Get annotation types
-  include_once realpath ("$conf_path/database_access.php");
-  
-  $dbconn = 0;
-  
-  if (getConnectionString()) {
-    $dbconn = pg_connect(getConnectionString());
-  }
-  
-  if ($dbconn) {
-    include_once("../get_annotation_types.php");
-    
-  	// load annotation links in hash
-  	$external_db_annot_hash;
-
-  	if ( file_exists("$annotation_links_path/annotation_links.json") ) {
-  	    $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
-  	    $external_db_annot_hash = json_decode($annot_json_file, true);
-  	}
-    
-    
-    // Getting all annotation types.
-    $query="SELECT annotation_type_id,annotation_type from annotation_type"; // array with annotation type ids
-
-    $res=pg_query($query) or die("Couldn't query database.");
-
-    $annotTypes=pg_fetch_all_columns($res);
-  
-    $gNamesArr=array_filter(explode("\n",trim($_POST["gids"])),function($gName) {return ! empty($gName);});
-  
-    $gNameValues=implode(",",array_map(function($input) {if(empty(trim($input))) return ""; else  return "'" . trim(pg_escape_string($input))."'" ;},$gNamesArr));
-  
-    $query="SELECT searchValues.search_name as \"input\", array_agg( distinct (g.gene_name)) as \"genes\", array_agg(distinct (annotation.annotation_term, annotation.annotation_desc, annotation.annotation_type_id)) \"annot\"
-    FROM
-    gene g inner join gene_annotation on gene_annotation.gene_id=g.gene_id
-    inner join annotation on annotation.annotation_id=gene_annotation.annotation_id
-    inner join annotation_type on annotation_type.annotation_type_id=annotation.annotation_type_id
-    right join unnest(array[{$gNameValues}]) WITH ORDINALITY AS searchValues(search_name,ord) on search_name=g.gene_name
-    group by searchValues.search_name, searchValues.ord
-    order by searchValues.ord asc";
-  
-    $dbRes=pg_query($query) or die('Query failed: ' . pg_last_error());
+  include realpath('02_expr_load_annotations.php');
+  include realpath('02_expr_load_db_annotations.php');
   
   
-    $annotations_hash2;
-  
-    while($row=pg_fetch_array($dbRes,null, PGSQL_ASSOC)) {
-      // Parse gene array returned by database - removing 3 characters in the end and at the beginning.
-      $geneEntries=array_map(function($geneCol) { return explode(",",$geneCol);},explode(")\",\"(",substr($row["genes"],3,-3)));
-
-      // Removing \" enclosing the the multi word gene names.
-      array_walk($geneEntries,function(&$entry) {$entry[0]=str_replace("\\\"","",$entry[0]);});
-
-      // Get all anotations for this row and create the annotation columns.
-      $annotStr="";
-      // Parse annotation array returned by database, removed 3 characters in the end and at the beginning. Saved terms, description and annotation type in $annotEntries
-      $annotEntries=array_map(function($annotRow) {
-        preg_match("/([^,]*),(.+),(\d+)/",$annotRow,$matches);
-        return array(0=>$matches[1],1=>$matches[2],2=>$matches[3]);
-      },explode(")\",\"(",substr($row["annot"],3,-3)));
-
-      foreach ($annotTypes as $type) {
-      $terms_array = [];
-      $annots_array = [];
-        foreach ($annotEntries as $annot_row) {
-          if ($annot_row[2] == $type) {
-            // echo "{$annot_row[0]}";
-            $q_link = "#";
-            $annot_type = $all_annotation_types[$type];
-            if ($annot_type == "TAIR10" || $annot_type == "Araport11") {
-              $annot_row[0] = preg_replace('/\.\d$/','',$annot_row[0]);
-            }
-            if ($external_db_annot_hash[$annot_type]) {
-              $q_link = $external_db_annot_hash[$annot_type];
-              $q_link = preg_replace('/query_id/',$annot_row[0],$q_link);
-            }
-
-            array_push($terms_array,"<a href=\"$q_link\" target=\"_blank\">$annot_row[0]</a>");
-          } //close if
-        } // close foreach annot_row
-      
-      
-        $gene_name = $row["input"];
-      
-        $annotations_hash2[$gene_name] .= "<td>".implode($terms_array,"; <br>")."</td><td>";
-      
-        foreach ($annotEntries as $annot_row) {
-          if ($annot_row[2] == $type) {
-            array_push( $annots_array, str_replace("\\\"","",$annot_row[1]) );
-          }
-        }
-        $annotations_hash2[$gene_name] .= implode($annots_array,"; <br>")."</td>";
-
-      } // close foreach type
-    } // end while
-  
-  } // close if dbconnect
-  
-  //##################################################################################################
-  
-   array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
+  array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
 
     $columns = [];
     $replicates = [];
@@ -560,436 +343,16 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 ?>
 
 
+<?php include realpath('03_expr_load_lines_html.php'); ?>
+<?php include realpath('03_expr_load_cards_html.php'); ?>
+<?php include realpath('03_expr_load_cartoons_html.php'); ?>
+<?php include realpath('03_expr_load_heatmap_html.php'); ?>
+<?php include realpath('03_expr_load_replicates_html.php'); ?>
+<?php include realpath('03_expr_load_avg_table_html.php'); ?>
+
+
   
   
-  
-  
-  
-  
-
-<!-- #####################             Lines             ################################ -->
-  <center>
-  
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Lines
-    </div>
-
-    <div id="line_chart_frame" class="collapse show" style="border:2px solid #666; padding-top:7px">
-      
-
-      <div id="lines_frame">
-          <button id="lines_btn" type="button" class="btn btn-danger">Lines</button>
-          <button id="bars_btn" type="button" class="btn btn-primary">Bars</button>
-
-        <div id="chart_lines" style="min-height: 550px;"></div>
-        
-      </div>
-        
-      
-      
-    </div>
-  </center>
-  
-<!-- #####################             Cards             ################################ -->
-    
-<?php
-
-  if ($expr_cards) {
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
-      echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
-    echo '</div>';
-
-    echo '<div id="cards_frame" class="row collapse hide" style="padding-top:7px">';
-
-
-      echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
-        echo '<label for="card_sel1" style="width: 150px;">Select gene:</label>';
-        echo '<select class="form-control" id="card_sel1">';
-          
-            foreach ($found_genes as $gene) {
-              echo "<option value=\"$gene\">$gene</option>";
-            }
-        
-        echo '</select>';
-      echo '</div>';
-
-
-      echo '<div class="d-inline-flex" style="margin:10px">';
-        echo '<span class="circle" style="background-color:#000000"></span> Lowest <2';
-        echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
-        echo '<span class="circle" style="background-color:#fb4"></span> >=2';
-        echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
-        echo '<span class="circle" style="background-color:#de2515"></span> >=50';
-        echo '<span class="circle" style="background-color:#b71005"></span> >=100';
-        echo '<span class="circle" style="background-color:#7df"></span> >=200';
-        echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
-        echo '<span class="circle gold"></span> Highest';
-      echo '</div>';
-
-
-      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
-    echo '</div>';
-    
-  }
-?>
-
-<style>
-  
-  .expr_card_body {
-/*    background-color: #363;*/
-    background-image: url("card_pattern.png");
-    background-repeat: repeat;
-    background-color: #f63;
-    height: 280px;
-    width: 220px;
-    padding: 10px;
-    border: 1px solid #000;
-    margin-right:5px;
-  }
-  
-  .expr_card_title {
-    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
-    background-color: #ec7;
-    text-align: center;
-    vertical-align: middle;
-    width: 200px;
-    height: 50px;
-    margin-bottom:10px;
-    padding-left:3px;
-    padding-right:3px;
-    border: 1px solid #000;
-    line-height: 50px;
-  }
-  
-  .expr_card_image {
-    width: 200px;
-    height: 200px;
-    border: 1px solid #000;
-  }
-  
-  .expr_card_value {
-    text-align: center;
-    vertical-align: middle;
-    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
-    background-color: #ec7;
-    width: 50px;
-    height: 50px;
-    left: 9px;
-    position: relative;
-    bottom: 42px;
-    border: 1px solid #000;
-    line-height: 50px;
-  }
-  
-  
-  .gold {
-    background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
-  }
-  
-  .circle {
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-    border-style: solid;
-    border-color: #ccc;
-    display: inline-block;
-    margin: 5px;
-    margin-left: 15px;
-  }
-  
-  
-  
-/* FLIP CARD EFFECT*/
-  
-  /* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
-  .flip-card {
-    background-color: transparent;
-
-    height: 280px;
-    width: 220px;
-/*    padding: 10px;*/
-    margin-right:5px;
-    margin-bottom:5px;
- 
-/*    width: 300px;
-    height: 200px;
-    border: 1px solid #f1f1f1;
-*/    perspective: 1000px; /* Remove this if you don't want the 3D effect */
-  }
-
-  /* This container is needed to position the front and back side */
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 1s;
-    transform-style: preserve-3d;
-  }
-
-  /* Do an horizontal flip when you move the mouse over the flip box container */
-/*  .flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-*/  
-  
-  /* Position the front and back side */
-  .flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-  }
-
-  /* Style the front side (fallback if image is missing) */
-  .flip-card-front {
-    background-color: #363;
-    color: white;
-  }
-
-  /* Style the back side */
-  .flip-card-back {
-/*    background-image: linear-gradient(180deg, #8f6B29, #FDE08D, #DF9F28);*/
-    color: black;
-    transform: rotateY(180deg);
-  }
-  
-</style>
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-<!-- #####################             Cartoons             ################################ -->
-
-<center>
-
-<?php
-  
-if ( file_exists("$expression_path/expression_info.json") ) {
-  
-  if ($annot_hash[$dataset_name_ori]["cartoons"]) {
-  
-    $cartoon_conf = $annot_hash[$dataset_name_ori]["cartoons"];
-
-    //echo "<p>annot_hash cartoons exists and was found!</p>";
-
-    if ($expr_cartoons && file_exists($expression_path."/$cartoon_conf") ) {
-      
-      $cartoons_json = file_get_contents($expression_path."/$cartoon_conf");
-      
-      // echo "<p>annot_hash cartoons_json exists and was found!</p>";
-      //var_dump($cartoons_json);
-
-      $jcartoons = json_decode($cartoons_json, true);
-  
-      $max_w = 100;
-      $max_h = 100;
-      $max_x = 10;
-      $max_y = 10;
-      
-      foreach($jcartoons["cartoons"] as $img) {
-        echo "<img id='".$img["img_id"]."' src='".$images_path."/expr/cartoons/".$img["image"]."' style=\"display:none\">";
-    
-        if ($img["width"] > $max_w) {
-          $max_w = $img["width"];
-        }
-        if ($img["height"] > $max_h) {
-          $max_h = $img["height"];
-        }
-        if ($img["x"] > $max_x) {
-          $max_x = $img["x"];
-        }
-        if ($img["y"] > $max_y) {
-          $max_y = $img["y"];
-        }
-      } //end foreach
-  
-      $canvas_w = $max_w + $max_x;
-      $canvas_h = $max_h + $max_y;
-
-      echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cartoons_frame" aria-expanded="true">';
-      echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
-      echo '</div>';
-
-      echo '<div id="cartoons_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
-    
-      echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
-      echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\">Select gene:</label>";
-      echo "<select class=\"form-control\" id=\"sel_cartoons\">";
-      foreach ($found_genes as $gene) {
-        echo "<option value=\"$gene\">$gene</option>";
-      }
-      echo "</select>";
-      echo "</div>";
-
-      echo '<div class="d-inline-flex" style="margin:10px">';
-      echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
-      echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
-      echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
-      echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
-      echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
-      echo '<span class="circle" style="background-color:#C70039"></span> >=100';
-      echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
-      echo '<span class="circle" style="background-color:#581845"></span> >=5000';
-      echo '</div>';
-
-      echo "<div class=\"row\">";
-    
-      echo "<div class=\"pull-left\">";
-        echo "<div class=\"cartoons_canvas_frame\">";
-          echo "<div id=\"canvas_div\">";
-            echo '<div id=myCanvas>';
-              echo "Your browser does not support the HTML5 canvas";
-            echo "</div>";
-          echo "</div>";
-          echo "<br>";
-        echo "</div>";
-      echo "</div>";
-    
-        echo "<div class=\"pull-right\">";
-      
-        echo "<ul id=\"cartoon_labels\" style=\"text-align:left\">";
-        foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
-        
-          echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
-        }
-        
-        echo "</ul>";
-      
-        echo "</div>";
-    
-      echo "</div>";
-
-      echo '</div>';
-
-    }//end cartoons conf
-    // else {
-    //   echo "<p>cartoons.json file was not found!</p>";
-    // }
-    
-  }//end cartoons hash
-  // else {
-  //   echo "<p>cartoons hash was not found!</p>";
-  // }
-  
-} //end expression_info.json
-// else {
-//   echo "<p>expression_info.json was not found!</p>";
-// }
-?>
-</center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- #####################             Heatmap             ################################ -->
-
-  <center>
-  
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
-    </div>
-
-    <div id="heatmap_graph" class="collapse hide">
-
-      <div id="chart1_frame" style="border:2px solid #666; padding-top:7px">
-        <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
-        <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
-        <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
-
-        <div id="chart1" style="min-height: 400px;"></div>
-
-      </div>
-    </div>
-  
-    <!-- #####################             Replicates           ################################ -->
-  
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Replicates
-    </div>
-
-    <div id="replicates_graph" class="collapse hide">
-
-      <div id="chart2_frame" style="border:2px solid #666; padding-top:7px">
-        <div class="form-group d-inline-flex" style="width: 450px;">
-          <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
-          <select class="form-control" id="sel1">
-            <?php
-              foreach ($found_genes as $gene) {
-                echo "<option value=\"$gene\">$gene</option>";
-              }
-            ?>
-          </select>
-        </div>
-        <div id="chart2" style="min-height: 365px;"></div>
-      </div>
-
-    </div>
-  </center>
-  
-  
-  
-  
-  
-  <div class="data_table_frame">
-
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Average values
-    </div>
-
-    <div id="avg_table" class="collapse hide">
-
-
-
-<?php
-  
-  echo implode("\n", $table_code_array);
-  
-?>
-
-
-    </div> <!-- avg_table end -->
-  
-  </div> <!-- data_table_frame end -->
 <!-- </div> old end of page_container-->
 
 <br>

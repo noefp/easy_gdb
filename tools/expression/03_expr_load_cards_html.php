@@ -1,0 +1,166 @@
+<!-- #####################             Cards             ################################ -->
+    
+<?php
+
+  if ($expr_cards) {
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
+      echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
+    echo '</div>';
+
+    echo '<div id="cards_frame" class="row collapse hide" style="padding-top:7px">';
+
+
+      echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
+        echo '<label for="card_sel1" style="width: 150px;">Select gene:</label>';
+        echo '<select class="form-control" id="card_sel1">';
+          
+            foreach ($found_genes as $gene) {
+              echo "<option value=\"$gene\">$gene</option>";
+            }
+        
+        echo '</select>';
+      echo '</div>';
+
+
+      echo '<div class="d-inline-flex" style="margin:10px">';
+        echo '<span class="circle" style="background-color:#000000"></span> Lowest <2';
+        echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
+        echo '<span class="circle" style="background-color:#fb4"></span> >=2';
+        echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
+        echo '<span class="circle" style="background-color:#de2515"></span> >=50';
+        echo '<span class="circle" style="background-color:#b71005"></span> >=100';
+        echo '<span class="circle" style="background-color:#7df"></span> >=200';
+        echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
+        echo '<span class="circle gold"></span> Highest';
+      echo '</div>';
+
+
+      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
+    echo '</div>';
+    
+  }
+?>
+
+<style>
+  
+  .expr_card_body {
+/*    background-color: #363;*/
+    background-image: url("card_pattern.png");
+    background-repeat: repeat;
+    background-color: #f63;
+    height: 280px;
+    width: 220px;
+    padding: 10px;
+    border: 1px solid #000;
+    margin-right:5px;
+  }
+  
+  .expr_card_title {
+    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    background-color: #ec7;
+    text-align: center;
+    vertical-align: middle;
+    width: 200px;
+    height: 50px;
+    margin-bottom:10px;
+    padding-left:3px;
+    padding-right:3px;
+    border: 1px solid #000;
+    line-height: 50px;
+  }
+  
+  .expr_card_image {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #000;
+  }
+  
+  .expr_card_value {
+    text-align: center;
+    vertical-align: middle;
+    font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    background-color: #ec7;
+    width: 50px;
+    height: 50px;
+    left: 9px;
+    position: relative;
+    bottom: 42px;
+    border: 1px solid #000;
+    line-height: 50px;
+  }
+  
+  
+  .gold {
+    background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
+  }
+  
+  .circle {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: #ccc;
+    display: inline-block;
+    margin: 5px;
+    margin-left: 15px;
+  }
+  
+  
+  
+/* FLIP CARD EFFECT*/
+  
+  /* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+  .flip-card {
+    background-color: transparent;
+
+    height: 280px;
+    width: 220px;
+/*    padding: 10px;*/
+    margin-right:5px;
+    margin-bottom:5px;
+ 
+/*    width: 300px;
+    height: 200px;
+    border: 1px solid #f1f1f1;
+*/    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+
+  /* This container is needed to position the front and back side */
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+  }
+
+  /* Do an horizontal flip when you move the mouse over the flip box container */
+/*  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+*/  
+  
+  /* Position the front and back side */
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+  }
+
+  /* Style the front side (fallback if image is missing) */
+  .flip-card-front {
+    background-color: #363;
+    color: white;
+  }
+
+  /* Style the back side */
+  .flip-card-back {
+/*    background-image: linear-gradient(180deg, #8f6B29, #FDE08D, #DF9F28);*/
+    color: black;
+    transform: rotateY(180deg);
+  }
+  
+</style>

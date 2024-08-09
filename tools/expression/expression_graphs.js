@@ -374,6 +374,7 @@ $(document).ready(function () {
       obj.cache();
       obj.filters([Kinetic.Filters.RGB]);
       obj.red(150).green(150).blue(150);
+      
       obj.draw();
     
     });
@@ -385,8 +386,8 @@ $(document).ready(function () {
       obj.cache();
       obj.filters([Kinetic.Filters.RGB]);
       obj.red(i_red).green(i_green).blue(i_blue);
+      
       obj.draw();
-    
     });
   
   
