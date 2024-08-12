@@ -4,7 +4,8 @@
 <script type="text/javascript" src="/easy_gdb/js/kinetic-v5.1.0.min.js"></script>
 
 
-<?php 
+<?php
+// Get variables: expression file, and input genes
   $expr_file = $_POST["expr_file"];
   $gene_list = $_POST["gids"];
   $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
@@ -27,309 +28,285 @@
   
 <?php
 
+
 $gids = [];
-$one_gene2;
-
-if(isset($gene_list)) {
-  
-  //$time_start = microtime(true); 
-  
-  foreach (explode("\n",$gene_list) as $one_gene) {
-    $one_gene = rtrim($one_gene);
-    
-    if (preg_match('/\.\d+$/',$one_gene)) {
-      $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
-      if (!in_array($one_gene2,$gids)) {
-        array_push($gids,$one_gene2);
-      }
-    }
-    if ($one_gene2 && !preg_match('/\.\d+$/',$one_gene2)) {
-      $one_gene3 = $one_gene2.".1";
-      if (!in_array($one_gene3,$gids)) {
-        array_push($gids,$one_gene3);
-      }
-    }
-    if (!preg_match('/\.\d+$/',$one_gene)) {
-      $one_gene2 = $one_gene.".1";
-      if (!in_array($one_gene2,$gids)) {
-        array_push($gids,$one_gene2);
-      }
-    }
-    if (!in_array($one_gene,$gids)) {
-      array_push($gids,$one_gene);
-    }
-  }
-}
-
 $sample_names = [];
 $heatmap_one_gene = [];
 $heatmap_series = [];
-// $scatter_one_gene = [];
 $scatter_one_sample = [];
 $scatter_all_genes = [];
 $cartoons_all_genes = [];
 $replicates_all_genes = [];
 
 $found_genes = [];
+$not_found_genes = [];
 
 $table_code_array = [];
+
+
+foreach (explode("\n",$gene_list) as $one_gene) {
+  $one_gene = rtrim($one_gene);
+  
+  if (!in_array($one_gene,$gids)) {
+    array_push($gids,$one_gene);
+  }
+}
 
 if ( file_exists("$expr_file") && isset($gids) ) {
   $tab_file = file("$expr_file");
   
+  // load annotations
   include realpath('02_expr_load_annotations.php');
   include realpath('02_expr_load_db_annotations.php');
   
-  
   array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
-
-    $columns = [];
-    $replicates = [];
-    $average = [];
-    $header_printed = 0;
+  
+  $columns = [];
+  $replicates = [];
+  $average = [];
+  $header_printed = 0;
+  
+  $first_line = array_shift($tab_file);
+  $header = explode("\t", rtrim($first_line));
+  
+  $gene_name_found = 0;
+  
+  //gets each replicate value for each gene
+  foreach ($tab_file as $line) {
+    $columns = explode("\t", rtrim($line));
     
-    $first_line = array_shift($tab_file);
-    $header = explode("\t", rtrim($first_line));
+    $col_count = 0;
+    $gene_name = $columns[0];
     
     
-    //gets each replicate value for each gene
-    foreach ($tab_file as $line) {
-      $columns = explode("\t", rtrim($line));
-      
-      $col_count = 0;
-      $gene_name = $columns[0];
-      
-      // if gene found in input list
-      if ( in_array(strtolower($gene_name), array_map("strtolower", $gids)) ) {
+    // gene found in input list
+    if ( in_array(strtolower($gene_name), array_map("strtolower", $gids)) ) {
+      array_push($found_genes,$gene_name);
+      $gene_name_found = 1;
+    }
+    
+    // gene found in input list but expression matrix gene names has transcript version (.1) and input gene not
+    // remevo transcript vesrsion from matrix gene
+    $gene_name2 = preg_replace('/\.\d+$/',"",$gene_name);
+    if ( in_array(strtolower($gene_name2), array_map("strtolower", $gids)) ) {
+      array_push($found_genes,$gene_name);
+      $gene_name_found = 1;
+    }
+    
+    // gene found in input list but expression matrix gene names have not transcript version (.1)
+    // add transcript version to matrix gene
+    if ( in_array(strtolower("$gene_name.1"), array_map("strtolower", $gids)) ) {
+      array_push($found_genes,$gene_name);
+      $gene_name_found = 1;
+    }
+    
+    // if the gene was found
+    if ($gene_name_found) {
+      foreach ($columns as $col) {
         
-        array_push($found_genes,$gene_name);
+        $sample_name = $header[$col_count];
         
-        foreach ($columns as $col) {
+        if ($col_count != 0) {
           
-          $sample_name = $header[$col_count];
-          
-          if ($col_count != 0) {
-            
-            if ($replicates[$sample_name]) {
-             array_push($replicates[$sample_name], $col);
-            } else {
-             $replicates[$sample_name] = [];
-             array_push($replicates[$sample_name], $col);
-            }
-            
-          }
-          
-          $col_count++;
-        } // end column foreach
-        
-        //print header with sample names
-        if (!$header_printed) {
-          // echo "<thead><tr><th>".$header[0]."</th>";
-          $header_content = $header[0];
-          
-          if ($file_database) {
-            $header_content = "Gene ID";
-            array_push($table_code_array, "<thead><tr><th>".$header_content."</th>");
-          }
-          else {
-            array_push($table_code_array, "<thead><tr><th>".$header_content."</th>");
-          }
-
-          foreach ($replicates as $r_key => $r_value) {
-            // echo "<th>$r_key</th>";
-            array_push($table_code_array,"<th>$r_key</th>");
-          }
-
-          if ($file_database) {
-            $columns = explode("\t", $output_head);
-            array_shift($columns);
-
-            foreach ($columns as $col) {
-              array_push($table_code_array,"<th>$col</th>");
-            }
-          }
-          // echo "</tr></thead>";
-          
-          
-          
-          //################################################################################################## ADD ANNOTATIONS
-          
-          if ($dbconn) {
-            
-            foreach ($annotTypes as $type) {
-              array_push($table_code_array, "<th style=\"min-width:100px\">".$all_annotation_types[$type]." ID</th>");
-              array_push($table_code_array, "<th style=\"min-width:200px\">".$all_annotation_types[$type]." Description</th>");
-            }
-          }
-          //##################################################################################################
-          
-          
-          array_push($table_code_array,"</tr></thead><tbody>");
-          
-          $header_printed = 1;
-          $sample_names = array_keys($replicates);
-        }
-        
-        
-        $q_link = "";
-        if ($annot_hash[$dataset_name_ori]) {
-          if ($annot_hash[$dataset_name_ori]["link"]) {
-            if ($annot_hash[$dataset_name_ori]["link"] == "#") {
-              // echo "<tr><td>$gene_name</td>";
-              array_push($table_code_array,"<tr><td>$gene_name</td>");
-            }
-            else {
-              $q_link = $annot_hash[$dataset_name_ori]["link"];
-              $q_link = preg_replace('/query_id/',$gene_name,$q_link);
-              // echo "<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>";
-              array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
-            }
-          }
-          else {
-            // echo "<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>";
-            if ($file_database){
-              $annot_encode = str_replace($annotations_path."/", "", $annot_file);
-              array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name&annot=$annot_encode\" target=\"_blank\">$gene_name</a></td>");
-            }
-            else {
-              array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
-            }
-          }
-        }
-        else {
-           //echo "<tr><td>$gene_name</td>";
-          array_push($table_code_array,"<tr><td>$gene_name</td>");
-        }
-        
-        
-        
-        $scatter_pos = 1;
-        
-        // print expression average values $r_key is like "Sample1" and $r_value is like [4.4,2.3,8.1]
-        foreach ($replicates as $r_key => $r_value) {
-          
-          $average = 0;
-          $zero_values = array_count_values($r_value)['0'];
-          $empty_values = count($r_value) - (count(array_filter($r_value)) + $zero_values);
-          
-          // echo "array size: ".count($r_value)."<br>";
-          // echo "empty_values: $empty_values<br>";
-          // echo "zero_values: $zero_values<br>";
-          
-          if (count($r_value) == $zero_values) {
-            $average = 0;
-          }
-          else if(count($r_value) == $empty_values-$zero_values) {
-            $average = null;
-          }
-          else if($empty_values) {
-            $a_sum = array_sum($r_value);
-            $a_reps = count($r_value) - $empty_values;
-          
-            $average = sprintf("%1\$.2f",$a_sum/$a_reps);
-          }
-          else {
-            
-            $a_sum = array_sum($r_value);
-            $a_reps = count($r_value);
-          
-            $average = sprintf("%1\$.2f",$a_sum/$a_reps);
-          }
-          
-          array_push($table_code_array,"<td>$average</td>");
-          
-          //save heatmap data
-          $heatmap_one_gene["name"] = $gene_name;
-          if ($heatmap_one_gene["data"]) {
-            array_push($heatmap_one_gene["data"], $average);
+          if ($replicates[$sample_name]) {
+           array_push($replicates[$sample_name], $col);
           } else {
-            $heatmap_one_gene["data"] = [];
-            array_push($heatmap_one_gene["data"], $average);
+           $replicates[$sample_name] = [];
+           array_push($replicates[$sample_name], $col);
           }
           
-          //save scatter data
-          //save replicates
-          foreach ($r_value as $one_rep) {
-            $one_replicate_pair = [$scatter_pos, $one_rep];
-            
-            //save samples and add replicates
-            $scatter_one_sample["name"] = $r_key;
-            if ($scatter_one_sample["data"]) {
-              array_push($scatter_one_sample["data"], $one_replicate_pair );
-            } else {
-              $scatter_one_sample["data"] = [];
-              array_push($scatter_one_sample["data"], $one_replicate_pair );
-            }
-            
-          }
-          $scatter_pos++;
-          
-          //save gene and add samples with replicates
-          if ($scatter_all_genes[$gene_name]) {
-            array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
-          } else {
-            $scatter_all_genes[$gene_name] = [];
-            array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
-          }
-          
-          
-          $scatter_one_sample = [];
-          
-          
-          //save cartoons data
-          if ($expr_cartoons && $annot_hash) {
-            
-            if ($annot_hash[$dataset_name_ori]["cartoons"]) {
-              //$cartoons_json = $annot_hash[$dataset_name_ori]["cartoons"];
-              //cartoons_sk1.json
-              
-              //echo "<p>gene_name: ".$gene_name." r_key: ".$r_key." average: ".$average."</p>";
-              
-              if ($cartoons_all_genes[$gene_name] ) {
-                  $cartoons_all_genes[$gene_name][$r_key] = $average;
-              } else {
-                $cartoons_all_genes[$gene_name] = [];
-                $cartoons_all_genes[$gene_name][$r_key] = $average;
-              }
-                
-                
-                
-            }
-          
-          }
-          
-          
-          
-        } //end foreach
-        // echo "</tr>";
+        }
+        
+        $col_count++;
+      } // end column foreach
+      
+      //################################################################################################## ADD header
+      //print header with sample names
+      if (!$header_printed) {
         
         
-        //################################################################################################## ADD ANNOTATIONS
         if ($file_database) {
-          array_push($table_code_array,$annotations_hash_file[$gene_name]);
+          array_push($table_code_array, "<thead><tr><th>Gene ID</th>");
         }
         else {
-          array_push($table_code_array,$annotations_hash2[$gene_name]);
+          array_push($table_code_array, "<thead><tr><th>".$header[0]."</th>");
         }
-        //##################################################################################################
+
+        foreach ($replicates as $r_key => $r_value) {
+          array_push($table_code_array,"<th>$r_key</th>");
+        }
+
+        //------------------------------------- using annotation file
+        if ($file_database) {
+          $columns = explode("\t", $output_head);
+          array_shift($columns);
+
+          foreach ($columns as $col) {
+            array_push($table_code_array,"<th>$col</th>");
+          }
+        }
         
         
-        array_push($table_code_array,"</tr>");
+        //------------------------------------- using database
+        if ($dbconn) {
+          
+          foreach ($annotTypes as $type) {
+            array_push($table_code_array, "<th style=\"min-width:100px\">".$all_annotation_types[$type]." ID</th>");
+            array_push($table_code_array, "<th style=\"min-width:200px\">".$all_annotation_types[$type]." Description</th>");
+          }
+        }
         
-        array_push($heatmap_series, $heatmap_one_gene);
+        array_push($table_code_array,"</tr></thead><tbody>");
+        
+        $header_printed = 1;
+        $sample_names = array_keys($replicates);
+      }
+      //##################################################################################################
+      
+      
+      $q_link = "";
+      if ($annot_hash[$dataset_name_ori]) {
+        if ($annot_hash[$dataset_name_ori]["link"]) {
+          if ($annot_hash[$dataset_name_ori]["link"] == "#") {
+            array_push($table_code_array,"<tr><td>$gene_name</td>");
+          }
+          else {
+            $q_link = $annot_hash[$dataset_name_ori]["link"];
+            $q_link = preg_replace('/query_id/',$gene_name,$q_link);
+            array_push($table_code_array,"<tr><td><a href=\"$q_link\" target=\"_blank\">$gene_name</a></td>");
+          }
+        }
+        else {
+          if ($file_database){
+            $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+            array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name&annot=$annot_encode\" target=\"_blank\">$gene_name</a></td>");
+          }
+          else {
+            array_push($table_code_array,"<tr><td><a href=\"/easy_gdb/gene.php?name=$gene_name\" target=\"_blank\">$gene_name</a></td>");
+          }
+        }
+      }
+      else {
+        array_push($table_code_array,"<tr><td>$gene_name</td>");
+      }
+      
+      
+      
+      $scatter_pos = 1;
+      
+      // print expression average values $r_key is like "Sample1" and $r_value is like [4.4,2.3,8.1]
+      foreach ($replicates as $r_key => $r_value) {
+        
+        $average = 0;
+        $zero_values = array_count_values($r_value)['0'];
+        $empty_values = count($r_value) - (count(array_filter($r_value)) + $zero_values);
+        
+        if (count($r_value) == $zero_values) {
+          $average = 0;
+        }
+        else if(count($r_value) == $empty_values-$zero_values) {
+          $average = null;
+        }
+        else if($empty_values) {
+          $a_sum = array_sum($r_value);
+          $a_reps = count($r_value) - $empty_values;
+        
+          $average = sprintf("%1\$.2f",$a_sum/$a_reps);
+        }
+        else {
+          
+          $a_sum = array_sum($r_value);
+          $a_reps = count($r_value);
+        
+          $average = sprintf("%1\$.2f",$a_sum/$a_reps);
+        }
+        
+        array_push($table_code_array,"<td>$average</td>");
+        
+        //save heatmap data
+        $heatmap_one_gene["name"] = $gene_name;
+        if ($heatmap_one_gene["data"]) {
+          array_push($heatmap_one_gene["data"], $average);
+        } else {
+          $heatmap_one_gene["data"] = [];
+          array_push($heatmap_one_gene["data"], $average);
+        }
+        
+        //save scatter data
+        //save replicates
+        foreach ($r_value as $one_rep) {
+          $one_replicate_pair = [$scatter_pos, $one_rep];
+          
+          //save samples and add replicates
+          $scatter_one_sample["name"] = $r_key;
+          if ($scatter_one_sample["data"]) {
+            array_push($scatter_one_sample["data"], $one_replicate_pair );
+          } else {
+            $scatter_one_sample["data"] = [];
+            array_push($scatter_one_sample["data"], $one_replicate_pair );
+          }
+          
+        }
+        $scatter_pos++;
+        
+        //save gene and add samples with replicates
+        if ($scatter_all_genes[$gene_name]) {
+          array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
+        } else {
+          $scatter_all_genes[$gene_name] = [];
+          array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
+        }
         
         
-        
-        $replicates = [];
-        $heatmap_one_gene = [];
-        // $scatter_one_gene = [];
         $scatter_one_sample = [];
-      } // end if gene in input list
+        
+        
+        //save cartoons data
+        if ($expr_cartoons && $annot_hash) {
+          
+          if ($annot_hash[$dataset_name_ori]["cartoons"]) {
+            
+            if ($cartoons_all_genes[$gene_name] ) {
+                $cartoons_all_genes[$gene_name][$r_key] = $average;
+            } else {
+              $cartoons_all_genes[$gene_name] = [];
+              $cartoons_all_genes[$gene_name][$r_key] = $average;
+            }
+              
+          }
+        }
+        
+        
+      } //end foreach
       
       
-    } // each line, each gene foreach
-    array_push($table_code_array,"</tbody></table></div>");
+      //################################################################################################## ADD ANNOTATIONS
+      if ($file_database) {
+        array_push($table_code_array,$annotations_hash_file[$gene_name]);
+      }
+      else {
+        array_push($table_code_array,$annotations_hash2[$gene_name]);
+      }
+      //##################################################################################################
+      
+      
+      array_push($table_code_array,"</tr>");
+      
+      array_push($heatmap_series, $heatmap_one_gene);
+      
+      
+      
+      $replicates = [];
+      $heatmap_one_gene = [];
+      $scatter_one_sample = [];
+      
+      $gene_name_found = 0;
+    } // end if gene in input list
     
+    
+  } // each line, each gene foreach
+  array_push($table_code_array,"</tbody></table></div>");
+  
   
   //################################################# ADD ANNOTATIONS
 	// Freeing result and closing connection.
@@ -337,6 +314,12 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     pg_free_result($dbRes);
     pg_close($dbconn);
   }
+  
+  
+  
+  // if gene not found in input list
+  $not_found_genes = implode("\n",array_diff($gids,$found_genes)); 
+  
   
 } // if expr file exists
 
@@ -393,9 +376,16 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   if (gene_list.length == 0) {
     $( "#chart1" ).css("display","none");
     $( "#chart2" ).css("display","none");
-    $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
-    
+    //$( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
+    alert("No gene was found in the selected dataset. Please, check gene names.")
   }
+  
+  var genes_not_found = <?php echo json_encode($not_found_genes) ?>;
+  
+  if (genes_not_found) {
+    alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
+  }
+  
   
   $("#tblResults").dataTable({
     "dom":'Bfrtip',
@@ -416,7 +406,6 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 <script type="text/javascript">
   
   if (cartoons) {
-  
     canvas = create_canvas(canvas_h,canvas_w);
     draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,gene_list[0]);
   }
