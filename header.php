@@ -13,16 +13,14 @@ include_once "$conf_path/easyGDB_conf.php";
 
     <!-- compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
 
     <?php 
-    if ($custom_css) {
-      echo "<link rel=\"stylesheet\" href=\"/$custom_css_path\">";
-    }
-    else {
-      echo "<link rel=\"stylesheet\" href=\"/easy_gdb/css/easy_gdb.css\">";
-    }
+      if ($custom_css_path) {
+        echo "<link rel=\"stylesheet\" href=\"/$custom_css_path\">";
+      }
     ?>
-    <!-- <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css"> -->
+
     <!-- <link rel="stylesheet" type="text/css" href="/easy_gdb/css/datatables.css"> -->
     <!-- <link rel="stylesheet" href="/easy_gdb/js/DataTables/Select-1.2.6/css/select.dataTables.min.css"> -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
