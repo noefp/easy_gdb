@@ -81,23 +81,29 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
     // gene found in input list
     if ( in_array(strtolower($gene_name), array_map("strtolower", $gids)) ) {
-      array_push($found_genes,$gene_name);
-      $gene_name_found = 1;
+      if (!in_array($gene_name,$found_genes)) {
+        array_push($found_genes,$gene_name);
+        $gene_name_found = 1;
+      }
     }
     
     // gene found in input list but expression matrix gene names has transcript version (.1) and input gene not
     // remevo transcript vesrsion from matrix gene
     $gene_name2 = preg_replace('/\.\d+$/',"",$gene_name);
     if ( in_array(strtolower($gene_name2), array_map("strtolower", $gids)) ) {
-      array_push($found_genes,$gene_name);
-      $gene_name_found = 1;
+      if (!in_array($gene_name,$found_genes)) {
+        array_push($found_genes,$gene_name);
+        $gene_name_found = 1;
+      }
     }
     
     // gene found in input list but expression matrix gene names have not transcript version (.1)
     // add transcript version to matrix gene
     if ( in_array(strtolower("$gene_name.1"), array_map("strtolower", $gids)) ) {
-      array_push($found_genes,$gene_name);
-      $gene_name_found = 1;
+      if (!in_array($gene_name,$found_genes)) {
+        array_push($found_genes,$gene_name);
+        $gene_name_found = 1;
+      }
     }
     
     // if the gene was found
