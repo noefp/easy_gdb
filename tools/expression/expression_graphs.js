@@ -404,13 +404,16 @@ $(document).ready(function () {
     
     gene_expr_values = cartoons_all_genes[cartoon_active_gene];
     
+    // alert("gene_expr_values: "+JSON.stringify(gene_expr_values) );
+    
     //var html_array = ["<ul id=\"cartoon_values\" style=\"text-align:left\">"];
     var html_array = [];
     
     for (var sample in gene_expr_values){
+      expr_value = gene_expr_values[sample];
+      sample_id=sample+"_kj_image";
       
-      $("#"+sample+"_kj_image").html(sample+": "+gene_expr_values[sample]);
-      
+      $(document.getElementById(sample_id)).html(sample+": "+expr_value);
     }
     
   });
@@ -421,9 +424,6 @@ $(document).ready(function () {
   $("#replicates_graph").on('shown.bs.collapse', function(){
     scatter_chart.render();
   });
-  
-  
-  
   
   
   
