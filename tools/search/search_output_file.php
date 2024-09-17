@@ -1,5 +1,6 @@
 <!-- HEADER -->
-<?php include_once realpath("../../header.php");?> 
+<?php include_once realpath("../../header.php");?>
+<?php include_once realpath("$root_path/easy_gdb/tools/common_functions.php");?>
 
 <!-- RETURN AND HELP-->
 <div class="margin-20">
@@ -21,32 +22,12 @@
     $quoted_search = 1;
   }
 ?>
-
-
-<!-- IS BETTER TO SET IN ANOTHER FILE -->
-<?php
-  function test_input2($data) {
-    $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
-    $data = htmlspecialchars($data);
-    if ( preg_match('/\s+/',$data) ) {
-      $data_array = explode(' ',$data,99);
-      foreach ($data_array as $key=>&$value) {
-        if (strlen($value) < 3) {
-            unset($data_array[$key]);
-        }
-      }
-      $data = implode(' ',$data_array);
-    }
-    $data = stripslashes($data);
-    return $data;
-  }
-?>
   
   
   
 <?php
 
-  function print_search_table($grep_input, $annot_file, $annot_hash, $dataset_name, $table_counter) {
+  function print_search_table($grep_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
 
     echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
     $annot_file = str_replace(" ", "\\ ", $annot_file);
@@ -79,10 +60,11 @@
     foreach ($output as $line) {
       echo "<tr>\n";
       $data = explode("\t", $line);
-      for ($n = 0; $n <= $col_number-1; $n++) {
+      for ($n = 0; $n < $col_number; $n++) {
         if ($data[$n]) {
           if ($n == 0) {
-            echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
+            $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+            echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]&annot=$annot_encode\" target=\"_blank\">$data[$n]</a></td>\n";
           }
           else {
             $header_name = $columns[$n];
@@ -90,7 +72,7 @@
               $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
-            elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
+            elseif ( strpos($data[$n], ';') && !preg_match("/Description/", $header_name) ) {
               $ipr_data = explode(';', $data[$n]);
               $ipr_links = '';
               foreach ($ipr_data as $ipr_id) {
@@ -100,7 +82,57 @@
               $ipr_links = rtrim($ipr_links, ';<br>');
               echo "<td>$ipr_links</td>\n";
             }
-            elseif (strpos($data[$n], ';') && $header_name == "Description") {
+            // elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
+            //   $ipr_data = explode(';', $data[$n]);
+            //   $ipr_links = '';
+            //   foreach ($ipr_data as $ipr_id) {
+            //     $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
+            //     $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+            //   }
+            //   $ipr_links = rtrim($ipr_links, ';<br>');
+            //   echo "<td>$ipr_links</td>\n";
+            // }
+            // elseif (strpos($data[$n], ';') && $header_name == "SwissProt") {
+            //   $swiss_data = explode(';', $data[$n]);
+            //   $swiss_links = '';
+            //   foreach ($swiss_data as $swiss_id) {
+            //     $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+            //     $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+            //   }
+            //   $swiss_links = rtrim($swiss_links, ';<br>');
+            //   echo "<td>$swiss_links</td>\n";
+            // }
+            // elseif (strpos($data[$n], ';') && $header_name == "GO (BP)") {
+            //   $swiss_data = explode(';', $data[$n]);
+            //   $swiss_links = '';
+            //   foreach ($swiss_data as $swiss_id) {
+            //     $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+            //     $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+            //   }
+            //   $swiss_links = rtrim($swiss_links, ';<br>');
+            //   echo "<td>$swiss_links</td>\n";
+            // }
+            // elseif (strpos($data[$n], ';') && $header_name == "GO (MF)") {
+            //   $swiss_data = explode(';', $data[$n]);
+            //   $swiss_links = '';
+            //   foreach ($swiss_data as $swiss_id) {
+            //     $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+            //     $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+            //   }
+            //   $swiss_links = rtrim($swiss_links, ';<br>');
+            //   echo "<td>$swiss_links</td>\n";
+            // }
+            // elseif (strpos($data[$n], ';') && $header_name == "GO (CC)") {
+            //   $swiss_data = explode(';', $data[$n]);
+            //   $swiss_links = '';
+            //   foreach ($swiss_data as $swiss_id) {
+            //     $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+            //     $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+            //   }
+            //   $swiss_links = rtrim($swiss_links, ';<br>');
+            //   echo "<td>$swiss_links</td>\n";
+            // }
+            elseif (strpos($data[$n], ';')) {
               $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
               echo "<td>$data_semicolon</td>\n";
             }
@@ -109,7 +141,14 @@
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
             else {
-              echo "<td>$data[$n]</td>\n";
+              $desc_length = strlen($data[$n]);
+              //echo $desc_length." ".$data[$n]."<br>";
+              
+              if ($desc_length >= 60) {
+                echo "<td class=\"td-tooltip\" title=\"$data[$n]\">$data[$n]</td>\n";
+              } else {
+                echo "<td>$data[$n]</td>\n";
+              }
             }
           }
         }
@@ -166,7 +205,7 @@
     if ($_GET['sample_names']) {
       foreach ($_GET['sample_names'] as $sample) {
         list($annot_file,$dataset_name) = explode("@", $sample);
-        print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
+        print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
         $table_counter++;
       }
     } else {
@@ -176,7 +215,7 @@
       $dataset_name = $all_datasets[0];
       $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$all_datasets[0]);
       $dataset_name = str_replace("_"," ",$dataset_name);
-      print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
+      print_search_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
     }
   }
 ?>
@@ -190,26 +229,52 @@
 
 
 <!-- JS DATATABLE -->
+<style>
+ 
+  table.dataTable td  {
+    max-width: 500px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  .td-tooltip {
+    cursor: pointer;
+  }
+  
+</style>
+
 <script type="text/javascript">
-  $(".tblAnnotations").dataTable({
-    dom:'Bfrtlpi',
-    "oLanguage": {
-      "sSearch": "Filter by:"
+$(".tblAnnotations").dataTable({
+  dom:'Bfrtlpi',
+  "oLanguage": {
+    "sSearch": "Filter by:"
+    },
+  buttons: [
+    'copy', 'csv', 'excel',
+      {
+        extend: 'pdf',
+        orientation: 'landscape',
+        pageSize: 'LEGAL'
       },
-    buttons: [
-      'copy', 'csv', 'excel',
-        {
-          extend: 'pdf',
-          orientation: 'landscape',
-          pageSize: 'LEGAL'
-        },
-      'print', 'colvis'
-      ]
-    });
+    'print', 'colvis'
+    ],
+   "sScrollX": "100%",
+    "sScrollXInner": "110%",
+    "bScrollCollapse": true,
+    "drawCallback": function( settings ) {
+    $(".td-tooltip").tooltip();
+  },
+});
 
 $(".dataTables_filter").addClass("float-right");
 $(".dataTables_info").addClass("float-left");
 $(".dataTables_paginate").addClass("float-right");
+
+$(document).ready(function(){
+  $(".td-tooltip").tooltip();
+});
+ 
 
 </script>
 
