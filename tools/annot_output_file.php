@@ -1,5 +1,6 @@
 <!-- HEADER -->
-<?php include_once realpath("../header.php");?> 
+<?php include_once realpath("../header.php");?>
+<?php include_once realpath("$root_path/easy_gdb/tools/common_functions.php");?>
 
 <!-- RETURN AND HELP-->
 <div class="margin-20">
@@ -19,30 +20,10 @@
 ?>
 
 
-<!-- MAKE TEST INPUT PILLARLO DEL COMMON_FUNCTIONS (CREAR SI NO TEST INPUT FILE) -->
-<?php
-  function test_input3($data) {
-    $data = preg_replace('/[\<\>\t\r\;]+/','',$data);
-    $data = htmlspecialchars($data);
-    if ( preg_match('/\s+/',$data) ) {
-      $data_array = explode(' ',$data,99);
-      foreach ($data_array as $key=>&$value) {
-        if (strlen($value) < 3) {
-          unset($data_array[$key]);
-        }
-      }
-      $data = implode(' ',$data_array);
-    }
-    $data = stripslashes($data);
-    return $data;
-  }
-?>
-
-
 
 <!-- Declare function to print table -->
 <?php
-    function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter) {
+    function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
 
       echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
       $annot_file = str_replace(" ", "\\ ", $annot_file);
@@ -71,55 +52,96 @@
       echo "</tr></thead>\n";
 
 
-      // TABLE BODY
-      echo "<tbody>\n";
+    // TABLE BODY
+    echo "<tbody>\n";
 
-      foreach ($output as $line) {
-        echo "<tr>\n";
-        $data = explode("\t", $line);
-        for ($n = 0; $n <= $col_number-1; $n++) {
-          if ($data[$n]) {
-            if ($n == 0) {
-              echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
-            }
-            else {
-              $header_name = $columns[$n];
-              if ($header_name == "TAIR10" || $header_name == "Araport11") {
-                $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
-              }
-              elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
-                $ipr_data = explode(';', $data[$n]);
-                $ipr_links = '';
-                foreach ($ipr_data as $ipr_id) {
-                  $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                  $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
-                }
-                $ipr_links = rtrim($ipr_links, ';<br>');
-                echo "<td>$ipr_links</td>\n";
-              }
-              elseif (strpos($data[$n], ';') && $header_name == "Description") {
-                $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
-                echo "<td>$data_semicolon</td>\n";
-              }
-              elseif ($annot_hash[$header_name]) {
-                $query_id = str_replace('query_id', $data[$n], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
-              }
-              else {
-                echo "<td>$data[$n]</td>\n";
-              }
-            }
+    foreach ($output as $line) {
+      echo "<tr>\n";
+      $data = explode("\t", $line);
+      for ($n = 0; $n <= $col_number-1; $n++) {
+        if ($data[$n]) {
+          if ($n == 0) {
+            $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+            echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]&annot=$annot_encode\" target=\"_blank\">$data[$n]</a></td>\n";
           }
           else {
-            echo "<td></td>\n";
+            $header_name = $columns[$n];
+            if ($header_name == "TAIR10" || $header_name == "Araport11") {
+              $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
+              echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
+            }
+            elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
+              $ipr_data = explode(';', $data[$n]);
+              $ipr_links = '';
+              foreach ($ipr_data as $ipr_id) {
+                $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
+                $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+              }
+              $ipr_links = rtrim($ipr_links, ';<br>');
+              echo "<td>$ipr_links</td>\n";
+            }
+            elseif (strpos($data[$n], ';') && $header_name == "SwissProt") {
+              $swiss_data = explode(';', $data[$n]);
+              $swiss_links = '';
+              foreach ($swiss_data as $swiss_id) {
+                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+              }
+              $swiss_links = rtrim($swiss_links, ';<br>');
+              echo "<td>$swiss_links</td>\n";
+            }
+            elseif (strpos($data[$n], ';') && $header_name == "GO (BP)") {
+              $swiss_data = explode(';', $data[$n]);
+              $swiss_links = '';
+              foreach ($swiss_data as $swiss_id) {
+                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+              }
+              $swiss_links = rtrim($swiss_links, ';<br>');
+              echo "<td>$swiss_links</td>\n";
+            }
+            elseif (strpos($data[$n], ';') && $header_name == "GO (MF)") {
+              $swiss_data = explode(';', $data[$n]);
+              $swiss_links = '';
+              foreach ($swiss_data as $swiss_id) {
+                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+              }
+              $swiss_links = rtrim($swiss_links, ';<br>');
+              echo "<td>$swiss_links</td>\n";
+            }
+            elseif (strpos($data[$n], ';') && $header_name == "GO (CC)") {
+              $swiss_data = explode(';', $data[$n]);
+              $swiss_links = '';
+              foreach ($swiss_data as $swiss_id) {
+                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
+                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
+              }
+              $swiss_links = rtrim($swiss_links, ';<br>');
+              echo "<td>$swiss_links</td>\n";
+            }
+            elseif (strpos($data[$n], ';')) {
+              $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
+              echo "<td>$data_semicolon</td>\n";
+            }
+            elseif ($annot_hash[$header_name]) {
+              $query_id = str_replace('query_id', $data[$n], $annot_hash[$header_name]);
+              echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
+            }
+            else {
+              echo "<td>$data[$n]</td>\n";
+            }
           }
         }
-        echo "</tr>\n";
+        else {
+          echo "<td></td>\n";
+        }
       }
-      echo "</tbody></table></div></div><br>\n";
-      $output = [];
-    } // TABLE END
+      echo "</tr>\n";
+    }
+    echo "</tbody></table></div></div><br>\n";
+    $output = [];
+  } // TABLE END
 ?>
 
 
@@ -132,15 +154,15 @@
   }
   else {
     $search_query = [];
-    
+
     foreach ($gNamesArr as $gene_name) {
-      $one_gene = test_input3($gene_name);
+      $one_gene = test_input2($gene_name);
       array_push($search_query, $one_gene);
     }
 
     // create HASH with ANNOTATION links
-    if (file_exists("$annotations_path/annotation_links.json")) {
-      $annot_json_file = file_get_contents("$annotations_path/annotation_links.json");
+    if (file_exists("$annotation_links_path/annotation_links.json")) {
+      $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
       $annotation_hash = json_decode($annot_json_file, true);
     }
 
@@ -150,7 +172,7 @@
     if ($_POST['sample_names']) {
       foreach ($_POST['sample_names'] as $sample) {
         list($annot_file,$dataset_name) = explode("@", $sample);
-        print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
+        print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
         $table_counter++;
       }
     } else {
@@ -160,7 +182,7 @@
       $dataset_name = $all_datasets[0];
       $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$all_datasets[0]);
       $dataset_name = str_replace("_"," ",$dataset_name);
-      print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter);
+      print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
     }
   }
 ?>
