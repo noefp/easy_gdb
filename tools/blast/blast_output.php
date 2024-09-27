@@ -54,6 +54,9 @@
   if ( file_exists("$blast_dbs_path/blast_links.json") ) {
       $links_json_file = file_get_contents("$blast_dbs_path/blast_links.json");
       $links_hash = json_decode($links_json_file, true);
+      if ($links_hash["annot_file"]) {
+        $annot = $links_hash["annot_file"];
+      }
   }
 
   if ($blast_filter == "on") {
@@ -81,10 +84,10 @@
   
   echo "<div style=\"margin:20px;min-width:1020px\">$blast_res</div>";
 
-  function _get_subject_link($s_link_hash,$db_name,$subject_name,$s_start,$s_end) {
+  function _get_subject_link($s_link_hash,$db_name,$subject_name,$s_start,$s_end,$annot_file) {
     
     $db_name = str_replace(' ',"_", $db_name);
-    $s_link = "/easy_gdb/gene.php?name={$subject_name}";
+    $s_link = "/easy_gdb/gene.php?name={$subject_name}&annot={$annot_file}";
     $target_type="_blank";
     
     //if ($s_link_hash[$db_name]) {
@@ -190,7 +193,7 @@
 
         if ($subject) {
           
-          list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
+          list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send,$annot);
           
           $coordinates_checked = _check_coordinates($sstart,$send);
           $sstart = $coordinates_checked[0];
@@ -264,7 +267,7 @@
            $sstart = $coordinates_checked[0];
            $send = $coordinates_checked[1];
 
-           list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
+           list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send,$annot);
 
            $mm = $mismatch-$gaps;
            
@@ -363,7 +366,7 @@
   $sstart = $coordinates_checked[0];
   $send = $coordinates_checked[1];
 
-  list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
+  list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send,$annot);
 
   $mm = $mismatch-$gaps;
   
