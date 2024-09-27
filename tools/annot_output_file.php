@@ -23,33 +23,34 @@
 
 <!-- Declare function to print table -->
 <?php
-    function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
+  function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
 
-      echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
-      $annot_file = str_replace(" ", "\\ ", $annot_file);
+    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
+    $annot_file = str_replace(" ", "\\ ", $annot_file);
 
-      $head_command = "head -n 1 $annot_file";
-      $output_head = exec($head_command);
-
-
-      $grep_input = implode($desc_input,"\|");
-      $grep_command = "grep -i '$grep_input' $annot_file";
-      exec($grep_command, $output);
+    $head_command = "head -n 1 $annot_file";
+    $output_head = exec($head_command);
 
 
-      // TABLE BEGIN
-      echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
+    $grep_input = implode($desc_input,"\|");
+    $grep_command = "grep -i '$grep_input' $annot_file";
+    exec($grep_command, $output);
+
+    $count_character = [];
+
+    // TABLE BEGIN
+    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
 
 
-      // TABLE HEADER
-      echo "<thead><tr>\n";
-      $columns = explode("\t", $output_head);
-      $col_number = count($columns);
+    // TABLE HEADER
+    echo "<thead><tr>\n";
+    $columns = explode("\t", $output_head);
+    $col_number = count($columns);
 
-      foreach ($columns as $col) {
-        echo "<th>$col</th>\n";
-      }
-      echo "</tr></thead>\n";
+    foreach ($columns as $col) {
+      echo "<th>$col</th>\n";
+    }
+    echo "</tr></thead>\n";
 
 
     // TABLE BODY
@@ -58,8 +59,15 @@
     foreach ($output as $line) {
       echo "<tr>\n";
       $data = explode("\t", $line);
+
       for ($n = 0; $n <= $col_number-1; $n++) {
         if ($data[$n]) {
+
+          $data_count[$n] = strlen($data[$n]);
+          if ($data_count[$n] > 100 ) {
+            array_push($count_character, $n);
+          }
+
           if ($n == 0) {
             $annot_encode = str_replace($annotations_path."/", "", $annot_file);
             echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]&annot=$annot_encode\" target=\"_blank\">$data[$n]</a></td>\n";
@@ -70,55 +78,15 @@
               $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
-            elseif (strpos($data[$n], ';') && $header_name == "InterPro") {
-              $ipr_data = explode(';', $data[$n]);
-              $ipr_links = '';
-              foreach ($ipr_data as $ipr_id) {
-                $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+            elseif (strpos($data[$n], ';') && !preg_match("/Description/", $header_name) ) {
+              $link_data = explode(';', $data[$n]);
+              $link_links = '';
+              foreach ($link_data as $link_id) {
+                $query_id = str_replace('query_id', $link_id, $annot_hash[$header_name]);
+                $link_links .= "<a href=\"$query_id\" target=\"_blank\">$link_id</a>;<br>";
               }
-              $ipr_links = rtrim($ipr_links, ';<br>');
-              echo "<td>$ipr_links</td>\n";
-            }
-            elseif (strpos($data[$n], ';') && $header_name == "SwissProt") {
-              $swiss_data = explode(';', $data[$n]);
-              $swiss_links = '';
-              foreach ($swiss_data as $swiss_id) {
-                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
-                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
-              }
-              $swiss_links = rtrim($swiss_links, ';<br>');
-              echo "<td>$swiss_links</td>\n";
-            }
-            elseif (strpos($data[$n], ';') && $header_name == "GO (BP)") {
-              $swiss_data = explode(';', $data[$n]);
-              $swiss_links = '';
-              foreach ($swiss_data as $swiss_id) {
-                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
-                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
-              }
-              $swiss_links = rtrim($swiss_links, ';<br>');
-              echo "<td>$swiss_links</td>\n";
-            }
-            elseif (strpos($data[$n], ';') && $header_name == "GO (MF)") {
-              $swiss_data = explode(';', $data[$n]);
-              $swiss_links = '';
-              foreach ($swiss_data as $swiss_id) {
-                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
-                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
-              }
-              $swiss_links = rtrim($swiss_links, ';<br>');
-              echo "<td>$swiss_links</td>\n";
-            }
-            elseif (strpos($data[$n], ';') && $header_name == "GO (CC)") {
-              $swiss_data = explode(';', $data[$n]);
-              $swiss_links = '';
-              foreach ($swiss_data as $swiss_id) {
-                $query_id = str_replace('query_id', $swiss_id, $annot_hash[$header_name]);
-                $swiss_links .= "<a href=\"$query_id\" target=\"_blank\">$swiss_id</a>;<br>";
-              }
-              $swiss_links = rtrim($swiss_links, ';<br>');
-              echo "<td>$swiss_links</td>\n";
+              $link_links = rtrim($link_links, ';<br>');
+              echo "<td>$link_links</td>\n";
             }
             elseif (strpos($data[$n], ';')) {
               $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
@@ -140,13 +108,16 @@
       echo "</tr>\n";
     }
     echo "</tbody></table></div></div><br>\n";
+
     $output = [];
+    return($count_character);
+
   } // TABLE END
 ?>
 
 
 
-
+<!-- INCLUDE TABLE  -->
 <?php
   if(empty($gNamesArr)) {
     echo "<br>";
@@ -172,7 +143,7 @@
     if ($_POST['sample_names']) {
       foreach ($_POST['sample_names'] as $sample) {
         list($annot_file,$dataset_name) = explode("@", $sample);
-        print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
+        $count_character = print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
         $table_counter++;
       }
     } else {
@@ -182,7 +153,7 @@
       $dataset_name = $all_datasets[0];
       $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$all_datasets[0]);
       $dataset_name = str_replace("_"," ",$dataset_name);
-      print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
+      $count_character = print_annot_table($search_query, $annot_file, $annotation_hash, $dataset_name, $table_counter, $annotations_path);
     }
   }
 ?>
@@ -197,27 +168,31 @@
 
 <!-- JS DATATABLE -->
 <script type="text/javascript">
+  var c = <?php echo json_encode($count_character); ?>;
+  var y = [];
+  for(var i of c) {
+    y.push(i);
+  };
+
   $(".tblAnnotations").dataTable({
     dom:'Bfrtlpi',
     "oLanguage": {
       "sSearch": "Filter by:"
       },
     buttons: [
-      'copy', 'csv', 'excel',
-        {
-          extend: 'pdf',
-          orientation: 'landscape',
-          pageSize: 'LEGAL'
-        },
-      'print', 'colvis'
-      ]
-    });
+      'copy', 'csv', 'excel', 'colvis'
+    ],
+    "sScrollX": "100%",
+    columnDefs: [
+      { "width": "400px", "targets": y }
+    ]
+  });
 
-$(".dataTables_filter").addClass("float-right");
-$(".dataTables_info").addClass("float-left");
-$(".dataTables_paginate").addClass("float-right");
-
+  $(".dataTables_filter").addClass("float-right");
+  $(".dataTables_info").addClass("float-left");
+  $(".dataTables_paginate").addClass("float-right");
 </script>
+
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
