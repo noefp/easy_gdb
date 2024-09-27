@@ -9,21 +9,21 @@ function test_input($data) {
   return $data;
 }
 
-// function test_input2($data) {
-//   $data = preg_replace('/[\<\>\t\;]+/', ' ', $data);
-//   $data = htmlspecialchars($data);
-//   if (preg_match('/\s+/', $data)) {
-//     $data_array = explode(' ', $data, 99);
-//     foreach ($data_array as $key => &$value) {
-//       if (strlen($value) < 3) {
-//         unset($data_array[$key]);
-//         }
-//       }
-//       $data = implode(' ', $data_array);
-//   }
-//   $data = stripslashes($data);
-//   return $data;
-// }
+function test_input2($data) {
+  $data = preg_replace('/[\<\>\t\r\;]+/', '', $data);
+  $data = htmlspecialchars($data);
+  if (preg_match('/\s+/', $data)) {
+    $data_array = explode(' ', $data, 99);
+    foreach ($data_array as $key => &$value) {
+      if (strlen($value) < 3) {
+       unset($data_array[$key]);
+       }
+     }
+     $data = implode(' ',$data_array);
+ }
+ $data = stripslashes($data);
+  return $data;
+}
 
 function get_dir_and_files($dir_name) {
     $file_array = array();
