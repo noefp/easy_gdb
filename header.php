@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="en">
 <?php 
-include_once 'configuration_path.php';
+if (file_exists($_SERVER['DOCUMENT_ROOT']."/easy_gdb/configuration_path.php") ) {
+  include_once($_SERVER['DOCUMENT_ROOT']."/easy_gdb/configuration_path.php");
+} elseif (file_exists($_SERVER['DOCUMENT_ROOT']."/configuration_path.php") ) {
+  include_once($_SERVER['DOCUMENT_ROOT']."/configuration_path.php");
+ }
 include_once "$conf_path/easyGDB_conf.php";
 ?>
 
