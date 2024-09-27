@@ -1,6 +1,6 @@
 <!-- HEADER -->
 <?php include_once realpath("header.php");?>
-<?php include_once realpath("tools/common_functions.php");?>
+<?php include_once realpath("$root_path/easy_gdb/tools/common_functions.php");?>
 
 
 <!-- HELP -->
@@ -10,29 +10,14 @@
 
 
 <div class="page_container">
-<br>
+<br><br>
 
 <?php
-
-function test_input2($data) {
-  $data = preg_replace('/[\<\>\t\;]+/', ' ', $data);
-  $data = htmlspecialchars($data);
-  if (preg_match('/\s+/', $data)) {
-    $data_array = explode(' ', $data, 99);
-    foreach ($data_array as $key => &$value) {
-      if (strlen($value) < 3) {
-        unset($data_array[$key]);
-        }
-      }
-      $data = implode(' ', $data_array);
-  }
-  $data = stripslashes($data);
-  return $data;
-}
-
 if ($file_database){
 
-  list($gene_name, $annot_file) = explode("@", trim($_GET["name"]));
+  $gene_name = trim($_GET["name"]);
+  $annot_file = $annotations_path."/".trim($_GET["annot"]);
+  // list($gene_name, $annot_file) = explode("@", trim($_GET["name"]));
   
   if (file_exists("$annotation_links_path/annotation_links.json")) {
     $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
