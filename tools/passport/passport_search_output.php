@@ -25,21 +25,21 @@
 
 <!-- IS BETTER TO SET IN ANOTHER FILE -->
 <?php
-  function test_input2($data) {
-    $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
-    $data = htmlspecialchars($data);
-    if ( preg_match('/\s+/',$data) ) {
-      $data_array = explode(' ',$data,99);
-      foreach ($data_array as $key=>&$value) {
-        if (strlen($value) < 3) {
-            unset($data_array[$key]);
-        }
-      }
-      $data = implode(' ',$data_array);
-    }
-    $data = stripslashes($data);
-    return $data;
-  }
+  // function test_input2($data) {
+  //   $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
+  //   $data = htmlspecialchars($data);
+  //   if ( preg_match('/\s+/',$data) ) {
+  //     $data_array = explode(' ',$data,99);
+  //     foreach ($data_array as $key=>&$value) {
+  //       if (strlen($value) < 3) {
+  //           unset($data_array[$key]);
+  //       }
+  //     }
+  //     $data = implode(' ',$data_array);
+  //   }
+  //   $data = stripslashes($data);
+  //   return $data;
+  // }
 
   
   
@@ -87,7 +87,7 @@
         for ($n = 0; $n <= $col_number-1; $n++) {
           if ($n == 0) {
             list($line,$acc) = explode(":", $data[0]);
-            $acc_line = $line-2;
+//            $acc_line = $line-2;
             //echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
             echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&acc_id=$acc\" target=\"_blank\">$acc</a></td>\n";
           }
@@ -119,6 +119,8 @@
     echo "<h1>No words to search provided.</h1>";
   }
   else {
+    include_once realpath("$easy_gdb_path/tools/common_functions.php");
+
     $search_input = test_input2($raw_input);
     
     echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
@@ -136,7 +138,6 @@
 
     $table_counter = 1;
 
-    include_once realpath("$easy_gdb_path/tools/common_functions.php");
       
     $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
     asort($all_datasets);
