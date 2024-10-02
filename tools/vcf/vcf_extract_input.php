@@ -16,6 +16,7 @@ if (file_exists("$vcf_path/vcf.json")) {
 $chr_file_array = $vcf_hash["chr_files"];
 $gene_names_file = "$vcf_path"."/".$vcf_hash["gene_names_file"];
 $gff_file = "$vcf_path"."/".$vcf_hash["gff_file"];
+$jb_dataset = "$vcf_path"."/".$vcf_hash["jb_data_folder"];
 
 // echo "gene_names_file: $gene_names_file <br>";
 // print_r($chr_file_array);
@@ -164,7 +165,7 @@ $(document).ready(function () {
   });
   
   
-  function get_gff_ajax_call(query_gene,gff_file) {
+  function get_gff_ajax_call(query_gene,gff_file,jb_dataset) {
     //alert("Car.genes.gff2: "+query_gene+", "+gff_file);
     
     jQuery.ajax({
@@ -184,7 +185,7 @@ $(document).ready(function () {
         // $("#gff_html_card").css("width",table_width+"px");
         
         
-        var jb_dataset = "easy_gdb_sample";
+        //var jb_dataset = "easy_gdb_sample";
         //var jb_gene_name = "gene1.1";
         var jb_gene_name = query_gene;
         
@@ -203,9 +204,10 @@ $(document).ready(function () {
     
     var query_gene = $('#autocomplete_gene').val();
     var gff_file = "<?php echo "$gff_file"; ?>";
+    var jb_dataset = "<?php echo "$jb_dataset"; ?>";
     //alert("Car.genes.gff: "+query_gene+", "+gff_file);
     
-    get_gff_ajax_call(query_gene,gff_file);
+    get_gff_ajax_call(query_gene,gff_file,jb_dataset);
     
   });
 
