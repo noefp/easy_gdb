@@ -16,7 +16,7 @@ if (file_exists("$vcf_path/vcf.json")) {
 $chr_file_array = $vcf_hash["chr_files"];
 $gene_names_file = "$vcf_path"."/".$vcf_hash["gene_names_file"];
 $gff_file = "$vcf_path"."/".$vcf_hash["gff_file"];
-$jb_dataset = "$vcf_path"."/".$vcf_hash["jb_data_folder"];
+$jb_dataset = $vcf_hash["jb_data_folder"];
 
 // echo "gene_names_file: $gene_names_file <br>";
 // print_r($chr_file_array);
