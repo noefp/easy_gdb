@@ -1,5 +1,6 @@
 <!-- HEADER -->
-<?php include_once realpath("../../header.php");?> 
+<?php include_once realpath("../../header.php"); 
+include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 
 <!-- RETURN AND HELP-->
 <div class="margin-20">
@@ -9,14 +10,17 @@
 <a href="passport_search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 <br>
 
+<p id="load" style="text-align: center"><b>Table Loading...</b></p>
+
 <!-- HTML -->
-<div class="page_container">
+<div class="page_container" style="display:none" id="body">
 
 
 <!-- GET INPUT -->
 <?php
   $raw_input = trim($_GET["search_keywords"]);
   $quoted_search = 0;
+  
   if ( preg_match('/^".+"$/',$raw_input ) ) {
     $quoted_search = 1;
   }
@@ -25,28 +29,9 @@
 
 <!-- IS BETTER TO SET IN ANOTHER FILE -->
 <?php
-  // function test_input2($data) {
-  //   $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
-  //   $data = htmlspecialchars($data);
-  //   if ( preg_match('/\s+/',$data) ) {
-  //     $data_array = explode(' ',$data,99);
-  //     foreach ($data_array as $key=>&$value) {
-  //       if (strlen($value) < 3) {
-  //           unset($data_array[$key]);
-  //       }
-  //     }
-  //     $data = implode(' ',$data_array);
-  //   }
-  //   $data = stripslashes($data);
-  //   return $data;
-  // }
-
-  
-  
-  
-  
-  function print_search_table($grep_input, $annot_file, $dataset_name, $table_counter, $dir_or_file) {
-    
+ 
+  function print_search_table($grep_input, $annot_file, $dataset_name, $table_counter, $dir_or_file,$quoted_search) {
+        
     $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
     $dataset_name = str_replace("_"," ",$dataset_name);
     
@@ -71,7 +56,6 @@
       echo "<thead><tr>\n";
       $columns = explode("\t", $output_head);
       $col_number = count($columns);
-
       foreach ($columns as $col) {
         echo "<th>$col</th>\n";
       }
@@ -87,7 +71,7 @@
         for ($n = 0; $n <= $col_number-1; $n++) {
           if ($n == 0) {
             list($line,$acc) = explode(":", $data[0]);
-//            $acc_line = $line-2;
+            $acc_line = $line-2;
             //echo "<td><a href=\"/easy_gdb/gene.php?name=$data[$n]@$annot_file\" target=\"_blank\">$data[$n]</a></td>\n";
             echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&acc_id=$acc\" target=\"_blank\">$acc</a></td>\n";
           }
@@ -116,11 +100,10 @@
 <!-- INCLUDE TABLE  -->
 <?php
   if(empty($raw_input)) {
+    echo "<br>";
     echo "<h1>No words to search provided.</h1>";
   }
   else {
-    include_once realpath("$easy_gdb_path/tools/common_functions.php");
-
     $search_input = test_input2($raw_input);
     
     echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
@@ -136,8 +119,11 @@
       $search_query = strtolower($search_input);
     }
 
+
+    // COMMANDS AND PRINT
     $table_counter = 1;
 
+    include_once realpath("$easy_gdb_path/tools/common_functions.php");
       
     $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
     asort($all_datasets);
@@ -146,7 +132,6 @@
       if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories
         
         $dir_name = str_replace("_"," ",$dir_or_file);
-        echo "<h4>$dir_name</h4>";
           
         // get info from passport.json
         if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
@@ -154,14 +139,14 @@
           $pass_hash = json_decode($pass_json_file, true);
   
           $passport_file = $pass_hash["passport_file"];
-          print_search_table($search_query, $passport_path."/".$dir_or_file."/".$passport_file, $passport_file, $table_counter, $dir_or_file);
+          print_search_table($search_query, $passport_path."/".$dir_or_file."/".$passport_file, $passport_file, $table_counter, $dir_or_file,$quoted_search);
           
           $table_counter++;
           
           $phenotype_file_array = $pass_hash["phenotype_files"];
             
           foreach ($phenotype_file_array as $phenotype_file) {
-            print_search_table($search_query, $passport_path."/".$dir_or_file."/".$phenotype_file, $phenotype_file, $table_counter, $dir_or_file);
+            print_search_table($search_query, $passport_path."/".$dir_or_file."/".$phenotype_file, $phenotype_file, $table_counter, $dir_or_file,$quoted_search);
             
             //read_passport_file("$passport_path/$dir_or_file",$phenotype_file,$unique_link);
           }
@@ -183,9 +168,34 @@
 </div>
 <!-- END HTML -->
 
+<!-- Cs -->
+<style>
+  table.dataTable td,th  {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+  }
+  
+  .td-tooltip {
+    cursor: pointer;
+  }
+
+  .collapse_section:hover  { 
+  background-color: #6c757d;
+  color:#fff;  
+}
+  
+</style>
+
 
 <!-- JS DATATABLE -->
 <script type="text/javascript">
+$(document).ready(function(){  
+  // //when data table is ready -> show the data table
+  $('#body').css("display","block");
+  $('#load').remove();
+
   $(".tblAnnotations").dataTable({
     dom:'Bfrtlpi',
     "oLanguage": {
@@ -199,14 +209,26 @@
           pageSize: 'LEGAL'
         },
       'print', 'colvis'
-      ]
+      ],
+    "sScrollX": "100%",
+    "sScrollXInner": "110%",
+    "bScrollCollapse": true,
+    "drawCallback": function( settings ) {
+    $(".td-tooltip").tooltip();},
     });
 
 $(".dataTables_filter").addClass("float-right");
 $(".dataTables_info").addClass("float-left");
 $(".dataTables_paginate").addClass("float-right");
+});
+
+$(document).ready(function(){
+  $(".td-tooltip").tooltip();
+});
 
 </script>
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
+
+
