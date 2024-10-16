@@ -32,7 +32,8 @@
     $output_head = exec($head_command);
 
 
-    $grep_input = implode($desc_input,"\|");
+    $grep_input = implode("\|",$desc_input);
+    // $grep_input = implode($desc_input,"\|");
     $grep_command = "grep -i '$grep_input' $annot_file";
     exec($grep_command, $output);
 
