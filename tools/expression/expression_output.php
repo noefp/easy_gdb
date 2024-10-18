@@ -59,7 +59,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   include realpath('02_expr_load_annotations.php');
   include realpath('02_expr_load_db_annotations.php');
   
-  array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
+  // array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
+  array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\">");
+  
+  
   
   $columns = [];
   $replicates = [];
@@ -311,7 +314,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
     
     
   } // each line, each gene foreach
-  array_push($table_code_array,"</tbody></table></div>");
+  array_push($table_code_array,"</tbody></table>");
+  // array_push($table_code_array,"</tbody></table></div>");
   
   
   //################################################# ADD ANNOTATIONS
@@ -393,18 +397,27 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   }
   
   
-  $("#tblResults").dataTable({
-    "dom":'Bfrtip',
-    "ordering": false,
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  });
-
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
+  
+  
+  
+  
+  
+  
+  
+  // $("#tblResults").dataTable({
+  //   "dom":'Bfrtip',
+  //   "ordering": false,
+  //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  // });
+  //
+  // $("#tblResults_filter").addClass("float-right");
+  // $("#tblResults_info").addClass("float-left");
+  // $("#tblResults_paginate").addClass("float-right");
 
 
 </script>
+
+
   
 <script type="text/javascript" src="cartoons_kinetic.js"></script>
 <script src="expression_graphs.js"></script>

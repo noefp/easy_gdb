@@ -32,7 +32,19 @@
           $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$annot_col[$n], ''], $annotation_hash[$header_name ]);
           $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
         }
-        elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
+        // elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
+        //   $ipr_data = explode(';', $annot_col[$n]);
+        //   $ipr_links = '';
+        //   foreach ($ipr_data as $ipr_id) {
+        //     $query_id = str_replace('query_id', $ipr_id, $annotation_hash[$header_name]);
+        //     $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+        //   }
+        //   $ipr_links = rtrim($ipr_links, ';<br>');
+        //   $annot_col[$n] = $ipr_links;
+        // }
+        
+        
+        elseif ( strpos($annot_col[$n], ';') && !preg_match("/Description/", $header_name) ) {
           $ipr_data = explode(';', $annot_col[$n]);
           $ipr_links = '';
           foreach ($ipr_data as $ipr_id) {
@@ -40,8 +52,15 @@
             $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
           }
           $ipr_links = rtrim($ipr_links, ';<br>');
+          //echo "<td>$ipr_links</td>\n";
           $annot_col[$n] = $ipr_links;
         }
+        
+        
+        
+        
+        
+        
         elseif (strpos($annot_col[$n], ';') ) {
           $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
           $annot_col[$n] = $data_semicolon;
@@ -50,9 +69,24 @@
           $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
           $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
         }
+        // else {
+        //   $annot_col[$n] = $annot_col[$n];
+        // }
+        
+        
         else {
-          $annot_col[$n] = $annot_col[$n];
+          $desc_length = strlen($annot_col[$n]);
+          //echo $desc_length." ".$data[$n]."<br>";
+          
+          if ($desc_length >= 60) {
+            $annot_col[$n] = "<td class=\"td-tooltip\" title=\"$annot_col[$n]\">$annot_col[$n]</td>\n";
+          } else {
+            $annot_col[$n] = $annot_col[$n];
+          }
         }
+        
+        
+        
       }
 
       $annot_string = implode("</td><td>", $annot_col);
