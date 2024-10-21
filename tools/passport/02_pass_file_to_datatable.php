@@ -28,7 +28,11 @@
   <!-- <div class="data_table_frame"> -->
 
 <?php
-function print_table($header_cols,$hide_array,$unique_link,$tab_file,$file_name,$show)
+
+
+$collapse_show=[]; //This variable storage the datatable ids than are showed
+
+function print_table($file,$hide_array,$unique_link,$file_name,$show)
 {
   $display_select=['hide collapse','collapse show'];
 
@@ -37,10 +41,16 @@ function print_table($header_cols,$hide_array,$unique_link,$tab_file,$file_name,
 
   echo "<div id=ban_$dataset_name1 class=\"p-1 my-1 bg-secondary text-white collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=#$dataset_name1 aria-expanded=\"true\" style=\"text-align:center; border-radius: 5px\">";
   echo"<i class=\"fas fa-sort\" style=\"color:#229dff\"></i><b style=\"font-size: 30px\"> $dataset_name </b><i class=\"fas fa-sort\" style=\"color:#229dff\"></i></div>";
+  echo "<div id=$dataset_name1 class=\"p-7 my-3 $display_select[$show] table_collapse\">";
 
-  echo"<div id=$dataset_name1 class=\"p-7 my-3 $display_select[$show] table_collapse\">";
-    echo "<div class=\"data_table_frame\">";
-      echo"<table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
+  if($show){
+    $tab_file = file($file);
+    // get header array by columns
+    $file_header = array_shift($tab_file);
+    $header_cols = explode("\t", $file_header);
+
+        echo "<div class=\"data_table_frame\">";
+        echo"<table class=\"tblAnnotations table table-striped table-bordered\">\n";
 
         $field_number = 0;
 
@@ -62,9 +72,7 @@ function print_table($header_cols,$hide_array,$unique_link,$tab_file,$file_name,
       echo "</tr></thead><tbody>";
       
       foreach ($tab_file as $line) {
-        
         $columns = explode("\t", $line);
-
         echo "<tr>";
           
         foreach ($columns as $col_index => $col) {
@@ -84,8 +92,10 @@ function print_table($header_cols,$hide_array,$unique_link,$tab_file,$file_name,
 
       echo "</tbody></table>";
       echo"</div>";
+
+      array_push($GLOBALS['collapse_show'],$dataset_name1);
+    }
       echo"</div>";
-  
 
 } // end passport file exist
 
@@ -111,33 +121,23 @@ if ( file_exists("$passport_path/$pass_dir/passport.json") ) {
   // start printing table and header
   
 if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
-  $tab_file = file("$passport_path/$pass_dir/$passport_file");
-  
-  // get header array by columns
-  $file_header = array_shift($tab_file);
-  $header_cols = explode("\t", $file_header);
-  print_table($header_cols,$hide_array,$unique_link,$tab_file,$passport_file,true); 
+  $file="$passport_path/$pass_dir/$passport_file";
+  print_table($file,$hide_array,$unique_link,$passport_file,true); 
 }
 
 foreach ($phenotype_file_array as $phenotype_file) {
 if ( file_exists("$passport_path/$pass_dir/$phenotype_file") ) {
-  $tab_file = file("$passport_path/$pass_dir/$phenotype_file");
-  
-  // get header array by columns
-  $file_header = array_shift($tab_file);
-  $header_cols = explode("\t", $file_header);
-  print_table($header_cols,$hide_array,$unique_link,$tab_file,$phenotype_file,false); 
+  $file ="$passport_path/$pass_dir/$phenotype_file";
+  print_table($file,$hide_array,$unique_link,$phenotype_file,false); 
 }
 }
-
 ?>
-
 <!-- </div> -->
 
-<br>
-<br>
+<!-- <br> -->
+<!-- <br> -->
   <!-- CHICKPEA GERMPLASM PRINTED ON A MAP -->
-   <!-- collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\" -->
+
   <div id="explore_ban" class="p-1 my-1 bg-secondary text-white collapse_section pointer_cursor" data-toggle="collapse" data-target="#explore_map" aria-expanded="true" style="text-align:center; border-radius: 5px">
     <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> -->
     <i class="fas fa-sort" style="color:#229dff"></i> <i class="fas fa-globe-americas" style="color:#ffff"></i><b style="font-size: 30px"> Explore the map </b><i class="fas fa-globe-americas" style="color:#ffff"></i> <i class="fas fa-sort" style="color:#229dff"></i>
@@ -162,14 +162,6 @@ if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
   
   $field_number = 0;
   
-  // foreach ($header_cols as $head_index => $hcol) {
-  //   if (in_array($head_index,$map_array)){
-  //
-  //     if ($unique_link == $hcol) {
-  //       $field_number = $head_index;
-  //     }
-  //   } //close in_array
-  // } //close foreach
   
   foreach ($tab_file as $row_count => $line) {
     $columns = explode("\t", $line);
@@ -186,7 +178,6 @@ if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
     $rows[] = $row_data; // array lleno, FUNCIONA
 
   } // end foreach lines
-
 } // end passport file exist
 
 //print_r($rows); // array completo
@@ -296,9 +287,9 @@ echo "</div>";
 <br>
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------>
 
-
- <!-- Cs -->
+ <!--------------------------------- Cs -------------------------------------------------------------------------------->
  <style>
   table.dataTable td,th  {
     max-width: 500px;
@@ -314,21 +305,21 @@ echo "</div>";
   .collapse_section:hover{
     text-decoration:underline
   }
-
-
-  
 </style>
 
 
-<!-- JS DATATABLE -->
-<script type="text/javascript">
+<!------------------------------------------- JS DATATABLE ---------------------------------------------------------------------------------->
 
-$(document).ready(function(){
-// //when data table is ready -> show the data table
+<script type="text/javascript">
+  let show_col=<?php echo json_encode($collapse_show);?>; //This variable contains the ids of the tables shown for not to reload later
+  // alert(show_col);
+
+$(document).ready(function(){ 
+// //when data table is ready -> show the class datatable
   $('#body').css("display","block");
   $('#load').remove();
 
-  $(".tblAnnotations").dataTable({
+ $(".tblAnnotations").dataTable({
     dom:'Bfrtlpi',
     "oLanguage": {
       "sSearch": "Filter by:"
@@ -345,6 +336,7 @@ $(document).ready(function(){
     "sScrollX": "100%",
     "sScrollXInner": "110%",
     "bScrollCollapse": true,
+    // retrieve: true,  
     "drawCallback": function( settings ) {
   },
     });
@@ -356,75 +348,140 @@ $(".dataTables_paginate").addClass("float-right");
 });
 
 
+//------------------------ Ajax function where  data table is load for  show after push the collapse -------------------------------------
+function get_ajax_options(table_id,file_path,unique_link,hide_array,pass_dir) {
+
+    $("#" + table_id).html("<p id=\"load\" style=\"text-align: center; margin:10px\"><b>Table Loading...</b></p>")
+
+    jQuery.ajax({
+      type: "POST",
+      url: 'passport_table_ajax.php',
+      data: {'id': table_id, 'path': file_path, 'link': unique_link, 'hide':hide_array, 'pass':pass_dir},
+
+      success: function (opt_array) {
+        // alert("opt_array: "+opt_array);
+        let opt_lines = JSON.parse(opt_array);
+        // alert("opt_lines:"+opt_lines);
+        $("#" + table_id).html(opt_lines.join(""));
+        // alert(opt_array)
+        // alert("tabla");
+
+        $("#tblAnnotations_"+table_id).dataTable({
+          dom:'Bfrtlpi',
+          "oLanguage": {
+            "sSearch": "Filter by:"
+            },
+          buttons: [
+            'copy', 'csv', 'excel',
+              {
+                extend: 'pdf',
+                orientation: 'landscape',
+                pageSize: 'LEGAL'
+              },
+            'print', 'colvis'
+            ],
+          "sScrollX": "100%",
+          "sScrollXInner": "110%",
+          "bScrollCollapse": true,
+          /*when datatable is restarted "retrieve" attribute must be activated =true.
+           Otherwise a popup will show a warning*/
+          // retrieve: true,  
+        });
+        $(".dataTables_filter").addClass("float-right");
+        $(".dataTables_info").addClass("float-left");
+        $(".dataTables_paginate").addClass("float-right");                     
+     }
+  });
+};
+
+//--------------------------- when a datatable collapse is pushed-------------------------------------------------------------------------->
+
+$('.table_collapse').on('shown.bs.collapse', function() {
+  let collapsed_show=false;
+  table_id=this.id;
+
+  show_col.forEach(f=>{
+  if(f == table_id)
+    {collapsed_show=true}
+  });
+
+  if(!collapsed_show) // If this table has not been displayed yet, call the ajax function and add to list.
+  {
+     let file_path=<?php echo json_encode($passport_path."/".$pass_dir."/") ?>;
+      file_path=file_path+table_id+".txt";
+      let unique_link=<?php echo json_encode($unique_link)?>;
+      let hide_array = <?php echo json_encode($hide_array)?>;
+      let pass_dir = <?php echo json_encode($GLOBALS['pass_dir'])?>;
+      // alert(pass_dir);
+
+    get_ajax_options(table_id,file_path,unique_link,hide_array,pass_dir);
+
+    show_col.push(table_id);
+  } 
+});
+
+
+
+//--------------------------- when de banner map is push load map----------------------------------------------------->
 $(document).on('shown.bs.collapse', '#explore_map', function() {
-  // alert("map load");
   draw_map();
 });
 
-
-
-
+// ---------- MAP function ------------------------------------
 function draw_map(){
-  // MAP 
 
-// Get $data_map from PHP
-const data = <?php echo $json_data_map; ?>;
+      // Get $data_map from PHP
+    const data = <?php echo $json_data_map; ?>;
+    // Personalized markers with different colors
+    markersPath = '<?php echo $marker_path; ?>';
 
+    // List options of markers (colors)
+    validColors = JSON.parse('<?php echo $marker_colors_array; ?>');
 
-// Personalized markers with different colors
-markersPath = '<?php echo $marker_path; ?>';
+    // function to get the color
+    function getIcon(color) {
+      if (!validColors.includes(color) ) {
+        color = 'default';
+      }
 
-// List options of markers (colors)
-validColors = JSON.parse('<?php echo $marker_colors_array; ?>');
+      var iconUrl;
+      if (color == 'default') {
+        iconUrl = 'marker_default.png';
+      } else {
+        iconUrl = `marker_${color}.png`;
+      }
 
-// function to get the color
-function getIcon(color) {
-  if (!validColors.includes(color) ) {
-    color = 'default';
-  }
+      return new L.Icon ({
+        iconUrl: markersPath + iconUrl,
+        iconSize: [25, 25],
+        iconAnchor: [12, 12],
+      });
+    }
 
-  var iconUrl;
-  if (color == 'default') {
-    iconUrl = 'marker_default.png';
-  } else {
-    iconUrl = `marker_${color}.png`;
-  }
+    // MAP
+    var map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
 
-  return new L.Icon ({
-    iconUrl: markersPath + iconUrl,
-    iconSize: [25, 25],
-    iconAnchor: [12, 12],
-  });
-}
+    // Create a cluster groups
+    var markers = L.markerClusterGroup();
 
+    // Add markers 
+    data.forEach(item => {
+      if (item.latitude && item.longitude) { // Verify coords 
+        
+        var icon = getIcon(item.color);
+        var marker = L.marker([item.latitude, item.longitude], {icon: icon});
 
+        //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
 
-// MAP
-var map = L.map('map').setView([0, 0], 2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+        var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+        
+        marker.bindPopup(markerLabel);
+        markers.addLayer(marker);
+      }
+    });
 
-// Create a cluster groups
-var markers = L.markerClusterGroup();
-
-// Add markers 
-data.forEach(item => {
-  if (item.latitude && item.longitude) { // Verify coords 
-    
-    var icon = getIcon(item.color);
-    var marker = L.marker([item.latitude, item.longitude], {icon: icon});
-
-    //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
-
-    var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
-    
-    marker.bindPopup(markerLabel);
-    markers.addLayer(marker);
-  }
-});
-
-// Añadir el grupo de clusters al mapa
-map.addLayer(markers);
-}
-
-
+    // Añadir el grupo de clusters al mapa
+    map.addLayer(markers);
+    }
 </script>
