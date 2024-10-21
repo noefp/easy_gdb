@@ -445,20 +445,33 @@ longitude = "<?php echo $longitude; ?>";
   var marker = L.marker([latitude, longitude]).addTo(map);
   marker.bindPopup(marker_label).openPopup();
   
-  
-  
-  $("#tblResults").dataTable({
-  	dom:'Bfrtlpi',
+$(document).ready(function(){  
+
+  $(".table").dataTable({
+    dom:'Bfrtlpi',
     "oLanguage": {
-       "sSearch": "Filter by:"
-     },
-    "order": [],
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+      "sSearch": "Filter by:"
+      },
+    buttons: [
+      'copy', 'csv', 'excel',
+        {
+          extend: 'pdf',
+          orientation: 'landscape',
+          pageSize: 'LEGAL'
+        },
+      'print', 'colvis'
+      ],
+    "sScrollX": "100%",
+    "sScrollXInner": "110%",
+    "bScrollCollapse": true,
+    // retrieve: true,  
   });
-  
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
+
+  $(".dataTables_filter").addClass("float-right");
+  $(".dataTables_info").addClass("float-left");
+  $(".dataTabless_paginate").addClass("float-right");
+
+});
 
 </script>
 
@@ -468,6 +481,13 @@ longitude = "<?php echo $longitude; ?>";
     display: block;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  table.dataTable td,th  {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
   }
 </style>
 
