@@ -28,22 +28,13 @@
       for ($n = 0; $n < $col_number; $n++) {
         $header_name = $columns[$n];
 
+        # print id with link to TAIR modifying id to make it work
         if ($header_name == "TAIR10" || $header_name == "Araport11") {
           $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$annot_col[$n], ''], $annotation_hash[$header_name ]);
           $annot_col[$n] = "<td><a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a></td>";
         }
-        // elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
-        //   $ipr_data = explode(';', $annot_col[$n]);
-        //   $ipr_links = '';
-        //   foreach ($ipr_data as $ipr_id) {
-        //     $query_id = str_replace('query_id', $ipr_id, $annotation_hash[$header_name]);
-        //     $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
-        //   }
-        //   $ipr_links = rtrim($ipr_links, ';<br>');
-        //   $annot_col[$n] = $ipr_links;
-        // }
         
-        
+        # split ids and descriptions containing several values separated by semicolon
         elseif ( strpos($annot_col[$n], ';') && !preg_match("/Description/", $header_name) ) {
           $ipr_data = explode(';', $annot_col[$n]);
           $ipr_links = '';
@@ -55,25 +46,18 @@
           //echo "<td>$ipr_links</td>\n";
           $annot_col[$n] = "<td>".$ipr_links."</td>";
         }
-        
-        
-        
-        
-        
-        
         elseif (strpos($annot_col[$n], ';') ) {
           $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
           $annot_col[$n] = "<td>".$data_semicolon."</td>";
         }
+        
+        # print id with link to database
         elseif ($annotation_hash[$header_name]) {
           $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
           $annot_col[$n] = "<td><a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a></td>";
         }
-        // else {
-        //   $annot_col[$n] = $annot_col[$n];
-        // }
         
-        
+        # add tooltip to long descriptions
         else {
           $desc_length = strlen($annot_col[$n]);
           //echo $desc_length." ".$data[$n]."<br>";
