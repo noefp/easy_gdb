@@ -30,7 +30,7 @@
 
         if ($header_name == "TAIR10" || $header_name == "Araport11") {
           $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$annot_col[$n], ''], $annotation_hash[$header_name ]);
-          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
+          $annot_col[$n] = "<td><a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a></td>";
         }
         // elseif (strpos($annot_col[$n], ';') && $header_name == "InterPro") {
         //   $ipr_data = explode(';', $annot_col[$n]);
@@ -53,7 +53,7 @@
           }
           $ipr_links = rtrim($ipr_links, ';<br>');
           //echo "<td>$ipr_links</td>\n";
-          $annot_col[$n] = $ipr_links;
+          $annot_col[$n] = "<td>".$ipr_links."</td>";
         }
         
         
@@ -63,11 +63,11 @@
         
         elseif (strpos($annot_col[$n], ';') ) {
           $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
-          $annot_col[$n] = $data_semicolon;
+          $annot_col[$n] = "<td>".$data_semicolon."</td>";
         }
         elseif ($annotation_hash[$header_name]) {
           $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
-          $annot_col[$n] = "<a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a>";
+          $annot_col[$n] = "<td><a href=\"$query_id\" target=\"_blank\">$annot_col[$n]</a></td>";
         }
         // else {
         //   $annot_col[$n] = $annot_col[$n];
@@ -79,9 +79,9 @@
           //echo $desc_length." ".$data[$n]."<br>";
           
           if ($desc_length >= 60) {
-            $annot_col[$n] = "<td class=\"td-tooltip\" title=\"$annot_col[$n]\">$annot_col[$n]</td>\n";
+            $annot_col[$n] = "<td class=\"td-tooltip\" title=\"$annot_col[$n]\">$annot_col[$n]</td>";
           } else {
-            $annot_col[$n] = $annot_col[$n];
+            $annot_col[$n] = "<td>".$annot_col[$n]."</td>";
           }
         }
         
@@ -89,8 +89,8 @@
         
       }
 
-      $annot_string = implode("</td><td>", $annot_col);
-      $annotations_hash_file[$gene_key] = "<td>$annot_string</td>";
+      $annot_string = implode("\n", $annot_col);
+      $annotations_hash_file[$gene_key] = "$annot_string";
     }
   }
 ?>
