@@ -335,13 +335,20 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 ?>
 
+  <!-- This message would be displayed when the information in the Json "expression_colors" arrays does not match the size -->
+  <div id="color_default" class="alert alert-info" style="display:none"><strong>Info:</strong> The default palette has been selected because the size of the attributes
+"expression_colors" in <i>"expression_info.json"</i> do not match !!!</div>
 
+<?php include realpath('01_expr_colors_range.php'); ?>
+<?php include realpath('03_expr_load_cartoons_html.php'); ?>
 <?php include realpath('03_expr_load_lines_html.php'); ?>
 <?php include realpath('03_expr_load_cards_html.php'); ?>
-<?php include realpath('03_expr_load_cartoons_html.php'); ?>
 <?php include realpath('03_expr_load_heatmap_html.php'); ?>
 <?php include realpath('03_expr_load_replicates_html.php'); ?>
 <?php include realpath('03_expr_load_avg_table_html.php'); ?>
+
+
+
 
 
   
@@ -426,7 +433,17 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   if (cartoons) {
     canvas = create_canvas(canvas_h,canvas_w);
-    draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,gene_list[0]);
+    draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,gene_list[0],ranges,colors);
+
+     var gene_expr_values = cartoons_all_genes[gene_list[0]];
+
+    for (var sample in gene_expr_values){
+      expr_value = gene_expr_values[sample];
+       sample_id=sample+"_kj_image";    
+       color_rgb=get_expr_color(expr_value,ranges,colors);
+    //    $(document.getElementById(sample_id)).html(sample+": "+expr_value).css('color','rgb('+color_rgb+')');
+       $(document.getElementById(sample_id)).html(sample+": "+expr_value).css('text-decoration',' double underline').css('text-decoration-color','rgb('+color_rgb+')');
+      }
   }
   
 </script>
@@ -440,9 +457,10 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   background: linear-gradient(90deg, #f0c320 0%,#f0c320 25%,#ff8800 50%,#ff7469 51%,#ff0000 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0c320', endColorstr='#ff0000',GradientType=1 );
   }
+
+#tblResults th, td{
+  text-align:center;
+}  
   
-  .cartoon_values:hover {
-    color: red;
-  }
   
 </style>

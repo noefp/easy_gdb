@@ -1,8 +1,10 @@
 <!-- #####################             Cards             ################################ -->
     
 <?php
+$expr_cards = 1;
 
   if ($expr_cards) {
+
     echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
     echo '</div>';
@@ -11,7 +13,7 @@
 
 
       echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
-        echo '<label for="card_sel1" style="width: 150px;">Select gene:</label>';
+        echo '<label for="card_sel1" style="width: 150px; margin-top:7px"><b>Select gene:</b></label>';
         echo '<select class="form-control" id="card_sel1">';
           
             foreach ($found_genes as $gene) {
@@ -22,26 +24,77 @@
       echo '</div>';
 
 
-      echo '<div class="d-inline-flex" style="margin:10px">';
-        echo '<span class="circle" style="background-color:#000000"></span> Lowest <2';
-        echo '<span class="circle" style="background-color:#ffe999"></span> >=1';
-        echo '<span class="circle" style="background-color:#fb4"></span> >=2';
-        echo '<span class="circle" style="background-color:#ff7469"></span> >=10';
-        echo '<span class="circle" style="background-color:#de2515"></span> >=50';
-        echo '<span class="circle" style="background-color:#b71005"></span> >=100';
-        echo '<span class="circle" style="background-color:#7df"></span> >=200';
-        echo '<span class="circle" style="background-color:#0f0"></span> >=5000';
-        echo '<span class="circle gold"></span> Highest';
-      echo '</div>';
+      echo "<div class=\"color-bar\" style=\"margin:20px\">";  
+      echo "<table id=\"color-table-cards\" class=\"color\"></table>";
+      // echo '<div class="d-inline-flex" style="margin:10px">';
+      // echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
+      // echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
+      // echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
+      // echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
+      // echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
+      // echo '<span class="circle" style="background-color:#C70039"></span> >=100';
+      // echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
+      // echo '<span class="circle" style="background-color:#581845"></span> >=5000';
+      echo "</div>"; 
 
 
-      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>';
+
+      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row"  style="width:100%; margin-left:30px; margin-right:auto "></div>';
     echo '</div>';
     
   }
 ?>
 
+<script>
+// color table function
+function crearFila(colors,ranges,id) {
+    const tabla = document.getElementById(id);
+    const fila_color = document.createElement('tr');
+    let celda=0;
+
+    celda = document.createElement('td')
+    celda.style.background='#000000';
+    fila_color.appendChild(celda);
+
+    colors.forEach(color => {
+        celda = document.createElement('td');
+        celda.style.backgroundColor = color;
+        fila_color.appendChild(celda);
+    });
+    celda = document.createElement('td')
+    celda.style.backgroundImage='linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28)';
+    fila_color.appendChild(celda);
+
+    
+
+    const fila_range = document.createElement('tr');
+
+    celda = document.createElement('th');
+    celda.textContent='Lowest';
+    fila_range.appendChild(celda);
+
+    ranges.forEach(range => {
+        celda = document.createElement('th');
+        celda.textContent=range;
+        fila_range.appendChild(celda);
+    });
+        celda = document.createElement('th');
+        celda.textContent='Highest';
+        fila_range.appendChild(celda);
+
+    tabla.appendChild(fila_range);
+    tabla.appendChild(fila_color);
+}
+
+crearFila(colors,ranges_text,'color-table-cards');
+
+</script>
+
 <style>
+
+#card_code {
+  text-align: center;
+}  
   
   .expr_card_body {
 /*    background-color: #363;*/
@@ -54,6 +107,7 @@
     border: 1px solid #000;
     margin-right:5px;
   }
+
   
   .expr_card_title {
     font: 16px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
@@ -92,9 +146,9 @@
   
   .gold {
     background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
-  }
+  } 
   
-  .circle {
+  /* .circle {
     height: 15px;
     width: 15px;
     border-radius: 50%;
@@ -103,7 +157,7 @@
     display: inline-block;
     margin: 5px;
     margin-left: 15px;
-  }
+  } */
   
   
   

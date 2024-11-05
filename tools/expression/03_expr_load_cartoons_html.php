@@ -50,10 +50,10 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
       echo '</div>';
 
-      echo '<div id="cartoons_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
+      echo '<div id="cartoons_frame" class="row collapse show" style="margin:0px; border:2px solid #666; padding-top:7px">';
     
       echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
-      echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\">Select gene:</label>";
+      echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\"><b>Select gene:</b></label>";
       echo "<select class=\"form-control\" id=\"sel_cartoons\">";
       foreach ($found_genes as $gene) {
         echo "<option value=\"$gene\">$gene</option>";
@@ -61,18 +61,22 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo "</select>";
       echo "</div>";
 
-      echo '<div class="d-inline-flex" style="margin:10px">';
-      echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
-      echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
-      echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
-      echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
-      echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
-      echo '<span class="circle" style="background-color:#C70039"></span> >=100';
-      echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
-      echo '<span class="circle" style="background-color:#581845"></span> >=5000';
-      echo '</div>';
+      echo "<div class=\"color-bar\" style=\"margin:10px\">";  
+      echo "<table id=\"color-table-cartoons\" class=\"color\"></table>";
 
-      echo "<div class=\"row\">";
+      // echo '<div class="d-inline-flex" style="margin:10px">';
+      // echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
+      // echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
+      // echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
+      // echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
+      // echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
+      // echo '<span class="circle" style="background-color:#C70039"></span> >=100';
+      // echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
+      // echo '<span class="circle" style="background-color:#581845"></span> >=5000';
+      echo "</div>"; 
+      // echo '</div>';
+
+      echo "<div class=\"row\" style=\"margin-left:auto;margin-right: auto;\">";
     
       echo "<div class=\"pull-left\">";
         echo "<div class=\"cartoons_canvas_frame\">";
@@ -88,18 +92,19 @@ if ( file_exists("$expression_path/expression_info.json") ) {
         echo "<div class=\"pull-right\">";
       
         echo "<ul id=\"cartoon_labels\" style=\"text-align:left\">";
-        foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
-        
-          echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
-        }
-        
+        if($cartoons_all_genes[$found_genes[0]]){
+          foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
+          
+            echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+          }
+      }
         echo "</ul>";
       
         echo "</div>";
     
       echo "</div>";
 
-      echo '</div>';
+      // echo '</div>';
 
     }//end cartoons conf
     // else {
@@ -117,4 +122,57 @@ if ( file_exists("$expression_path/expression_info.json") ) {
 // }
 ?>
 </center>
+
+<script>
+// color table function
+function crearFila(colors,ranges,id) {
+     const tabla = document.getElementById(id);
+    const fila_color = document.createElement('tr');
+    colors.forEach(color => {
+        const celda = document.createElement('td');
+        celda.style.backgroundColor = color;
+        fila_color.appendChild(celda);
+    });
+    const fila_range = document.createElement('tr');
+    ranges.forEach(range => {
+        const celda = document.createElement('th');
+        celda.textContent=range;
+        fila_range.appendChild(celda);
+    });
+
+    tabla.appendChild(fila_range);
+    tabla.appendChild(fila_color);
+}
+
+crearFila(colors,ranges_text,'color-table-cartoons');
+
+</script>
+
+<style>
+  .color-bar{
+    width:100%;
+    display:block;
+    text-align: center;
+
+  }
+
+.color-bar table {
+    /* width:80%; */
+    margin-left: 30px; 
+    margin-left:auto;
+    margin-right: auto; 
+ } 
+
+.color-bar td, th {
+    height: 20px;
+    width: 100px;
+    text-align: center;
+}
+
+.cartoon_values:hover{
+/* font-size:18px; */
+font-weight: bold;
+}
+
+</style>
 

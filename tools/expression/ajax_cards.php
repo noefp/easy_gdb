@@ -1,12 +1,14 @@
 <?php
 
-  
 $expr_file = $_POST["expr_file"];
 $dbTitle = $_POST["db_title"];
 $dbLogo = $_POST["db_logo"];
 $imgPath = $_POST["img_path"];
 $sampleArray = $_POST["sample_array"];
 $expr_img_array = $_POST["expr_img_array"];
+$colors =$_POST["colors"];
+$ranges = $_POST["ranges"];
+
 
 $php_array = array();
 $card_color = "#f63";
@@ -14,46 +16,27 @@ $gold_card = max($expr_file);
 $black_card = min($expr_file);
 $gold = 0;
 
+
 // print("<pre>".print_r($heatmap_series,true)."</pre>");
 // print("<pre>".print_r($expr_img_array,true)."</pre>");
 // echo "<hr>";
 
 $counter = 0;
 foreach ($expr_file as $expr_val) {
-  
-  
-  //array_push($php_array,"<p>$expr_val</p>");
+ foreach($ranges as $index => $range)
+ {
+    if(($expr_val >= $range[0]) && ($expr_val <= $range[1]))
+    {
+      $card_color = $colors[$index];
+    } 
     
-  if ($expr_val >= 0 && $expr_val <= 0.99) {
-    $card_color = "#ffffff";
-  }
-  else if ($expr_val >= 1 && $expr_val <= 1.99) {
-    $card_color = "#ffe999";
-  }
-  else if ($expr_val >= 2 && $expr_val <= 9.99) {
-    $card_color = "#fb4";
-  }
-  else if ($expr_val >= 10 && $expr_val <= 49.99) {
-    $card_color = "#ff7469";
-  }
-  else if ($expr_val >= 50 && $expr_val <= 99.99) {
-    $card_color = "#de2515";
-  }
-  else if ($expr_val >= 100 && $expr_val <= 199.99) {
-    $card_color = "#b71005";
-  }
-  else if ($expr_val >= 200 && $expr_val <= 4999.99) {
-    $card_color = "#7df";
-  }
-  else if ($expr_val > 5000) {
-    $card_color = "#0f0";
-  }
-  
-  if ($expr_val == $black_card && $expr_val <2) {
-    $card_color = "#000";
-  }
-  if ($expr_val == $gold_card && $expr_val >=2) {
-    $gold = 1;
+    if ($expr_val == $black_card && $expr_val < $ranges[0][1]) {
+      $card_color = "#000";
+    }
+
+    if ($expr_val == $gold_card && $expr_val >=$ranges[0][1]) {
+      $gold = 1;
+    }
   }
   
   array_push($php_array, '<div class="flip-card  rounded float-left">');

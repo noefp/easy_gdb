@@ -29,7 +29,7 @@ var options = {
     align: 'left'
   },
   markers: {
-    size: 3
+    size: 5
   },
   xaxis: {
     categories: sample_array,
@@ -52,7 +52,14 @@ var options = {
     inverseOrder: true,
     floating: true,
     offsetY: -30,
-    offsetX: 25
+    offsetX: 25,
+    fontSize: 13,
+    markers: {
+      size: 11,
+      shape: 'square',
+      strokeWidth: 2,
+    
+    },
   },
   tooltip: {
     inverseOrder: true
@@ -73,6 +80,7 @@ $( "#lines_btn" ).click(function() {
     stroke: {
       width: 5
     },
+    
     title: {
       text: 'Lines',
     }
@@ -98,17 +106,21 @@ $( "#bars_btn" ).click(function() {
 });
 
 
-
-
-
-
-
-
 // ######################################################## Heatmap
 
-  var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#c8c8c8"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#0f0"}];
+  // var color_ranges=[{from:0,to:0.99,name:"0-0.99",color:"#c8c8c8"},{from:1,to:2.99,name:"1-2.99",color:"#f0c320"},{from:3,to:9.99,name:"3-9.99",color:"#ff8800"},{from:10,to:49.99,name:"10-49.99",color:"#ff7469"},{from:50,to:99.99,name:"50-99.99",color:"#de2515"},{from:100,to:199.99,name:"100-199.99",color:"#b71005"},{from:200,to:4999.99,name:"200-4999.99",color:"#0bb4ff"},{from:5000,to:20000,name:"5000-infinite",color:"#0f0"}];
   
-  var legend_color_ranges=["#c8c8c8","#f0c320","#ff8800","#ff7469","#de2515","#b71005","#0bb4ff","#0f0"];
+  // var legend_color_ranges=["#c8c8c8","#f0c320","#ff8800","#ff7469","#de2515","#b71005","#0bb4ff","#0f0"];
+
+  var legend_color_ranges=colors; 
+  var color_ranges=[];
+  var i=0;
+ 
+  legend_color_ranges.forEach(colors => {
+     color_ranges.push({from:ranges[i][0],to:ranges[i][1],name:ranges_text[i],color:colors})
+     i++;
+  });
+
   
   $( "#red_color_btn" ).click(function() {
     // alert("hi");
@@ -181,6 +193,16 @@ var options = {
       }
     }
   },
+legend:{
+  fontSize: 13,
+  showForSingleSeries: true,
+  markers: {
+    size: 10,
+    shape: 'circle',
+    strokeWidth: 2,
+  },
+},
+
   title: {
     text: 'Heatmap'
   },
@@ -199,6 +221,7 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
 // ######################################################## Replicates
 
   var scatter_title = gene_list[0]+' Expression values';
+  // alert(JSON.stringify(replicates_one_gene));
   
   $( "#sel1" ).change(function() {
     // alert( this.value );
@@ -287,12 +310,13 @@ $(document).ready(function () {
 
 
   //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-  function ajax_change_card_gene(expr_file,db_title,db_logo,img_path,sample_array,expr_img_array) {
+  function ajax_change_card_gene(expr_file,db_title,db_logo,img_path,sample_array,expr_img_array,colors,ranges) {
     
     jQuery.ajax({
       type: "POST",
       url: 'ajax_cards.php',
-      data: {'expr_file': expr_file, 'db_title': db_title, 'db_logo': db_logo, 'img_path': img_path, 'sample_array': sample_array, 'expr_img_array': expr_img_array},
+      data: {'expr_file': expr_file, 'db_title': db_title, 'db_logo': db_logo, 'img_path': img_path, 'sample_array': sample_array, 'expr_img_array': expr_img_array,
+        'colors':colors,'ranges':ranges},
 
       success: function (php_array) {
         
@@ -333,7 +357,7 @@ $(document).ready(function () {
     
     card_one_gene_data = get_gene_data(card_active_gene);
     
-    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array);
+    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array,colors,ranges);
     
   });
   
@@ -344,7 +368,7 @@ $(document).ready(function () {
     first_gene = $('#card_sel1').val();
     card_one_gene_data = get_gene_data(first_gene);
     
-    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array);
+    ajax_change_card_gene(card_one_gene_data,db_title,db_logo,img_path,sample_array,expr_img_array,colors,ranges);
   });
   
   
@@ -412,8 +436,10 @@ $(document).ready(function () {
     for (var sample in gene_expr_values){
       expr_value = gene_expr_values[sample];
       sample_id=sample+"_kj_image";
-      
-      $(document.getElementById(sample_id)).html(sample+": "+expr_value);
+      color_rgb=get_expr_color(expr_value,ranges,colors);
+      // $(document.getElementById(sample_id)).html(sample+": "+expr_value);
+      $(document.getElementById(sample_id)).html(sample+": "+expr_value).css('text-decoration','double underline').css('text-decoration-color','rgb('+color_rgb+')');
+
     }
     
   });
@@ -428,4 +454,3 @@ $(document).ready(function () {
   
   
 });
-

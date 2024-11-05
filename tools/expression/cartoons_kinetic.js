@@ -1,45 +1,39 @@
 
+function hexToRgb(hex) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(r, g, b) {
+    return r + r + g + g + b + b;
+  });
 
-function get_expr_color(expr_val) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+
+function get_expr_color(expr_val,ranges,colors) {
   //#C7FFED
-   var expr_color = [199,255,237];
-   
-   if (expr_val >= 1 && expr_val <= 1.99) {
-     // expr_color = "#ffe999" #CCFFBD #DFFF94;
-     expr_color = [223,255,148];
-   }
-   else if (expr_val >= 2 && expr_val <= 9.99) {
-     // expr_color = "#fb4"#FFFF5C;
-     expr_color = [255,255,92];
-   }
-   else if (expr_val >= 10 && expr_val <= 49.99) {
-     // expr_color = "#ff7469 #FFC300";
-     expr_color = [255,195,0];
-   }
-   else if (expr_val >= 50 && expr_val <= 99.99) {
-     // expr_color = "#de2515 #FF5733";
-     expr_color = [255,87,51];
-   }
-   else if (expr_val >= 100 && expr_val <= 199.99) {
-     // expr_color = "#b71005 #C70039";
-     expr_color = [199,0,57];
-   }
-   else if (expr_val >= 200 && expr_val <= 4999.99) {
-     // expr_color = "#7df #900C3F";
-     expr_color = [144,12,63];
-   }
-   else if (expr_val > 5000) {
-     // expr_color = "#0f0 #581845";
-     expr_color = [88,24,69];
-   }
-   // alert("color: "+expr_color);
+  let index=0;
+  let expr_color;
+
+  ranges.forEach(range => {
+    if((expr_val >= range[0]) && (expr_val <= range[1]))
+    {
+      expr_color = [hexToRgb(colors[index]).r,hexToRgb(colors[index]).g,hexToRgb(colors[index]).b];
+    }else
+    { index++;}
+  });
    return expr_color;
 }
 
-function load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr) {
+function load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr,ranges,colors) {
  
  //alert("color: "+gene_expr);
-   var expr_color = get_expr_color(gene_expr);
+   var expr_color = get_expr_color(gene_expr,ranges,colors);
  
    kj_layer.add(imgs_group);
    canvas.add(kj_layer);
@@ -134,7 +128,7 @@ function draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,active_gene){
     var gene_expr = cartoons_all_genes[active_gene][sample_name];
   
   
-    load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr)
+    load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr,ranges,colors)
 
   }//end for loop
 

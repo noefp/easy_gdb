@@ -3,7 +3,7 @@
     <i class="fas fa-sort" style="color:#229dff"></i> Average values
   </div>
 
-  <div id="avg_table" class="collapse show">
+  <div id="avg_table" class="collapse hide">
 
     <div class="data_table_frame">
 
@@ -32,37 +32,39 @@
   
   </style>
 
-  <script type="text/javascript">
-  $("#tblResults").dataTable({
-    dom:'Bfrtlpi',
-    "oLanguage": {
-      "sSearch": "Filter by:"
-      },
-    buttons: [
-      'copy', 'csv', 'excel',
-        {
-          extend: 'pdf',
-          orientation: 'landscape',
-          pageSize: 'LEGAL'
+<script type="text/javascript">
+  $("#avg_table").on('shown.bs.collapse', function(){
+    $("#tblResults").dataTable({
+      dom:'Bfrtlpi',
+      "oLanguage": {
+        "sSearch": "Filter by:"
         },
-      'print', 'colvis'
-      ],
-     "sScrollX": "100%",
-      "sScrollXInner": "110%",
-      "bScrollCollapse": true,
-      "drawCallback": function( settings ) {
+      buttons: [
+        'copy', 'csv', 'excel',
+          {
+            extend: 'pdf',
+            orientation: 'landscape',
+            pageSize: 'LEGAL'
+          },
+        'print', 'colvis'
+        ],
+      "sScrollX": "100%",
+        "sScrollXInner": "110%",
+        "bScrollCollapse": true,
+        retrieve: true, 
+        "drawCallback": function( settings ) {
+        $(".td-tooltip").tooltip();
+      },
+    });
+
+    $("#tblResults_filter").addClass("float-right");
+    $("#tblResults_info").addClass("float-left");
+    $("#tblResults_paginate").addClass("float-right");
+
+    $(document).ready(function(){
       $(".td-tooltip").tooltip();
-    },
-  });
-
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
-
-  $(document).ready(function(){
-    $(".td-tooltip").tooltip();
-  });
- 
+    });
+  });     
 
   </script>
   
