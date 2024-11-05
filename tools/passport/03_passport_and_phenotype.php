@@ -6,23 +6,98 @@
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
 
 <?php
-function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img) {
+//----- Get info from different JSON
+
+  $pass_dir = test_input($_GET["pass_dir"]);
+  $sp_name = "";
+  // get info from passport.json
+  if ( file_exists("$passport_path/$pass_dir/passport.json") ) {
+    $pass_json_file = file_get_contents("$passport_path/$pass_dir/passport.json");
+    $pass_hash = json_decode($pass_json_file, true);
+
+    $numeric_to_cathegoric_json = $pass_hash["convert_to_cathegoric"]; 
+    $translator_file = $pass_hash["translator"];
+    $sp_name = $pass_hash["sp_name"];
+    $featured_descriptors_file = $pass_hash["featured_descriptors"];
+  }
+
+//----- NUMERIC TO CATHEGORIC
+  $convert_json_path = "$passport_path/$pass_dir/$numeric_to_cathegoric_json";
+  //echo $convert_json_path;
+  $convert_json = [];
+  if (file_exists($convert_json_path) ) {
+    $convert_json_file = file_get_contents($convert_json_path);
+    $convert_json = json_decode($convert_json_file, true);
+    //var_dump($convert_json);
+  } else {
+    //echo "<br>NOT FOUND convert_to_cathegoric";
+    //var_dump($convert_json_path);
+  }
+
+//----- TRANSLATOR
+  $translator_json_path = "$passport_path/$pass_dir/$translator_file";
+  //echo $translator_json_path;
+  $translator_json = [];
+  if (file_exists($translator_json_path) ) {
+    $translator_json_file = file_get_contents($translator_json_path);
+    $translator_json = json_decode($translator_json_file, true);
+    //var_dump($translator_json);
+  } else {
+    //echo "<br>NOT FOUND translator";
+    //var_dump($translator_json_path);
+  }
+
+//----- FEATURED DESCRIPTORS
+  $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
+  //echo $featured_descriptors_path;
+  $featured_descriptors = [];
+  if (file_exists($featured_descriptors_path) ) {
+      $featured_descriptor_json_file = file_get_contents($featured_descriptors_path); // Get the info
+      $featured_descriptors_json = json_decode($featured_descriptor_json_file, true); // Convert JSON -> array
+      //var_dump($featured_descriptors_json); // Funciona
+  } else {
+    //echo "<br> NOT FOUND featured descriptors file";
+  }
+?>
+
+
+<?php
+
+$descriptor_primary_name = "";
+
+function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img, $convert_json, $translator_json, $featured_descriptors_json, $all_featured_descriptors, $sp_name) {
+  //var_dump($convert_json); // funciona
+  //var_dump($translator_json); // funciona
+
+  $file = preg_replace('/.+\//', '', $file_path);
+
+  // Create $featured_list to print it later
+  if ($featured_descriptors_json[$file]) {
+    $featured_list = $featured_descriptors_json[$file];
+    //echo "featured_list is <b>correct</b>"; / funciona
+  } else {
+    $featured_list = [];
+    //echo "featured_list is empty";
+  }
   
   $obj_average = [];
   
   if (file_exists($file_path) ) {
     $tab_file = file($file_path);
-    $header_line = array_shift($tab_file);
+    $header_line = trim(array_shift($tab_file) );
     $header = explode("\t", $header_line);
     
     foreach ($tab_file as $line) {
-      
       $cols = explode("\t", $line);
       
-      if ( in_array($acc_name,$cols) ) {
-        // echo "<p>line: $line</p>";
+      if (array_filter($cols, function($value) use ($acc_name) { 
+        return strnatcasecmp($value, $acc_name) == 0; 
+      } ) ) {
           
         foreach ($cols as $col_index => $col_value) {
           
@@ -38,104 +113,319 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
               $obj_average[$descriptor_name] = []; // If not, create it
               array_push($obj_average[$descriptor_name], $descriptor_value);
             }
-          } // IF descriptor value
-          
+          } // end IF descriptor value
         } // col foreach
-      } // in array
+      } // end array_filter
     } // line foreach
     
-    $file = preg_replace('/.+\//', '', $file_path);
+
+    $section = str_replace("_", " ", $file);
+    $section = str_replace(".txt", "", $section);
+    echo "<div style=\"background-color:#e0ea68 ; border: 2px solid #e0ea68\"><i class=\"fa\">&#xf105;</i><b> $section</b></div><br>";
     
-    
-    foreach($obj_average as $descriptor_name => $descriptor_value_list){
+    foreach($obj_average as $descriptor_name => $descriptor_value_list) {
           
       $unique_list = array_unique($descriptor_value_list);
-      $joint_unique_list = join("||", $unique_list);
+      $joint_unique_list = join("/", $unique_list);
       //echo "$descriptor_name: $joint_unique_list <br>";
       
       // get info from JSON
-      $descriptor_primary_name = $descriptor_name;
-      // $descriptor_primary_name = $descriptors_obj[$file][$descriptor_name]["principal_descriptor"]; //code for secondary language
-      
+      if (($translator_json[$file][$descriptor_name] ) ) {
+        $translator_obj = $translator_json[$file][$descriptor_name];
+        $descriptor_primary_name = $translator_obj["primary_descriptor"];
+        $descriptor_secondary_name = $translator_obj["secondary_descriptor"];
+      } else {
+        //echo "Translation not found<br>";
+        $descriptor_primary_name = $descriptor_name;
+      }
+
 //----- Cathegoric data
       $pattern = "/[a-z]/i";
       if (preg_match($pattern, $joint_unique_list) ) {
+        $joint_unique_list_printed = str_replace("_", " ", $joint_unique_list);
         
-        // get info from JSON
+        // Get info from JSON
         $descriptor_img = $descriptors_obj[$descriptor_name]["img_name"];
         $img_opt_array = $descriptors_obj[$descriptor_name]["options"];
-        //echo "img_opt_array: ".print_r($img_opt_array);
+        //echo "img_opt_array: "print_r($img_opt_array);
         
-        if ($descriptor_primary_name) {
-          echo "<b>$descriptor_primary_name</b>: $joint_unique_list<br>"; // primary descriptor name from json
+        if ($descriptor_primary_name && $descriptor_secondary_name) {
+          echo "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>"; // primary AND secondary descriptor names from json
+        } elseif ($descriptor_primary_name) {
+          echo "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br>"; // ONLY primary descriptor name from json
         } else {
-          echo "<b>$descriptor_name</b>: $joint_unique_list<br>"; // descriptor name from file
+          echo "<b>$descriptor_name</b>: $joint_unique_list_printed<br>"; // descriptor name from file
+        }
+
+        // if $descriptor_name is in featured_list, add to $all_featured_descriptors
+        if (in_array($descriptor_name, $featured_list) ) {
+          if ($descriptor_primary_name && $descriptor_secondary_name) {
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>");
+          } elseif ($descriptor_primary_name) {
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br>");
+          } else {
+            array_push($all_featured_descriptors, "<b>$descriptor_name</b>: $joint_unique_list_printed<br>");
+          }
         }
         
         //image and image option list found
         if ($img_opt_array && $descriptor_img) {
           
           $descriptor_value = $joint_unique_list;
-          $img_upov = str_replace("value", $descriptor_value, $descriptor_img);
-            
-          echo "<table style=\"border: 2px solid\"><head><tr>";
-          
-          foreach($img_opt_array as $one_option){
-              
-            $one_img = str_replace("value", $one_option, $descriptor_img);
-              
-            if ($one_option && $one_img && file_exists("$root_path/$path_img/$one_img") ) {
-              if ($one_img == $img_upov) {
-                echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option</th>";
-              } else {
-                echo "<th style=\"text-align: center;\">$one_option</th>";
-              }
+
+          //--- ADD IF to comprobate if 'img_name' contains 'help'
+          if (strpos($descriptor_img, 'help') !== false) {
+            // print img
+            $help_img = $descriptor_img;
+
+            if ($sp_name) {
+              echo "<td><img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
+            } else {
+              //echo "$ root_path/$ path_img/$ help_img: $root_path$path_img/$help_img";
+              echo "<td><img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
             }
-          } // end foreach
-          
-          echo "</tr></head><tr><body>";
+
             
-          foreach($img_opt_array as $one_option){
-              
-            $one_img = str_replace("value", $one_option, $descriptor_img);
-              
-            if ($one_img && file_exists("$root_path/$path_img/$one_img") ) {
-              
-              if ($one_img == $img_upov) {
-                echo "<td style=\"border: 2px solid red;padding-left:15px; padding-right:15px\"><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>"; // red border
-              } else {
-                echo "<td><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>";
-              }
-            }
-          } // end foreach
+          } else {
+            $img_upov = str_replace("value", $descriptor_value, $descriptor_img);
+            
+            echo "<table style=\"border: 2px solid\"><head><tr>";
           
-          echo "</tr></body></table><br>";
+            foreach($img_opt_array as $one_option) {
+             
+              $one_img = str_replace("value", $one_option, $descriptor_img);
+
+              if ($sp_name) {
+                if ($one_option && $one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
+                  $one_option_printed = str_replace("_", " ", $one_option);
+                  if ($one_img == $img_upov) {
+                    echo "<br><th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                  } else {
+                  echo "<th style=\"text-align: center;\">$one_option_printed</th>";
+                  }
+                }
+              } else {
+                if ($one_option && $one_img && file_exists("$root_path/$path_img/$one_img") ) {
+                  $one_option_printed = str_replace("_", " ", $one_option);
+                  if ($one_img == $img_upov) {
+                    echo "<br><th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                  } else {
+                    echo "<th style=\"text-align: center;\">$one_option_printed</th>";
+                  }
+                }
+              }
+              
+
+            } // end foreach
+          
+            echo "</tr></head><tr><body>";
+            
+            foreach($img_opt_array as $one_option) {
+            
+              $one_img = str_replace("value", $one_option, $descriptor_img);
+
+              if ($sp_name){
+                if ($one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
+              
+                  if ($one_img == $img_upov) {
+                    echo "<td style=\"border: 2px solid red;padding-left:15px; padding-right:15px\"><img class=\"center\" src=\"$path_img/$sp_name/$one_img\" width=\"100\"></td>"; // red border
+                  } else {
+                    echo "<td><img class=\"center\" src=\"$path_img/$sp_name/$one_img\" width=\"100\"></td>";
+                  }
+                }
+              } else {
+              
+                if ($one_img && file_exists("$root_path/$path_img/$one_img") ) {
+                
+                  if ($one_img == $img_upov) {
+                    echo "<td style=\"border: 2px solid red;padding-left:15px; padding-right:15px\"><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>"; // red border
+                  } else {
+                    echo "<td><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>";
+                  }
+                }
+              }
+            } // end foreach
+          
+            echo "</tr></body></table><br>";
+          } // close ELSE
+
         } // close if img_options
-            
+        
       } else {
-        //numeric data
+        //----- Numeric data
+
         $array_length = count($unique_list);
         $average = array_sum($unique_list)/$array_length;
-      
-        if ($descriptor_primary_name) {
-          echo "<b>$descriptor_primary_name</b>: $average<br>";
+       
+        if ($convert_json[$file][$descriptor_name] ) {
+          $category_obj = $convert_json[$file][$descriptor_name];
+          $ranges = $category_obj["ranges"];
+          $categories = $category_obj["categories"];
+
+          foreach($ranges as $index => $range) {
+            list($min, $max) = array_pad(explode('-', $range), 2, null);
+            if ( $max == null) {
+              //$max = $min; // not specify "<"
+              $max = PHP_INT_MAX; // same as $min < $average
+            }
+
+            if ($average >= $min && $average < $max) {
+              $category = $categories[$index];
+              break;
+            } else {
+              $category = "<i>Category not assigned</i>";
+            }
+          }          
+        } else{
+          //echo "No conversion available<br>";
+        }
+                
+        $average_printed = number_format($average, 2);
+        $all_ranges_descriptors = [];
+
+        if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
+          $category_printed = str_replace("_", " ", $category);          
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
+          echo "<button id=\"showPopupButton\" onclick=\"showPopup()\" style=\"margin-left: 10px;\">Información</button><div id=\"popupContent\" style=\"display:none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;\"></div><br>";
+
+          
+          foreach ($categories as $index => $cat) {
+            $range = $ranges[$index];
+            $cat_printed = str_replace("_", " ", $cat);
+            $popup_ranges = "$cat_printed: $range<br>";
+            //echo "<button onclick=\"openPopup()\">Info</button>";
+            echo "<span style='color: grey; font-size: 12px;'>$popup_ranges</span>";
+            array_push($all_ranges_descriptors, $popup_ranges);
+          }
+          
+        } elseif ($descriptor_primary_name && $category) {
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br>";
+        } elseif ($descriptor_primary_name && $descriptor_secondary_name) {
+          echo "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>";
         } else {
           echo "<b>$descriptor_name</b>: $average<br>";
         }
+
+        // if $decriptor_name is in $featured_list, add to $all_featured_descriptors
+        if (in_array($descriptor_name, $featured_list) ) {
+          if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>");
+          } elseif ($descriptor_primary_name && $category) {
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br>");
+          } elseif ($descriptor_primary_name && $descriptor_secondary_name) {
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>");
+          } else {
+            array_push($all_featured_descriptors, "<b>$descriptor_name</b>: $average_printed<br>");
+          }
+        }
+
+        // Print images
+        $descriptor_img = $descriptors_obj[$descriptor_name]["img_name"];
+        $img_opt_array = $descriptors_obj[$descriptor_name]["options"];
+        if ($img_opt_array && $descriptor_img) {
+          
+          $descriptor_value = $category;
+
+          //--- ADD IF to comprobate if 'img_name' contains 'help'
+          if (strpos($descriptor_img, 'help') !== false) {
+            // print help image
+            $help_img = $descriptor_img;
+
+            if ($sp_name) {
+              echo "<td><img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
+            } else {
+              //echo "$ root_path/$ path_img/$ help_img: $root_path$path_img/$help_img";
+              echo "<td><img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
+            }
+
+          } else {
+            $img_upov = str_replace("value", $descriptor_value, $descriptor_img);
+            
+            echo "<table style=\"border: 2px solid\"><head><tr>";
+          
+            foreach($img_opt_array as $one_option) {
+             
+              $one_img = str_replace("value", $one_option, $descriptor_img);
+
+              if ($sp_name){
+                if ($one_option && $one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
+                  $one_option_printed = str_replace("_", " ", $one_option);
+                  if ($one_img == $img_upov) {
+                    echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                  } else {
+                    echo "<th style=\"text-align: center;\">$one_option_printed</th>";
+                  }
+                }
+              } else {
+                if ($one_option && $one_img && file_exists("$root_path/$path_img/$one_img") ) {
+                  $one_option_printed = str_replace("_", " ", $one_option);
+                  if ($one_img == $img_upov) {
+                    echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                  } else {
+                    echo "<th style=\"text-align: center;\">$one_option_printed</th>";
+                  }
+                }
+              }
+              
+            } // end foreach
+          
+            echo "</tr></head><tr><body>";
+            
+            foreach($img_opt_array as $one_option) {
+            
+              $one_img = str_replace("value", $one_option, $descriptor_img);
+
+              if ($sp_name){
+                if ($one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
+              
+                  if ($one_img == $img_upov) {
+                    echo "<td style=\"border: 2px solid red;padding-left:15px; padding-right:15px\"><img class=\"center\" src=\"$path_img/$sp_name/$one_img\" width=\"100\"></td>"; // red border
+                  } else {
+                    echo "<td><img class=\"center\" src=\"$path_img/$sp_name/$one_img\" width=\"100\"></td>";
+                  }
+                }
+              } else {
+                if ($one_img && file_exists("$root_path/$path_img/$one_img") ) {
+              
+                  if ($one_img == $img_upov) {
+                    echo "<td style=\"border: 2px solid red;padding-left:15px; padding-right:15px\"><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>"; // red border
+                  } else {
+                    echo "<td><img class=\"center\" src=\"$path_img/$one_img\" width=\"100\"></td>";
+                  }
+                }
+              }
+              
+            } // end foreach
+          
+            echo "</tr></body></table><br>";
+
+          }
+
+        } // close if img_options
+        
       } // else str or numeric
       
       echo "<div style=\"display:none\"> $joint_unique_list </div>";
     } // foreach descriptor
   
-    if (!$acc_found){ // If don't find the acc, print a message
+    if (!$acc_name) { // If don't find the acc, print a message
       echo "No data available";
     }
     
-  } // if input file exist
-  echo "<br>";
-  echo "<br>";
-} // Close function
+    if (empty($descriptor_name) ) {
 
+      echo "No phenotype data available";
+    }
+
+  } // if input file exist  
+
+  return $all_featured_descriptors; // corresponde con $featured_array
+
+} // Close function
 
 
 function file_to_table($file_path, $acc_name) {
@@ -144,31 +434,51 @@ function file_to_table($file_path, $acc_name) {
     $tab_file = file("$file_path");
     $header_line = array_shift($tab_file);
     $header = explode("\t", $header_line);
-    
-    echo "<div style=\"overflow:scroll\">"; //print data table
-    echo "<table class=\"table\" id=\"tblResults\"><thead><tr>"; //print data table
+
+    //Generate unique ID based on $file
+    $file = preg_replace('/.+\//', "", $file_path);
+    $collapse_id = str_replace(".txt", "", $file) . "_collapse";
+
+    // Crear la sección colapsable con un ID único
+    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#$collapse_id\" aria-expanded=\"false\" style=\"color: white; background-color: grey\">";
+    echo "<i class=\"fas fa-sort\" style=\"color:#e0ea68\"></i> Raw data </div>";
+    echo "<div id=\"$collapse_id\" class=\"collapse\">";
+
+    // Tabla con los datos crudos
+    echo "<div style=\"overflow:scroll\">";
+    echo "<table class=\"table\" id=\"tblResults\"><thead><tr>";
     
     foreach ($header as $col_name) {
-      echo "<th>$col_name</th>";
+      $descriptor_name = $col_name;
+      echo "<th>$descriptor_name</th>";
     }
     echo "</tr></thead><tbody>";
     
     foreach ($tab_file as $line) {
       $columns = explode("\t", $line);
-      
-      if ( in_array($acc_name,$columns) ) {
+
+      if (array_filter($columns, function($value) use ($acc_name) {
+        return strnatcasecmp($value, $acc_name) == 0;
+      } ) ) {
         echo "<tr>";
         
         foreach ($columns as $col) {
           echo "<td>$col</td>";
         }
         echo "</tr>";
-      } // acc found in line
+
+      }
     } // each line
     echo "</tbody></table>";
-    echo "</div>";
-  } // file exist
+    echo "</div><br>";
+
+    echo "</div>"; // close DIV collapse-section
+
+  } else { // file exist
+    //echo "No phenotype data available"; // Comprobate but do not print    
+  }
 }
+
 ?>
 
 
@@ -199,7 +509,7 @@ function file_to_table($file_path, $acc_name) {
   if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
           
     $passport_lines = file("$passport_path/$pass_dir/$passport_file");
-    $header_line = array_shift($passport_lines);
+    $header_line = trim(array_shift($passport_lines));
     $header = explode("\t", $header_line);
     
     // echo "<p>acc_header: $acc_header</p>";
@@ -217,9 +527,9 @@ function file_to_table($file_path, $acc_name) {
     //echo "<p>passport_cmd: $passport_cmd</p>";
     
     $acc_line = shell_exec($passport_cmd);
+    $acc_line = trim($acc_line);
+
     //echo "<p>acc_line: $acc_line</p>";
-    
-    
     
     
     $cols = explode("\t", $acc_line);
@@ -230,10 +540,11 @@ function file_to_table($file_path, $acc_name) {
     // $acc_name = $cols[$title_col];
     echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
     echo "<div class=\"row\">";
+
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
     
     foreach ($cols as $col_count => $col_value) {
-      if ($header[$col_count]) {
+      if ($header[$col_count] ) {
         if ($header[$col_count] == "DOI" ) {
           echo "<p><b>$header[$col_count]:</b> <a href=\"https://doi.org/$col_value\" target=\"_blank\"> $col_value</a></p>";
         }
@@ -255,12 +566,37 @@ function file_to_table($file_path, $acc_name) {
 </div><!-- close passport container -->
 <br>
 
+<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
+
+
+
+  <!-- FEATURED DESCRIPTORS -->
+   <!-- container for Javascript -->
+
+<?php 
+
+if (!empty($featured_descriptors_file) ) {
+  $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
+  
+  if (file_exists($featured_descriptors_path) ) {
+    
+    // containers
+    echo "<div class=\"container p-1 my-1 text-white\" style=\"background-color: #e0ea68; border: 1px solid grey\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-regular fa-star\"></i><b> Featured descriptors </b></h1></center></div></div>";
+    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    echo "<div id=\"featured-descriptors\"></div>"; 
+    echo "</div></div>";
+
+  }
+}
+
+?>
+
 
 
   <!-- LOCATION -->
   <div class="container p-1 my-1 bg-secondary text-white">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <center><h1><b> Location </b></h1></center>
+    <center><h1><i class="fa-solid fa-location-dot"></i><b> Location </b></h1></center>
     </div>
   </div>
 
@@ -268,7 +604,7 @@ function file_to_table($file_path, $acc_name) {
   <div class ="container p-7 my-3 border">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-<!-- COORDENADAS HARDCODE -->
+<!-- COORDENADAS -->
 <?php
   
 $latitude_index = array_search('Latitude', $header);
@@ -306,7 +642,7 @@ if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
     $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
 
 
-    //        Defining $var of $coords_file - all options
+    //  Defining $var of $coords_file - all options
     $full_name = "";
     //$alpha2_code = "";
     //$alpha3_code = ""; // útil para IHSM_SDB, puesto que incluyen el código en el archivo de datos
@@ -317,7 +653,7 @@ if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
     // Associate lat&long with $country_name
     foreach ( $rows_coords as $row ) {
       $cols_coords = explode("\t", $row);
-      if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]){
+      if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]) {
         // GET var independent values - it depends on the file distribution
         $full_name = $cols_coords[0];  
         // $alpha2_code = $cols_coords[1];
@@ -369,69 +705,96 @@ echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leafle
   </div>  
 
 
-
-
-  <!-- DESCRIPTORS -->
+  
+  <!-- DESCRIPTORS 
   <div class="container p-1 my-1 bg-secondary text-white">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <center><h1><b> Phenotype descriptors </b></h1></center>
     </div>
   </div>
 
-  <!-- <div class="row"> -->
   <div class ="container p-7 my-3 border">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <br>
+-->
 <?php 
   
-  $obj_descriptors = []; // Create object 
+  if (!empty($phenotype_file_array)){
+
+    echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><b> Phenotype descriptors </b></h1></center></div></div>";
+    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+
   $phenotype_img_json = $pass_hash["phenotype_imgs"];
   
-  if ($phenotype_img_json && file_exists("$passport_path/$pass_dir/$phenotype_img_json")) {
+  if ($phenotype_img_json && file_exists("$passport_path/$pass_dir/$phenotype_img_json") ) {
     
     $pheno_json_file = file_get_contents("$passport_path/$pass_dir/$phenotype_img_json");
     $pheno_hash = json_decode($pheno_json_file, true);
   }
-  
+    $featured_array = [];
+
   foreach ($phenotype_file_array as $phenotype_file) {
     $phenotype_file_full_path = "$passport_path/$pass_dir/$phenotype_file";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
-    write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path);
+    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
+
+
+    //print_r($featured_array); // array completo
+    //$featured_array_json = json_encode($featured_array);
+
     file_to_table($phenotype_file_full_path, $acc_name);
+
   }
-        
-    // Ref images used
-    $img_src_msg = $pass_hash["img_src_msg"];
-    echo "$img_src_msg";
+  
+  // Ref images used
+  $img_src_msg = $pass_hash["img_src_msg"];
+  echo "<br>$img_src_msg"; // CONDICIONAR IMPRESIÓN DE LAS IMÁGENES
+
+  echo "</div></div>";
+
+}
+
 ?>
 
+<!--
     </div>
   </div>
   <br>
+-->
 
 </div>
 
+
+
 <!-- FOOTER -->
-<?php include_once realpath("$easy_gdb_path/footer.php");?>
+<?php include_once realpath("$easy_gdb_path/footer.php"); ?>
+
+
+
 
 
 <script type="text/javascript">
-  // $(document).ready(function () {
+//----- QR CODE
+// $(document).ready(function () {
   
-  url_qrcode = window.location.href;
+url_qrcode = window.location.href;
 
-  //qr_id = $("#qrcode");
-  qr_id = document.getElementById("qrcode")
+//qr_id = $("#qrcode");
+qr_id = document.getElementById("qrcode")
   
-  new QRCode(qr_id,url_qrcode); 
+new QRCode(qr_id,url_qrcode); 
 // });
+
+//----- PRINT MAP
   
 latitude = "<?php echo $latitude; ?>";
+latitude_printed = "<?php echo number_format($latitude,2); ?>";
 longitude = "<?php echo $longitude; ?>";
+longitude_printed = "<?php echo number_format($longitude,2); ?>";
   
   if (latitude && longitude) {
-    marker_label = "<b>Collection site</b><br>Latitud: "+latitude+"<br> Longitud: "+longitude;
+    marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
   }
   else {
     latitude = "<?php echo $country_latitude; ?>";
@@ -444,37 +807,47 @@ longitude = "<?php echo $longitude; ?>";
 
   var marker = L.marker([latitude, longitude]).addTo(map);
   marker.bindPopup(marker_label).openPopup();
-  
-$(document).ready(function(){  
 
-  $(".table").dataTable({
-    dom:'Bfrtlpi',
+  //----- FEATURED DESCRIPTORS
+  var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
+  //alert("ATENCIÓN "+featuredArrayJson);
+
+  $('#featured-descriptors').html(featuredArrayJson);
+
+  // Function to show featured descriptors
+  function showFeaturedDescriptors(featuredDescriptors) {
+    var container = document.getElementById("featured-descriptors");
+    if (container && allFeaturedDescriptors) {
+      container.innerHTML = allFeaturedDescriptors; // Insertar el contenido en el div
+    }
+  }
+
+
+  function showPopup() {
+    var popup = document.getElementById("popupContent");
+    if (popup.style.display === "none") {
+      popup.style.display = "block";
+    } else {
+      popup.style.display = "none";
+    }
+    
+    popup.innerHTML = "Info to show."; // Remplace to ranges info
+  }
+
+  $("#tblResults").dataTable({
+  	dom:'Bfrtlpi',
     "oLanguage": {
-      "sSearch": "Filter by:"
-      },
-    buttons: [
-      'copy', 'csv', 'excel',
-        {
-          extend: 'pdf',
-          orientation: 'landscape',
-          pageSize: 'LEGAL'
-        },
-      'print', 'colvis'
-      ],
-    "sScrollX": "100%",
-    "sScrollXInner": "110%",
-    "bScrollCollapse": true,
-    // retrieve: true,  
+       "sSearch": "Filter by:"
+     },
+    "order": [],
+    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   });
-
-  $(".dataTables_filter").addClass("float-right");
-  $(".dataTables_info").addClass("float-left");
-  $(".dataTabless_paginate").addClass("float-right");
-
-});
+  
+  $("#tblResults_filter").addClass("float-right");
+  $("#tblResults_info").addClass("float-left");
+  $("#tblResults_paginate").addClass("float-right");
 
 </script>
-
 
 <style>
   .center {
@@ -482,12 +855,4 @@ $(document).ready(function(){
     margin-left: auto;
     margin-right: auto;
   }
-
-  table.dataTable td,th  {
-    max-width: 500px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-align: center;
-  }
 </style>
-
