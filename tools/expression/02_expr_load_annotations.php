@@ -74,7 +74,7 @@
       }
 
       $annot_string = implode("\n", $annot_col);
-      $annotations_hash_file[$gene_key] = "$annot_string";
+      $annotations_hash_file[$gene_key] = $annot_string;
     }
   }
 ?>
