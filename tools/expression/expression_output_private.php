@@ -448,6 +448,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 
   
+<?php include realpath('01_expr_colors_range.php'); ?>
   
   
   
