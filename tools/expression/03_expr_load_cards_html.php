@@ -1,7 +1,6 @@
 <!-- #####################             Cards             ################################ -->
     
 <?php
-$expr_cards = 1;
 
   if ($expr_cards) {
 
@@ -46,6 +45,7 @@ $expr_cards = 1;
 ?>
 
 <script>
+
 // color table function
 function crearFila(colors,ranges,id) {
     const tabla = document.getElementById(id);
@@ -86,7 +86,11 @@ function crearFila(colors,ranges,id) {
     tabla.appendChild(fila_color);
 }
 
-crearFila(colors,ranges_text,'color-table-cards');
+var expr_cards=<?php echo $expr_cards?>; 
+
+if (expr_cards){
+  crearFila(colors,ranges_text,'color-table-cards');
+}
 
 </script>
 
