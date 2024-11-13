@@ -35,20 +35,25 @@ $db_logo = "egdb_logo.png";
 $file_database = 1;
 
 // Toolbar
+$tb_custom = 0;
+$tb_rm_home = 0;
+
 $tb_about = 1;
 $tb_downloads = 1;
 $tb_species = 0;
 $tb_search_box = 1;
+
 $tb_tools = 1;
 $tb_search = 1;
 $tb_blast = 1;
 $tb_jbrowse = 1;
 $tb_seq_ext = 1;
 $tb_annot_ext = 1;
-$tb_gene_expr = 1;
 $tb_lookup = 1;
-$tb_custom = 0;
 $tb_enrichment = 0;
+
+//Gene expression atlas
+$tb_gene_expr = 1;
 
 // About
 $ab_citation = 1;
