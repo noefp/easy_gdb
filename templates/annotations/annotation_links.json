@@ -4,5 +4,11 @@
   "SwissProt":"http://www.uniprot.org/uniprot/query_id",
   "TrEMBL":"http://www.uniprot.org/uniprot/query_id",
   "InterPro":"https://www.ebi.ac.uk/interpro/entry/InterPro/query_id",
-  "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id"
+  "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id",
+  "PlantCyc":"https://pmn.plantcyc.org/PLANT/NEW-IMAGE?type=PATHWAY&object=query_id",
+  "ECs":"https://pmn.plantcyc.org/PLANT/substring-search?type=NIL&object=query_id",
+  "KEGG":"https://www.genome.jp/entry/query_id",
+  "GO (BP)": "https://amigo.geneontology.org/amigo/term/query_id",
+  "GO (MF)": "https://amigo.geneontology.org/amigo/term/query_id",
+  "GO (CC)": "https://amigo.geneontology.org/amigo/term/query_id"
 }
