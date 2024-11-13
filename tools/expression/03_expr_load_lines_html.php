@@ -5,7 +5,7 @@
       <i class="fas fa-sort" style="color:#229dff"></i> Lines
     </div>
 
-    <div id="line_chart_frame" class="collapse show" style="border:2px solid #666; padding-top:7px">
+    <div id="line_chart_frame" class="collapse hide" style="border:2px solid #666; padding-top:7px">
       
 
       <div id="lines_frame">

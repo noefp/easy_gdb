@@ -3,16 +3,17 @@
 <center>
 
 <?php
-  
+ 
 if ( file_exists("$expression_path/expression_info.json") ) {
-  
+ 
   if ($annot_hash[$dataset_name_ori]["cartoons"]) {
   
     $cartoon_conf = $annot_hash[$dataset_name_ori]["cartoons"];
 
     //echo "<p>annot_hash cartoons exists and was found!</p>";
 
-    if ($expr_cartoons && file_exists($expression_path."/$cartoon_conf") ) {
+
+     if (($positions['cartoons'] != 0) && file_exists($expression_path."/$cartoon_conf") ) {
       
       $cartoons_json = file_get_contents($expression_path."/$cartoon_conf");
       

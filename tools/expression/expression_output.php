@@ -271,7 +271,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
         
         
         //save cartoons data
-        if ($expr_cartoons && $annot_hash) {
+        // echo $positions['cartoons']
+        if (($positions['cartoons'] != 0) && $annot_hash) {
+        // if ($annot_hash) {
           
           if ($annot_hash[$dataset_name_ori]["cartoons"]) {
             
@@ -332,27 +334,57 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   
 } // if expr file exists
-
 ?>
 
   <!-- This message would be displayed when the information in the Json "expression_colors" arrays does not match the size -->
   <div id="color_default" class="alert alert-info" style="display:none"><strong>Info:</strong> The default palette has been selected because the size of the attributes
 "expression_colors" in <i>"expression_info.json"</i> do not match !!!</div>
 
-<?php include realpath('01_expr_colors_range.php'); ?>
-<?php include realpath('03_expr_load_cartoons_html.php'); ?>
-<?php include realpath('03_expr_load_lines_html.php'); ?>
-<?php include realpath('03_expr_load_cards_html.php'); ?>
-<?php include realpath('03_expr_load_heatmap_html.php'); ?>
-<?php include realpath('03_expr_load_replicates_html.php'); ?>
-<?php include realpath('03_expr_load_avg_table_html.php'); ?>
 
 
+<?php 
+
+include realpath('01_expr_colors_range.php');
+
+asort($positions);
+
+foreach($positions as $key => $value){
+  if($value!=0)
+  {
+    switch($key){
+      case 'cards':
+        include realpath('03_expr_load_cards_html.php'); 
+        break;
+
+      case 'table' :
+        include realpath('03_expr_load_avg_table_html.php');
+        break;
+
+      case 'replicates':
+        include realpath('03_expr_load_replicates_html.php');
+        break;
+
+      case 'cartoons':
+        include realpath('03_expr_load_cartoons_html.php'); 
+        break;
+
+      case 'heatmap':
+        include realpath('03_expr_load_heatmap_html.php'); 
+        break;
+
+      case 'lines':
+        include realpath('03_expr_load_lines_html.php');
+        break;
+
+      case 'description':
+        include realpath('01_expr_load_description.php');
+        break;
+    }
+  }
+}
+?>
 
 
-
-  
-  
 <!-- </div> old end of page_container-->
 
 <br>
@@ -371,8 +403,8 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
   var cartoons_all_genes = <?php echo json_encode($cartoons_all_genes) ?>;
-  // var replicates_one_gene = <?php echo json_encode($replicates_all_genes[$found_genes[0]]) ?>;
-  // var replicates_all_genes = <?php echo json_encode($replicates_all_genes) ?>;
+  // var replicates_one_gene = <?php //echo json_encode($replicates_all_genes[$found_genes[0]]) ?>;
+  // var replicates_all_genes = <?php //echo json_encode($replicates_all_genes) ?>;
   var replicates_one_gene = scatter_one_gene;
   var replicates_all_genes = scatter_all_genes;
   
@@ -381,9 +413,9 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   var img_path = <?php echo json_encode($images_path) ?>;
   var expr_img_array = <?php echo json_encode($expr_img_array) ?>;
   
-  var cartoons = <?php echo json_encode($expr_cartoons) ?>;
-  
-  if (cartoons) {
+  var cartoons = <?php echo json_encode($positions['cartoons']) ?>;
+
+  if (cartoons!=0) {
     var imgObj = <?php echo json_encode($jcartoons) ?>;
     var canvas_h = <?php echo json_encode($canvas_h) ?>;
     var canvas_w = <?php echo json_encode($canvas_w) ?>;
@@ -405,18 +437,12 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   
   
-  
-  
-  
-  
-  
-  
   // $("#tblResults").dataTable({
   //   "dom":'Bfrtip',
   //   "ordering": false,
   //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   // });
-  //
+  
   // $("#tblResults_filter").addClass("float-right");
   // $("#tblResults_info").addClass("float-left");
   // $("#tblResults_paginate").addClass("float-right");

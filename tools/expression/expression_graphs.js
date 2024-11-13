@@ -1,5 +1,13 @@
 var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546ead','#666','#999','#ccc','#000',"#a61101", "#c89", "#ab5700", "#798b00", "#437801", "#036aab", "#d0f", "#700982", "#fe9989", "#f8aedf", "#ffdf64", "#cbff89", "#6befff", "#f77ffa",'#b66'];
 
+var labels_length=[];
+
+sample_array.forEach( sample => {
+  labels_length.push(sample.length);
+});
+height_labels=Math.max(...labels_length);
+
+
 // ######################################################## Lines
 
 var options = {
@@ -29,7 +37,7 @@ var options = {
     align: 'left'
   },
   markers: {
-    size: 5
+    size: 3
   },
   xaxis: {
     categories: sample_array,
@@ -38,7 +46,8 @@ var options = {
       rotateAlways: true,
       hideOverlappingLabels: false,
       trim: false,
-      maxHeight: 450
+      maxHeight: 450,
+      minHeight: height_labels*4.5
     }
   },
   yaxis: {
@@ -54,6 +63,7 @@ var options = {
     offsetY: -30,
     offsetX: 25,
     fontSize: 13,
+    showForSingleSeries: true,
     markers: {
       size: 11,
       shape: 'square',
@@ -67,7 +77,7 @@ var options = {
 };
 
 var line_chart = new ApexCharts(document.querySelector("#chart_lines"), options);
-line_chart.render();
+// line_chart.render();
 
 
 
@@ -120,6 +130,8 @@ $( "#bars_btn" ).click(function() {
      color_ranges.push({from:ranges[i][0],to:ranges[i][1],name:ranges_text[i],color:colors})
      i++;
   });
+
+
 
   
   $( "#red_color_btn" ).click(function() {
@@ -210,7 +222,7 @@ legend:{
   xaxis: {
     type: 'category',
     categories: sample_array,
-    tickAmount: sample_array.length-1
+    tickAmount: sample_array.length-2
   }
   
 };
@@ -243,13 +255,14 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
   });
   
   
-  // alert("scatter_one_gene: "+JSON.stringify(scatter_one_gene) );
+  // alert("scatter_one_gene: "+JSON.stringify(replicates_one_gene) );
   // alert("one gene replicates: "+replicates_one_gene);
-  
+  //alert((sample_array.length)-2);
   
 var options = {
   //series: scatter_one_gene,
   series: replicates_one_gene,
+
   // series: test,
   chart: {
     height: 350,
@@ -269,31 +282,50 @@ var options = {
   },
   xaxis: {
     type: 'category',
-    categories: samples_found,
-    tickAmount: samples_found.length-1,
-//    categories: sample_array,
-//    tickAmount: sample_array.length-1,
+    categories: sample_array,
+    tickAmount: (sample_array.length)-2,
     labels: {
-      rotate: -45,
+      rotate: -50,
       rotateAlways: true,
       hideOverlappingLabels: false,
-      trim: false
+      trim: false,
+      maxHeight: 300,
+      minHeight: height_labels*4.5,
+
     }
   },
+
   yaxis: {
-    tickAmount: 5
+    tickAmount: 5,
+        title: {
+      text: 'Expression value'
+    }
   },
   legend: {
     show: false
     // position: 'top'
+  },
+
+  tooltip: {
+    inverseOrder: false
   }
 };
 
 var scatter_chart = new ApexCharts(document.querySelector("#chart2"), options);
 
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+
 $(document).ready(function () {
+  // ################################### render replicates graph when opening replicates section
   
-// ######################################################## Heatmap
+  $("#replicates_graph").on('shown.bs.collapse', function(){
+    scatter_chart.render();
+  });
+    
+// ######################################################## render Heatmap
   var heatmap_shown = 0;
   
   $("#heatmap_graph").on('shown.bs.collapse', function(){
@@ -303,7 +335,11 @@ $(document).ready(function () {
     }
     //$(".flip-card-inner").css("transform", "rotateY(180deg)");
   });
-    
+
+// ######################################################## render lines  
+$("#line_chart_frame").on('shown.bs.collapse', function(){
+  line_chart.render();
+});   
     
     
 // ######################################################## Cards
@@ -445,12 +481,5 @@ $(document).ready(function () {
   });
   
   
-  // ################################### render replicates graph when opening replicates section
-  
-  $("#replicates_graph").on('shown.bs.collapse', function(){
-    scatter_chart.render();
-  });
-  
-  
-  
 });
+

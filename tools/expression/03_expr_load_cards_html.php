@@ -2,7 +2,7 @@
     
 <?php
 
-  if ($expr_cards) {
+  // if ($expr_cards) {
 
     echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#cards_frame" aria-expanded="true">';
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
@@ -41,7 +41,7 @@
       echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row"  style="width:100%; margin-left:30px; margin-right:auto "></div>';
     echo '</div>';
     
-  }
+  // }
 ?>
 
 <script>
@@ -86,11 +86,11 @@ function crearFila(colors,ranges,id) {
     tabla.appendChild(fila_color);
 }
 
-var expr_cards=<?php echo $expr_cards?>; 
+// var expr_cards=<?php //echo $expr_cards?>; 
 
-if (expr_cards){
+// if (expr_cards){
   crearFila(colors,ranges_text,'color-table-cards');
-}
+// }
 
 </script>
 
@@ -220,5 +220,25 @@ if (expr_cards){
     color: black;
     transform: rotateY(180deg);
   }
+
+  .color-bar{
+    width:100%;
+    display:block;
+    text-align: center;
+
+  }
+
+.color-bar table {
+    /* width:80%; */
+    margin-left: 30px; 
+    margin-left:auto;
+    margin-right: auto; 
+ } 
+
+ .color-bar td, th {
+    height: 20px;
+    width: 100px;
+    text-align: center;
+}
   
 </style>

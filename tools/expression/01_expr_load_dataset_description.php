@@ -2,6 +2,7 @@
   // ############################################################### DATASET TITLE AND DESCRIPTION
   
   $expr_img_array = [];
+  $description=false;
   
   if ($dataset_name) {
     echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
@@ -18,10 +19,8 @@
       if ( file_exists("$custom_text_path/expr_datasets/$desc_file") ) {
         
         // echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
-        
         echo "<h2 style=\"font-size:20px\">$r_key</h2>";
-        include("$custom_text_path/expr_datasets/$desc_file");
-        echo"<br>";
+        $description=true;
       }
       // else {
       //   echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
