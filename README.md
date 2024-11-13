@@ -4,12 +4,12 @@ Welcome to EasyGDB. EasyGDB is a system designed to simplify the implementation 
 
 Some examples of sites developed using EasyGDB are:
 
--   [MangoBase](#https://mangobase.org/)
--   [OliveAtlas](#https://www.oliveatlas.uma.es/)
--   [IHSM Subtropicals DB](#https://ihsmsubtropicals.uma.es/)
--   [SkeletalAtlas](#https://www.skeletalatlas.uma.es/)
--   [AvoBase](#https://www.avocado.uma.es/)
--   [MAdLandExpr](#https://peatmoss.plantcode.cup.uni-freiburg.de/easy_gdb/index.php)
+-   [MangoBase](https://mangobase.org/)
+-   [OliveAtlas](https://www.oliveatlas.uma.es/)
+-   [IHSM Subtropicals DB](https://ihsmsubtropicals.uma.es/)
+-   [SkeletalAtlas](https://www.skeletalatlas.uma.es/)
+-   [AvoBase](https://www.avocado.uma.es/)
+-   [MAdLandExpr](https://peatmoss.plantcode.cup.uni-freiburg.de/easy_gdb/index.php)
 -   [Ae. arabicum DB](https://plantcode.cup.uni-freiburg.de/aetar_db/index.php)
 
 ## Table of contents
