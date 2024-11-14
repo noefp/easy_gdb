@@ -53,7 +53,7 @@ Some examples of sites developed using EasyGDB are:
             -   [Set up password](#set-up-password-1)
         -   [Set up server](#set-up-server)
 
-## Installation {#installation}
+## Installation
 
 Easy GDB requires PHP to run. You can use Docker (<https://docs.docker.com/get-docker/>) to install our EasyGDB container (recommended for MAC and Windows) or follow the steps at the bottom to install EasyGDB from scratch in a Linux system (<https://github.com/noefp/easy_gdb#instalation-in-linux-system-without-docker>).
 
@@ -61,7 +61,7 @@ It should be easy to install it in a linux computer (everything was tested on Ub
 
 In most of the servers is probable that some of the tools needed are already installed, and if you work often with linux you would probably have some of them already.
 
-### Set up EasyGDB using the template example and Docker {#set-up-easy-gdb-using-the-template-example-and-docker}
+### Set up EasyGDB using the template example and Docker (#set-up-easy-gdb-using-the-template-example-and-docker)
 
 Using the Docker, the first step will be cloning the docker-compose repository. Go to the path where you want to save your genomics database and clone the easyGDB_docker repository from GitHub:
 
