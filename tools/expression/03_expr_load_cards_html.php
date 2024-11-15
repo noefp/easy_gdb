@@ -8,7 +8,7 @@
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
     echo '</div>';
 
-    echo '<div id="cards_frame" class="row collapse hide" style="padding-top:7px">';
+    echo '<div id="cards_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
 
 
       echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
@@ -38,7 +38,7 @@
 
 
 
-      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row"  style="width:100%; margin-left:30px; margin-right:auto "></div>';
+      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="width:100%; padding-left:30px; padding-bottom:20px "></div>';
     echo '</div>';
     
   // }
