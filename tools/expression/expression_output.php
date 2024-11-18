@@ -11,6 +11,7 @@
   $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
+
 ?>
 
   <div class="margin-20">
@@ -57,7 +58,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   // load annotations
   include realpath('02_expr_load_annotations.php');
-  include realpath('02_expr_load_db_annotations.php');
+  // include realpath('02_expr_load_db_annotations.php');
   
   // array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
   array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\">");
@@ -342,48 +343,63 @@ if ( file_exists("$expr_file") && isset($gids) ) {
 
 
 
-<?php 
+<?php include realpath('01_expr_colors_range.php');
 
-include realpath('01_expr_colors_range.php');
-
+//--------- sets the position of the elements to be displayed-----------
 asort($positions);
+
+$first_info=true;
+$frame="";
 
 foreach($positions as $key => $value){
   if($value!=0)
   {
     switch($key){
       case 'cards':
-        include realpath('03_expr_load_cards_html.php'); 
+        include realpath('03_expr_load_cards_html.php');
+        $frame="cards_frame"; 
         break;
 
       case 'table' :
         include realpath('03_expr_load_avg_table_html.php');
+        $frame="avg_table";
         break;
 
-      case 'replicates':
+      case 'replicartes':
         include realpath('03_expr_load_replicates_html.php');
+        $frame="replicates_graph";
         break;
 
       case 'cartoons':
-        include realpath('03_expr_load_cartoons_html.php'); 
+        include realpath('03_expr_load_cartoons_html.php');
+        if($cartoons_files_found) // This variable is located in 03_expr_load_cartoons_html
+        {$frame="cartoons_frame";} 
         break;
 
       case 'heatmap':
-        include realpath('03_expr_load_heatmap_html.php'); 
+        include realpath('03_expr_load_heatmap_html.php');
+        $frame="heatmap_graph"; 
         break;
 
       case 'lines':
         include realpath('03_expr_load_lines_html.php');
+        $frame="line_chart_frame";
         break;
 
       case 'description':
         include realpath('01_expr_load_description.php');
+        if($description_files_found) // This variable is located in 01_expr_load_description
+        {$frame="description_frame";}
         break;
     }
+    if($first_info && $frame!="") // first position turn from hide to show
+    {
+      $first_info=false;
+      echo "<script> $('#$frame').collapse('show')</script>";
+    }
   }
-}
+} // en sets elements
 ?>
-
 
 <!-- </div> old end of page_container-->
 

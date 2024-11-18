@@ -3,18 +3,20 @@
 <center>
 
 <?php
- 
+ $cartoons_files_found=false;  //Variable that indicates whether the cartoon files exist to show it later
+
 if ( file_exists("$expression_path/expression_info.json") ) {
- 
-  if ($annot_hash[$dataset_name_ori]["cartoons"]) {
   
+  if ($annot_hash[$dataset_name_ori]["cartoons"]) {
+
     $cartoon_conf = $annot_hash[$dataset_name_ori]["cartoons"];
 
     //echo "<p>annot_hash cartoons exists and was found!</p>";
 
-
      if (($positions['cartoons'] != 0) && file_exists($expression_path."/$cartoon_conf") ) {
-      
+
+      $cartoons_files_found=true; // cartoons files exist
+
       $cartoons_json = file_get_contents($expression_path."/$cartoon_conf");
       
       // echo "<p>annot_hash cartoons_json exists and was found!</p>";
@@ -51,7 +53,7 @@ if ( file_exists("$expression_path/expression_info.json") ) {
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
       echo '</div>';
 
-      echo '<div id="cartoons_frame" class="row collapse show" style="margin:0px; border:2px solid #666; padding-top:7px">';
+      echo '<div id="cartoons_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
     
       echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
       echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\"><b>Select gene:</b></label>";

@@ -2,7 +2,7 @@
   // ############################################################### DATASET TITLE AND DESCRIPTION
   
   $expr_img_array = [];
-  $description=false;
+  $description_files_found=false; //Variable that indicates if the dataset information files exist to be displayed later
   
   if ($dataset_name) {
     echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
@@ -20,7 +20,7 @@
         
         // echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
         echo "<h2 style=\"font-size:20px\">$r_key</h2>";
-        $description=true;
+        $description_files_found=true; // the dataset information files exist
       }
       // else {
       //   echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
