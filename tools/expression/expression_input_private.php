@@ -186,6 +186,9 @@ if ($dir_counter) {
             source: function(request, response) {
               var results = $.ui.autocomplete.filter(names, request.term);
               response(results.slice(0, 15));
+              if(results == "")
+              {$('#autocomplete_gene').css("background-color",'#f17c7c')}
+              else {$('#autocomplete_gene').css("background-color", "white")}
             }
           });
         }
@@ -200,8 +203,12 @@ if ($dir_counter) {
     // Get dataset genes when changing dataset
     $('#sel1').change(function () {
       selected_dataset = $('#sel1').val();
-      
       ajax_call(selected_dataset);
+    });
+
+    $('#autocomplete_gene').on('input', function() {
+     if($(this).val() == "")
+      {$('#autocomplete_gene').css("background-color", "white")}
     });
 
     // Get datasets when changing category
