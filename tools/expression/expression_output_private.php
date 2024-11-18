@@ -21,7 +21,7 @@
 
 <div class="page_container" style="margin-top:20px">
   <br>
-<?php include realpath('01_expr_load_dataset_description.php'); ?>
+<?php include realpath('01_expr_check_dataset_description.php'); ?>
 
 </div> <!-- end of page_container -->
   
@@ -365,7 +365,7 @@ foreach($positions as $key => $value){
         $frame="avg_table";
         break;
 
-      case 'replicartes':
+      case 'replicates':
         include realpath('03_expr_load_replicates_html.php');
         $frame="replicates_graph";
         break;
