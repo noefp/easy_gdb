@@ -259,9 +259,31 @@ For more information about how to add a new species and to add tracks see `Insta
 
 #### BLAST
 
-In the web browser, follow the link to `BLAST` in the tools toolbar menu. There you will see the BLAST input page. In `egdb_files/egdb_conf/easyGDB_conf.php`, you can change the input example sequence changing the variable `$blast_example`.
+In the web browser, follow the link to `BLAST` in the tools toolbar menu. There you will see the BLAST input page (http://localhost:8000/easy_gdb/tools/blast/blast_input.php). In `egdb_files/egdb_conf/easyGDB_conf.php`, you can change the input example sequence changing the variable `$blast_example`.
 
-To add BLAST datasets we need to copy the blast databases in the `blast_dbs` folder (path can be changed in `easyGDB_conf.php`). The BLAST databases should copied inside a category folder, such as `category_1` and `category_2` in the example template. If all the BLAST databases are included in a single category folder, there will be only a dropdown menu to select the BLAST database in the select Dataset section in the BLAST input page. If the BLAST databases are organized in two or more category folders, there will be an extra dropdown menu to select the category and then it will be posible to select the databases within the category.
+To add BLAST datasets we need to copy the blast databases in the `blast_dbs` folder (path can be changed in `easyGDB_conf.php`). The BLAST databases should be copied inside a category folder, such as `category_1` and `category_2` in the example template. If all the BLAST databases are included in a single category folder, there will be only a dropdown menu to select the BLAST database in the select Dataset section in the BLAST input page. If the BLAST databases are organized in two or more category folders, there will be an extra dropdown menu to select the category and then it will be posible to select the databases within the category.
+
+    blast_dbs/
+    |---- species_1/
+          |---- proteins.fasta.psq
+          |---- proteins.fasta.psi
+          |---- proteins.fasta.psd
+          |---- proteins.fasta.pog
+          |---- proteins.fasta.pin
+          |---- proteins.fasta.phr
+          |---- nucleotides.fasta.nsq
+          |---- nucleotides.fasta.nsi
+          |---- nucleotides.fasta.nsd
+          |---- nucleotides.fasta.nog
+          |---- nucleotides.fasta.nin
+          |---- nucleotides.fasta.nhr
+    |---- species_2/
+          |---- proteins.fasta.psq
+          |---- proteins.fasta.psi
+          |---- proteins.fasta.psd
+          |---- proteins.fasta.pog
+          |---- proteins.fasta.pin
+          |---- proteins.fasta.phr
 
 BLAST database files and category folders MUST NOT include spaces in their names. Underscores can be used in the file and folder names and they will be displayed as spaces in the web.
 
@@ -285,17 +307,22 @@ You can also add custom links for the BLAST output by customizing the blast_link
 
 ``` json
 {
+  "sample_blast_DB_proteins.fasta":"/easy_gdb/gene.php?name={subject}&annot=annotations.txt",
   "sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}",
-  "sample_blast_DB_proteins.fasta":"#",
+  "sample_blast_DB_nucleotides.fasta":"#",
   "sample_uniprot.fasta":"https://www.uniprot.org/uniprot/{subject}"
 }
 ```
 
-Just include the name of your database on the left and the link on the right. By default if the database name is not included in the JSON file, the BLAST output will link to the easy GDB gene page. You can provide any other links and use the variables in the example (`{subject}`, `{chr}`, `{start}`, `{end}`) to add gene names or coordinates extracted from the BLAST results. In this file several link examples are shown:
+Just include the name of your database on the left (`sample_blast_DB_proteins.fasta`) and the link on the right (`/easy_gdb/gene.php?name={subject}&annot=annotations.txt`). 
+
+You can provide any other links and use the variables in the example (`{subject}`, `{chr}`, `{start}`, `{end}`) to add gene names or coordinates extracted from the BLAST results. In this file several link examples are shown:
 
 -   Link to genome browser: the variables `{chr}`, `{start}`, `{end}` will be replaced by the ones found in the results. Very useful for genome sequence BLAST databases.
 -   No link: using a value of `#` will produce self links. For example for genes not included in your easy GDB database.
 -   Gene name external links: the variable `{subject}` will be replaced by the subject gene name. It can be use to link to external databases, such as UniProt in the example above.
+
+In the case of the installation of EasyGDB using the PostgreSQL relational database, if the blast database name is not included in the JSON file, the BLAST output will link to the easy GDB gene page by default. 
 
 #### Sequence extraction
 
