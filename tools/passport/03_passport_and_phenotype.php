@@ -179,11 +179,11 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
             $help_img = $descriptor_img;
 
             if ($sp_name) {
-              echo "<td><img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'><br>";
               echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
             } else {
               //echo "$ root_path/$ path_img/$ help_img: $root_path$path_img/$help_img";
-              echo "<td><img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'><br>";
               echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
             }
 
@@ -201,7 +201,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
                 if ($one_option && $one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
                   $one_option_printed = str_replace("_", " ", $one_option);
                   if ($one_img == $img_upov) {
-                    echo "<br><th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                    echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
                   } else {
                   echo "<th style=\"text-align: center;\">$one_option_printed</th>";
                   }
@@ -210,7 +210,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
                 if ($one_option && $one_img && file_exists("$root_path/$path_img/$one_img") ) {
                   $one_option_printed = str_replace("_", " ", $one_option);
                   if ($one_img == $img_upov) {
-                    echo "<br><th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
+                    echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
                   } else {
                     echo "<th style=\"text-align: center;\">$one_option_printed</th>";
                   }
@@ -220,7 +220,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
 
             } // end foreach
           
-            echo "</tr></head><tr><body>";
+            echo "</tr></head><body><tr>";
             
             foreach($img_opt_array as $one_option) {
             
@@ -288,7 +288,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
         if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
           $category_printed = str_replace("_", " ", $category);          
           echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
-          echo "<button id=\"showPopupButton\" onclick=\"showPopup()\" style=\"margin-left: 10px;\">Información</button><div id=\"popupContent\" style=\"display:none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;\"></div><br>";
+          //echo "<button id=\"showPopupButton\" onclick=\"showPopup()\" style=\"margin-left: 10px;\">Información</button><div id=\"popupContent\" style=\"display:none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;\"></div><br>";
 
           
           foreach ($categories as $index => $cat) {
@@ -296,7 +296,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
             $cat_printed = str_replace("_", " ", $cat);
             $popup_ranges = "$cat_printed: $range<br>";
             //echo "<button onclick=\"openPopup()\">Info</button>";
-            echo "<span style='color: grey; font-size: 12px;'>$popup_ranges</span>";
+            //echo "<span style='color: grey; font-size: 12px;'>$popup_ranges</span>";
             array_push($all_ranges_descriptors, $popup_ranges);
           }
           
@@ -334,11 +334,11 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
             $help_img = $descriptor_img;
 
             if ($sp_name) {
-              echo "<td><img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<img src=\"$path_img/$sp_name/$help_img\" width=\"300\" style='border: 1px solid grey;'><br>";
               echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
             } else {
               //echo "$ root_path/$ path_img/$ help_img: $root_path$path_img/$help_img";
-              echo "<td><img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'></td><br>";
+              echo "<img src=\"$path_img/$help_img\" width=\"300\" style='border: 1px solid grey;'><br>";
               echo "<i><span style='color: grey; font-size: 12px;'>Help image</span></i><br>";
             }
 
@@ -373,7 +373,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
               
             } // end foreach
           
-            echo "</tr></head><tr><body>";
+            echo "</tr></head><body><tr>";
             
             foreach($img_opt_array as $one_option) {
             
@@ -441,12 +441,12 @@ function file_to_table($file_path, $acc_name) {
 
     // Crear la sección colapsable con un ID único
     echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#$collapse_id\" aria-expanded=\"false\" style=\"color: white; background-color: grey\">";
-    echo "<i class=\"fas fa-sort\" style=\"color:#e0ea68\"></i> Raw data </div>";
+    echo "<span class=\"fas fa-sort\" style=\"color:#e0ea68\"></span> Raw data </div>";
     echo "<div id=\"$collapse_id\" class=\"collapse\">";
 
     // Tabla con los datos crudos
     echo "<div style=\"overflow:scroll\">";
-    echo "<table class=\"table\" id=\"tblResults\"><thead><tr>";
+    echo "<table class=\"table tblResults\"><thead><tr>";
     
     foreach ($header as $col_name) {
       $descriptor_name = $col_name;
@@ -566,7 +566,7 @@ function file_to_table($file_path, $acc_name) {
 </div><!-- close passport container -->
 <br>
 
-<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
+<?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
 
 
 
@@ -705,24 +705,12 @@ echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leafle
   </div>  
 
 
-  
-  <!-- DESCRIPTORS 
-  <div class="container p-1 my-1 bg-secondary text-white">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <center><h1><b> Phenotype descriptors </b></h1></center>
-    </div>
-  </div>
-
-  <div class ="container p-7 my-3 border">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <br>
--->
 <?php 
   
-  if (!empty($phenotype_file_array)){
+if (!empty($phenotype_file_array)){
 
     echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><b> Phenotype descriptors </b></h1></center></div></div>";
-    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    
 
   $phenotype_img_json = $pass_hash["phenotype_imgs"];
   
@@ -736,6 +724,8 @@ echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leafle
   foreach ($phenotype_file_array as $phenotype_file) {
     $phenotype_file_full_path = "$passport_path/$pass_dir/$phenotype_file";
     
+    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
     $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
 
@@ -744,14 +734,15 @@ echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leafle
     //$featured_array_json = json_encode($featured_array);
 
     file_to_table($phenotype_file_full_path, $acc_name);
-
+    
+    echo "</div></div>";
+    
   }
   
   // Ref images used
   $img_src_msg = $pass_hash["img_src_msg"];
   echo "<br>$img_src_msg"; // CONDICIONAR IMPRESIÓN DE LAS IMÁGENES
 
-  echo "</div></div>";
 
 }
 
@@ -777,22 +768,22 @@ echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leafle
 <script type="text/javascript">
 //----- QR CODE
 // $(document).ready(function () {
-  
+
 url_qrcode = window.location.href;
 
 //qr_id = $("#qrcode");
 qr_id = document.getElementById("qrcode")
-  
-new QRCode(qr_id,url_qrcode); 
+
+new QRCode(qr_id,url_qrcode);
 // });
 
 //----- PRINT MAP
-  
+
 latitude = "<?php echo $latitude; ?>";
 latitude_printed = "<?php echo number_format($latitude,2); ?>";
 longitude = "<?php echo $longitude; ?>";
 longitude_printed = "<?php echo number_format($longitude,2); ?>";
-  
+
   if (latitude && longitude) {
     marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
   }
@@ -801,7 +792,7 @@ longitude_printed = "<?php echo number_format($longitude,2); ?>";
     longitude = "<?php echo $country_longitude; ?>";
     marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
   }
-  
+
   var map = L.map('map').setView([latitude, longitude], 5);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
 
@@ -830,22 +821,22 @@ longitude_printed = "<?php echo number_format($longitude,2); ?>";
     } else {
       popup.style.display = "none";
     }
-    
+
     popup.innerHTML = "Info to show."; // Remplace to ranges info
   }
 
-  $("#tblResults").dataTable({
-  	dom:'Bfrtlpi',
+  $(".tblResults").dataTable({
+    dom:'Bfrtlpi',
     "oLanguage": {
        "sSearch": "Filter by:"
      },
     "order": [],
     "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   });
-  
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
+
+  $(".tblResults_filter").addClass("float-right");
+  $(".tblResults_info").addClass("float-left");
+  $(".tblResults_paginate").addClass("float-right");
 
 </script>
 
