@@ -26,21 +26,25 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
       <?php 
-        if ($tb_about) {
-          echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About</a></li>';
-        }
         if ($tb_species) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
         }
-        if ($tb_downloads) {
-          echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
+        
+        if ($tb_gene_expr) {
+          echo '<li class="nav-item dropdown">';
+            echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
+            echo '<div class="dropdown-menu">';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Expression viewer</a>';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/comparator_input.php">Expression comparator</a>';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';
+            echo '</div>';
+          echo '</li>';
         }
         
         if ($tb_tools) {
           echo '<li class="nav-item dropdown">';
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>';
           echo '<div class="dropdown-menu">';
-          
           
           if ($tb_search) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/search/search_input.php">Search</a>';
@@ -57,9 +61,6 @@
           if ($tb_annot_ext) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
           }
-          if ($tb_gene_expr) {
-            echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Gene Expression</a>';
-          }
           if ($tb_lookup) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
           }
@@ -69,6 +70,14 @@
           
           echo '</div>';
           echo '</li>';
+        }
+        
+        if ($tb_downloads) {
+          echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
+        }
+        
+        if ($tb_about) {
+          echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About</a></li>';
         }
 
         if ($tb_more) {
