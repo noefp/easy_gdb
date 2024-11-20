@@ -204,7 +204,7 @@ and adding the next line to the enabled site in Apache:
 
 Some tools such as *Search*, *Annotation Extraction*, and the *Gene Expression Atlas*, will require acces to the gene annotations.
 
-To set up the functional annotation file database you just need to place a tab-delimited file (.txt) with the annotations of the genes in the folder `annotations` in src (`/var/www/html`).
+To set up the functional annotation file database you just need to place a tab-delimited file (.txt) with the annotations of the genes in the `annotations` directory in the `$annotations_path`, which by default in the configuration file (`easyGDB_conf.php`) is `$root_path/annotations` equivalent to src (`/var/www/html/annotations`).
 
 You can place multiple annotation files or multiple subfolders with their respective annotation files inside.
 
@@ -263,6 +263,7 @@ In the web browser, follow the link to `BLAST` in the tools toolbar menu. There 
 
 To add BLAST datasets we need to copy the blast databases in the `blast_dbs` folder (path can be changed in `easyGDB_conf.php`). The BLAST databases should be copied inside a category folder, such as `category_1` and `category_2` in the example template. If all the BLAST databases are included in a single category folder, there will be only a dropdown menu to select the BLAST database in the select Dataset section in the BLAST input page. If the BLAST databases are organized in two or more category folders, there will be an extra dropdown menu to select the category and then it will be posible to select the databases within the category.
 
+```
     blast_dbs/
     |---- species_1/
           |---- proteins.fasta.psq
@@ -284,6 +285,7 @@ To add BLAST datasets we need to copy the blast databases in the `blast_dbs` fol
           |---- proteins.fasta.pog
           |---- proteins.fasta.pin
           |---- proteins.fasta.phr
+```
 
 BLAST database files and category folders MUST NOT include spaces in their names. Underscores can be used in the file and folder names and they will be displayed as spaces in the web.
 
@@ -335,32 +337,92 @@ The variable `$max_extract_seq_input` (in `easyGDB_conf.php`) controls the maxim
 
 #### Gene version lookup
 
-It should work correctly if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. This tool is useful to, for example, get or provide a list of identifiers of the closest model organism genes, different gene versions or orthologs in other species.
+It should work correctly if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. This tool is useful to, for example, get or provide a list of identifiers of different gene versions or orthologs in other species, such as the closest model organism.
 
 The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum number of gene names allowed as input.
 
+```
+gene1.1	gene1_v2.1
+gene2.1	gene2_v2.1;gene3_v2
+gene3.1	gene4_v2.1
+gene_c1_10000V3.1	gene_s139_2V2.1
+gene_c1_1000V3.1	gene_s200_100V2.1;gene_s200_101V2.1
+gene_c1_10010V3.1	gene_s139_3V2.1
+gene_c1_10040V3.1	gene_s139_5V2.1
+gene_c1_10050V3.1	gene_s139_6V2.1
+```
+
 #### Gene Set Enrichment
 
-Work in progress. Available soon.
+This tool requires a lookup file to convert the query gene IDs to one of the available species at g:Profiler (https://biit.cs.ut.ee/gprofiler/gost). If your species is already available then it is posible to submit the list of query genes directly. To enable this tool is necessary to fill out the `enrichment.json` file and place it in the `lookup` directory.
+
+In the example below, the title "A.thaliana" is the name show for selection in the input page. "gprofiler_sps" : "athaliana" is the name required in the g:Profiler tool. Available species IDs can be found at https://biit.cs.ut.ee/gprofiler/page/organism-list.
+
+```
+{
+  "A.thaliana":
+    {"gprofiler_sps" : "athaliana",
+      "lookup_files":
+      [
+        "Species1_Arabidopsis_Best_hit.txt",
+        "Species2_Arabidopsis_Best_hit.txt"
+      ]
+    }
+}
+```
+
 
 ### Gene expression atlas
 
-Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the tools dropdown menu of the toolbar. The expression datasets should be placed in the `expression data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
+Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the toolbar. The expression datasets should be placed in the `expression_data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
 
 In the `expression_data` folder you can find two examples of tab-delimited files, with extension `.txt`, containing expression data, and a JSON file named `expression_info.json`. 
 Place your expression data files in the `expression_data` folder, as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column), as shown in the examples. All replicates should have the same name in the header to be group together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
 
+```
+Gene ID	Leaf	Leaf	Leaf	Fruit	Fruit	Fruit	Root	Root	Root
+gene1	156.22	119.92	105.89	54.95	39.59	24.56	40.43	8.32	44.93
+gene2	49.33	6.45	26.7	11.97	0.85	10.61	21.25	1.54	18.9	34.8
+gene3	10.84	6.06	9.98	13.59	8.37	11.23	10.11	9.68	10.89	18.21
+```
+
+Just placing the expression files in the `expression_data` directory will enable the expression tools.
+
+Now, to customize the visualization methods in the Expression Viewer it is posible to edit the values of the variable `$positions` in the `easyGDB_conf.php` file. Set the value of any tool to 0 to disable it, and to 1 or any number greater than 1 to enabled it and set the order in which they will appear in the graphical interface, starting for 1 on top of the output page and adding beloe the next visualization methods as the value increases.
+
+```
+// Expression tools order: 0 for not shown, >=1 to setup the order
+$positions=[
+  'description' => 1,
+  'cartoons' => 2,
+  'lines' => 3,
+  'cards' => 4,
+  'heatmap' => 5,
+  'replicartes' => 6,
+  'table' => 7
+];
+```
+
+
 #### expression_info.json
 
-the JSON file `expression_info.json` includes the names of the experiment description files, a link to the gene annotation page (by default it will check in the local annotations, but it is possible to add external links or remove links), and names of images used for each sample in case of enabling the expression card visualization or the cartoons. Gene annotations links will appear in the gene names of the Average values table.
+The JSON file `expression_info.json` includes the names of the experiment description files, a link to the gene annotation page (it is possible to add external links or remove links). In the `annotation_file` field it is possible to provide an annotation file to add gene annotations in the Average values table and links to the gene annotations pages. Using `#` in the `link` field will remove links, leaving the field empty will link to the gene annotation page (it is important to add an annotation file for it to work correctly).
 
-You can switch the variable `$expr_cards` to 1 in the `easyGDB_conf.php` file to enable the expression card visualization. In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the tab-delimited expression data file, and the image file name correspond with the name in the images path.
+It is also possible to add a dataset description in the `description` field. It will include the indicated PHP file, which should be placed in `egdb_custom_text/custom_pages/expr_datasets/` within the `egdb_files` folder.
+
+In case of enabling the expression card visualization in the `easyGDB_conf.php`, it is important to add the file names of the images used for each sample.  In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the tab-delimited expression data file, and the image file name correspond with the name in the images path.
+
+
+For the configuration of cartoons we should provide a separated JSON file. 
+
 
 ``` json
   {
     "Example1 - Plant_gene_expression (RPKM).txt":
-      {"link":"/easy_gdb/gene.php?name=query_id",
+      {"link":"",
+        "annotation_file":"annotations.txt",
         "description":"example1_description.php",
+        "cartoons":"cartoons_example1.json",
         "images":
           {
             "Leaf":"leaf.jpeg",
@@ -373,7 +435,13 @@ You can switch the variable `$expr_cards` to 1 in the `easyGDB_conf.php` file to
             "Drought":"drought.jpeg",
             "Heat":"heat.jpeg",
             "Cold":"cold.jpeg"
-          }
+          },
+          "expression_colors":
+           {
+             "colors":["#eceff1","#ffee58","#ffb74d","#ff8f00","#ff4f00","#cc0000","#D72C79","#801C5A"],
+             "ranges_txt":["<1",">=1",">=5",">=10",">=50",">=100",">=200",">=1000"],
+             "ranges":[[0,0.99],[1,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,999.99],[1000,999999.99]]
+           }
       },
     "Example2 - Organism dataset name (Units).txt":
       {"link":"#",
@@ -382,13 +450,64 @@ You can switch the variable `$expr_cards` to 1 in the `easyGDB_conf.php` file to
   }
 ```
 
+
 The variable `$expr_menu` can be enabled in the configuration file to activate a link to the datasets information, which will display the information from all the datasets based on the information in the JSON file.
 
-Dataset description PHP files should be placed in `egdb_custom_text/custom_pages/expr_datasets/`. Expression images should be placed in `egdb_images/expr/`.
 
 #### Cartoons
 
 Work in progress. Available soon.
+
+If expression cartoons are enabled we should provide a JSON file to set up each cartoon image, the samples associated to them, and their dimenssions and coordinates.
+
+```
+{
+  "cartoons":
+    [
+      { "img_id":"t1",
+        "sample":"sample1",
+        "image":"sample1.png",
+        "x":10,
+        "y":10,
+        "width":612,
+        "height":480
+      },
+      { "img_id":"t2",
+        "sample":"sample2",
+        "image":"sample2.png",
+        "x":10,
+        "y":10,
+        "width":612,
+        "height":480
+      },
+      { "img_id":"t3",
+        "sample":"sample3",
+        "image":"sample3.png",
+        "x":10,
+        "y":10,
+        "width":612,
+        "height":480
+      },
+      { "img_id":"t4",
+        "sample":"sample4",
+        "image":"sample4.png",
+        "x":10,
+        "y":10,
+        "width":612,
+        "height":480
+      },
+      { "img_id":"t5",
+        "sample":"sample5",
+        "image":"sample5.png",
+        "x":10,
+        "y":10,
+        "width":612,
+        "height":480
+      }
+    ]
+}
+```
+
 
 #### Expression comparator
 
