@@ -538,6 +538,80 @@ Work in progress. Available soon.
 
 Work in progress. Available soon.
 
+
+Passport and phenotype data should be placed in the `$passport_path`, in `$root_path/passport` by default. These files should be tab-delimited text files with as many coulmns as needed.
+
+```
+ID	ACC name	Country
+ID1	Hass	USA
+ID2	Picual	Spain
+ID3	Yummy	China
+```
+
+When several species are used, the passport data should be organized in subfolders.
+
+```
+    passport/
+    |---- Species_1/
+          |---- passport.json
+          |---- sp1_passport.txt
+          |---- sp1_phenotype.txt
+    |---- Species_2/
+          |---- passport.json
+          |---- sp2_passport.txt
+          |---- sp2_phenotype_1.txt
+          |---- sp2_phenotype_2.txt
+          |---- sp2_phenotype_3.txt
+```
+
+
+The `passport.json` file (example shown below), allow as to set up the passport options.
+
+-   `passport_file` (mandatory): calls the passport data file (sp2_passport.txt).
+
+-   `acc_link` (mandatory): defines which column of the passport_file will be the unique identifier to use as link to access the information (usually the accession name or similar identifier).
+
+-   `hide_columns` You can indicate which columns to hide in the output. First column is 0.
+
+-   `phenotype_files` list of tab-delimited files with the phenotype data.
+
+-   `phenotype_imgs` JSON file associating each trait with the corresponding picture.
+
+-   `img_src_msg` Text to reference the image source in the output.
+
+-   `map_columns` List of columns in the passport_file requried for the map. They should correspond to accession name, country of origin, latitude and longitude. If latitude and longitude are not provided the map marker will be placed in the country of origin. First column is 0.
+
+-   `marker_colors` It can be used to show different markersin the map, for example fruits with different color.
+
+-   `sp_name` Needed in cases with several species, to differentiate the markers. `sp_name` also has another function, it is associated with the name of the folder where the different files are located, whether they are passport files or image files.
+
+-   `convert_to_cathegoric` JSON file to assign categoric values to numeric values within a range. For example, to indicate fruit in a range between 0-2 cm are small, 3-6 cm are medium, and 7-12 cm are big.
+
+-   `translator` JSON file to add additional languages to feature names.
+
+-   `featured_descriptors` JSON file to highlight a set of important traits, so they appear in a section on the top of the accession information page.
+
+```
+{
+  "passport_file":"sp2_passport.txt",
+  "acc_link":"ACC name",
+  "hide_columns":[10,11,12],
+  "phenotype_files":["sp2_phenotype_1.txt", "sp2_phenotype_2.txt", "sp2_phenotype_3.txt"],
+  "phenotype_imgs":"sp2_phenotype_imgs.json",
+  "img_src_msg":"<p>The images used in the Phenotype descriptors come from x et al.</p>",
+  "map_columns":[0,7,10,11],
+  "marker_colors":["img1","img2","img3"],
+  "sp_name":"species_2",
+  "convert_to_cathegoric":"convert_numeric_to_cathegoric.json",
+  "translator":"translator.json",
+  "featured_descriptors":"featured_descriptors.json"
+}
+```
+
+
+
+
+
 ## Gene variation tools
 
 Work in progress. Available soon.
