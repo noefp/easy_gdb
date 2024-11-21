@@ -1,0 +1,37 @@
+{
+  "cartoons":
+    [
+      { "img_id":"t1",
+        "sample":"sample1",
+        "image":"tissue1.png",
+        "x":10,
+        "y":10,
+        "width":250,
+        "height":300
+      },
+      { "img_id":"t2",
+        "sample":"sample2",
+        "image":"tissue2.png",
+        "x":10,
+        "y":10,
+        "width":250,
+        "height":300
+      },
+      { "img_id":"t3",
+        "sample":"sample3",
+        "image":"tissue2.png",
+        "x":10,
+        "y":10,
+        "width":250,
+        "height":300
+      },
+      { "img_id":"t4",
+        "sample":"sample4",
+        "image":"tissue4.png",
+        "x":10,
+        "y":10,
+        "width":250,
+        "height":300
+      }
+    ]
+}

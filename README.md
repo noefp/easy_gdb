@@ -374,7 +374,7 @@ In the example below, the title "A.thaliana" is the name show for selection in t
 
 ### Gene expression atlas
 
-Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the toolbar. The expression datasets should be placed in the `expression_data` folder (by default defined as `$expression_path` = `"$root_path/expression_data"`;).
+Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the toolbar. The expression datasets should be placed in the `expression_data` folder (by default defined as `$expression_path` = `$root_path/expression_data`).
 
 In the `expression_data` folder you can find two examples of tab-delimited files, with extension `.txt`, containing expression data, and a JSON file named `expression_info.json`. 
 Place your expression data files in the `expression_data` folder, as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column), as shown in the examples. All replicates should have the same name in the header to be group together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
@@ -386,9 +386,26 @@ gene2	49.33	6.45	26.7	11.97	0.85	10.61	21.25	1.54	18.9	34.8
 gene3	10.84	6.06	9.98	13.59	8.37	11.23	10.11	9.68	10.89	18.21
 ```
 
+Inside the `expression_data` directory it is possible to organize the expression datasets in subfolders to separate them by technology (RNA-seq, microarray, proteomics, metabolomics, etc.) or by species. Only one single `expression_info.json` file is needed to configure all datasets, even when subfolders are used.
+
+```
+    expression_data/
+    |---- expression_info.json
+    |---- RNA-seq_experiments/
+          |---- dataset1.txt
+          |---- dataset2.txt
+          |---- dataset3.txt
+    |---- Proteomics_experiments/
+          |---- dataset1.txt
+          |---- dataset2.txt
+          |---- dataset3.txt
+```
+
+
+
 Just placing the expression files in the `expression_data` directory will enable the expression tools.
 
-Now, to customize the visualization methods in the Expression Viewer it is posible to edit the values of the variable `$positions` in the `easyGDB_conf.php` file. Set the value of any tool to 0 to disable it, and to 1 or any number greater than 1 to enabled it and set the order in which they will appear in the graphical interface, starting for 1 on top of the output page and adding beloe the next visualization methods as the value increases.
+Now, to customize the visualization methods in the Expression Viewer it is posible to edit the values of the variable `$positions` in the `easyGDB_conf.php` file. Set the value of any tool to 0 to disable it, and to 1 or any number greater than 1 to enabled it and set the order in which they will appear in the graphical interface, starting for 1 on top of the output page and adding below the next visualization methods as the values increase.
 
 ```
 // Expression tools order: 0 for not shown, >=1 to setup the order
@@ -406,11 +423,12 @@ $positions=[
 
 #### expression_info.json
 
-The JSON file `expression_info.json` includes the names of the experiment description files, a link to the gene annotation page (it is possible to add external links or remove links). In the `annotation_file` field it is possible to provide an annotation file to add gene annotations in the Average values table and links to the gene annotations pages. Using `#` in the `link` field will remove links, leaving the field empty will link to the gene annotation page (it is important to add an annotation file for it to work correctly).
+The JSON file `expression_info.json` includes links to the gene annotation page for each dataset (it is possible to add external links or remove links). In the `annotation_file` field it is possible to provide an annotation file to add gene annotations in the Average values table and links to the gene annotations pages. By default the field `link` should remain empty (`"link":""`). It is important to add an annotation file for it to work correctly. Using `#` in the `link` field will remove links. To use an external link we just need to add the URL to the `link` field and include the word `query_id` in the place of the gene identifier. For example, for UniProt the link would be `http://www.uniprot.org/uniprot/query_id` and the gene IDs in the expression matrix should correspond to UniProt identifiers.
 
-It is also possible to add a dataset description in the `description` field. It will include the indicated PHP file, which should be placed in `egdb_custom_text/custom_pages/expr_datasets/` within the `egdb_files` folder.
+It is also possible to add a dataset description in the `description` field. It will include the indicated PHP file, which should be placed in `egdb_custom_text/custom_pages/expr_datasets/` within the `egdb_files` folder. It is recommendable to describe briefly the experrimentals conditions and links to its publication. 
+The descriptions of all datasets will be shown in the Expression Datasets menu, which can be enabled using the variable `$expr_menu` in the configuration file.
 
-In case of enabling the expression card visualization in the `easyGDB_conf.php`, it is important to add the file names of the images used for each sample.  In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the tab-delimited expression data file, and the image file name correspond with the name in the images path.
+In case of enabling the expression card visualization in the `easyGDB_conf.php`, it is important to add the file names of the images used for each sample. In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the header of the tab-delimited expression data file, and the image file name correspond with the name in the images path.
 
 
 For the configuration of cartoons we should provide a separated JSON file. 
@@ -419,10 +437,10 @@ For the configuration of cartoons we should provide a separated JSON file.
 ``` json
   {
     "Example1 - Plant_gene_expression (RPKM).txt":
-      {"link":"",
+      {
+        "link":"",
         "annotation_file":"annotations.txt",
         "description":"example1_description.php",
-        "cartoons":"cartoons_example1.json",
         "images":
           {
             "Leaf":"leaf.jpeg",
@@ -444,21 +462,32 @@ For the configuration of cartoons we should provide a separated JSON file.
            }
       },
     "Example2 - Organism dataset name (Units).txt":
-      {"link":"#",
+      {
+        "link":"#",
         "description":"example2_description.php"
+      },
+    "Example3 - Other dataset.txt":
+      {
+        "link":"http://www.uniprot.org/uniprot/query_id"
+      },
+    "Example4 - Dataset with cartoon.txt":
+      {
+        "link":"",
+        "annotation_file":"annotations.txt",
+        "cartoons":"cartoons_example1.json"
       }
   }
 ```
 
 
-The variable `$expr_menu` can be enabled in the configuration file to activate a link to the datasets information, which will display the information from all the datasets based on the information in the JSON file.
-
-
 #### Cartoons
 
-Work in progress. Available soon.
-
 If expression cartoons are enabled we should provide a JSON file to set up each cartoon image, the samples associated to them, and their dimenssions and coordinates.
+Cartoon images should be placed at `egdb_images/expr/cartoons/` inside your `egdb_files` folder, which usually correspond to your project customization folder and it could have been renamed before (see Customize file paths).
+
+A simple way to create the cartoons is to generate a whole picture using one layer for each tissue. Then each image should be generated with transparent background and including only the current tissue colored in white (the code will be replce white by the expression color for each sample). Exporting one image file for each sample, all with the same dimensions. That way, when all cartoon images are overlapped they will form the whole picture.
+Drawings in the separate images should not overlapp, and black color should be use for drawing borders, captions arrows or other elements than the actual expression tissue.
+
 
 ```
 {
@@ -466,43 +495,35 @@ If expression cartoons are enabled we should provide a JSON file to set up each 
     [
       { "img_id":"t1",
         "sample":"sample1",
-        "image":"sample1.png",
+        "image":"tissue1.png",
         "x":10,
         "y":10,
-        "width":612,
-        "height":480
+        "width":250,
+        "height":300
       },
       { "img_id":"t2",
         "sample":"sample2",
-        "image":"sample2.png",
+        "image":"tissue2.png",
         "x":10,
         "y":10,
-        "width":612,
-        "height":480
+        "width":250,
+        "height":300
       },
       { "img_id":"t3",
         "sample":"sample3",
-        "image":"sample3.png",
+        "image":"tissue2.png",
         "x":10,
         "y":10,
-        "width":612,
-        "height":480
+        "width":250,
+        "height":300
       },
       { "img_id":"t4",
         "sample":"sample4",
-        "image":"sample4.png",
+        "image":"tissue4.png",
         "x":10,
         "y":10,
-        "width":612,
-        "height":480
-      },
-      { "img_id":"t5",
-        "sample":"sample5",
-        "image":"sample5.png",
-        "x":10,
-        "y":10,
-        "width":612,
-        "height":480
+        "width":250,
+        "height":300
       }
     ]
 }
