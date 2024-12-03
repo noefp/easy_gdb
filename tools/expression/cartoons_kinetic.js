@@ -124,11 +124,15 @@ function draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,active_gene){
     var img_h = imgObj["cartoons"][i]["height"];
     var sample_name = imgObj["cartoons"][i]["sample"];
 
+    //to avoid errors in sample names with spaces
+    var processed_id = sample_name.replace(/ /g,"_");
+
     //var gene_expr = cartoons_all_genes["Unc93b1"][sample_name];
     var gene_expr = cartoons_all_genes[active_gene][sample_name];
   
   
-    load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr,ranges,colors)
+    load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,processed_id,gene_expr,ranges,colors)
+    // load_image(canvas,kj_layer,imgs_group,img,img_x,img_y,img_w,img_h,sample_name,gene_expr,ranges,colors)
 
   }//end for loop
 

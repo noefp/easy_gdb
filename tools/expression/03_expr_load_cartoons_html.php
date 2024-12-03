@@ -97,8 +97,10 @@ if ( file_exists("$expression_path/expression_info.json") ) {
         echo "<ul id=\"cartoon_labels\" style=\"text-align:left\">";
         if($cartoons_all_genes[$found_genes[0]]){
           foreach ($cartoons_all_genes[$found_genes[0]] as $sample_name => $ave_value) {
-          
-            echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_name"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
+            
+            $sample_id=str_replace(" ","_",$sample_name);
+            
+            echo "<li class=\"cartoon_values pointer_cursor\" id=\"$sample_id"."_kj_image\">".$sample_name.": ".$ave_value."</li>";
           }
       }
         echo "</ul>";

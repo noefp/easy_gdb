@@ -423,7 +423,7 @@ $("#line_chart_frame").on('shown.bs.collapse', function(){
   
     $(".cartoon_values").mouseover(function(){
       image_id = this.id;
-      //alert("image: "+image_id);
+//      alert("image: "+image_id);
     
       obj = canvas.get('#'+image_id)[0];
 
