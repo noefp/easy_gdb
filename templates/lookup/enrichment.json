@@ -1,0 +1,10 @@
+{
+  "A.thaliana":
+    {"gprofiler_sps" : "athaliana",
+      "lookup_files":
+      [
+        "Species1_Arabidopsis_Best_hit.txt",
+        "Species2_Arabidopsis_Best_hit.txt"
+      ]
+    }
+}
