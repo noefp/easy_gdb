@@ -19,7 +19,7 @@
           
           if ($species_hash[$key]["public"]) {
             echo '<a href="species_view.php?sps_name='.$key.'&common_name='.$species_hash[$key]["common_name"].'&sps_img='.$species_hash[$key]["image"].'" class="float-left card egdb_person_card" style="color:#333">';
-            echo '<img class="card-img-top egdb_person_img" src="'.$images_path.'/species/'.$species_hash[$key]["image"].'" alt="'.$species_hash[$key]["sps_name"].'">';
+            echo '<img class="egdb_person_img" src="'.$images_path.'/species/'.$species_hash[$key]["image"].'" alt="'.$species_hash[$key]["sps_name"].'">';
             echo '<div class="card-body" style="white-space: nowrap; padding: 5px;">';
             echo '<h4 style="margin-bottom: 5px"><i>'.$species_hash[$key]["sps_name"].'</i></h4>';
             echo '<p class="card-text">'.$species_hash[$key]["common_name"].'</p>';
