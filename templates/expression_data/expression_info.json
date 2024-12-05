@@ -1,6 +1,7 @@
 {
   "Example1 - Plant_gene_expression (RPKM).txt":
-    {"link":"/easy_gdb/gene.php?name=query_id",
+    {"link":"",
+      "annotation_file":"example/gene_annotations.txt",
       "description":"example1_description.php",
       "images":
         {
@@ -19,5 +20,11 @@
   "Example2 - Organism dataset name (Units).txt":
     {"link":"#",
       "description":"example2_description.php"
+    },
+  "Example3 - Dataset with cartoons.txt":
+    {
+      "link":"",
+      "annotation_file":"example/gene_annotations.txt",
+      "cartoons":"cartoons_example1.json"
     }
 }
