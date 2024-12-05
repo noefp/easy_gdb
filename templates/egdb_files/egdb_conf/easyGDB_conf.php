@@ -41,7 +41,7 @@ $tb_rm_home = 0;
 $tb_about = 1;
 $tb_downloads = 1;
 $tb_species = 0;
-$tb_search_box = 1;
+$tb_search_box = 0;
 
 $tb_tools = 1;
 $tb_search = 1;
