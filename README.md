@@ -1,6 +1,6 @@
 # EasyGDB
 
-Welcome to EasyGDB. EasyGDB is a system designed to simplify the implementation of genomics portals and minimize their maintenance. EasyGDB genomics portals can include tools such as Expression atlas, BLAST, Genome browser (JBrowse), genetic variation explorer, file downloads, sequence extraction, annotation search, bulk annotation extraction, gene list lookup, and germplasm collection management. For more information check [this YouTube playlist](https://youtu.be/JTE-8zR5ogk)
+Welcome to EasyGDB. It is a system designed to simplify the implementation of genomics portals and minimize their maintenance. EasyGDB genomics portals can include tools such as Expression atlas, BLAST, Genome browser (JBrowse), genetic variation explorer, file downloads, sequence extraction, annotation search, bulk annotation extraction, gene list lookup, and germplasm passport and phenotype tools. For more information check [this YouTube playlist](https://youtu.be/JTE-8zR5ogk).
 
 Some examples of sites developed using EasyGDB are:
 
@@ -34,7 +34,7 @@ Some examples of sites developed using EasyGDB are:
 
 # Requirements
 
-EasyGDB can be implemented in Linux, Mac and Windows. You can use [Docker](<https://docs.docker.com/get-docker/>) to install our EasyGDB container or follow the steps at the bottom to install EasyGDB from scratch in a Linux System ([Installation without Docker (only for Linux Systems)](#installation-without-docker-only-for-linux-systems)).
+EasyGDB can be implemented in Linux, MacOS and Windows. You can use [Docker](<https://docs.docker.com/get-docker/>) to install our EasyGDB container or follow the steps at the bottom to install EasyGDB from scratch in a Linux System ([Installation without Docker (only for Linux Systems)](#installation-without-docker-only-for-linux-systems)).
 
 
 
@@ -42,7 +42,7 @@ EasyGDB can be implemented in Linux, Mac and Windows. You can use [Docker](<http
 
 Using Docker, the first step will be installing [Docker Desktop](<https://docs.docker.com/get-docker/>), if you do not have it already.
 
-To run docker commands you will need to start the Docker Desktop app, or run the docker engine/daemon running in the background.
+To run docker commands you will need to start the Docker Desktop app, or run the docker engine/daemon in the background.
 
 Now we will use git to clone the EasyGDB docker-compose repository: Open a terminal, go to the path where you want to save your genomics portal code, and clone the easyGDB_docker repository from GitHub using the next command:
 
@@ -56,15 +56,15 @@ Then, build the container (inside the easyGDB_docker folder; Docker Desktop shou
 
     docker-compose build
 
-Start the container using the Docker desktop application or use the terminal, in the easyGDB_docker folder, to run:
+Start the container using the Docker desktop application, or use the terminal, in the easyGDB_docker folder, to run:
 
     docker-compose up -d
 
-The flag -d (--detach) allows to detach the docker in the terminal. It is necessary to start the container (it can be done using the terminal or the Desktop application) everytime you want to access the genomic portal, with `docker-compose start`. You can stop it with `docker-compose stop`. `docker_compose ps` will let you know which containers are running.
+The flag -d (--detach) allows to detach the docker in the terminal. It is necessary to start the container (it can be done using the terminal or the Desktop application) everytime you want to access the genomic portal, using `docker-compose start`. You can stop it with `docker-compose stop`. `docker_compose ps` will let you know which containers are running (The Docker Desktop application allows to start and stop the easyGDB container using a user-friendly graphical interface).
 
-Inside the Docker container, EasyGDB is installed at `/var/www/html/` and we can find and modify the genomics portal data in our file system at `src/`.
+Inside the Docker container, EasyGDB is installed at `/var/www/html/` and we can find and modify the genomics portal data in our file system at `easyGDB_docker/src/`.
 
-Open a terminal inside the easy_GDB Docker container using the Docker desktop application or running the next command in the system terminal at the easyGDB_docker folder:
+Now, we will clone the EasyGDB code in the Docker container. Open a terminal inside the easy_gdb Docker container using the Docker desktop application or running the next command in the system terminal at the easyGDB_docker folder:
 
     docker-compose exec easy_gdb /bin/bash
 
@@ -72,7 +72,7 @@ Clone the easy_GBD code from Github:
 
     git clone https://github.com/noefp/easy_gdb.git
 
-Now, we will create the configuration and example folder structure. Go to the install folder inside easy_gdb (`easy_gdb/install`):
+Now, we will create the configuration and example folder structure. Still inside the easy_gdb Docker container terminal, go to the install folder inside easy_gdb (`easy_gdb/install/`) :
 
     cd easy_gdb/install/
 
@@ -80,19 +80,19 @@ and run the `setup.sh` script:
 
     bash setup.sh
 
-When running the easy GDB setup, installing JBrowse Perl pre-requisites might take some minutes. Please be patient.
+When running the EasyGDB setup, if you choose to install JBrowse Perl prerequisites, it might take some minutes. Please be patient. It is needed if you want to include a genome browser in your genomics portal.
 
 When the setup finishes, this should create some folders, subfolders and files at the same level as easy_gdb. You can take a look using your file browser at `src` or in the terminal (inside the Docker container) using the command:
 
     ls -lh /var/www/html
 
-You should be able to see the folders `annotations`, `blast_dbs`, `downloads`, `easy_gdb`, `egdb_files`, `expression_data`, `jbrowse`, `lookup`, `passport`, `private_expression_data` and `vcf`. Inside these folders there are some example templates to help you customize your own genomic web portal.
+You should be able to see the folders `annotations`, `apache`, `blast_dbs`, `db_example_annotations`, `downloads`, `easy_gdb`, `egdb_files`, `expression_data`, `jbrowse`, `jbrowse_example_data`, `lookup`, `passport`, `private_expression_data` and `vcf`. Inside these folders there are some example templates to help you customize your own genomics web portal.
 
 If you are using the Docker terminal, now you can exit it by typing `exit` in the opened terminal.
 
 At this moment all the features of easy_gdb should be already available. In a web browser (Chrome, Firefox, etc.) go to: `localhost:8000/easy_gdb/`. You should be able to see an example of EasyGDB running.
 
-![easy GDB home](templates/egdb_files/egdb_images/easy_gdb_home.png)
+![easy GDB home](templates/egdb_images/easy_gdb_home.png)
 
 
 # Installation without Docker (only for Linux Systems)
@@ -205,19 +205,19 @@ Then open the file `easyGDB_conf.php` in the folder `egdb_files/egdb_conf/` and 
 
 ## Customize file paths
 
-By default all configuration files contain the default paths used in the Docker container and everything should work without changing any path. However, it is possible to customize the paths to have your own file organization system.
+The configuration file `easyGDB_conf.php`, contains the default paths for every feature and everything should work without changing any path. However, it is possible to customize the paths to have your own file organization system.
 
-`configuration_path.php` contains the path to the project folder (`/var/www/html/egdb_files/egdb_conf`by default). The `egdb_files/egdb_conf/easyGDB_conf.php` file contains the project configuration.
+The `configuration_path.php` file contains the path to the current project folder (`/var/www/html/egdb_files/egdb_conf` by default). The `egdb_files/egdb_conf/easyGDB_conf.php` file contains the project configuration.
 
 In the file `configuration_path.php` you could change the configuration path to `/abosolute_path_to/egdb_files/egdb_conf`. By default it is pointing to `/var/www/html/egdb_files/egdb_conf` where the files will be placed using the docker container and the standard location in a server.
 
 In the file `egdb_files/egdb_conf/easyGDB_conf.php` it is possible to set the root path where the `easy_db` folder is. In the Docker container and usually in a server it would be `/var/www/html`. Locally, for example, you could have them in `/home/your_user_name/Desktop/example_db`.
 
-If you want to use different names for your folders, remember to change the names in the file paths included in `configuration_path.php` and `egdb_files/egdb_conf/easyGDB_conf.php`. 
+If you want to use different names for your project folders, remember to change the names in the file paths included in `configuration_path.php` and `egdb_files/egdb_conf/easyGDB_conf.php`. 
 
-For example, for development you could copy the `egdb_files` and rename it to the name of your project, repeating this process as many times as projects you have. That way you could manage multiple sites or multiple versions. You could easily change between them just commenting the path to all paths but the active one in `configuration_path.php`.
+For example, for development you could copy the `egdb_files` and rename it to the name of your project, repeating this process as many times as projects you have. That way you could manage multiple sites or multiple versions. You could easily change between them just commenting out all the path lines but the active one in `configuration_path.php`.
 
-    TIP: One way to manage multiple sites is to create a copy of the `egdb_files` folder with its content and add it to the path in the configuration file, writing the new name in the value of the `$egdb_files_folder` variable. It is a good practice to always create a copy of the `egdb_files` folder to always keep a reference of the example configuration.
+    TIP: One way to manage multiple sites is to create a copy of the `egdb_files` folder with its content and add it to the `$conf_path` in the configuration file. Then, write the new name in the value of the `$egdb_files_folder` variable at `egdb_conf/easyGDB_conf.php`. It is a good practice to always create a copy of the `egdb_files` folder to always keep a reference of the example configuration while you can replace the example data with your own data in the active project folder.
 
 Example of the `configuration_path.php` file:
 
@@ -232,7 +232,7 @@ After the changes, reload the web browser `localhost:8000/easy_gdb/index.php` an
 
 ## Customize your site
 
-In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` together with other JSON files you can customize your site.
+In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` together with other JSON files at `egdb_files/json_files`, you can customize your site.
 
 Below we will see how to customize each page of the genomic portal step by step.
 
@@ -240,9 +240,13 @@ Below we will see how to customize each page of the genomic portal step by step.
 
 In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle`, `$header_img` and `$db_logo` to change the site title, header image and site logo. The images are stored at `egdb_files/egdb_images/`. Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
+   $dbTitle=  "Your site title"
+    $header_img = "your header image file name";
+    $db_logo=  "your toolbar logo file name";
+
 ### Footer logos
 
-In `egdb_files/egdb_images/logos/` you can place logo images (institutions, funding agencies, etc.), and you can use the file `logos.json` to customize size and link. Logos are displayed in all pages at the footer.
+In `egdb_files/egdb_images/logos/` you can place logo images (institutions, funding agencies, etc.), and you can use the file `egdb_files/json_files/customization/logos.json` to customize size and link. Logos are displayed in all pages at the footer.
 
 ### Toolbar
 
@@ -264,7 +268,7 @@ You can open the file `egdb_files/egdb_custom_text/about.php` in a text editor t
 
 You can also add here information about the participant labs. For this, the `$ab_labs` should be enabled (equal to `1`) in `egdb_files/egdb_conf/easyGDB_conf.php`.
 
-You can create a json file for each lab or you can copy and modify the provided examples to add your own information. There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/egdb_images/people/`), link to a personal page, and, in the more_info array you could add data such as phone, email, and any other custom information.
+You can customize the lab's JSON file (`egdb_files/json_files/customization/labs.json`) to add your own information. There, you can include the lab name and, for each person, you can include name, position, a picture (placed in `egdb_files/egdb_images/people/`), link to a personal page, and, in the more_info array you could add data such as phone, email, and any other custom information.
 
 Every time you change and save the `about.php` file, reload the page `localhost:8000/easy_gdb/about.php` to see the modifications.
 
@@ -274,7 +278,7 @@ If you want to host data for multiple species or accessions you should enable th
 
 Then, you will be able to see them at `localhost:8000/easy_gdb/species.php`
 
-To customize the list of species, use the file `egdb_species/species_list.json`. There you can include species name, common name, image and link to a descriptive custom PHP file (`human.php`, `species1.php` and `species2.php`) where you can write all the information about the species. Create as many PHP species files as you need, customize the content and add them in the `egdb_species/species_list.json` file. Images for species menu are placed in `egdb_files/egdb_images/species/` It is recommendable to use the template as an example to avoid errors.
+To customize the list of species, use the file `egdb_files/json_files/customization/species_list.json`. There, you can include species name, common name, image and link to a descriptive custom PHP file (`human.php`, `species1.php` and `species2.php`) where you can write all the information about the species. Create as many PHP species files as you need, customize the content and add them in the `egdb_files/json_files/customization/species_list.json` file. Images for species menu are placed in `egdb_files/egdb_images/species/` It is recommendable to use the template as an example to avoid errors.
 
 ### Downloads
 
@@ -284,10 +288,17 @@ You will be able to see this section at `localhost:8000/easy_gdb/downloads.php` 
 
 You can create your own structure of files and folders and place them in the downloads folder.
 
+It is also compatible with H5AI (https://github.com/lrsjng/h5ai), which could be linked to `/downloads/` 
+
+by placing the folder _h5ai inside `downloads`
+
+and adding the next line to the enabled site in Apache:
+
+    DirectoryIndex  index.html  index.php  /_h5ai/public/index.php
 
 ### Annotation File Database
 
-Some tools such as *Search*, *Annotation Extraction*, and the *Gene Expression Atlas*, will require access to the gene annotations.
+Some tools such as *Search*, *Annotation Extraction*, the *gene annotation pages* and the *Gene Expression Atlas*, will require access to the gene annotations.
 
 To set up the functional annotation file database you just need to place a tab-delimited file (.txt) with the annotations of the genes in the `annotations` directory in the `$annotations_path`, which by default in the configuration file (`easyGDB_conf.php`) is `$root_path/annotations` equivalent to src (`/var/www/html/annotations`).
 
@@ -295,7 +306,7 @@ You can place multiple annotation files or multiple subfolders with their respec
 
 The annotation file should include the gene names in the first column and the annotation IDs and descriptions in the next columns.
 
-The header should include the name of the databases (Araport11, SwissProt, InterPro) as it is written in the `egdb_files/annotations/annotation_links.json` file, where the links to these databases are included. That way the database identifiers could be automatically linked to their databases.
+The header should include the name of the databases (Araport11, SwissProt, InterPro) as it is written in the `egdb_files/json_files/tools/annotation_links.json` file, where the links to these databases are included. That way the database identifiers could be automatically linked to their databases.
 
 
 
@@ -309,7 +320,7 @@ It is important to include the word "Description" in the columns of the header i
 
 The annotations including more than one ID should be separated by ";", as shown in the InterPro example.
 
-You can add custom annotation links in the annotation_links.json file: `egdb_files/annotations/annotation_links.json`
+You can add custom annotation links in the annotation_links.json file: `egdb_files/json_files/tools/annotation_links.json`
 
 ```
 {
@@ -320,38 +331,43 @@ You can add custom annotation links in the annotation_links.json file: `egdb_fil
   "NCBI":"https://www.ncbi.nlm.nih.gov/protein/query_id"
 }
 ```
+The value `query_id` will be automatically replaced by the database identifier to form the correct link.
+
 
 ### More custom pages
 
 Enabling the variable `$tb_more` in `egdb_files/egdb_conf/easyGDB_conf.php` we will see a new tab in the toolbar called More. There, you could add as many custom pages as you want. They are stored at `egdb_files/custom_text/custom_pages/`, and we included two examples called `genome.php` and `other page.php`. You just need to create your own PHP pages and place them there. The name shown in the toolbar will be taken from the file name, and the content will be automatically wrapped by the header and footer.
 
-Here, for example you can include statistics of your genome assembly, news and events page or anything you like.
+Here, for example you can include statistics of your genome assembly, news and events page, links of interest to other sites, or anything you like.
 
 #### Tables
 
-In the `custom_pages` directory we can find an example of a custom page to visualize tab delimited files as formatted tables. The file `table_menu.php` provides the code to list all the files in the folder `custom_pages/tables`, and the file `table_to_page.php` is a template to format the file passed in the URL using the variable `table_name`. The variable `link_field` passed in the URL defines which column contains an unique id that can be used to link to the page `row_data.php`, which is a template to show the data contained in the row of the table where the linked id belongs to.
+In the `custom_pages` directory we can find an example of a custom page to visualize tab delimited files as formatted tables. The file `table_menu.php` provides the code to list all the files in the folder `custom_pages/tables`, and the file `table_to_page.php` is a template to format the file passed in the URL using the variable `table_name`. 
+
+    http://localhost:8000/easy_gdb/custom_view.php?file_name=table_to_page.php&table_name=table_example.txt&link_field=ACC%20Name
 
 
 
+The variable `link_field` passed in the URL defines which column contains an unique id that can be used to link to the page `row_data.php`, which is a template to show the data contained in the row of the table where the linked id belongs to. In the example, as ´ACC Name` contains a space in the URL that is written as `ACC%20Name`.
 
 
 ##  Basic tools
 
 It is possible to enable or disable the dropdown menu `Tools` by switching the variable `$tb_tools` to 1 or 0 in the `easyGDB_conf.php` file. Additionally, each tool can be enabled or disabled in the tools menu: `$tb_search` (Search), `$tb_blast` (BLAST), `$tb_jbrowse` (Genome browser), `$tb_seq_ext` (Sequence extraction), `$tb_annot_ext` (Annotation extraction), `$tb_lookup` (Gene version lookup) and `$tb_enrichment` (Gene set enrichment). Turn the variables to `1` or to `0` to enable or disable them.
 
-`$tb_search_box` to enable the Search box in the toolbar is only available when the relational database is enabled (to be implemented soon for file annotations).
+`$tb_search_box` enables the Search box in the toolbar. It is only available when the relational database is enabled (to be implemented soon for file annotations).
 
 ### Search
 
-To enable the search tool first we must set up the annotation file database. Then it will work automatically.
+The Search tool will search all available annotations to find genes and their annotations based on functional description keywords or gene identifiers. To enable the search tool first we must set up the annotation file database. Then it will work automatically.
 
 ### Annotation extraction
 
-To enable the annotation extraction first we must set up the annotation files database. Then it will work automatically.
+This tool allows us to visualize and download all available annotations for a list of genes. To enable the annotation extraction first we must set up the annotation file database. Then it will work automatically.
 
 ### Genome browser
 
-As we ran the setup file after cloning easy GDB, at this point, an example of JBrowse should be ready. You should be able to check it following the `Tools/Genome Browser` link in the menu bar, or at <http://localhost:8000/jbrowse/>.
+As we ran the setup file after cloning easy GDB, at this point, an example of JBrowse should be ready (If you chose to install JBrowse). You should be able to check it following the `Tools/Genome Browser` link in the menu bar, or at <http://localhost:8000/jbrowse/>.
 
 For more information about how to add a new species and to add tracks see `Install and set up JBrowse` [below](#customize-jbrowse).
 
@@ -385,7 +401,7 @@ To add BLAST datasets we need to copy the blast databases in the `blast_dbs` fol
           |---- proteins.fasta.phr
 ```
 
-BLAST database files and category folders MUST NOT include spaces in their names. Underscores can be used in the file and folder names and they will be displayed as spaces in the web.
+BLAST database files and category folders MUST NOT include spaces in their names. Underscores can be used in the file and folder names and they will be displayed as spaces in the web. It is also important to avoid special characters.
 
 The template example includes the folders `category_1` and `category_2`, but any other name can be used to name the category folders (without spaces or special characters). For example, we could create folders to organize BLAST databases for several species such as `Danio_rerio`, `Mola_mola`, `Salmo_salar`, etc.
 
@@ -405,30 +421,29 @@ It is important to use the option `-parse_seqids` to create the indexes needed t
 
 The variable `$max_blast_input` (in `egdb_files/egdb_conf/easyGDB_conf.php`) controls the maximum number of sequences allowed as input in `BLAST`.
 
-You can also add custom links for the BLAST output by customizing the blast_links.json file in the `blast_dbs` folder:
+You can also add custom links for the BLAST output by customizing the `egdb_files/json_files/tools/blast_links.json` file:
 
 ``` json
 {
-  "sample_blast_DB_proteins.fasta":"/easy_gdb/gene.php?name={subject}&annot=annotations.txt",
-  "sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}",
+"sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}", "sample_blast_DB_proteins.fasta":"/easy_gdb/gene.php?name={subject}&annot=example/gene_annotations.txt",
   "sample_blast_DB_nucleotides.fasta":"#",
   "sample_uniprot.fasta":"https://www.uniprot.org/uniprot/{subject}"
 }
 ```
 
-Just include the name of your database on the left (`sample_blast_DB_proteins.fasta`) and the link on the right (`/easy_gdb/gene.php?name={subject}&annot=annotations.txt`). 
+Just include the name of your database on the left (`sample_blast_DB_proteins.fasta`) and the link on the right (`/easy_gdb/gene.php?name={subject}&annot=example/gene_annotations.txt`). 
 
 You can provide any other links and use the variables in the example (`{subject}`, `{chr}`, `{start}`, `{end}`) to add gene names or coordinates extracted from the BLAST results. In this file several link examples are shown:
 
 -   Link to genome browser: the variables `{chr}`, `{start}`, `{end}` will be replaced by the ones found in the results. Very useful for genome sequence BLAST databases.
 -   No link: using a value of `#` will produce self links. For example for genes not included in your easy GDB database.
--   Gene name external links: the variable `{subject}` will be replaced by the subject gene name. It can be use to link to external databases, such as UniProt in the example above.
+-   Gene name external links: the variable `{subject}` will be replaced by the subject gene name. It can be used to link to external databases, such as UniProt in the example above.
 
-In the case of the installation of EasyGDB using the PostgreSQL relational database, if the blast database name is not included in the JSON file, the BLAST output will link to the easy GDB gene page by default. 
+In the case of the installation of EasyGDB using the PostgreSQL relational database, the BLAST output will link to the easy GDB gene page by default unless other information is included in the JSON file.
 
 ### Sequence extraction
 
-This tool uses the datasets in the `blast_dbs` folder to extract the sequences from a list of genes.
+The Sequence Extraction tool allows downloading the sequences (proteins, transcripts, CDS) for a list of genes. This tool uses the datasets in the `blast_dbs` folder to extract the sequences.
 
 If you have the folder `blast_dbs` and added the blast databases there (explained above), then the tool should be ready to use. You can modify the example input gene list by changing the variable `$input_gene_list` in `easyGDB_conf.php`.
 
@@ -437,9 +452,7 @@ The variable `$max_extract_seq_input` (in `easyGDB_conf.php`) controls the maxim
 
 ### Gene version lookup
 
-It should work correctly if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. This tool is useful to, for example, get or provide a list of identifiers of different gene versions or orthologs in other species, such as the closest model organism.
-
-The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum number of gene names allowed as input.
+The Gene version lookup tool is useful to convert a list of gene identifiers to the equivalent list of genes in a different annotation version, or equivalent orthologs in other species, such as the closest model organism. This tool should work if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. 
 
 ```
 gene1.1	gene1_v2.1
@@ -452,9 +465,12 @@ gene_c1_10040V3.1	gene_s139_5V2.1
 gene_c1_10050V3.1	gene_s139_6V2.1
 ```
 
+The variable `$max_lookup_input` (in `easyGDB_conf.php`) controls the maximum number of gene names allowed as input.
+
+
 ### Gene Set Enrichment
 
-This tool requires a lookup file to convert the query gene IDs to one of the available species at g:Profiler (https://biit.cs.ut.ee/gprofiler/gost). If your species is already available then it is possible to submit the list of query genes directly. To enable this tool it is necessary to fill out the `enrichment.json` file and place it in the `lookup` directory.
+This tool allows to perform a gene set enrichment analysis through the tool g:Profiler. It requires a lookup file to convert the query gene IDs to one of the available species at g:Profiler (https://biit.cs.ut.ee/gprofiler/gost). If your species is already available then it is possible to submit the list of query genes directly. To enable this tool it is necessary to fill out the `egdb_files/json_files/tools/enrichment.json` file.
 
 In the example below, the title "A.thaliana" is the name shown for selection in the input page. "gprofiler_sps" : "athaliana" is the name required in the g:Profiler tool. Available species IDs can be found at https://biit.cs.ut.ee/gprofiler/page/organism-list.
 
@@ -474,10 +490,9 @@ In the example below, the title "A.thaliana" is the name shown for selection in 
 
 ## Gene expression atlas
 
-Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the toolbar. The expression datasets should be placed in the `expression_data` folder (by default defined as `$expression_path` = `$root_path/expression_data`).
+Switching `$tb_gene_expr` to 1 (in `easyGDB_conf.php`) will enable the link to the gene expression atlas in the toolbar. The expression datasets should be placed in the `expression_data` folder (by default defined as `$expression_path` = `$root_path/expression_data`). Additionally, the `egdb_files/json_files/tools/expression_info.json` file will allow you to customize the gene expression atlas.
 
-In the `expression_data` folder you can find two examples of tab-delimited files, with extension `.txt`, containing expression data, and a JSON file named `expression_info.json`. 
-Place your expression data files in the `expression_data` folder, as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column), as shown in the examples. All replicates should have the same name in the header to be grouped together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
+In the `expression_data` folder you can find two examples of tab-delimited files, with extension `.txt`, containing expression data. Place your expression data files in the `expression_data` folder, as tab delimited text files with normalized data for each replicates in the columns (header), and each gene in the rows (first column), as shown in the examples. All replicates should have the same name in the header to be grouped together (For example: leaf, leaf, leaf, root, root, root, heat, heat, heat, etc.).
 
 ```
 Gene ID	Leaf	Leaf	Leaf	Fruit	Fruit	Fruit	Root	Root	Root
@@ -486,11 +501,10 @@ gene2	49.33	6.45	26.7	11.97	0.85	10.61	21.25	1.54	18.9	34.8
 gene3	10.84	6.06	9.98	13.59	8.37	11.23	10.11	9.68	10.89	18.21
 ```
 
-Inside the `expression_data` directory it is possible to organize the expression datasets in subfolders to separate them by technology (RNA-seq, microarray, proteomics, metabolomics, etc.) or by species. Only one single `expression_info.json` file is needed to configure all datasets, even when subfolders are used.
+Inside the `expression_data` directory it is possible to organize the expression datasets in subfolders to separate them by technology (RNA-seq, microarray, proteomics, metabolomics, etc.) or by species.
 
 ```
     expression_data/
-    |---- expression_info.json
     |---- RNA-seq_experiments/
           |---- dataset1.txt
           |---- dataset2.txt
@@ -523,50 +537,38 @@ $positions=[
 
 ### expression_info.json
 
-The JSON file `expression_info.json` includes links to the gene annotation page for each dataset (it is possible to add external links or remove links). In the `annotation_file` field it is possible to provide an annotation file to add gene annotations in the Average values table and links to the gene annotations pages. By default the field `link` should remain empty (`"link":""`). It is important to add an annotation file for it to work correctly. Using `#` in the `link` field will remove links. To use an external link we just need to add the URL to the `link` field and include the word `query_id` in the place of the gene identifier. For example, for UniProt the link would be `http://www.uniprot.org/uniprot/query_id` and the gene IDs in the expression matrix should correspond to UniProt identifiers.
+The JSON file `egdb_files/json_files/tools/expression_info.json` includes links to the gene annotation page for each dataset (it is also possible to add external links or remove links). In the `annotation_file` field it is possible to provide an annotation file to add gene annotations in the *Average values* table and links to the gene annotations pages. By default the field `link` should remain empty (`"link":""`). It is important to add an annotation file for it to work correctly. Using `#` in the `link` field will remove links. To use an external link we just need to add the URL to the `link` field and include the word `query_id` in the place of the gene identifier. For example, for UniProt the link would be `http://www.uniprot.org/uniprot/query_id` and the gene IDs in the expression matrix should correspond to UniProt identifiers.
 
 It is also possible to add a dataset description in the `description` field. It will include the indicated PHP file, which should be placed in `egdb_custom_text/custom_pages/expr_datasets/` within the `egdb_files` folder. It is recommendable to describe briefly the experimental conditions and links to its publication. 
 The descriptions of all datasets will be shown in the Expression Datasets menu, which can be enabled using the variable `$expr_menu` in the configuration file.
 
-In case of enabling the expression card visualization in the `easyGDB_conf.php`, it is important to add the file names of the images used for each sample. In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the JSON file `expression_info.json`. It is important that the sample name in the JSON is identical to the sample name in the header of the tab-delimited expression data file, and the image file name corresponds with the name in the images path.
-
-
-For the configuration of cartoons we should provide a separated JSON file. 
-
+In case of enabling the expression card visualization in the `easyGDB_conf.php`, it is important to add the file names of the images used for each sample. In that case, you can add image files in the images path (`egdb_images/expr/`) and add the names of the sample with their corresponding image in the `expression_info.json` file. It is important that the sample name in the JSON is identical to the sample name in the header of the tab-delimited expression data file, and the image file name corresponds with the name in the images path. The expression cards could be useful to show real photos of the sample phenotype together with its expression data.
 
 ``` json
   {
-    "Example1 - Plant_gene_expression (RPKM).txt":
-      {
-        "link":"",
-        "annotation_file":"example/gene_annotations.txt",
-        "description":"example1_description.php",
-        "images":
-          {
-            "Leaf":"leaf.jpeg",
-            "Fruit":"fruit.jpeg",
-            "Root":"root.jpeg",
-            "Peel":"peel.jpeg",
-            "Seed":"seed.jpeg",
-            "Germinating Seed":"germinating_seed.jpeg",
-            "Darkness":"darkness.jpeg",
-            "Drought":"drought.jpeg",
-            "Heat":"heat.jpeg",
-            "Cold":"cold.jpeg"
-          },
-          "expression_colors":
-           {
-             "colors":["#eceff1","#ffee58","#ffb74d","#ff8f00","#ff4f00","#cc0000","#D72C79","#801C5A"],
-             "ranges_txt":["<1",">=1",">=5",">=10",">=50",">=100",">=200",">=1000"],
-             "ranges":[[0,0.99],[1,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,999.99],[1000,999999.99]]
-           }
-      },
-    "Example2 - Organism dataset name (Units).txt":
-      {
-        "link":"#",
-        "description":"example2_description.php"
-      },
-  "Example3 - Dataset with cartoon.txt":
+  "Example1 - Plant_gene_expression_RPKM.txt":
+    {"link":"",
+      "annotation_file":"example/gene_annotations.txt",
+      "description":"example1_description.php",
+      "images":
+        {
+          "Leaf":"leaf.jpeg",
+          "Fruit":"fruit.jpeg",
+          "Root":"root.jpeg",
+          "Peel":"peel.jpeg",
+          "Seed":"seed.jpeg",
+          "Germinating Seed":"germinating_seed.jpeg",
+          "Darkness":"darkness.jpeg",
+          "Drought":"drought.jpeg",
+          "Heat":"heat.jpeg",
+          "Cold":"cold.jpeg"
+        }
+    },
+  "Example2 - Organism dataset name.txt":
+    {"link":"#",
+      "description":"example2_description.php"
+    },
+  "Example3 - Dataset with cartoons.txt":
     {
       "link":"",
       "annotation_file":"example/gene_annotations.txt",
@@ -575,13 +577,14 @@ For the configuration of cartoons we should provide a separated JSON file.
   "Example4 - Other dataset.txt":
       {
         "link":"http://www.uniprot.org/uniprot/query_id"
-      },
-
+      }
   }
 ```
 
 
 ### Cartoons
+
+For the configuration of cartoons we should provide a separated JSON file (`egdb_files/json_files/tools/cartoons_example1.json`). It is possible to add as many cartoon JSON files as datasets are with cartoons.
 
 If expression cartoons are enabled we should provide a JSON file to set up each cartoon image, the samples associated with them, and their dimensions and coordinates.
 Cartoon images should be placed at `egdb_images/expr/cartoons/` inside your `egdb_files` folder, which usually correspond to your project customization folder and it could have been renamed before (see Customize file paths).
@@ -908,7 +911,7 @@ Open a terminal using docker-compose or Docker desktop
 
 use a Perl script to import the gene list:
 
-    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
+    perl easy_gdb/scripts/import_genes.pl db_example_annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
 
 It will ask for the host name (`DB`), DB name (`annot1`), and the postgres password.
 
@@ -916,11 +919,11 @@ Now we will add annotations to the genes using the script `import_annots_sch2.pl
 
 Example for SwissProt annotations:
 
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl db_example_annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
 
 Example for TAIR10 annotations:
 
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl db_example_annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
 You can add custom annotation links in the annotation_links.json file: `egdb_files/annotations/annotation_links.json`
 
@@ -999,11 +1002,11 @@ We will import all the gene names using the script `import_genes.pl` and we will
 
 in (/var/www/html):
 
-    perl easy_gdb/scripts/import_genes.pl egdb_files/annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
+    perl easy_gdb/scripts/import_genes.pl db_example_annotations/gene_list.txt "Homo sapiens" "1.0" "easy_gdb_sample"
 
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl db_example_annotations/annotation_example_SwissProt.txt SwissProt "Homo sapiens" "1.0"
 
-    perl easy_gdb/scripts/import_annots_sch2.pl egdb_files/annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
+    perl easy_gdb/scripts/import_annots_sch2.pl db_example_annotations/annotation_example_TAIR10.txt TAIR10 "Homo sapiens" "1.0"
 
 
 ## Set up server
