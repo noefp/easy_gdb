@@ -25,15 +25,6 @@
 
       echo "<div class=\"color-bar\" style=\"margin:20px\">";  
       echo "<table id=\"color-table-cards\" class=\"color\"></table>";
-      // echo '<div class="d-inline-flex" style="margin:10px">';
-      // echo '<span class="circle" style="background-color:#C7FFED"></span> Lowest <1';
-      // echo '<span class="circle" style="background-color:#CCFFBD"></span> >=1';
-      // echo '<span class="circle" style="background-color:#FFFF5C"></span> >=2';
-      // echo '<span class="circle" style="background-color:#FFC300"></span> >=10';
-      // echo '<span class="circle" style="background-color:#FF5733"></span> >=50';
-      // echo '<span class="circle" style="background-color:#C70039"></span> >=100';
-      // echo '<span class="circle" style="background-color:#900C3F"></span> >=200';
-      // echo '<span class="circle" style="background-color:#581845"></span> >=5000';
       echo "</div>"; 
 
 
@@ -151,18 +142,6 @@ function crearFila(colors,ranges,id) {
   .gold {
     background-image: linear-gradient(160deg, #8f6B29, #FDE08D, #DF9F28);
   } 
-  
-  /* .circle {
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-    border-style: solid;
-    border-color: #ccc;
-    display: inline-block;
-    margin: 5px;
-    margin-left: 15px;
-  } */
-  
   
   
 /* FLIP CARD EFFECT*/

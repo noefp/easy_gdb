@@ -4,8 +4,8 @@
 <br>
 <?php
 
-if ( file_exists("$expression_path/expression_info.json") ) {
-  $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+if ( file_exists("$json_files_path/tools/expression_info.json") ) {
+  $annot_json_file = file_get_contents("$json_files_path/tools/expression_info.json");
   $annot_hash = json_decode($annot_json_file, true);
   
   foreach ($annot_hash as $r_key => $r_value) {

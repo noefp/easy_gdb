@@ -51,8 +51,8 @@
   
   $links_hash;
     
-  if ( file_exists("$blast_dbs_path/blast_links.json") ) {
-      $links_json_file = file_get_contents("$blast_dbs_path/blast_links.json");
+  if ( file_exists("$json_files_path/tools/blast_links.json") ) {
+      $links_json_file = file_get_contents("$json_files_path/tools/blast_links.json");
       $links_hash = json_decode($links_json_file, true);
       if ($links_hash["annot_file"]) {
         $annot = $links_hash["annot_file"];

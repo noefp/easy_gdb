@@ -21,9 +21,9 @@
     <br>
 
 <?php
-if ( file_exists("$lookup_path/enrichment.json") ) {
+if ( file_exists("$json_files_path/tools/enrichment.json") ) {
   
-  $enrichment_json_file = file_get_contents("$lookup_path/enrichment.json");
+  $enrichment_json_file = file_get_contents("$json_files_path/tools/enrichment.json");
   // var_dump($enrichment_json_file);
   $enrichment_hash = json_decode($enrichment_json_file, true);
   //var_dump($enrichment_hash);

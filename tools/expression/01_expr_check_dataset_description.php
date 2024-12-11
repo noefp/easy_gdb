@@ -8,9 +8,10 @@
     echo "<h1 id=\"dataset_title\" class=\"text-center\">$dataset_name</h1>";
   }
   
-  if ( file_exists("$expression_path/expression_info.json") ) {
-    $annot_json_file = file_get_contents("$expression_path/expression_info.json");
-    $annot_hash = json_decode($annot_json_file, true);
+  // if ( file_exists("$expression_path/expression_info.json") ) {
+  //   $annot_json_file = file_get_contents("$expression_path/expression_info.json");
+  //   $annot_hash = json_decode($annot_json_file, true);
+  if ($annot_hash) {
     
     if ($annot_hash[$dataset_name_ori]["description"]) {
     

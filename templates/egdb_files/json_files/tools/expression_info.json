@@ -1,5 +1,5 @@
 {
-  "Example1 - Plant_gene_expression (RPKM).txt":
+  "Example1 - Plant_gene_expression_RPKM.txt":
     {"link":"",
       "annotation_file":"example/gene_annotations.txt",
       "description":"example1_description.php",
@@ -17,7 +17,7 @@
           "Cold":"cold.jpeg"
         }
     },
-  "Example2 - Organism dataset name (Units).txt":
+  "Example2 - Organism dataset name.txt":
     {"link":"#",
       "description":"example2_description.php"
     },

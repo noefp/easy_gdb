@@ -534,8 +534,8 @@ foreach ($found_genes as $gene_name => $kk) {
 
 
 $q_link = "";
-if ( file_exists("$expression_path/comparator_link.json") ) {
-  $link_json_file = file_get_contents("$expression_path/comparator_link.json");
+if ( file_exists("$json_files_path/tools/comparator_link.json") ) {
+  $link_json_file = file_get_contents("$json_files_path/tools/comparator_link.json");
   $link_hash = json_decode($link_json_file, true);
   
   if ($link_hash["link"]) {
@@ -771,7 +771,7 @@ $samples_found = array_keys($replicates);
       <i class="fas fa-sort" style="color:#229dff"></i> Lines
     </div>
 
-    <div id="line_chart_frame" class="collapse show" style="width:95%; border:2px solid #666; padding-top:7px">
+    <div id="line_chart_frame" class="collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">
       <div id="chart_lines" style="min-height: 550px;"></div>
     </div>
   </center>
@@ -853,7 +853,12 @@ $samples_found = array_keys($replicates);
 
 <br>
 
-<?php include realpath('../../footer.php'); ?>
+<?php 
+
+include realpath('01_expr_colors_range.php');
+include realpath('../../footer.php'); 
+
+?>
 
 
 <script type="text/javascript">
@@ -887,6 +892,8 @@ $samples_found = array_keys($replicates);
 </script>
   
 <script src="expression_graphs.js"></script>
+
+<script> $('#line_chart_frame').collapse('show')</script>
 
 <style>
   #range_color_btn{

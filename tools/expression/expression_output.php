@@ -11,7 +11,13 @@
   $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
-
+  
+  $annot_hash=[];
+  //load expression_info.json
+  if ( file_exists("$json_files_path/tools/expression_info.json") ) {
+    $annot_json_file = file_get_contents("$json_files_path/tools/expression_info.json");
+    $annot_hash = json_decode($annot_json_file, true);
+  }
 ?>
 
   <div class="margin-20">
@@ -450,19 +456,6 @@ foreach($positions as $key => $value){
   if (genes_not_found) {
     alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
   }
-  
-  
-  
-  // $("#tblResults").dataTable({
-  //   "dom":'Bfrtip',
-  //   "ordering": false,
-  //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  // });
-  
-  // $("#tblResults_filter").addClass("float-right");
-  // $("#tblResults_info").addClass("float-left");
-  // $("#tblResults_paginate").addClass("float-right");
-
 
 </script>
 

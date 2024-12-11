@@ -6,8 +6,8 @@
 
   <!-- COMMANDS -->
   <?php
-    if (file_exists("$annotation_links_path/annotation_links.json")) {
-      $annot_json_file = file_get_contents("$annotation_links_path/annotation_links.json");
+    if (file_exists("$json_files_path/tools/annotation_links.json")) {
+      $annot_json_file = file_get_contents("$json_files_path/tools/annotation_links.json");
       $annot_hash = json_decode($annot_json_file, true);
     }
 

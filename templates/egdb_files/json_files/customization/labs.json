@@ -1,0 +1,52 @@
+{
+  "Lab1":
+    {
+    "group_name":"The Wall Lab",
+    "people":
+      [
+      	{"person_name":"Daenerys Targaryen","position":"Principal Investigator","picture":"placeholder1.png","link":"person.php",
+      		"more_info":[
+      			"phone: 555-123456",
+      			"email: daenerys@got.edu"
+      		]
+      	},
+      	{"person_name":"John Snow","position":"Research Assistant","picture":"placeholder2.png","link":"person.php",
+      		"more_info":[
+      			"phone: 555-123456",
+      			"email: john.snow@got.edu"
+      		]
+      	},
+      	{"person_name":"White Walker","position":"PhD Student","picture":"placeholder1.png","link":"person.php",
+      		"more_info":[
+      			"phone: 555-123456",
+      			"email: white.walker@got.edu"
+      		]
+      	}
+      ]
+    },
+  "Lab2":
+    {
+    "group_name":"Mordor Lab",
+    "people":
+    [
+      {"person_name":"Sauron","position":"Principal Investigator","picture":"placeholder2.png","link":"person.php",
+      	"more_info":[
+      		"phone: 555-123456",
+      		"email: sauron@mordor.edu"
+      	]
+      },
+      {"person_name":"Uruk hai","position":"Research Assistant","picture":"placeholder1.png","link":"person.php",
+      	"more_info":[
+      		"phone: 555-123456",
+      		"email: uruk.hai@mordor.edu"
+      	]
+      },
+      {"person_name":"Orc","position":"PhD Student","picture":"placeholder2.png","link":"person.php",
+      	"more_info":[
+      		"phone: 555-123456",
+      		"email: orc@mordor.edu"
+      	]
+      }
+    ]
+  }
+}

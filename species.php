@@ -8,9 +8,13 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
   <?php 
-    if ( file_exists("$species_path/species_list.json") ) {
+    // if ( file_exists("$species_path/species_list.json") ) {
+      //$logos_json = file_get_contents($json_files_path."/customization/logos.json");
+      
+    if ( file_exists($json_files_path."/customization/species_list.json") ) {
         
-        $sps_json_file = file_get_contents("$species_path/species_list.json");
+        // $sps_json_file = file_get_contents("$species_path/species_list.json");
+        $sps_json_file = file_get_contents("$json_files_path/customization/species_list.json");
         // var_dump($sps_json_file);
         $species_hash = json_decode($sps_json_file, true);
         // var_dump($$species_hash);

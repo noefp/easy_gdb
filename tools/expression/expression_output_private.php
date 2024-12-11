@@ -11,6 +11,13 @@
   $dataset_name_ori = preg_replace('/.+\//',"",$expr_file);
   $dataset_name = preg_replace('/_/'," ",$dataset_name_ori);
   $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$dataset_name);
+  
+  $annot_hash=[];
+  //load expression_info.json
+  if ( file_exists("$json_files_path/tools/expression_info.json") ) {
+    $annot_json_file = file_get_contents("$json_files_path/tools/expression_info.json");
+    $annot_hash = json_decode($annot_json_file, true);
+  }
 ?>
 
   <div class="margin-20">

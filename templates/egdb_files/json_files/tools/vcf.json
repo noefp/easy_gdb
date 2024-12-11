@@ -1,0 +1,17 @@
+{
+  "gene_names_file":"gene_names.txt",
+  "gff_file":"gene_models.gff.gz",
+  "jb_data_folder":"easy_gdb_sample",
+  "passport_folder":"passport_folder",
+  "chr_files":
+    {
+      "chr1":"chr1.ann.vcf.gz",
+      "chr2":"chr2.ann.vcf.gz",
+      "chr3":"chr3.ann.vcf.gz",
+      "chr4":"chr4.ann.vcf.gz",
+      "chr5":"chr5.ann.vcf.gz",
+      "chr6":"chr6.ann.vcf.gz",
+      "chr7":"chr7.ann.vcf.gz",
+      "chr8":"chr8.ann.vcf.gz"
+    }
+}

@@ -7,18 +7,18 @@ $easy_gdb_path = "$root_path/easy_gdb";
 $images_path = "/$egdb_files_folder/egdb_images";
 $custom_text_path = "$root_path/$egdb_files_folder/egdb_custom_text";
 $downloads_path = "downloads";
+$annotations_path = "$root_path/annotations";
 $blast_dbs_path = "$root_path/blast_dbs";
 $lookup_path = "$root_path/lookup"; //from root 
 $species_path = "$root_path/$egdb_files_folder/egdb_species";
 $lab_path = "$root_path/$egdb_files_folder/egdb_labs";
+$json_files_path = "$root_path/$egdb_files_folder/json_files";
 
   //Expression
 $expression_path = "$root_path/expression_data";
 $private_expression_path = "$root_path/private_expression_data";
+$comparator_lookup = 0;
 
-  //Annotations
-$annotation_links_path = "$root_path/$egdb_files_folder/annotations";
-$annotations_path = "$root_path/annotations";
 
   //Passport
 $passport_path = "$root_path/passport";
@@ -40,7 +40,7 @@ $tb_rm_home = 0;
 
 $tb_about = 1;
 $tb_downloads = 1;
-$tb_species = 0;
+$tb_species = 1;
 $tb_search_box = 0;
 
 $tb_tools = 1;
