@@ -6,7 +6,10 @@
 <?php
 // Connecting, selecting database
 include_once realpath ("$conf_path/database_access.php");
-$dbconn = pg_connect(getConnectionString())
+
+if(!getConnectionString()==null)
+{
+  $dbconn = pg_connect(getConnectionString())
     or die('Could not connect: ' . pg_last_error());
 
 
@@ -49,14 +52,22 @@ function test_input($data) {
   return $data;
 }
 ?>
-
-
+ 
 <?php include_once realpath("search_annot.php");?>
 
 
 <?php
 // Closing connection
 pg_close($dbconn);
+?>
+<?php
+}
+else
+{
+  echo "<div class=\"alert alert-danger margin-20\" style=\"text-align:center\">";
+  echo "<strong>Info: </strong><i> DataBase</i> not available";
+  echo"</div>";
+}
 ?>
 
 <br>
