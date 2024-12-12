@@ -284,24 +284,43 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
                 
         $average_printed = number_format($average, 2);
         $all_ranges_descriptors = [];
-
+        $unique_id = "collapse_" . uniqid();
+        
         if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
-          $category_printed = str_replace("_", " ", $category);          
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
-          //echo "<button id=\"showPopupButton\" onclick=\"showPopup()\" style=\"margin-left: 10px;\">Información</button><div id=\"popupContent\" style=\"display:none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;\"></div><br>";
-
+          $category_printed = str_replace("_", " ", $category);
+          // echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"color: #c4d03f; cursor: pointer;\" data-toggle=\"collapse\" data-target=\"#$unique_id\"></i><br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
+          
+          echo "<div id=\"$unique_id\" class=\"collapse\">";
+          echo "<table style='color: grey;min-width:250px;margin:20px'>";
+          
+          foreach ($categories as $index => $cat) {
+            $range = $ranges[$index];
+            $cat_printed = str_replace("_", " ", $cat);
+            
+            $popup_ranges = "$cat_printed: $range<br>";
+            
+            echo "<tr><td>$cat_printed:</td><td style=\"text-align: right\">$range</td></tr>";
+            
+            array_push($all_ranges_descriptors, $popup_ranges);
+          }
+          
+          echo "</table></div>";
+          
+        } elseif ($descriptor_primary_name && $category) {
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<i class=\"fas fa-info-circle info-icon\" style=\"color: #c4d03f; cursor: pointer;\" data-bs-toggle=\"collapse\" data-bs-target=\"#$unique_id\"></i><br>";
           
           foreach ($categories as $index => $cat) {
             $range = $ranges[$index];
             $cat_printed = str_replace("_", " ", $cat);
             $popup_ranges = "$cat_printed: $range<br>";
             //echo "<button onclick=\"openPopup()\">Info</button>";
-            //echo "<span style='color: grey; font-size: 12px;'>$popup_ranges</span>";
+            
+            echo "<div id=\"$unique_id\" class=\"collapse\" style=\"margin-top: 10px;\"><span style='color: grey; font-size: 12px;'>$popup_ranges</span></div>";
+
             array_push($all_ranges_descriptors, $popup_ranges);
           }
           
-        } elseif ($descriptor_primary_name && $category) {
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br>";
         } elseif ($descriptor_primary_name && $descriptor_secondary_name) {
           echo "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>";
         } else {
@@ -566,7 +585,7 @@ function file_to_table($file_path, $acc_name) {
 </div><!-- close passport container -->
 <br>
 
-<?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
+<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
 
 
 

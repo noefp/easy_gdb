@@ -13,14 +13,14 @@ $shell_cmd = "tail -n +2 $no_spc_file | cut -f $col_index | sort -u";
 $shell_res = shell_exec($shell_cmd);
 
 $is_numeric = 1;
- 
-if ( preg_match("/[A-Za-z]/", $shell_res) ) {
+
+
+if ( preg_match("/[A-Za-z]/", $shell_res) || $shell_res =="\n" || $shell_res == null ){
   $is_numeric = 0;
 }
 
 $shell_array = explode("\n",$shell_res);
-$shell_res = "";
-
+// $shell_res = "";
 $html_array = array();
 
 if ($is_numeric) {
@@ -32,12 +32,13 @@ if ($is_numeric) {
   array_push($html_array, "<option name=\"lt\"><</option>");
   
 } else {
-  foreach (array_filter($shell_array) as $option) {
-    array_push($html_array,"<option name=\"$option\">$option</option>");
-  }
-}
+    foreach (array_filter($shell_array) as $option) {
+      array_push($html_array,"<option name=\"$option\">$option</option>");
+    }
+  } 
 
-//echo json_encode($shell_cmd);
+// echo json_encode($shell_res);
+$shell_res = "";
 echo json_encode($html_array);
 
 

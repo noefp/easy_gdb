@@ -121,6 +121,7 @@
   
   .egdb_person_card {
     min-height:150px;
+    min-width:200px;
     margin-right: 5px;
     margin-bottom: 5px;
     border: 1px solid #ddd;
@@ -159,7 +160,7 @@
     cardsData.forEach(card => {
       cardsHTML += `
         <a href="${card.link}" class="float-left card egdb_person_card" style="color:#333">
-          <img class="card-img-top egdb_person_img" src="${card.image}" alt="${card.sps_name}">
+          <img class="egdb_person_img" src="${card.image}" alt="${card.sps_name}">
           <div class="card-body" style="white-space: nowrap; padding: 5px;">
             <h4 style="margin-bottom: 5px"><i>${card.sps_name}</i></h4>
             <p class="card-text">${card.common_name}</p>

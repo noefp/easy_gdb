@@ -1,8 +1,8 @@
 <!-- LOAD LIBRARIES -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
 
 
 <?php 
@@ -108,6 +108,20 @@
 <script>
   $(document).ready(function(){
     $('#galleryCarousel').carousel();
+
+    // Intersection Observer to control the visibility of the carousel
+    const galleryCarousel = document.getElementById('galleryCarousel');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          $('#galleryCarousel').carousel('cycle'); // Active
+        } else {
+          $('#galleryCarousel').carousel('pause'); // Pause
+        }
+      });
+    }, { threshold: 0.5 }); // It is visible if it is seen, at least, 50% of carousel
+
+    observer.observe(galleryCarousel);
   });
 
 

@@ -19,7 +19,9 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 <?php
   $filters =explode("\n",rtrim($_POST['filters']));
   $file =$_POST['file'];
-  
+  $passport_path_file =$_POST['passport'];
+   
+
   $filters_dict=[];
 
   
@@ -247,20 +249,20 @@ return $numeric;
     include_once realpath("$easy_gdb_path/tools/common_functions.php");
 
     $file_found=0;
-    $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
-    asort($all_datasets);
-      
-    foreach ($all_datasets as $dir_or_file) {
-      if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories  
-        // get info from passport.json
-        if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
-          $pass_json_file = file_get_contents("$passport_path/$dir_or_file/passport.json");
+    // $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
+    // asort($all_datasets);
+    // if ($all_datasets)  
+    // foreach ($all_datasets as $dir_or_file) {
+    //   if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories  
+    //     // get info from passport.json
+        if ( file_exists("$passport_path_file/passport.json") ) {
+          $pass_json_file = file_get_contents("$passport_path_file/passport.json");
           $pass_hash = json_decode($pass_json_file, true);
 
           if($file.".txt" == $pass_hash['passport_file'])
           {
             $file_found=true;
-            print_search_table($filters_dict, $passport_path."/".$dir_or_file."/".$file.".txt", $file);
+            print_search_table($filters_dict, $passport_path_file."/".$file.".txt", $file);
           }
           else
           {
@@ -268,14 +270,14 @@ return $numeric;
                 if($file.".txt" == $phenotipe)
                 {   
                     $file_found=true;
-                    print_search_table($filters_dict, $passport_path."/".$dir_or_file."/".$file.".txt", $file);
+                    print_search_table($filters_dict, $passport_path_file."/".$file.".txt", $file);
                 }
             }
           }
           if(!$file_found){echo("<i><h2>".$file.".txt"." File not found</h2></i>");}
         }        
-      }// close if is_dir         
-    }//foreach all_dir
+    //   }// close if is_dir         
+    // }//foreach all_dir
 ?>
 <!-- END TABLE  -->
 

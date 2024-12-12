@@ -24,10 +24,37 @@
 
 
 <?php
-  $n_passport_files=[];
+
+ // get info from passport.json
+ function get_info_json($passport_path_file)
+  {
+    if ( file_exists($passport_path_file."/passport.json") ) {
+    $pass_json_file = file_get_contents($passport_path_file."/passport.json");
+    $pass_hash = json_decode($pass_json_file, true);
+    // print_r($pass_hash);
+
+    $passport_file = $pass_hash["passport_file"];
+    $phenotype_file_array = $pass_hash["phenotype_files"];
+    // $unique_link = $pass_hash["acc_link"];
 
 
-  function read_passport_file($passport_path,$passport_file,$acc_header_name) {
+
+  if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path_file.'/'.$passport_file)   ) {
+    
+    // echo "unique_link: $unique_link<br>";
+// 
+    read_passport_file($passport_path_file,$passport_file);
+
+    foreach ($phenotype_file_array as $phenotype_file) {
+      read_passport_file($passport_path_file,$phenotype_file);
+    }
+    }//if preg_match
+  }//foreach all_dir
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  // $n_passport_files=[];
+  function read_passport_file($passport_path,$passport_file) {
     
     
     $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$passport_file);
@@ -46,7 +73,7 @@
       echo "</div>";
 
       echo "<div id=\"collapse_$frame_id\" class=\"hide collapse\" style=\" border-radius: 5px; border:solid 1px; background-color:#efefef; padding-top:7px\">";
-      array_push($GLOBALS['n_passport_files'],$frame_id);
+      // array_push($GLOBALS['n_passport_files'],$frame_id);
       
       $pass_array = file("$passport_path/$passport_file");
       // $pass_array = explode("\n", $pass_array);
@@ -56,19 +83,7 @@
       // echo "passport header: $header";
       
       $no_spc_file = str_replace(" ","\ ","$passport_path/$passport_file");
-      
-      // foreach ($header_array as $key => $value) {   
-      //   $col_index = $key + 1; 
-      //   $shell_cmd = "tail -n +2 $no_spc_file | cut -f $col_index | sort -u";
-      //   $shell_res = shell_exec($shell_cmd);
-      //   $is_numeric = 1;
-      //   // echo "hello!!! $shell_res <br>";
-      //   if ( preg_match("/[A-Za-z]/", $shell_res) ) {
-      //     $is_numeric = 0;
-      //   }
-      //   $shell_array = explode("\n",$shell_res);
-      //   $shell_res = "";
-      
+        
 
       echo "<form id=\"passport_form\" action=\"passport_search_output_avanced.php\" method=\"post\">";
         echo "<div class=\"container\" style=\"margin-left:20px\">";
@@ -102,6 +117,7 @@
             echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"10\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize: none\"></textarea>"; 
             echo "</div>"; // col
             echo "</div>";
+            echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
 
         echo"<div style=\"display: flex; justify-content: flex-end;\">";
         echo "<button id=\"search_$frame_id\" name=\"file\" value=\"$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; width:95px\"><span class=\"fas fa-search\"></span> Search</button>";
@@ -112,10 +128,9 @@
   }
 ?>
 
-
 <!-- INPUT FORM -->
 
-<!-- Default filter    -------------------------------   -->
+<!-- Default filter    --------------------------------->
 <div class="form margin-20">
   <div style="margin:auto; max-width:1200px">
 
@@ -142,74 +157,65 @@
 
 <div id="advanced" class="hide collapse">
 
+
+
+<!------------------------------------------- main -------------------------------------------------->
 <?php
 //
-  $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
-  asort($all_datasets);
 
- $dir_counter = 0;
+$all_datasets = get_dir_and_files($passport_path); // call the function
+asort($all_datasets);
 
- foreach ($all_datasets as $one_dir) {
-   if (is_dir($passport_path."/".$one_dir)){ // get dirs and print categories
-     $dir_counter++;
-   }
+$dir_counter = 0;
+$dir_counter2=true;
+
+foreach ($all_datasets as $expr_dataset) {
+  
+  if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
+    $dir_counter++;
+  }
+}
+
+
+//category organization
+if ($dir_counter) {
+  
+  echo "<label for=\"sel1\">Select Dataset</label>";
+  get_info_json($passport_path);
+  echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
+  
+  //get expression datasets from each dir
+  foreach ($all_datasets as $one_dataset) {
+    $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$one_dataset);
+    $data_set_name = str_replace("_"," ",$data_set_name);
+    
+    if ( !preg_match('/\.php$/i', $one_dataset) && is_dir("$passport_path/$one_dataset") && ($one_dataset != "comparator_gene_list.txt") && ($one_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $one_dataset) && file_exists("$passport_path/$one_dataset") ) {
+      echo "<option value=\"$passport_path/$one_dataset\">$data_set_name</option>";
+      if($dir_counter2)
+      {
+        $first_category= "$passport_path/$one_dataset";
+        $dir_counter2=false;
+      }
+    }
+  }    
+  echo   "</select>";
+
+  echo "<div id=\"frame\">";
+    get_info_json($first_category);
+  echo"</div>";
+
+}
+ else 
+ {
+    get_info_json($passport_path);
  }
 
-
-  //category organization
- if ($dir_counter) {
-//
-    foreach ($all_datasets as $dir_or_file) {
-      if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories
-
-        $dir_name = str_replace("_"," ",$dir_or_file);  
-//
-        $pass_files = get_dir_and_files($passport_path."/".$dir_or_file); // call the function
-        sort($pass_files);
-
-//
-      //  foreach ($pass_files as $passport_file) {
-//
-          // echo "passport_path: $passport_path/$dir_or_file/passport.json<br>";
-//
-          // get info from passport.json
-          if ( file_exists("$passport_path/$dir_or_file/passport.json") ) {
-            $pass_json_file = file_get_contents("$passport_path/$dir_or_file/passport.json");
-            $pass_hash = json_decode($pass_json_file, true);
-
-            $passport_file = $pass_hash["passport_file"];
-            $phenotype_file_array = $pass_hash["phenotype_files"];
-            $unique_link = $pass_hash["acc_link"];
-
-
-
-          if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path.'/'.$dir_or_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path.'/'.$dir_or_file.'/'.$passport_file)   ) {
-            
-            // echo "unique_link: $unique_link<br>";
-//
-            read_passport_file("$passport_path/$dir_or_file",$passport_file,$unique_link);
-
-            foreach ($phenotype_file_array as $phenotype_file) {
-              read_passport_file("$passport_path/$dir_or_file",$phenotype_file,$unique_link);
-            }
-//
-           }//if preg_match
-         }//foreach all_dir
-      }//if is_dir
-    }// foreach dir
-}//if dir_counter
-  else {
-//     // without categories
-   read_passport_file($passport_path,$passport_file,$unique_link);
- }
 ?>
-  </div>
+</div>
 </div>
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
-
-
 
 
 
@@ -295,8 +301,8 @@ $(document).ready(function () {
         // alert("opt_lines: "+opt_array);
 
         var opt_lines = JSON.parse(opt_array);
-        // alert("opt_lines: "+opt_lines[0]);
-        $("#select_" + filter_id).html(opt_lines.join("<br>"));
+        // alert("opt_lines: "+opt_lines);
+        $("#select_" + filter_id).html(opt_lines.join("\n"));
 
         if (opt_lines[0] == '<option name=\"gt\">></option>') {
           // alert("opt_lines: "+opt_lines[0]);
@@ -307,80 +313,88 @@ $(document).ready(function () {
           $('#'+'select_' + filter_id).css("height",50+"px");   
           $('#'+'select_' + filter_id).removeAttr("multiple");
           $('#'+'select_' + filter_id).removeAttr("size");
-
-        } else {
-          $('#' + 'numeric_input_' + filter_id).css("display","none");
-          $('#'+'select_' + filter_id).css("width","100%");
-          $('#'+'select_' + filter_id).css("height","100%");
-          $('#'+'select_' + filter_id).attr("multiple","multiple");
-          $('#'+'select_' + filter_id).attr("size","11");
+        } else{
+            $('#' + 'numeric_input_' + filter_id).css("display","none");
+            $('#'+'select_' + filter_id).css("width","100%");
+            $('#'+'select_' + filter_id).css("height","100%");
+            $('#'+'select_' + filter_id).attr("multiple","multiple");
+            $('#'+'select_' + filter_id).attr("size","11");
         }
-
       }
     });
   }; // end ajax_call
+
+  //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
+  function ajax_search_call(passport_path) {
   
-  $('.sel_opt').before(function() {
+  jQuery.ajax({
+    type: "POST",
+    url: 'ajax_search_avanced.php',
+    data: {'passport_path': passport_path},
 
+    success: function (passport_array) {
+      // alert(passport_array);
+      var passport_filter = JSON.parse(passport_array);
+      // alert(passport_filter);
+    $("#frame").html(passport_filter.join("\n"));
+
+    $('.sel_opt').before(function(){  
     var filter_id=this.id;
-    var Selec = $('#' + filter_id).val();
-    
+    var Selec = $('#' + filter_id).val();  
     var passport_full_path = $('#' + filter_id).attr("name");
-
-    var col_index = $(this).find('option:selected').attr("name"); 
-    
+    var col_index = $(this).find('option:selected').attr("name");   
     get_ajax_options(col_index,passport_full_path,filter_id);
+  });
+    }
+  });
+  
+};
+
+
+$('.sel_opt').before(function(){  
+    var filter_id=this.id;
+    var Selec = $('#' + filter_id).val();  
+    var passport_full_path = $('#' + filter_id).attr("name");
+    var col_index = $(this).find('option:selected').attr("name");   
+    // alert(filter_id);
+    get_ajax_options(col_index,passport_full_path,filter_id);
+  });
+
+
+  // Get dataset genes when changing dataset
+    $(document).on('change', '#sel1', function() {
+      selected_dataset = $('#sel1').val();
+      ajax_search_call(selected_dataset);
+      // alert($('#sel1').innerHTML = $('#frame option:nth-child(1)').id); 
 
   });
 
-  $('.sel_opt').change(function() {
-    
+  $(document).on('change', '.sel_opt', function() {
     var filter_id=this.id;
-    var Selec = $('#' + filter_id).val();
-    
+    // alert(filter_id)
+    var Selec = $('#' + filter_id).val();   
     var passport_full_path = $('#' + filter_id).attr("name");
-
     var col_index = $(this).find('option:selected').attr("name"); 
-    
     get_ajax_options(col_index,passport_full_path,filter_id);
     
   });
-
+  
 
   // var file_path1 = "<?php //echo "$passport_path" ?>";
   // //alert("file1: "+file_path1);
   //
-  // $('#sel1').change(function() {
-  //
-  //   var column_name = $('#sel1').val();
-  //   var passport_full_path = $('#sel1').attr("name");
-  //
-  //   var col_index = $(this).find('option:selected').attr("name");
-  //   //var gff_file = "<?php //echo "$root_path"."/"."$downloads_path"."/vcf/Car.genes.gff.zip"; ?>";
-  //   //alert("Selected: "+column_name+" "+col_index+" "+file_path1);
-  //   //alert("file2: "+file_path1+", "+passport_dir);
-  //
-  //   get_ajax_options(col_index,passport_full_path);
-  //
-  // });
 
-
-
-  var files=<?php echo (json_encode($n_passport_files));?>;
+  // var files=<?php //echo (json_encode($n_passport_files));?>;
   var all_filters=[];
-
-  $('.select').dblclick(function() {
+  $(document).on('dblclick', '.select', function() {
     var attr_id=$(this).attr('id');
     var id = attr_id.replace("select_","");
     add(id);
 
   });
 
-
-$('.add').click(function() {
-
+  $(document).on('click', '.add', function() {
   event.preventDefault();
-
   var parent_id=$(this).parent().attr('id');
   var id = parent_id.replace("button_","");
   add(id);
@@ -452,7 +466,7 @@ function add (id){
   
 }
 
-$('.delete').click(function() {
+$(document).on('click', '.delete', function() {
 
   event.preventDefault();
   
@@ -487,22 +501,19 @@ $('.delete').click(function() {
 
 });
 
-$('.search_button').click(function() {
-
+$(document).on('click', '.search_button', function() {
   var parent_id=$(this).attr('id');
   var id = parent_id.replace("search_","");
 
 });
 
   //check input gene before sending form
-
-  $('#egdb_search_file_form').submit(function() {
-    
+  $(document).on('submit', '.egdb_search_file_form', function() {
     var gene_id = $('#search_file_box').val();
     var data_set_selected = false;
     var file_database = "<?php echo $file_database; ?>";
 
-    $('.sample_checkbox').each(function() {
+    $(document).on('each', '.sample_checkbox', function() {
       if ($(this).is(':checked')) {
         data_set_selected = true;
         return false;
