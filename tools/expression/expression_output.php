@@ -1,6 +1,8 @@
 <?php include realpath('../../header.php'); ?>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
+<script type="text/javascript" src="/easy_gdb/js/apexcharts.min.js"></script>
+
 <script type="text/javascript" src="/easy_gdb/js/kinetic-v5.1.0.min.js"></script>
 
 

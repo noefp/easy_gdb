@@ -1,6 +1,11 @@
 <?php include realpath('../../header.php'); ?>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
+<script src="/easy_gdb/js/apexcharts.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="/easy_gdb/js/DataTables/Select-1.2.6/css/select.dataTables.min.css"> -->
+
+
 
 <div class="margin-20">
   <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
@@ -495,7 +500,7 @@ $full_header = array_unique($full_header);
 $sample_names = array_values($full_header);
 
 // create average table and its header
-array_push($table_code_array,"<div style=\"width:95%; margin: auto; overflow: scroll;\"><table class=\"table\" id=\"tblResults\">");
+array_push($table_code_array,"<table class=\"table\" id=\"tblResults\">");
 array_push($table_code_array,"<thead><tr><th>ID</th>");
   
 foreach ($full_header as $exp_name) {
@@ -751,7 +756,7 @@ foreach ($found_genes as $gene_name => $kk) {
   
 }
 array_push($table_code_array,"</tr>");
-array_push($table_code_array,"</table></div>");
+array_push($table_code_array,"</table>");
 
 $samples_found = array_keys($replicates);
   
@@ -761,44 +766,18 @@ $samples_found = array_keys($replicates);
   }
   
 ?>
-
-
   <center>
 
 <!-- #####################             Lines             ################################ -->
-  
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#line_chart_frame" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Lines
-    </div>
-
-    <div id="line_chart_frame" class="collapse hide" style="width:95%; border:2px solid #666; padding-top:7px">
-      <div id="chart_lines" style="min-height: 550px;"></div>
-    </div>
+    <?php include realpath("03_expr_load_lines_html.php");?>
   </center>
-  
-    
-  
-<!-- #####################             Heatmap             ################################ -->
 
+<!-- #####################             Heatmap             ################################ -->
   <center>
   
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#heatmap_graph" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Heatmap
-    </div>
+    <?php include realpath("03_expr_load_heatmap_html.php");?>
 
-    <div id="heatmap_graph" class="collapse hide">
-
-      <div id="chart1_frame" style="width:95%; border:2px solid #666; padding-top:7px">
-        <button id="red_color_btn" type="button" class="btn btn-danger">Red palette</button>
-        <button id="blue_color_btn" type="button" class="btn btn-primary">Blue palette</button>
-        <button id="range_color_btn" type="button" class="btn" style="color:#FFF">Color palette</button>
-
-        <div id="chart1" style="min-height: 400px;"></div>
-
-      </div>
-    </div>
-  
-    <!-- #####################             Replicates           ################################ -->
+<!-- #####################             Replicates           ################################ -->
   
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
@@ -820,24 +799,18 @@ $samples_found = array_keys($replicates);
         <div id="chart2" style="min-height: 365px;"></div>
       </div>
 
-    </div>
-  
-  
-  
+    </div> 
+
   </center>
   
   
-  <div class="data_table_frame">
-
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#avg_table" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Average values
-    </div>
-
-    <div id="avg_table" class="collapse hide">
+<!-- #####################             datatable           ################################ -->
+   
+ <?php include realpath("03_expr_load_avg_table_html.php")?>
 
 <?php
   
-  echo implode("\n", $table_code_array);
+  // echo implode("\n", $table_code_array);
   $found_genes = array_keys($found_genes);
   
   // echo "replicates_all_genes<br>";
@@ -845,12 +818,6 @@ $samples_found = array_keys($replicates);
   // echo "<br>";
   
 ?>
-
-    </div> <!-- avg_table end -->
-  
-  </div> <!-- data_table_frame end -->
-</div>
-
 <br>
 
 <?php 
@@ -879,20 +846,19 @@ include realpath('../../footer.php');
     $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
   }
   
-  $("#tblResults").dataTable({
-    "dom":'Bfrtip',
-    "ordering": false,
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  });
+  // $("#tblResults").dataTable({
+  //   "dom":'Bfrtip',
+  //   "ordering": false,
+  //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  // });
 
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
+  // $("#tblResults_filter").addClass("float-right");
+  // $("#tblResults_info").addClass("float-left");
+  // $("#tblResults_paginate").addClass("float-right");
 
 </script>
   
 <script src="expression_graphs.js"></script>
-
 <script> $('#line_chart_frame').collapse('show')</script>
 
 <style>
