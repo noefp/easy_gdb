@@ -1,7 +1,3 @@
-<?php
-  $header_img = "header_img1.jpg";
-?>
-
 <!-- HEADER-->
 <?php include_once realpath("../../header.php");?>
 
@@ -25,7 +21,7 @@
 
 
 <div class="page_container" style="margin-top:20px">
-  <h1 class="text-center"><?php echo "$pass_dir_title" ?></h1>
+  <h1 class="text-center"><?php //echo "$pass_dir_title" ?></h1>
   <br>
   <div class="data_table_frame">
 
@@ -41,9 +37,12 @@
     $hide_array = $pass_hash["hide_columns"];
     $map_array = $pass_hash["map_columns"];
 
-    $colors_array = $pass_hash["marker_colors"];
+    $traits_array = $pass_hash["map_markers"];
     $sp_name = $pass_hash["sp_name"];
-    $phenotype_file_data = $pass_hash["phenotype_file_data"];
+    $phenotype_file_marker_trait = $pass_hash["phenotype_file_marker_trait"];
+    $marker_column = $pass_hash["marker_column"];
+    $marker_acc_col = $pass_hash["marker_acc_col"];
+
   }
 
 
@@ -85,9 +84,12 @@
             echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&acc_id=$col\">$col</a></td>";
             // echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&row_num=$row_count\">$col</a></td>";
             // echo "<td><a href=\"row_data.php?row_data=".$table_file.",".$row_count.",".($field_number-1)."\">$col</a></td>";
+          } elseif ($header_cols[$col_index] == "Species") {
+            echo "<td><i>$col</i></td>";
           } else {
             echo "<td>$col</td>";
           }
+
         } // end in_array
       } // end foreach columns
       echo "</tr>";
@@ -105,7 +107,11 @@
 <br>
 
 <!-- MAP-->
-<?php include_once realpath("$easy_gdb_path/tools/passport/map.php"); ?>
+<?php 
+if ($show_map) {
+  include_once realpath("$easy_gdb_path/tools/passport/map.php");
+} 
+?>
 
 <br>
 <!-- FOOTER-->

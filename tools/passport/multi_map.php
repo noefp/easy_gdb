@@ -9,12 +9,6 @@
 
 
 <!-- ALL GERMPLASM PRINTED ON A MAP-->
-<div class="p-1 my-1 bg-secondary text-white">
-  <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
-    <center><h1><i class="fa-solid fa-location-crosshairs"></i><b> Explore the map </b></h1></center>
-  <!-- </div>-->
-</div>
-  <div class="p-7 my-3 border">
 
 <?php
   
@@ -131,7 +125,7 @@
               'country' => $country,
               'latitude' => $latitude,
               'longitude' => $longitude,
-              'color' => 'default', 
+              'trait' => 'default', 
               'species' => $species
           ];
         }
@@ -162,8 +156,12 @@
   $json_data_map = json_encode($all_data_map);
   //echo "json_data_map. $json_data_map<br>"; // funciona
 
-  echo "<div id=\"map\" style=\"height: 600px;\"></div>";
+  
+  if (!empty ($sub_path) && $show_map ) {
+    echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
 
+    echo "<div id=\"map\" style=\"height: 600px;\"></div></div>";
+  }
 ?>
 
 
@@ -171,10 +169,10 @@
   const data = <?php echo $json_data_map; ?>;
   markersPath = '<?php echo $marker_path; ?>';
 
-  function getIcon(species, color) {
-    color = 'default';
+  function getIcon(species, trait) {
+    trait = 'default';
 
-    var iconUrl = `${species}_marker_${color}.png`;
+    var iconUrl = `${species}_${trait}.png`;
 
     return new L.Icon({
         iconUrl: markersPath + iconUrl,
@@ -190,7 +188,7 @@
 
   data.forEach(item => {
       if (item.latitude && item.longitude) {
-          var icon = getIcon(item.species, item.color);
+          var icon = getIcon(item.species, item.trait);
           var marker = L.marker([item.latitude, item.longitude], {icon: icon});
 
           var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>/${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`;

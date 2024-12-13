@@ -566,8 +566,9 @@ function file_to_table($file_path, $acc_name) {
       if ($header[$col_count] ) {
         if ($header[$col_count] == "DOI" ) {
           echo "<p><b>$header[$col_count]:</b> <a href=\"https://doi.org/$col_value\" target=\"_blank\"> $col_value</a></p>";
-        }
-        else {
+        } elseif ($header[$col_count] == "Species") {
+          echo "<p><b>$header[$col_count]:</b> <i>$col_value</i></p>"; 
+        } else {
           echo "<p><b>".$header[$col_count].":</b> $col_value</p>";
         }
       }
@@ -577,15 +578,18 @@ function file_to_table($file_path, $acc_name) {
   } // Close if
 ?>
     <br>
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 p-7 my-3">
-      <div id="qrcode"></div>
-    </div> 
+
+<?php
+  if ($show_qr) {
+    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6 p-7 my-3\"><div id=\"qrcode\"></div></div>";
+  }
+?>
     
   </div> <!-- close row -->
 </div><!-- close passport container -->
 <br>
 
-<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
+<!-- <?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?>  -->
 
 
 
@@ -612,16 +616,7 @@ if (!empty($featured_descriptors_file) ) {
 
 
 
-  <!-- LOCATION -->
-  <div class="container p-1 my-1 bg-secondary text-white">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <center><h1><i class="fa-solid fa-location-dot"></i><b> Location </b></h1></center>
-    </div>
-  </div>
-
-  <!-- <div class="row"> -->
-  <div class ="container p-7 my-3 border">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <!-- MAP -->
 
 <!-- COORDENADAS -->
 <?php
@@ -641,81 +636,86 @@ $collection_site = $cols[$collection_site_index];
 
 $numeric_pattern = "/[0-9]/";
 
-if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
-  
-  echo "<br>";
-  echo "<div id=\"map\" style=\"height: 350px;\"></div>";
-  
-} else if ($country_name) { // Close 'if' - real coords
-  
-  echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
-  
-  $coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt"; // file with coords info
+if ($show_map) {
+  echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-location-dot\"></i><b> Location </b></h1></center></div></div>";
+  echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">";
 
-  if ( file_exists("$coords_file") ) {
-          
-    $country_to_coords_file = file_get_contents("$coords_file");        
-    //echo $country_to_coords_file; // print file content
-    $rows_coords = explode("\n", $country_to_coords_file);
-    $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
-    $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
+  if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
 
-
-    //  Defining $var of $coords_file - all options
-    $full_name = "";
-    //$alpha2_code = "";
-    //$alpha3_code = ""; // útil para IHSM_SDB, puesto que incluyen el código en el archivo de datos
-    //$num_code = "";
-    $country_latitude = "";
-    $country_longitude = "";
-
-    // Associate lat&long with $country_name
-    foreach ( $rows_coords as $row ) {
-      $cols_coords = explode("\t", $row);
-      if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]) {
-        // GET var independent values - it depends on the file distribution
-        $full_name = $cols_coords[0];  
-        // $alpha2_code = $cols_coords[1];
-        // $alpha3_code = $cols_coords[2];
-        // $num_code = $cols_coords[3];
-        $country_latitude = $cols_coords[4]; 
-        $country_longitude = $cols_coords[5];
-        // $country_longitude = str_replace(PHP_EOL, '', $long);
-        break; // ??? se podría quitar porque solo se están definiendo los valores
+    echo "<br>";
+    echo "<div id=\"map\" style=\"height: 350px;\"></div>";
+    
+  } else if ($country_name) { // Close 'if' - real coords
+    
+    echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
+    
+    $coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt"; // file with coords info
+  
+    if ( file_exists("$coords_file") ) {
+            
+      $country_to_coords_file = file_get_contents("$coords_file");        
+      //echo $country_to_coords_file; // print file content
+      $rows_coords = explode("\n", $country_to_coords_file);
+      $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
+      $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
+  
+  
+      //  Defining $var of $coords_file - all options
+      $full_name = "";
+      //$alpha2_code = "";
+      //$alpha3_code = ""; // útil para IHSM_SDB, puesto que incluyen el código en el archivo de datos
+      //$num_code = "";
+      $country_latitude = "";
+      $country_longitude = "";
+  
+      // Associate lat&long with $country_name
+      foreach ( $rows_coords as $row ) {
+        $cols_coords = explode("\t", $row);
+        if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]) {
+          // GET var independent values - it depends on the file distribution
+          $full_name = $cols_coords[0];  
+          // $alpha2_code = $cols_coords[1];
+          // $alpha3_code = $cols_coords[2];
+          // $num_code = $cols_coords[3];
+          $country_latitude = $cols_coords[4]; 
+          $country_longitude = $cols_coords[5];
+          // $country_longitude = str_replace(PHP_EOL, '', $long);
+          break; // ??? se podría quitar porque solo se están definiendo los valores
+        }
       }
-    }
-
-    // COMPROBACIÓN
-    if ($country_latitude != null) { 
-      // echo "<b>Country match info:</b><br>";
-      // echo "Full Name: $full_name<br>";
-      // //echo "Alpha2 Code: $alpha2_code<br>";
-      // //echo "Alpha3 Code: $alpha3_code<br>";
-      // //echo "Numeric Code: $num_code<br>";
-      // echo "Latitude: $country_latitude<br>";
-      // echo "Longitude: $country_longitude<br>";
-
-    } else {
-        echo "<br>No location data available.";
-    }
-
-    // if (empty($latitude&$longitude) ) { // llenar variable para Javascript
-    //   $latitude = $country_latitude;
-    //   $longitude = $country_longitude;
-    // }
-
-    echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
-  } // close if $coords_file exists 
   
+      // COMPROBACIÓN
+      if ($country_latitude != null) { 
+        // echo "<b>Country match info:</b><br>";
+        // echo "Full Name: $full_name<br>";
+        // //echo "Alpha2 Code: $alpha2_code<br>";
+        // //echo "Alpha3 Code: $alpha3_code<br>";
+        // //echo "Numeric Code: $num_code<br>";
+        // echo "Latitude: $country_latitude<br>";
+        // echo "Longitude: $country_longitude<br>";
   
-} // Use CountryCode
-  else {
-    echo "No location data available.";
+      } else {
+          echo "<br>No location data available.";
+      }
+  
+      // if (empty($latitude&$longitude) ) { // llenar variable para Javascript
+      //   $latitude = $country_latitude;
+      //   $longitude = $country_longitude;
+      // }
+  
+      echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
+    } // close if $coords_file exists 
+    
+    
+  } // Use CountryCode
+    else {
+      echo "No location data available.";
+  }
+          
+  // Frame Reference 
+  echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
+  
 }
-        
-// Frame Reference 
-echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
-
 ?>
 
     <br>
@@ -760,7 +760,7 @@ if (!empty($phenotype_file_array)){
   
   // Ref images used
   $img_src_msg = $pass_hash["img_src_msg"];
-  echo "<br>$img_src_msg"; // CONDICIONAR IMPRESIÓN DE LAS IMÁGENES
+  echo "<center>$img_src_msg</center>"; // CONDICIONAR IMPRESIÓN DE LAS IMÁGENES
 
 
 }
