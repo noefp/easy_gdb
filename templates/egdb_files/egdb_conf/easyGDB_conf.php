@@ -14,6 +14,9 @@ $species_path = "$root_path/$egdb_files_folder/egdb_species";
 $lab_path = "$root_path/$egdb_files_folder/egdb_labs";
 $json_files_path = "$root_path/$egdb_files_folder/json_files";
 
+// Custom css file
+$custom_css_path = "$egdb_files_folder/css/custom.css";
+
 //Expression
 $expression_path = "$root_path/expression_data";
 $private_expression_path = "$root_path/private_expression_data";
@@ -32,6 +35,9 @@ $db_logo = "egdb_logo.png";
 // Select 1 to store annotations in files or 0 to store annotations in a relational database.
 $file_database = 1;
 
+// Set to 1 to remove the jbrowse frame from gene.php. Set to 1 if JBrowse was not installed or setup.
+$rm_jb_frame = 1;
+
 // Toolbar
 $tb_custom = 0;
 $tb_rm_home = 0;
@@ -49,6 +55,7 @@ $tb_seq_ext = 1;
 $tb_annot_ext = 1;
 $tb_lookup = 1;
 $tb_enrichment = 0;
+$tb_more = 0;
 
 //Gene expression atlas
 $tb_gene_expr = 1;
