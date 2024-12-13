@@ -34,8 +34,10 @@ if ($file_database){
 
 
   echo "<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
-
-  include_once realpath("$easy_gdb_path/jb_frame_file.php");
+  
+  if (!$rm_jb_frame) {
+    include_once realpath("$easy_gdb_path/jb_frame_file.php");
+  }
   include_once realpath("$easy_gdb_path/annot_desc_file.php");
   include_once realpath("$easy_gdb_path/gene_seq.php");
 
@@ -126,12 +128,13 @@ else {
     if ($gene_row) {
       $gene_id = $gene_row["gene_id"];
       $species_id= $gene_row["species_id"];
-  
+      
       $species_name = $gene_row["species_name"];
       $annot_version = $gene_row["annotation_version"];
-  
-  
-      include_once 'jb_frame.php';
+      
+      if (!$rm_jb_frame) {
+        include_once 'jb_frame.php';
+      }
       include_once 'annot_desc.php';
       include_once 'gene_seq.php';
     }
