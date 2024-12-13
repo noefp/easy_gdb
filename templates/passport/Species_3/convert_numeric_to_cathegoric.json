@@ -1,0 +1,55 @@
+{
+  "Phenotype_descriptors.txt": 
+  {
+    "Length inflorescence": 
+      {
+        "ranges": ["0-10","10-14","14-18","18-22","22-26","26-30","30-34","34-38","38"],
+        "categories": ["very short","very short-short","short","short-medium","medium","medium-long","long","long-very long","very long"]
+      },
+    "Diameter inflorescence":
+      {
+        "ranges": ["0-5","5-8","8-13","13-18","18-23","23-28","28-32","32-37","37"],
+        "categories": ["very small","very small-small","small","small-medium","medium","medium-large","large","large-very large","very large"]
+      },
+    "Ratio length/diameter":
+      {
+        "ranges": ["0-0.7","0.7-1.2","1.2-1.7","1.7-2.2","2.2-2.7","2.7-3.2","3.2-3.7","3.7-.4.2","4.2"],
+        "categories": ["very small","very small-small","small","small-medium","medium","medium-large","large","large-very large","very large"]
+      },
+    "Primary branches inflorescence":
+      {
+        "ranges": ["0-5","5-10","10-15","15-20","20-25","25-30","30-35","35-40","40"],
+        "categories": ["very few","very few-few","few","few-medium","medium","medium-many","many","many+","many++"]
+      },
+    "Length blade":
+      {
+        "ranges": ["0-12","12-14","14-16","16-18","18-20","20-22","22-24","24-26","26"],
+        "categories": ["very short","very short-short","short","short-medium","medium","medium-long","long","long-very long","very long"]
+      },
+    "Width blade":
+      {
+        "ranges": ["0-3","3-4","4-5","5-6","6-7","7-8","8-9","9-10","10"],
+        "categories": ["very narrow","very narrow-narrow","narrow","narrow-medium","medium","medium-broad","broad","broad-very broad","very broad"]
+      },
+    "Ratio length/width":
+      {
+        "ranges": ["0-1.5","1.5-2","2-2.5","2.5-3","3-3.5","3.-5-4","4-4.5","4.5-5","5"],
+        "categories": ["very small","very small-small","small","small-medium","medium","medium-large","large","large-very large","very large"]
+      },
+    "Length fruit":
+      {
+        "ranges": ["0-90","30-105","105-120","120-135","135-150","150-165","165-180","180-195","195"],
+        "categories": ["very short","very short-short","short","short-medium","medium","medium-long","long","long-very long","very long"]
+      },
+    "Width fruit":
+      {
+        "ranges": ["0-65","65-70","70-75","75-80","80-85","85-90","90-95","95-100","100"],
+        "categories": ["very narrow","very narrow-narrow","narrow","narrow-medium","medium","medium-broad","broad","broad-very broad","very broad"]
+      },
+    "Ratio length/width fruit":
+      {
+        "ranges": ["0-1.1","1.1-1.15","1.15-1.3","1.3-1.45","1.45-1.6","1.6-1.75","1.75-1.9","1.9-2.05","2.05"],
+        "categories": ["very small","very small-small","small","small-medium","medium","medium-large","large","large-very large","very large"]
+      }
+  }
+}

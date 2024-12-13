@@ -1,0 +1,16 @@
+{
+  "passport_file":"sp2_passport.txt",
+  "acc_link":"ACC Name",
+  "hide_columns":[10,11],
+  "phenotype_files":["Leaf_descriptors.txt", "Inflorescence_descriptors.txt", "Mature_fruit_descriptors.txt", "Ripe_fruit_descriptors.txt"],
+  "phenotype_imgs":"sp2_phenotype_imgs.json",
+  "img_src_msg":"<p>The images used in the Phenotype descriptors come from <a href=\"https://www.gob.mx/cms/uploads/attachment/file/390817/MGDVAguacate.pdf\" target=\"_blank\"> <i>Manual gráfico para la descripción varietal del aguacate</i>. (Sagarpa)</a>. Using  <a href=\"https://www.upov.int/edocs/mdocs/upov/en/tc_edc/2006/tg_97_4_proj.5_e.pdf\" target=\"_blank\"> UPOV Database (Genie)</a> for descriptors.</p>",
+  "map_columns":[1,5,10,11],
+  "map_markers":[],
+  "phenotype_file_marker_trait":"",
+  "marker_column":"",
+  "sp_name":"Species_2", 
+  "convert_to_cathegoric":"convert_numeric_to_cathegoric.json",
+  "translator":"translator.json",
+  "featured_descriptors":"featured_descriptors.json"
+}

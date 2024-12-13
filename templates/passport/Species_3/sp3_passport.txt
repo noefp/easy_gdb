@@ -1,0 +1,13 @@
+ID	ACC Name	Species	Germplasm type	Date	Country	Country code	Research Center	Biological status of ACC	Collecting/acquisition source	Latitude	Longitude
+ID1	ACC1	Mangifera indica	Tree	01 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID2	ACC2	Mangifera indica	Tree	02 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID3	ACC3	Mangifera indica	Tree	03 Jan 2024	Israel	ISR	easyGDB	Clonal selection	Cultivated habitat		
+ID4	ACC4	Mangifera indica	Tree	04 Jan 2024	Mexico	MEX	easyGDB	Clonal selection	Cultivated habitat		
+ID5	ACC5	Mangifera indica	Tree	05 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID6	ACC6	Mangifera indica	Tree	06 Jan 2024	Israel	ISR	easyGDB	Clonal selection	Farm or cultivated habitat		
+ID7	ACC7	Mangifera indica	Tree	07 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID8	ACC8	Mangifera indica	Tree	08 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID9	ACC9	Mangifera indica	Tree	09 Jan 2024	Thailand	THA	easyGDB	Clonal selection	Cultivated habitat		
+ID10	ACC10	Mangifera indica	Tree	10 Jan 2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID11	ACC11	Mangifera indica	Tree	11 Jan 2024	Australia	AUS	easyGDB	Clonal selection	Cultivated habitat		
+ID12	ACC12	Mangifera indica	Tree	12 Jan 2024	Unknown		easyGDB	Clonal selection	Cultivated habitat		

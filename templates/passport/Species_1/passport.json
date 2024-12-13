@@ -1,0 +1,9 @@
+{
+  "passport_file":"sp1_passport.txt",
+  "acc_link":"ACC Name",
+  "hide_columns":[9,10],
+  "phenotype_files":["Leaf_descriptors.txt", "Flower_descriptors.txt", "Fruit_descriptors.txt"],
+  "map_columns":[1,4,9,10],
+  "map_markers":[],
+  "sp_name":"Species_1"
+}

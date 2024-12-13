@@ -1,0 +1,124 @@
+{
+	"Inflorescence_descriptors.txt":
+	{
+		"Length axis":
+		{
+			"primary_descriptor":"Length of axis of inflorescence (cm)",
+			"secondary_descriptor":"Longitud del eje de la inflorescencia"
+		},
+		"Color lenticels":
+		{
+			"primary_descriptor":"Color of lenticels of inflorescence",
+			"secondary_descriptor":"Color de las lenticelas de la inflorescencia"
+		},
+		"Flowering type":
+		{
+			"primary_descriptor":"Flowering type of inflorescence",
+			"secondary_descriptor":"Tipo de floración de la inflorescencia"
+		},
+		"Nectary":
+		{
+			"primary_descriptor":"Nectary of flower",
+			"secondary_descriptor":"Nectario de la flor"
+		},
+		"Style":
+		{
+			"primary_descriptor":"Style of flower",
+			"secondary_descriptor":"Estilo de la flor"
+		},
+		"Polen":
+		{
+			"primary_descriptor":"Pollen of flower",
+			"secondary_descriptor":"Polen de la flor"
+		}
+	},
+	"Leaf_descriptors.txt":
+	{
+		"Length (cm)":
+		{
+			"primary_descriptor":"Length of leaf blade (cm)",
+			"secondary_descriptor":"Longitud de la hoja"
+		},
+		"Width (cm)":
+		{
+			"primary_descriptor":"Width of leaf blade (cm)",
+			"secondary_descriptor":"Anchura de la hoja"
+		},
+		"Ratio length/width":
+		{
+			"primary_descriptor":"Ratio length/width of leaf blade",
+			"secondary_descriptor":"Relación longitud/anchura de la hoja"
+		},
+		"Length petiole":
+		{
+			"primary_descriptor":"Length of petiole (cm)",
+			"secondary_descriptor":"Longitud del peciolo"
+		},
+		"Shape":
+		{
+			"primary_descriptor":"Shape of leaf blade",
+			"secondary_descriptor":"Forma de la hoja"
+		}
+	}, 
+	"Mature_fruit_descriptors.txt":
+	{
+		"Length":
+		{
+			"primary_descriptor":"Length of mature fruit (cm)",
+			"secondary_descriptor":"Longitud del fruto maduro"
+		},
+		"Diameter":
+		{
+			"primary_descriptor":"Diameter of mature fruit (cm)",
+			"secondary_descriptor":"Diámetro del fruto maduro"
+		},
+		"Ratio length/diameter":
+		{
+			"primary_descriptor":"Ratio length/diameter of mature fruit",
+			"secondary_descriptor":"Relación longitud/diámetro del fruto maduro"
+		},
+		"Shape stalk end":
+		{
+			"primary_descriptor":"Shape of stalk end of mature fruit",
+			"secondary_descriptor":"Forma del extremo peduncular del fruto maduro"
+		},
+		"Neck":
+		{
+			"primary_descriptor":"Presence of neck of mature fruit",
+			"secondary_descriptor":"Cuello del fruto maduro"
+		},
+		"Depression stalk end":
+		{
+			"primary_descriptor":"Presence of depression at stalk end of mature fruit",
+			"secondary_descriptor":"Depresión del extremo peduncular del fruto maduro"
+		}
+	}, 
+	"Ripe_fruit_descriptors.txt":
+	{
+		"Color":
+		{
+			"primary_descriptor":"Color of ripe fruit",
+			"secondary_descriptor":"Color del fruto maduro"
+		},
+		"Thickness skin":
+		{
+			"primary_descriptor":"Thickness of skin of ripe fruit (mm)",
+			"secondary_descriptor":"Grosor de la piel del fruto maduro"
+		},
+		"Consistency":
+		{
+			"primary_descriptor":"Consistency of skin of ripe fruit",
+			"secondary_descriptor":"Consistencia de la piel del fruto maduro"
+		},
+		"Adherence skin/flesh":
+		{
+			"primary_descriptor":"Adherence of skin to flesh of ripe fruit",
+			"secondary_descriptor":"Adherencia de la piel a la pulpa del fruto maduro"
+		},
+		"Main color flesh":
+		{
+			"primary_descriptor":"Main color of flesh of ripe fruit",
+			"secondary_descriptor":"Color principal de la pulpa del fruto maduro"
+		}
+	}
+}

@@ -1,0 +1,50 @@
+{
+	"Phenotype_descriptors.txt":
+	{
+		"Primary branches inflorescence":
+		{
+			"img_name":"upov_inflorescence_number_primary_branches_help.png",
+			"options":["few","medium","many"]
+		},
+		"Shape blade":
+		{
+			"img_name":"upov_leaf_blade_shape_value.png",
+			"options":["ovate","elliptic","oblong"]
+		},
+		"Twisting blade":
+		{
+			"img_name":"upov_leaf_blade_twisting_value.png",
+			"options":["absent","present"]
+		},
+		"Shape base blade":
+		{
+			"img_name":"upov_leaf_blade_shape_base_value.png",
+			"options":["acute","obtuse","rounded"]
+		},
+		"Shape apex blade":
+		{
+			"img_name":"upov_leaf_blade_shape_apex_value.png",
+			"options":["attenuate","acuminate","acute"]
+		},
+		"Ratio length/width fruit":
+		{
+			"img_name":"upov_mature_fruit_ratio_help.png",
+			"options":["very_small","small","medium","large"]
+		},
+		"Shape cross fruit":
+		{
+			"img_name":"upov_mature_fruit_shape_cross_section_value.png",
+			"options":["medium_elliptic","broad_elliptic","circular"]
+		},
+		"Stalk cavity fruit":
+		{
+			"img_name":"upov_mature_fruit_stalk_cavity_value.png",
+			"options":["absent","shallow","medium","deep"]
+		},
+		"Neck fruit":
+		{
+			"img_name":"upov_mature_fruit_presence_neck_value.png",
+			"options":["absent","present"]
+		}
+	}
+}

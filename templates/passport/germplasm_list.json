@@ -1,0 +1,32 @@
+{
+  "Species_1":
+  {
+  "Annona cherimola":
+    {"sps_name":"Annona cherimola",
+      "common_name":"Cherimoya",
+      "image":"sp1.png",
+      "public":"1",
+      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_1"
+    }
+  },
+  "Species_2":
+  {
+  "Persea americana":
+    {"sps_name":"Persea americana",
+      "common_name":"Avocado",
+      "image":"sp2.png",
+      "public":"1",
+      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_2"
+    }
+  },
+  "Species_3":
+  {
+  "Mangifera indica":
+    {"sps_name":"Mangifera indica",
+      "common_name":"Mango",
+      "image":"sp3.png",
+      "public":"1",
+      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_3"
+    }
+  }
+}

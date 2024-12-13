@@ -1,0 +1,124 @@
+{
+	"Inflorescence_descriptors.txt":
+	{
+		"Length axis":
+		{
+			"img_name":"sagarpa_inflorescence_length_axis_value.png",
+			"options":["short","medium","long"]
+		},
+		"Color lenticels":
+		{
+			"img_name":"sagarpa_inflorescence_color_lenticels_value.png",
+			"options":["green","red"]
+		},
+		"Flowering type":
+		{
+			"img_name":"sagarpa_inflorescence_flowering_type_help.png",
+			"options":["A","B"]
+		},
+		"Nectary":
+		{
+			"img_name":"sagarpa_flower_nectary_value.png",
+			"options":["sessile","stalked"]
+		},
+		"Style":
+		{
+			"img_name":"sagarpa_flower_style_value.png",
+			"options":["straight","kinked"]
+		},
+		"Polen":
+		{
+			"img_name":"sagarpa_flower_pollen_value.png",
+			"options":["absent","present"]
+		}
+	},
+	"Leaf_descriptors.txt":
+	{
+		"Length (cm)":
+		{
+			"img_name":"sagarpa_leaf_blade_length_value.png",
+			"options":["very_short", "short", "medium","long","very_long"]
+		},
+		"Width (cm)":
+		{
+			"img_name":"sagarpa_leaf_blade_width_value.png",
+			"options":["very_narrow","narrow","medium","broad","very_broad"]
+		},
+		"Ratio length/width":
+		{
+			"img_name":"sagarpa_leaf_blade_ratio_value.png",
+			"options":["very_small", "small","medium","large","very_large"]
+		},
+		"Length petiole":
+		{
+			"img_name":"sagarpa_petiole_length_value.png",
+			"options":["very_short","short","medium","long","very_long"]
+		},
+		"Shape":
+		{
+			"img_name":"sagarpa_leaf_blade_shape_value.png",
+			"options":["lanceolate","ovate","elliptic","circular","obovate"]
+		}
+	}, 
+	"Mature_fruit_descriptors.txt":
+	{
+		"Length":
+		{
+			"img_name":"sagarpa_mature_fruit_length_value.png",
+			"options":["very_short","short","medium","long","very_long"]
+		},
+		"Diameter":
+		{
+			"img_name":"sagarpa_mature_fruit_diameter_value.png",
+			"options":["very_small","small","medium","large","very_large"]
+		},
+		"Ratio length/diameter":
+		{
+			"img_name":"sagarpa_mature_fruit_ratio_value.png",
+			"options":["very_small","small","medium","large","very_large"]
+		},
+		"Shape stalk end":
+		{
+			"img_name":"sagarpa_mature_fruit_shape_stalk_end_value.png",
+			"options":["pointed","narrowly_rounded","broadly_rounded","truncate"]
+		},
+		"Neck":
+		{
+			"img_name":"sagarpa_mature_fruit_presence_neck_value.png",
+			"options":["absent","present"]
+		},
+		"Depression stalk end":
+		{
+			"img_name":"sagarpa_mature_fruit_presence_depression_stalk_end_value.png",
+			"options":["absent","present"]
+		}
+	}, 
+	"Ripe_fruit_descriptors.txt":
+	{
+		"Color":
+		{
+			"img_name":"sagarpa_ripe_fruit_color_value.png",
+			"options":["yellow_green","light_green","medium_green","dark_green","reddish","medium_purple","dark_purple","black"]
+		},
+		"Thickness skin":
+		{
+			"img_name":"sagarpa_ripe_fruit_thickness_skin_value.png",
+			"options":["very_thin","moderately_thin","medium","moderately_thick","very_thick"]
+		},
+		"Consistency":
+		{
+			"img_name":"sagarpa_ripe_fruit_consistency_skin_value.png",
+			"options":["membranous","leathery","corky"]
+		},
+		"Adherence skin/flesh":
+		{
+			"img_name":"sagarpa_ripe_fruit_adherence_skin_flesh_value.png",
+			"options":["weak","intermediate","strong"]
+		},
+		"Main color flesh":
+		{
+			"img_name":"sagarpa_ripe_fruit_main_color_flesh_value.png",
+			"options":["whitish","cream","yellow","light_green"]
+		}
+	}
+}

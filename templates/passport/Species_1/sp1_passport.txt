@@ -1,0 +1,21 @@
+ID	ACC Name	Species	Germplasm type	Country	Country code	Research Center	Biological status of accession	Collecting/acquisition sourceh	Latitude	Longitude
+ID1	ACC1	Annona cherimola	Tree	Spain	ESP	easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID2	ACC2	Annona cherimola	Tree	Spain	ESP	easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID3	ACC3	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID4	ACC4	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID5	ACC5	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID6	ACC6	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
+ID7	ACC7	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard		
+ID8	ACC8	Annona cherimola	Tree	Chile	CHL	easyGDB	Clonal selection	Orchad		
+ID9	ACC9	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad		
+ID10	ACC10	Annona cherimola	Tree	Chile	CHL	easyGDB	Clonal selection	Orchad		
+ID11	ACC11	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard		
+ID12	ACC12	Annona cherimola	Tree	United States of America	USA	easyGDB	Clonal selection	Orchad		
+ID13	ACC13	Annona cherimola	Tree	United States of America	USA	easyGDB	Clonal selection	Orchad		
+ID14	ACC14	Annona cherimola	Tree	Mexico	MEX	easyGDB	Clonal selection	Orchad		
+ID15	ACC15	Annona cherimola	Tree	United States of America	USA	easyGDB	Clonal selection	Orchad		
+ID16	ACC16	Annona cherimola	Tree	Chile	CHL	easyGDB	Clonal selection	Orchad	-29.90777777777770	-71.25416666666660
+ID17	ACC17	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard	-10.125	-77.075
+ID18	ACC18	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard	-10.125	-77.075
+ID19	ACC19	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard	-10.125	-77.075
+ID20	ACC20	Annona cherimola	Tree	Peru	PER	easyGDB	Breeding/research material	Backyard	-9.258333333333330	-77.025

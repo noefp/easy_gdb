@@ -1,0 +1,22 @@
+ID	ACC Name	Species	Germplasm type	Date	Country	Country code	Research Center	Biological status of ACC	Collecting/acquisition source	Latitude	Longitude
+ID1	ACC1	Persea americana	Tree	2024	South Africa	ZAF	easyGDB	Clonal selection	Cultivated habitat		
+ID2	ACC2	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID3	ACC3	Persea americana	Tree	2024	Mexico	MEX	easyGDB	Clonal selection	Cultivated habitat		
+ID4	ACC4	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID5	ACC5	Persea americana	Tree	2024	Unknown		easyGDB	Clonal selection	Cultivated habitat		
+ID6	ACC6	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID7	ACC7	Persea americana	Tree	2024	Israel	ISR	easyGDB	Clonal selection	Cultivated habitat		
+ID8	ACC8	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID9	ACC9	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID10	ACC10	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID1	ACC11	Persea americana	Tree	2024	Colombia	COL	easyGDB	Clonal selection	Cultivated habitat		
+ID2	ACC12	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Farm		
+ID3	ACC13	Persea americana	Tree	2024	Mexico	MEX	easyGDB	Clonal selection	Farm 		
+ID4	ACC14	Persea americana	Tree	2024	Venezuela	VEN	easyGDB	Clonal selection	Cultivated habitat		
+ID5	ACC15	Persea americana	Tree	2024	Israel	ISR	easyGDB	Clonal selection	Cultivated habitat		
+ID6	ACC16	Persea americana	Tree	2024	Mexico	MEX	easyGDB	Clonal selection	Cultivated habitat		
+ID7	ACC17	Persea americana	Tree	2024	Israel	ISR	easyGDB	Clonal selection	Cultivated habitat		
+ID8	ACC18	Persea americana	Tree	2024	Spain	ESP	easyGDB	Clonal selection	Cultivated habitat		
+ID9	ACC19	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID10	ACC20	Persea americana	Tree	2024	United States of America	USA	easyGDB	Clonal selection	Cultivated habitat		
+ID1	ACC21	Persea americana	Tree	2024	South Africa	ZAF	easyGDB	Clonal selection	Cultivated habitat		

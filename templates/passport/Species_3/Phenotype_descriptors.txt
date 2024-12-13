@@ -1,0 +1,12 @@
+Date	ACC Name	Length blade	Width blade	Ratio length/width	Shape blade	Twisting blade	Shape base blade	Shape apex blade	Length inflorescence	Diameter inflorescence	Ratio length/diameter	Primary branches inflorescence	Length fruit	Width fruit	Ratio length/width fruit	Shape cross fruit	Stalk cavity fruit	Neck fruit	Color skin fruit	Speckling skin fruit	Adherence skin to flesh fruit	Main color flesh fruit
+3 mar 2016	ACC4	18.8	5.3	3.547169811	oblong	absent	acute	acuminate	25	16	1.5625	21	95.98	63.8	1.504388715	broad elliptic	medium	absent	orange	weak	weak	medium orange
+3 mar 2016	ACC6	24.3	7.1	3.422535211	oblong	absent	obtuse	acuminate	29	10	2.9	21	210.13	160.31	1.310772878	broad elliptic	absent	absent	orange and red	strong	medium	medium orange
+4 mar 2016	ACC5	20.4	6.1	3.344262295	ovate	absent	acute	acute	36	15	2.4	17							red	absent	weak	light orange
+4 mar 2016	ACC7	17.8	4.5	3.955555556	oblong	absent	acute	acuminate	25	12	2.083333333	23	117.76	84.8	1.388679245	broad elliptic	medium	absent	green			
+27 apr 2016	ACC10	21.3	5.6	3.803571429	ovate	absent	acute	acuminate	30	21	1.428571429	19	142.1	96.63	1.470557798	broad elliptic	shallow	absent	yellow and red	absent	strong	medium orange
+19 feb 2016	ACC11	18.2	7	2.6	elliptic	absent	acute	acuminate	15	9	1.666666667	20	103.38	82.03	1.260270633	broad elliptic	medium	absent	yellow	weak	weak	medium yellow
+16 mar 2016	ACC8	19.2	5	3.84	oblong	absent	obtuse	acute	36	15	2.4	22	108.79	95.72	1.136544087	broad elliptic	absent	absent	yellow	absent	strong	medium orange
+08 mar 2016	ACC9	19.5	4.3	4.534883721	ovate	absent	acute	acuminate	23	9	2.555555556	9	180	67.61	2.662328058	circular	absent	absent	orange and red	weak	weak	medium orange
+01 apr 2016	ACC1	18.8	5.1	3.68627451	ovate	absent	acute	acute	30	20	1.5	22	143.51	87.26	1.644625258	medium elliptic	absent	absent	purple	medium	strong	medium orange
+14 apr 2016	ACC12	14	3.5	4	ovate	absent	acute	acute	18	12	1.5	20	107.83	93.47	1.153632181	circular	medium	absent	purple	weak	medium	medium orange
+01 apr 2016	ACC2	25.6	5.5	4.654545455	ovate	absent	acute	acute	28	14	2	30	127.28	88.29	1.441612867	circular	absent	absent	red	weak	medium	medium orange

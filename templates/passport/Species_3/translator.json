@@ -1,0 +1,110 @@
+{
+  "Phenotype_descriptors.txt":
+  {
+    "Length inflorescence":
+    {
+      "primary_descriptor":"Length of inflorescence",
+      "secondary_descriptor":"Longitud de la inflorescencia"
+    },
+    "Diameter inflorescence":
+    {
+      "primary_descriptor":"Diameter of inflorescence",
+      "secondary_descriptor":"Diámetro de la inflorescencia"
+    },
+    "Ratio length/diameter":
+    {
+      "primary_descriptor":"Ratio length/inflorescencia of inflorescence",
+      "secondary_descriptor":"Relación longitud/diámetro de la inflorescencia"
+    },
+    "Primary branches inflorescence":
+    {
+      "primary_descriptor":"Number of primary branches of inflorescence",
+      "secondary_descriptor":"Número de ramas primarias de la inflorescencia"
+    },
+    "Length blade":
+    {
+      "primary_descriptor":"Length of leaf blade (cm)",
+      "secondary_descriptor":"Longitud de la hoja"
+    },
+    "Width blade":
+    {
+      "primary_descriptor":"Width of leaf blade",
+      "secondary_descriptor":"Anchura de la hoja"
+    },
+    "Ratio length/width":
+    {
+      "primary_descriptor":"Ratio length/width of leaf blade",
+      "secondary_descriptor":"Relación longitud/anchura de la hoja"
+    },
+    "Shape blade":
+    {
+      "primary_descriptor":"Shape of leaf blade",
+      "secondary_descriptor":"Forma de la hoja"
+    },
+    "Twisting blade":
+    {
+      "primary_descriptor":"Twisting of leaf blade",
+      "secondary_descriptor":"Torsión de la hoja"
+    },
+    "Shape base blade":
+    {
+      "primary_descriptor":"Shape of base of leaf blade",
+      "secondary_descriptor":"Forma de la base de la hoja"
+    },
+    "Shape apex blade":
+    {
+      "primary_descriptor":"Shape of apex of leaf blade",
+      "secondary_descriptor":"Forma del ápice de la hoja"
+    }, 
+    "Length fruit":
+    {
+      "primary_descriptor":"Length of mature fruit (mm)",
+      "secondary_descriptor":"Longitud del fruto listo para cosecha"
+    },
+    "Width fruit":
+    {
+      "primary_descriptor":"Width of mature fruit",
+      "secondary_descriptor":"Anchura del fruto listo para cosecha"
+    },
+    "Ratio length/width fruit":
+    {
+      "primary_descriptor":"Ratio length/width of mature fruit",
+      "secondary_descriptor":"Relación longitud/anchura del fruto listo para cosecha"
+    },
+    "Shape cross fruit":
+    {
+      "primary_descriptor":"Shape in cross section of mature fruit",
+      "secondary_descriptor":"Forma en la sección transversal del fruto listo para cosecha"
+    },
+    "Stalk cavity fruit":
+    {
+      "primary_descriptor":"Stalk cavity of mature fruit",
+      "secondary_descriptor":"Cavidad peduncular del fruto listo para cosecha"
+    },
+    "Neck fruit":
+    {
+      "primary_descriptor":"Presence of neck of mature fruit",
+      "secondary_descriptor":"Cuello del fruto listo para cosecha"
+    },
+    "Color skin fruit":
+    {
+      "primary_descriptor":"Predominant color of skin of ripe fruit",
+      "secondary_descriptor":"Color predominante de la cáscara del fruto maduro"
+    },
+    "Speckling skin fruit":
+    {
+      "primary_descriptor":"Speckling of skin of ripe fruit",
+      "secondary_descriptor":"Moteado de la cáscara del fruto maduro"
+    },
+    "Adherence skin to flesh fruit":
+    {
+      "primary_descriptor":"Adherence of skin to flesh of ripe fruit",
+      "secondary_descriptor":"Adherencia de la cáscara a la pulpa del fruto maduro"
+    },
+    "Main color flesh fruit":
+    {
+      "primary_descriptor":"Main color of flesh of ripe fruit",
+      "secondary_descriptor":"Color principal de la pulpa del fruto maduro"
+    }
+  }
+}

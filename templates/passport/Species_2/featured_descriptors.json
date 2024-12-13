@@ -1,0 +1,14 @@
+{
+  "Inflorescence_descriptors.txt":
+  [
+    "Flowering type"
+  ],
+  "Ripe_fruit_descriptors.txt":
+  [
+    "Color",
+    "Thickness skin",
+    "Consistency",
+    "Adherence skin/flesh",
+    "Main color flesh"
+  ]
+}

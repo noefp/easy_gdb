@@ -1,0 +1,16 @@
+{
+  "passport_file":"sp3_passport.txt",
+  "acc_link":"ACC Name",
+  "hide_columns":[10,11],
+  "phenotype_files":["Phenotype_descriptors.txt"],
+  "phenotype_imgs":"sp3_phenotype_imgs.json",
+  "img_src_msg":"<p>The images used in the Phenotype descriptors come from<a href=\"https://www.upov.int/edocs/tgdocs/es/tg112.pdf\" target=\"_blank\"> UPOV Database (Genie)</a>.</p>",
+  "map_columns":[1,5,10,11],
+  "map_markers":["green","yellow_green","green_and_yellow","yellow","yellow_orange","yellow_and_orange","orange","yellow_and_red","orange_and_red","red","orange_and_purple","red_and_purple","purple"],
+  "phenotype_file_marker_trait":"Phenotype_descriptors.txt",
+  "marker_acc_col":"1",
+  "marker_column":"19",
+  "sp_name":"Species_3", 
+  "convert_to_cathegoric":"convert_numeric_to_cathegoric.json",
+  "translator":"translator.json"
+}
