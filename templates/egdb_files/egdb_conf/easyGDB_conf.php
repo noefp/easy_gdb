@@ -14,13 +14,11 @@ $species_path = "$root_path/$egdb_files_folder/egdb_species";
 $lab_path = "$root_path/$egdb_files_folder/egdb_labs";
 $json_files_path = "$root_path/$egdb_files_folder/json_files";
 
-  //Expression
+//Expression
 $expression_path = "$root_path/expression_data";
 $private_expression_path = "$root_path/private_expression_data";
-$comparator_lookup = 0;
 
-
-  //Passport
+//Passport
 $passport_path = "$root_path/passport";
 $phenotype_imgs_path = "$images_path/descriptors_imgs";
 
@@ -74,6 +72,9 @@ $positions=[
   'table' => 7
 ];
 
+// Passport
+$show_map = 1;
+$show_qr = 1;
 
 //Gene examples
 $gene_sample = "";
