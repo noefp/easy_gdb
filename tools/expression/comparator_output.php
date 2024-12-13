@@ -42,8 +42,8 @@ if ($to_newest_v) {
 
 //if conversion to newest version was enabled and the comparator lookup file exist, save gene lookup in hash
 
-if ( file_exists("$expression_path/comparator_lookup.txt") && $to_newest_v) {
-  $lookup_file = file_get_contents("$expression_path/comparator_lookup.txt");
+if ( file_exists("$json_files_path/tools/comparator_lookup.json") && $to_newest_v) {
+  $lookup_file = file_get_contents("$json_files_path/tools/comparator_lookup.json");
   $lookup_hash = json_decode($lookup_file, true);
 
   //get conversion from newest version to older ones
