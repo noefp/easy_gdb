@@ -283,7 +283,7 @@ var options = {
   xaxis: {
     type: 'category',
     categories: sample_array,
-    tickAmount: (sample_array.length)-2,
+    tickAmount: (sample_array.length)-1,
     labels: {
       rotate: -50,
       rotateAlways: true,
