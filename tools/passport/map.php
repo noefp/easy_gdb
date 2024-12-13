@@ -153,7 +153,13 @@
 
   // Personalized marker
   $marker_path = "$images_path/map_labels/"; 
+
+  // if $traits_array is empty, use 'default'
+  if (empty($traits_array)){
+    $marker_traits_array = json_encode(['default']);
+  } else {
   $marker_traits_array = json_encode($traits_array);
+  }
 
   if (!empty($map_array) ) {
     echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
@@ -174,6 +180,9 @@ const data = <?php echo $json_data_map; ?>;
 
 // Personalized markers with different traits
 markersPath = '<?php echo $marker_path; ?>';
+
+// Load $marker_traits_array in Javascript
+markerTraitsArray = <?php echo $marker_traits_array; ?>;
 
 // List options of markers (traits)
 validTraits = JSON.parse('<?php echo $marker_traits_array; ?>');

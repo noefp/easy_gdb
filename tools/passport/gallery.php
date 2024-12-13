@@ -1,10 +1,3 @@
-<!-- LOAD LIBRARIES -->
-<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
-
-
 <?php 
   //echo "$images_path<br>"; // tiene una "/" al inicio    ¡¡ OJO !!
   //echo "sp_name: $sp_name<br>";
@@ -48,7 +41,7 @@
 
 ?>
 
-  </div>
+  </div> <!-- close galleryCarousel -->
 	
   <!-- Thumbnail Navigation -->
   <div class="d-flex justify-content-center mt-3">
@@ -60,7 +53,7 @@
       ?>
     </div>
   </div>
-</div>
+</div> <!-- close galleryCarousel -->
 
 
 <style>
@@ -94,7 +87,6 @@
     align-items: center;
     overflow-x: auto;
     white-space: nowrap;
-	  height: 300 px; /* adjust height to fit your needs, añadido nuevo */
   }
 
   /* Change color of arrows to black */
@@ -107,7 +99,7 @@
 
 <script>
   $(document).ready(function(){
-    $('#galleryCarousel').carousel();
+    $('#galleryCarousel').carousel(); // Initialise the carousel
 
     // Intersection Observer to control the visibility of the carousel
     const galleryCarousel = document.getElementById('galleryCarousel');
@@ -123,10 +115,4 @@
 
     observer.observe(galleryCarousel);
   });
-
-
-  function scrollThumbnails(offset) {
-    const container = document.querySelector('.thumbnail-container');
-    container.scrollLeft += offset;
-  }
 </script>

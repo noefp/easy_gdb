@@ -521,7 +521,7 @@ function file_to_table($file_path, $acc_name) {
     $acc_header = $pass_hash["acc_link"];
   }
   
-  echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply' style='color:229dff'></span><i> Back</i></a>";
+  echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply'></span><i> Back</i></a>";
   echo "<div class=\"container\">";
   
   
@@ -589,7 +589,7 @@ function file_to_table($file_path, $acc_name) {
 </div><!-- close passport container -->
 <br>
 
-<!-- <?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?>  -->
+<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
 
 
 
@@ -607,7 +607,7 @@ if (!empty($featured_descriptors_file) ) {
     echo "<div class=\"container p-1 my-1 text-white\" style=\"background-color: #e0ea68; border: 1px solid grey\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-regular fa-star\"></i><b> Featured descriptors </b></h1></center></div></div>";
     echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     echo "<div id=\"featured-descriptors\"></div>"; 
-    echo "</div></div>";
+    echo "<br></div></div>";
 
   }
 }
@@ -788,35 +788,45 @@ if (!empty($phenotype_file_array)){
 //----- QR CODE
 // $(document).ready(function () {
 
-url_qrcode = window.location.href;
+var showQR = <?php echo $show_qr; ?>;
+//alert("qr?: "+showQR); 
 
-//qr_id = $("#qrcode");
-qr_id = document.getElementById("qrcode")
+if (showQR) {
+  url_qrcode = window.location.href;
+  //qr_id = $("#qrcode");
+  qr_id = document.getElementById("qrcode")
 
-new QRCode(qr_id,url_qrcode);
+  new QRCode(qr_id,url_qrcode);
+}
 // });
 
 //----- PRINT MAP
 
-latitude = "<?php echo $latitude; ?>";
-latitude_printed = "<?php echo number_format($latitude,2); ?>";
-longitude = "<?php echo $longitude; ?>";
-longitude_printed = "<?php echo number_format($longitude,2); ?>";
+var showMap = <?php echo $show_map; ?>;
+//alert("map?: "+showMap); 
 
-  if (latitude && longitude) {
-    marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
-  }
-  else {
-    latitude = "<?php echo $country_latitude; ?>";
-    longitude = "<?php echo $country_longitude; ?>";
-    marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
-  }
+if(showMap) {
 
-  var map = L.map('map').setView([latitude, longitude], 5);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+  latitude = "<?php echo $latitude; ?>";
+  latitude_printed = "<?php echo number_format($latitude,2); ?>";
+  longitude = "<?php echo $longitude; ?>";
+  longitude_printed = "<?php echo number_format($longitude,2); ?>";
 
-  var marker = L.marker([latitude, longitude]).addTo(map);
-  marker.bindPopup(marker_label).openPopup();
+    if (latitude && longitude) {
+      marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
+    }
+    else {
+      latitude = "<?php echo $country_latitude; ?>";
+      longitude = "<?php echo $country_longitude; ?>";
+      marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
+    }
+
+    var map = L.map('map').setView([latitude, longitude], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+
+    var marker = L.marker([latitude, longitude]).addTo(map);
+    marker.bindPopup(marker_label).openPopup();
+}
 
   //----- FEATURED DESCRIPTORS
   var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
@@ -832,17 +842,6 @@ longitude_printed = "<?php echo number_format($longitude,2); ?>";
     }
   }
 
-
-  function showPopup() {
-    var popup = document.getElementById("popupContent");
-    if (popup.style.display === "none") {
-      popup.style.display = "block";
-    } else {
-      popup.style.display = "none";
-    }
-
-    popup.innerHTML = "Info to show."; // Remplace to ranges info
-  }
 
   $(".tblResults").dataTable({
     dom:'Bfrtlpi',
