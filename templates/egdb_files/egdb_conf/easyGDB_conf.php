@@ -55,10 +55,13 @@ $tb_seq_ext = 1;
 $tb_annot_ext = 1;
 $tb_lookup = 1;
 $tb_enrichment = 0;
-$tb_more = 0;
 
 //Gene expression atlas
 $tb_gene_expr = 1;
+
+$tb_help = 1;
+$tb_more = 0;
+$tb_private = 0;
 
 // About
 $ab_citation = 1;
@@ -75,7 +78,7 @@ $positions=[
   'lines' => 3,
   'cards' => 4,
   'heatmap' => 5,
-  'replicartes' => 6,
+  'replicates' => 6,
   'table' => 7
 ];
 
