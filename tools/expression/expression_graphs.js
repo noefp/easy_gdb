@@ -471,7 +471,10 @@ $("#line_chart_frame").on('shown.bs.collapse', function(){
     
     for (var sample in gene_expr_values){
       expr_value = gene_expr_values[sample];
-      sample_id=sample+"_kj_image";
+      
+      sample_name = sample.replace(/ /g, "_");
+      //alert("sample_name: "+sample_name);
+      sample_id=sample_name+"_kj_image";
       color_rgb=get_expr_color(expr_value,ranges,colors);
       // $(document.getElementById(sample_id)).html(sample+": "+expr_value);
       $(document.getElementById(sample_id)).html(sample+": "+expr_value).css('text-decoration','double underline').css('text-decoration-color','rgb('+color_rgb+')');

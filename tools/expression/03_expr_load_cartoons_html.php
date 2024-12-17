@@ -119,8 +119,14 @@
 </center>
 
 <script>
+
+  var cartoons_files_found = <?php echo json_encode($cartoons_files_found) ?>;
+
+  
 // color table function
-function crearFila(colors,ranges,id) {
+if(cartoons_files_found)
+{
+  function crearFila(colors,ranges,id) {
      const tabla = document.getElementById(id);
     const fila_color = document.createElement('tr');
     colors.forEach(color => {
@@ -140,6 +146,7 @@ function crearFila(colors,ranges,id) {
 }
 
 crearFila(colors,ranges_text,'color-table-cartoons');
+}
 
 </script>
 
