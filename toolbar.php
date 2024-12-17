@@ -30,17 +30,6 @@
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
         }
         
-        if ($tb_gene_expr) {
-          echo '<li class="nav-item dropdown">';
-            echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
-            echo '<div class="dropdown-menu">';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Expression viewer</a>';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/comparator_input.php">Expression comparator</a>';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';
-            echo '</div>';
-          echo '</li>';
-        }
-        
         if ($tb_tools) {
           echo '<li class="nav-item dropdown">';
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>';
@@ -72,6 +61,17 @@
           echo '</li>';
         }
         
+        if ($tb_gene_expr) {
+          echo '<li class="nav-item dropdown">';
+            echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
+            echo '<div class="dropdown-menu">';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Expression viewer</a>';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/comparator_input.php">Expression comparator</a>';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';
+            echo '</div>';
+          echo '</li>';
+        }
+        
         if ($tb_downloads) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
         }
@@ -82,6 +82,10 @@
 
         if ($tb_more) {
           include_once realpath("$easy_gdb_path/more.php");
+        }
+
+        if ($tb_help) {
+          include_once realpath("$easy_gdb_path/help/00_help.php");
         }
 
         if ($tb_custom) {
