@@ -2,7 +2,7 @@
 <script src="/easy_gdb/js/openGPlink.js"></script>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/04_gene_enrichment.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/07_gene_enrichment.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
   <h1 class="text-center">Gene Set Enrichment</h1>

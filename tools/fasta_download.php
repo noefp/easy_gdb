@@ -1,4 +1,8 @@
 <?php include realpath('../header.php'); ?>
+<div class="margin-20">
+  <a class="float-right" href="/easy_gdb/help/04_sequence_extraction.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+</div>
+<br>
 
 <div id="dlgDownload">
   <br>

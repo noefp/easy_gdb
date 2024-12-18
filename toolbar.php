@@ -85,7 +85,7 @@
         }
 
         if ($tb_help) {
-          include_once realpath("$easy_gdb_path/help/00_help.php");
+          echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/help/00_help.php">Help</a></li>';
         }
 
         if ($tb_custom) {

@@ -3,7 +3,7 @@
 <div class="width900">
 	<br>
 	<br>
-			<a href="/easy_gdb/help/00_help.php"><i class='fas fa-reply' style='color:#229dff'></i> Back to Help</a>
+			<a class="pointer_cursor" onclick="window.history.back();" style='color:#229dff'><i class='fas fa-reply' style='color:#229dff'></i> Back</a>
 			<br>
 			<br>
 			<h1 style="font-size:26px">Blast </h4>

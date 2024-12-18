@@ -1,5 +1,10 @@
 <?php include_once realpath("../../header.php");?>
+
+<div class="margin-20">
+  <a class="float-right" href="/easy_gdb/help/02_blast.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+</div>
 <br>
+
 <h3 class="text-center">BLAST</h3>
 
 <div class="margin-20">
