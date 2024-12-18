@@ -94,7 +94,7 @@ If you are using the Docker terminal, now you can exit it by typing `exit` in th
 
 At this moment all the features of easy_gdb should be already available. In a web browser (Chrome, Firefox, etc.) go to: `localhost:8000/easy_gdb/`. You should be able to see an example of EasyGDB running.
 
-![easy GDB home](templates/egdb_images/easy_gdb_home.png)
+![easy GDB home](templates/egdb_files/egdb_images/easy_gdb_home.png)
 
 
 # Installation without Docker (only for Linux Systems)
