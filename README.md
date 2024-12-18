@@ -125,7 +125,7 @@ sudo apt-get install tabix
 
 ## Install Perl dependencies for JBrowse and importing scripts
 
-    apt-get install cpanminus
+    sudo apt-get install cpanminus
     cpanm -L ~/local-lib/ DBI
     cpanm -L ~/local-lib/ Term::ReadKey
     cpanm -L ~/local-lib/ DBD::Pg
@@ -183,7 +183,7 @@ Go to the install folder:
 
 Run the setup script (inside the install folder):
 
-    bash setup.sh
+    sudo bash setup.sh
 
 Go back from the install folder to the example_db/ or /var/www/html/ folder:
 
