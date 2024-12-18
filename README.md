@@ -25,12 +25,14 @@ Some examples of sites developed using EasyGDB are:
     -   [Gene variation tools](#gene-variation-tools)
     -   [JBrowse](#jbrowse)
     -   [Private application](#private-application)
--   [Set up EasyGDB PostgreSQL database in Linux or servers (optional, not recommended)](#set-up-easygdb-postgresql-database-in-linux-or-servers-optional-not-recommended)
+-   [Set up easyGDB PostgreSQL database in Docker (optional, not recommended)](set-up-easygdb-postgresql-database-in-docker-optional-not-recommended)
     -   [Set up password in PostgreSQL](#set-up-password-in-postgresql)
     -   [Create a new database](#create-a-new-database)
     -   [Create a new role (DB user)](#create-a-new-role-db-user)
     -   [Import annotations](#import-annotations)
-
+-   [Set up EasyGDB PostgreSQL database in Linux or servers (optional, not recommended)](#set-up-easygdb-postgresql-database-in-linux-or-servers-optional-not-recommended)
+    -   [Set up password](#set-up-password)
+    -   [Set up server](#set-up-server)
 
 # Requirements
 
@@ -941,7 +943,7 @@ This file includes example links for TAIR10, Araport11, SwissProt, InterPro and 
 
 
 
-# Set up easyGDB PostgreSQL database in Linux or servers (optional, not recommended)
+# Set up EasyGDB PostgreSQL database in Linux or servers (optional, not recommended)
 
 open the file `egdb_files/egdb_conf/database_access.php` and set up the database connection based on the user, password and database name you used. The host is `DB` for the Docker installation and `localhost` for linux installations in servers or personal computers:
 
@@ -955,7 +957,7 @@ Or in the case you will not use the relational database (for gene annotations):
 function getConnectionString(){return null;};
 ```
 
-### Set up password
+## Set up password
 
 If we installed PostgreSQL from scratch we need to create a password for postgres (it would be like the database default/root user).
 
