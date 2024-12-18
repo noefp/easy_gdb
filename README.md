@@ -25,7 +25,7 @@ Some examples of sites developed using EasyGDB are:
     -   [Gene variation tools](#gene-variation-tools)
     -   [JBrowse](#jbrowse)
     -   [Private application](#private-application)
--   [Set up easyGDB PostgreSQL database in Docker (optional, not recommended)](set-up-easygdb-postgresql-database-in-docker-optional-not-recommended)
+-   [Set up EasyGDB PostgreSQL database in Docker (optional, not recommended)](#set-up-easygdb-postgresql-database-in-docker-optional-not-recommended)
     -   [Set up password in PostgreSQL](#set-up-password-in-postgresql)
     -   [Create a new database](#create-a-new-database)
     -   [Create a new role (DB user)](#create-a-new-role-db-user)
@@ -824,7 +824,7 @@ sudo service apache2 restart
 
 
 
-# Set up easyGDB PostgreSQL database in Docker (optional, not recommended)
+# Set up EasyGDB PostgreSQL database in Docker (optional, not recommended)
 
 There is an option to set up gene annotations in a PostgreSQL relational database. Although it is not needed in recent versions of EasyGDB, performance does not make a difference. This method is no longer maintained.
 
