@@ -25,7 +25,7 @@ Some examples of sites developed using EasyGDB are:
     -   [Gene variation tools](#gene-variation-tools)
     -   [JBrowse](#jbrowse)
     -   [Private application](#private-application)
--   [Set up EasyGDB PostgreSQL database (optional, not recommended)](#set-up-easygdb-postgresql-database-optional-not-recommended)
+-   [Set up EasyGDB PostgreSQL database in Linux or servers (optional, not recommended)](#set-up-easygdb-postgresql-database-in-linux-or-servers-optional-not-recommended)
     -   [Set up password in PostgreSQL](#set-up-password-in-postgresql)
     -   [Create a new database](#create-a-new-database)
     -   [Create a new role (DB user)](#create-a-new-role-db-user)
