@@ -1,9 +1,10 @@
-<?php include_once realpath("../header.php");?>
+<?php include_once realpath("header_help.php");
+// include_once realpath("../header.php")?>
 
 <div class="width900">
 	<br>
 	<br>
-			<a class="pointer_cursor" onclick="window.history.back();" style='color:#229dff'><i class='fas fa-reply' style='color:#229dff'></i> Back</a>
+			<a class="pointer_cursor" href="/easy_gdb/help/00_help.php" style='color:#229dff'><i class='fas fa-reply' style='color:#229dff'></i> Go to help</a>
 			<br>
 			<br>
 			<h1 style="font-size:26px">Expression Comparator</h4>
@@ -52,7 +53,7 @@
 				<br>
 			</center>
 			<p style="text-align:justify">
-				Other visualizations tools include <a href="/easy_gdb/help/01_gene_expression.php#heatmap">Heatmap</a>, <a href="/easy_gdb/help/01_gene_expression.php#replicates">Replicates</a> and <a href="/easy_gdb/help/01_gene_expression.php#average">Average values</a>.
+				Other visualizations tools include <a href="/easy_gdb/help/08_gene_expression.php#heatmap">Heatmap</a>, <a href="/easy_gdb/help/08_gene_expression.php#replicates">Replicates</a> and <a href="/easy_gdb/help/08_gene_expression.php#average">Average values</a>.
 			</p>
 			<br>
 			<h4 id="notfoldchange" class="p_font18">
