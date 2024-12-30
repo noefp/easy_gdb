@@ -83,6 +83,7 @@ $positions=[
 ];
 
 // Passport
+$tb_passport = 1;
 $show_map = 1;
 $show_qr = 1;
 

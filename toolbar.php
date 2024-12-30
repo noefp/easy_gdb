@@ -72,6 +72,16 @@
           echo '</li>';
         }
         
+        if ($tb_passport) {
+          echo '<li class="nav-item dropdown">';
+            echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Passport and Phenotype</a>';
+            echo '<div class="dropdown-menu">';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';
+              echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/passport_search_input.php">Search</a>';
+            echo '</div>';
+          echo '</li>';
+        }
+        
         if ($tb_downloads) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
         }
