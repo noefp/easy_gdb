@@ -2,14 +2,14 @@
 <script src="/easy_gdb/js/openGPlink.js"></script>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/07_gene_enrichment.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/07_gene_enrichment.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
   <h1 class="text-center">Gene Set Enrichment</h1>
 
 <div>
 
-  <div class="form margin-20">
+  <div class="form margin-20" style="margin:auto; max-width:900px">
     
     <label for="txtGenes">Paste a list of gene IDs</label>
     <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10">

@@ -6,7 +6,7 @@
 
 <!-- HELP -->
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/01_search.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/01_search.php" target="blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
 <h3 class="text-center">Gene / Annotation Search</h3>
@@ -120,7 +120,7 @@
 
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" style="text-align: center;">ERROR</h4>
+        <h4 class="modal-title  w-100 text-center" >❌ Error</h4>
       </div>
       <div class="modal-body">
         <div style="text-align: center;">

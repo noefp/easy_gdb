@@ -1,7 +1,7 @@
 <?php include realpath('../header.php'); ?>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/03_gene_lookup.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
 <a href="/easy_gdb/tools/gene_lookup.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>

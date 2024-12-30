@@ -1,13 +1,13 @@
 <?php include realpath('../header.php'); ?>
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/04_sequence_extraction.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/04_sequence_extraction.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
 
 <div id="dlgDownload">
   <br>
   <h3 class="text-center">Gene Sequence Downloading</h3>
-  <div class="form margin-20">
+  <div class="form margin-20" style="margin:auto; max-width:900px">
     <form id="download_fasta_form" action="blast/blastdbcmd.php" method="post">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
       <textarea class="form-control" id="txtDownloadGenes" rows="8" name="gids">

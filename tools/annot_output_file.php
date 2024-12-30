@@ -4,7 +4,7 @@
 
 <!-- RETURN AND HELP-->
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/05_annotation_extraction.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/05_annotation_extraction.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
 <a href="annot_input_list.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>

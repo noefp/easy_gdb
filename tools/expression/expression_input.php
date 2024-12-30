@@ -4,7 +4,7 @@
 
 <div>
   <div class="margin-20">
-    <a class="float-right" href="/easy_gdb/help/08_gene_expression.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+    <a class="float-right" href="/easy_gdb/help/08_gene_expression.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
   <br>
   <h3 class="text-center">Gene Expression Viewer</h3>

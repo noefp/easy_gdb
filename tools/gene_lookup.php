@@ -1,14 +1,14 @@
 <?php include realpath('../header.php'); ?>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
   
 <div>
   
   <h1 class="text-center">Gene Lookup</h1>
-  <div class="form margin-20">
+  <div class="form margin-20" style="margin:auto; max-width:900px">
 
     <form id="gene_version_lookup">
       <label for="txtGenes">Paste a list of gene IDs</label>

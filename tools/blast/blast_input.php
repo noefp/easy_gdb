@@ -1,13 +1,13 @@
 <?php include_once realpath("../../header.php");?>
 
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/02_blast.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/02_blast.php" target="blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
 
 <h3 class="text-center">BLAST</h3>
 
-<div class="margin-20">
+<div class="margin-20" style="margin:auto; max-width:900px">
 
   <form id="blast_form" action="blast_output.php" method="post">
 
@@ -38,7 +38,10 @@
     </div>
 
     <hr>
-    <a data-toggle="collapse" data-target="#adv_opt" class="btn btn-light">BLAST options</a>
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#adv_opt" aria-expanded="true" style="text-align:center">
+      <i class="fas fa-sort"></i> <h3 style="display:flex inline"> Blast options </h3> <i for="collapse_section" class="fas fa-sort"></i>
+    </div>
+    <!-- <a data-toggle="collapse" data-target="#adv_opt" class="btn btn-light" style="background:gray">BLAST options</a> -->
     <br>
     <div id="adv_opt" class="collapse">
 
@@ -190,3 +193,19 @@
 
   });
 </script>
+
+<style>
+
+.collapse_section{
+/*  text-decoration: underline;*/
+  /* background-color:white; */
+  color:black;
+  border-radius: 5px;
+  }  
+
+  .collapse_section:hover  {
+/*  text-decoration: underline;*/
+  background-color: #6c757d;
+  color:#fff;
+}
+</style>
