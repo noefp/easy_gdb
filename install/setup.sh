@@ -38,9 +38,14 @@ case "$option" in
         cd ../
         ;;
     [Nn])
-        echo "JBrowse will not be installed"
+        echo "JBrowse 1 will not be installed"
         ;;
 esac
+
+echo ""
+echo -e "\033[32mEasyGDB installed succesfully, follow the next link to see your genomic portal:\033[0m"
+echo -e "\033[1;34mlocalhost:8000/easy_gdb/\033[0m"
+echo ""
 
 # Work in progress
 # read -p "Do you want to download JBrowse 2? (Y/n) " option
