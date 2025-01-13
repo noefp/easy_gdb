@@ -20,5 +20,7 @@
         diam pharetra euismod tristique aliquet nam. Dis nascetur vivamus justo libero platea interdum feugiat tellus, 
         ad commodo nec etiam volutpat imperdiet viverra, habitasse suspendisse arcu porttitor lacinia iaculis aenean.
       </p>
-      <img class='rounded' src='<?php echo "$images_path/header_img.png";?>' width="900px" alt='img example'>
+      <div class="row">
+        <img class='rounded col-xs-12 col-sm-12 col-md-12 col-lg-12' src='<?php echo "$images_path/header_img.png";?>' alt='img example'>
+      </div>
       
