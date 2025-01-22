@@ -20,7 +20,7 @@ include_once "$conf_path/easyGDB_conf.php";
     <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
 
     <?php 
-      if ($custom_css_path && file_exists($custom_css_path)) {
+      if ($custom_css_path && file_exists("$root_path/$custom_css_path")) {
         echo "<link rel=\"stylesheet\" href=\"/$custom_css_path\">";
       }
     ?>
