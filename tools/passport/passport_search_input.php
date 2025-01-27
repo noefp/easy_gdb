@@ -66,7 +66,7 @@
             if ( is_dir("$passport_path/$expr_dataset") && file_exists("$passport_path/$expr_dataset") ) {
             {
                 echo "<div class=\"card-body\" style=\"margin-left:45px;padding: 5px;\">";
-                echo "<lable class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\" onclick=\"seleccionarCheckbox('$expr_dataset')\">$data_set_name</a></lable>";
+                echo "<label class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\" onclick=\"seleccionarCheckbox('$expr_dataset')\">$data_set_name</a></label>";
                 echo"</div>";     
             }
           }
@@ -174,7 +174,7 @@ if ($dir_counter) {
     // echo "unique_link: $unique_link<br>";
   echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:left;"> <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3>
     </div>
-    <div id="passport_search" class="hide collapse">';
+    <div id="passport_search" class="show collapse">';
       read_passport_file($passport_path_file,$passport_file,"passport");
     echo "</div>";
   }
@@ -192,7 +192,7 @@ if ($dir_counter) {
       echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#phenotype_search" aria-expanded="true" style="text-align:left;">
       <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Phenotype search </h3>
       </div>
-      <div id="phenotype_search" class="hide collapse"">';
+      <div id="phenotype_search" class="show collapse"">';
 
       if ($counts_phenotypes>1){
         $GLOBALS['files_phenotype_count']=$counts_phenotypes;
@@ -278,7 +278,7 @@ if ($dir_counter) {
             echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";
 
         echo"<div style=\"display: flex; justify-content: flex-end;\">";
-        echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; width:95px\"><span class=\"fas fa-search\"></span> Search</button>";
+        echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px;\"><span class=\"fas fa-search\"></span> Search</button>";
         echo"</div>";
         echo "</div>";
      echo "</form>"; 

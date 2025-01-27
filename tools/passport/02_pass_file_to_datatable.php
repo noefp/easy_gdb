@@ -81,7 +81,9 @@
       
         if ( !in_array($col_index,$hide_array) ) {
           if ($col_index == $field_number) {
-            echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&acc_id=$col\">$col</a></td>";
+            // echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&acc_id=$col\" target=\"_blank\">$col</a></td>";
+            echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&acc_id=$col\" target=\"_blank\">$col</a></td>";
+ 
             // echo "<td><a href=\"03_passport_and_phenotype.php?pass_dir=$pass_dir&row_num=$row_count\">$col</a></td>";
             // echo "<td><a href=\"row_data.php?row_data=".$table_file.",".$row_count.",".($field_number-1)."\">$col</a></td>";
           } elseif ($header_cols[$col_index] == "Species") {

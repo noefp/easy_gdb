@@ -736,6 +736,9 @@ if (!empty($phenotype_file_array)){
     $featured_array = [];
 
   foreach ($phenotype_file_array as $phenotype_file) {
+    
+    #TO DO check file exists
+    
     $phenotype_file_full_path = "$passport_path/$pass_dir/$phenotype_file";
     
     echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";

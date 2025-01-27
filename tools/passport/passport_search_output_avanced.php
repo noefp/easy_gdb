@@ -206,14 +206,14 @@ function print_search_table($grep_input, $annot_file, $file_name) {
       echo "<thead><tr>\n";
       $field_number = -1;
       foreach ($columns as $index => $col) {
-        if ( !in_array($index,$GLOBALS['hide_array']) ) {
+        // if ( !in_array($index,$GLOBALS['hide_array']) ) {
           echo "<th>$col</th>";
   
           // find column index for unique identifier that will link to accession info
           if ($GLOBALS['unique_link'] == $col) {
             $field_number = $index;
           }
-        } //close in_array
+        // } //close in_array
       } //close foreach
       echo "</tr></thead>\n";
 
@@ -223,13 +223,13 @@ function print_search_table($grep_input, $annot_file, $file_name) {
         echo "<tr>";
         foreach(explode("\t",$sample_select) as $index => $data)
         {
-          if ( !in_array($index,$GLOBALS['hide_array']) ) {
+          // if ( !in_array($index,$GLOBALS['hide_array']) ) {
             if ($index == $field_number) 
             {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
             }elseif ($columns[$index] == "Species")
             {echo "<td><i>$data</i></td>";
             }else{echo "<td>$data</td>\n";}
-          }
+          // }
         }
         echo "</tr>\n"; 
       }
@@ -287,7 +287,7 @@ return $numeric;
           $pass_json_file = file_get_contents("$passport_path_file/passport.json");
           $pass_hash = json_decode($pass_json_file, true);
           $unique_link=$pass_hash['acc_link'];
-          $hide_array = $pass_hash["hide_columns"];
+          // $hide_array = $pass_hash["hide_columns"];
 
           if($file.".txt" == $pass_hash['passport_file'])
           {
