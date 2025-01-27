@@ -3,12 +3,15 @@
 <?php include_once realpath("../../header.php"); 
 include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 
+
 <!-- RETURN AND HELP-->
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/01_search.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/01_search.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
-<a href="passport_search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<a class="float-left pointer_cursor " style="text-decoration: underline;" onClick="history.back()"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<!-- <a href="passport_search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a> -->
+
 <br>
 
 <!-- HTML -->
@@ -17,14 +20,19 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 
 <!-- GET INPUT -->
 <?php
+
   $filters =explode("\n",rtrim($_POST['filters']));
   $file =$_POST['file'];
   $passport_path_file =$_POST['passport'];
    
+  // print_r($filters);
+  // print_r($file."\n");
+  // print_r($passport_path_file);
 
   $filters_dict=[];
+  $passport_dir_name="";
 
-  
+   
 // create a dictionary with the selected filters where the categories are keys and the selected names are the values
   foreach($filters as $filter){
     if ($filters_dict[explode(" -> ", $filter)[0]]) {
@@ -124,7 +132,7 @@ function search_numeric_table($tab_file,$filters,$category){
                   {
                     array_push($sample_found,$sample);
                   }
-                }              
+                }            
               break;
               
             case "=":
@@ -146,7 +154,7 @@ function search_numeric_table($tab_file,$filters,$category){
 }
  
 function print_search_table($grep_input, $annot_file, $file_name) {
-       
+
     $annot_file = str_replace(" ", "\\ ", $annot_file);
     
     $tab_file = file("$annot_file");
@@ -165,10 +173,15 @@ function print_search_table($grep_input, $annot_file, $file_name) {
 
       echo "<div style=\"display:none\" id=\"body\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">";
 
-      echo "\n<br><h3>Search</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">";
+//------------------------------------------------------------------------------------------------------------------------------------ 
+      echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>';
+      echo "<h3><u><i>Search</i></u></h3>";
       if(!array_keys($GLOBALS['filters_dict'])[0]==""){ // if search isn't empty
           foreach($GLOBALS['filters_dict'] as $key=>$values){
-          echo"<label>".$key." &#10132 "."</label>";
+          echo"<label><b>".$key." &#10132 "."</b></label>";
           foreach($values as $value)
           {
             echo "<label>"."  ".$value." ,"."</label>";
@@ -176,32 +189,47 @@ function print_search_table($grep_input, $annot_file, $file_name) {
           echo"<br>";
         } 
       }
-      echo"</div></div><br>\n";
-
+      echo"</div></div>";
+      // echo"<br>\n";
+// ----------------------------------------------------------------------------------------------------------------------------------------
       
       $title = str_replace("_"," ",$file_name);  
       echo "<h1 style=\"text-align:center\">$title</h1><br>";
     
-
+      if($GLOBALS['passport_path_file'] != $GLOBALS['passport_path'])
+      { $expr_file=explode("/",$GLOBALS['passport_path_file']);
+        $file_len=count($expr_file)-1;
+        $passport_dir_name=$expr_file[$file_len];
+      }
 
     // //   TABLE HEADER
       echo "<thead><tr>\n";
-
+      $field_number = -1;
       foreach ($columns as $index => $col) {
-        echo "<th>$col</th>\n";
-      }
+        if ( !in_array($index,$GLOBALS['hide_array']) ) {
+          echo "<th>$col</th>";
+  
+          // find column index for unique identifier that will link to accession info
+          if ($GLOBALS['unique_link'] == $col) {
+            $field_number = $index;
+          }
+        } //close in_array
+      } //close foreach
       echo "</tr></thead>\n";
 
 //       // TABLE BODY
       echo "<tbody>\n";
       foreach($results as $sample_select){
         echo "<tr>";
-        foreach(explode("\t",$sample_select) as $n => $data)
+        foreach(explode("\t",$sample_select) as $index => $data)
         {
-          if($n==0)
-          {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$GLOBALS[dir_or_file]&acc_id=$data\" target=\"_blank\">$data</a></td>\n";}
-          else
-          {echo "<td>$data</td>\n";}
+          if ( !in_array($index,$GLOBALS['hide_array']) ) {
+            if ($index == $field_number) 
+            {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+            }elseif ($columns[$index] == "Species")
+            {echo "<td><i>$data</i></td>";
+            }else{echo "<td>$data</td>\n";}
+          }
         }
         echo "</tr>\n"; 
       }
@@ -258,6 +286,8 @@ return $numeric;
         if ( file_exists("$passport_path_file/passport.json") ) {
           $pass_json_file = file_get_contents("$passport_path_file/passport.json");
           $pass_hash = json_decode($pass_json_file, true);
+          $unique_link=$pass_hash['acc_link'];
+          $hide_array = $pass_hash["hide_columns"];
 
           if($file.".txt" == $pass_hash['passport_file'])
           {
@@ -276,8 +306,6 @@ return $numeric;
           }
           if(!$file_found){echo("<i><h2>".$file.".txt"." File not found</h2></i>");}
         }        
-    //   }// close if is_dir         
-    // }//foreach all_dir
 ?>
 <!-- END TABLE  -->
 
@@ -289,13 +317,20 @@ return $numeric;
 
  <!-- Cs -->
 <style>
+
+/* -------------------------------------------------- */
+    /* table.dataTable tbody tr:hover {
+   background-color:#d1d1d1;
+  } */
+/* -------------------------------------------------------- */
+
   table.dataTable td,th  {
     max-width: 500px;
     white-space: nowrap;
     overflow: hidden;
     text-align: center;
   }
-  
+ 
   .td-tooltip {
     cursor: pointer;
   }
@@ -305,9 +340,10 @@ return $numeric;
 <!-- JS DATATABLE -->
 <script type="text/javascript">
 $(document).ready(function(){
+
   // //when data table is ready -> show the data table
-  $('#body').css("display","block");
   $('#load').remove();
+  $('#body').css("display","block");
 
   $(".tblAnnotations").dataTable({
     dom:'Bfrtlpi',
@@ -326,16 +362,29 @@ $(document).ready(function(){
     "sScrollX": "100%",
     "sScrollXInner": "110%",
     "bScrollCollapse": true,
+    retrieve: true,
+    colReorder: true,
     "drawCallback": function( settings ) {
-      $('#body').css("display","inline");
+   // $('#body').css("display","inline");
+  // $(".td-tooltip").tooltip();
+    $("table.dataTable tbody tr").hover(
+        function() {
+            // Al pasar el mouse
+            $(this).css("background-color", "#d1d1d1");
+        }, function() {
+            // Al retirar el mouse
+            $(this).css("background-color", "");
+        }
+    );
   },
-    });
+});
 
 $(".dataTables_filter").addClass("float-right");
 $(".dataTables_info").addClass("float-left");
 $(".dataTables_paginate").addClass("float-right");
 
-  });
+
+});
 </script>
 
 

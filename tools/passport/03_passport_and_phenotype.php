@@ -16,8 +16,8 @@
   $pass_dir = test_input($_GET["pass_dir"]);
   $sp_name = "";
   // get info from passport.json
-  if ( file_exists("$passport_path/$pass_dir/passport.json") ) {
-    $pass_json_file = file_get_contents("$passport_path/$pass_dir/passport.json");
+  if ( file_exists("$passport_path/passport.json") ) {
+    $pass_json_file = file_get_contents("$passport_path/passport.json");
     $pass_hash = json_decode($pass_json_file, true);
 
     $numeric_to_cathegoric_json = $pass_hash["convert_to_cathegoric"]; 
@@ -27,7 +27,7 @@
   }
 
 //----- NUMERIC TO CATHEGORIC
-  $convert_json_path = "$passport_path/$pass_dir/$numeric_to_cathegoric_json";
+  $convert_json_path = "$passport_path/$numeric_to_cathegoric_json";
   //echo $convert_json_path;
   $convert_json = [];
   if (file_exists($convert_json_path) ) {
@@ -40,7 +40,7 @@
   }
 
 //----- TRANSLATOR
-  $translator_json_path = "$passport_path/$pass_dir/$translator_file";
+  $translator_json_path = "$passport_path/$translator_file";
   //echo $translator_json_path;
   $translator_json = [];
   if (file_exists($translator_json_path) ) {
@@ -53,7 +53,7 @@
   }
 
 //----- FEATURED DESCRIPTORS
-  $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
+  $featured_descriptors_path = "$passport_path/$featured_descriptors_file";
   //echo $featured_descriptors_path;
   $featured_descriptors = [];
   if (file_exists($featured_descriptors_path) ) {
@@ -71,8 +71,8 @@
 $descriptor_primary_name = "";
 
 function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img, $convert_json, $translator_json, $featured_descriptors_json, $all_featured_descriptors, $sp_name) {
-  //var_dump($convert_json); // funciona
-  //var_dump($translator_json); // funciona
+  // var_dump($convert_json); // funciona
+  // var_dump($translator_json); // funciona
 
   $file = preg_replace('/.+\//', '', $file_path);
 
@@ -147,7 +147,6 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
         // Get info from JSON
         $descriptor_img = $descriptors_obj[$descriptor_name]["img_name"];
         $img_opt_array = $descriptors_obj[$descriptor_name]["options"];
-        //echo "img_opt_array: "print_r($img_opt_array);
         
         if ($descriptor_primary_name && $descriptor_secondary_name) {
           echo "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>"; // primary AND secondary descriptor names from json
@@ -464,7 +463,7 @@ function file_to_table($file_path, $acc_name) {
     echo "<div id=\"$collapse_id\" class=\"collapse\">";
 
     // Tabla con los datos crudos
-    echo "<div style=\"overflow:scroll\">";
+    // echo "<div style=\"overflow:scroll\">";
     echo "<table class=\"table tblResults\"><thead><tr>";
     
     foreach ($header as $col_name) {
@@ -491,7 +490,7 @@ function file_to_table($file_path, $acc_name) {
     echo "</tbody></table>";
     echo "</div><br>";
 
-    echo "</div>"; // close DIV collapse-section
+    // echo "</div>"; // close DIV collapse-section
 
   } else { // file exist
     //echo "No phenotype data available"; // Comprobate but do not print    
@@ -521,7 +520,7 @@ function file_to_table($file_path, $acc_name) {
     $acc_header = $pass_hash["acc_link"];
   }
   
-  echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply'></span><i> Back</i></a>";
+  // echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply'></span><i> Back</i></a>";
   echo "<div class=\"container\">";
   
   
@@ -537,12 +536,8 @@ function file_to_table($file_path, $acc_name) {
     
     $title_col = (array_search($acc_header,$header)+1);
     
-    //echo "<p>title_col: $title_col</p>";
-    
-    $passport_cmd = "awk -F \"\\t\" '$$title_col == \"$acc_id\" {print $0}' $passport_path/$pass_dir/$passport_file";
-    
-    //awk -F "\t" '$1 == "ICC 10544" {print $0}' Chickpea_10K_Passport.txt
-      
+    $passport_cmd="awk -F '\t' 'tolower($$title_col) == tolower(\"$acc_id\") {print $0}' $passport_path/$pass_dir/$passport_file";  
+
     //echo "<p>passport_cmd: $passport_cmd</p>";
     
     $acc_line = shell_exec($passport_cmd);
@@ -732,11 +727,11 @@ if (!empty($phenotype_file_array)){
     
 
   $phenotype_img_json = $pass_hash["phenotype_imgs"];
-  
   if ($phenotype_img_json && file_exists("$passport_path/$pass_dir/$phenotype_img_json") ) {
     
     $pheno_json_file = file_get_contents("$passport_path/$pass_dir/$phenotype_img_json");
     $pheno_hash = json_decode($pheno_json_file, true);
+  
   }
     $featured_array = [];
 
@@ -746,7 +741,7 @@ if (!empty($phenotype_file_array)){
     echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
-    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
+    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
 
 
     //print_r($featured_array); // array completo
@@ -842,19 +837,46 @@ if(showMap) {
     }
   }
 
-
-  $(".tblResults").dataTable({
-    dom:'Bfrtlpi',
-    "oLanguage": {
-       "sSearch": "Filter by:"
-     },
-    "order": [],
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  $(document).ready(function(){
+    $(".tblResults").dataTable({
+      dom:'Bfrtlpi',
+      "oLanguage": {
+        "sSearch": "Filter by:"
+        },
+      buttons: [
+        'copy', 'csv', 'excel',
+          {
+            extend: 'pdf',
+            orientation: 'landscape',
+            pageSize: 'LEGAL'
+          },
+        'print', 'colvis'
+        ],
+      "sScrollX": "100%",
+      "sScrollXInner": "110%",
+      "bScrollCollapse": true,
+      retrieve: true,
+      colReorder: true,
+      "drawCallback": function( settings ) {
+    // $('#body').css("display","inline");
+    // $(".td-tooltip").tooltip();
+      $("table.dataTable tbody tr").hover(
+          function() {
+              // Al pasar el mouse
+              $(this).css("background-color", "#d1d1d1");
+          }, function() {
+              // Al retirar el mouse
+              $(this).css("background-color", "");
+          }
+      );
+    },
   });
 
-  $(".tblResults_filter").addClass("float-right");
-  $(".tblResults_info").addClass("float-left");
-  $(".tblResults_paginate").addClass("float-right");
+$(".dataTables_filter").addClass("float-right");
+$(".dataTables_filter").addClass("float-left");
+$(".dataTables_filter").addClass("float-right");
+
+});
 
 </script>
 
@@ -863,5 +885,12 @@ if(showMap) {
     display: block;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  table.dataTable td,th  {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
   }
 </style>

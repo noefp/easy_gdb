@@ -1,3 +1,4 @@
+
 <!-- HEADER -->
 <?php 
   include_once realpath("../../header.php");
@@ -6,22 +7,149 @@
 
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- Bootstrap<script <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
 
 <!-- HELP -->
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/01_search.php"><i class="fa fa-info" style="font-size:20px;color:#229dff"></i> Help</a>
+  <a class="float-right" href="/easy_gdb/help/01_search.php" target="blank"><i class="fa fa-info" style="font-size:20px;color:#229dff"></i> Help</a>
 </div>
 
-<a href="/easy_gdb/index.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
-<br>
+<!-- <a href="/easy_gdb/index.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<br> -->
 
+
+<!---------------------------------------------- FRONT MAIN ------------------------------------------------------------------------------------>
 <br>
 <h3 class="text-center">Passport Search</h3>
 
 
+<!--------------------------------- Default filter    --------------------------------->
+<div class="form margin-20" >
+  <div style="margin:auto; max-width:1200px">
+
+      <!-- FORM OPPENED -->
+    <form id="egdb_passport_form" action="passport_search_output.php" method="get">
+      <div class="form-group">
+        <label for="search_box" style="font-size:16px">Insert an accession ID or passport keywords</label>
+        <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
+        <input id="search_box_default" type="search_box" class="form-control" name="search_keywords" style="border-color: #666">
+      </div>
+      <br>
+      <button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button>
+      <br>
+
+
+      <?php
+        $all_datasets = get_dir_and_files($passport_path); // call the function
+        $is_dir=false;
+        
+        if ($all_datasets) {
+          foreach ($all_datasets as $expr_dataset) {
+            if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
+                $is_dir=true;
+                break;
+              }
+            }
+
+        if($is_dir)
+          {
+            echo "<lable style=\"margin-left:5px\"><i>Select Dataset</i></lable>";
+            echo "<div class=\"card-group\" style=\"border:groove 1px; display:flex; flex-wrap:wrap\">";
+
+            foreach ($all_datasets as $expr_dataset) {
+              if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
+
+                $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$expr_dataset);
+                $data_set_name = str_replace("_"," ",$data_set_name);
+              }
+
+            if ( is_dir("$passport_path/$expr_dataset") && file_exists("$passport_path/$expr_dataset") ) {
+            {
+                echo "<div class=\"card-body\" style=\"margin-left:45px;padding: 5px;\">";
+                echo "<lable class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\" onclick=\"seleccionarCheckbox('$expr_dataset')\">$data_set_name</a></lable>";
+                echo"</div>";     
+            }
+          }
+        }
+        echo "</div>";
+      }
+    }
+    ?>
+    </form>
+<!--  ------------------------------------------------------------->
+<br>
+
+<!-------------------------------------------  Filter avanced main -------------------------------------------------->
+<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#advanced" aria-expanded="true" style="text-align:center">
+  <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Advanced Search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
+</div>
+
+<div id="advanced" class="hide collapse">
+
+<?php
+//
+$files_phenotype_count=0;
+
+$all_datasets = get_dir_and_files($passport_path); // call the function
+asort($all_datasets);
+
+$dir_counter = 0;
+$dir_counter2=true;
+
+foreach ($all_datasets as $expr_dataset) {
+  
+  if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
+    $dir_counter++;
+  }
+}
+
+
+//category organization
+if ($dir_counter) {
+  
+  echo "<label style=\"margin:3px\" for=\"sel1\"><i>Select Dataset</i></label>";
+  get_info_json($passport_path);
+  echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
+  
+  //get expression datasets from each dir
+  foreach ($all_datasets as $one_dataset) {
+    $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$one_dataset);
+    $data_set_name = str_replace("_"," ",$data_set_name);
+    
+    // if ( !preg_match('/\.php$/i', $one_dataset) && is_dir("$passport_path/$one_dataset") && !preg_match('/\.json$/i', $one_dataset) && file_exists("$passport_path/$one_dataset") ) {
+      if (is_dir("$passport_path/$one_dataset") && file_exists("$passport_path/$one_dataset") ) {
+
+      echo "<option value=\"$passport_path/$one_dataset\">$data_set_name</option>";
+      if($dir_counter2)
+      {
+        $first_category= "$passport_path/$one_dataset";
+        $dir_counter2=false;
+      }
+    }
+  }    
+  echo   "</select>";
+
+  echo "<div id=\"frame\">";
+    get_info_json($first_category);
+  echo"</div>";
+
+}
+ else 
+ {
+    get_info_json($passport_path);
+ }
+
+?>
+</div>
+</div>
+
+<!-- FOOTER -->
+<?php include_once realpath("$easy_gdb_path/footer.php");?>
+
+<!------------------------------------------------- END MAIN---------------------------------------------------- -->
+
+<!-- ............................................................................................................ -->
+<!--------------------------------- Functions ---------------------------------------------------------------------->
 
 <?php
 
@@ -35,6 +163,8 @@
 
     $passport_file = $pass_hash["passport_file"];
     $phenotype_file_array = $pass_hash["phenotype_files"];
+    $counts_phenotypes=0;
+    $files_phenotypes_exist=[];
     // $unique_link = $pass_hash["acc_link"];
 
 
@@ -42,19 +172,47 @@
   if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path_file.'/'.$passport_file)   ) {
     
     // echo "unique_link: $unique_link<br>";
-// 
-    read_passport_file($passport_path_file,$passport_file);
+  echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:left;"> <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3>
+    </div>
+    <div id="passport_search" class="hide collapse">';
+      read_passport_file($passport_path_file,$passport_file,"passport");
+    echo "</div>";
+  }
 
-    foreach ($phenotype_file_array as $phenotype_file) {
-      read_passport_file($passport_path_file,$phenotype_file);
+  if (!empty($phenotype_file_array)){
+
+    foreach ($phenotype_file_array as $index =>$phenotype_file) {
+      if ( !preg_match('/\.php$/i', $phenotype_file) && !is_dir($passport_path_file.'/'.$phenotype_file) &&  !preg_match('/\.json$/i', $phenotype_file) && file_exists($passport_path_file.'/'.$phenotype_file)) {
+        $counts_phenotypes++;
+        array_push($files_phenotypes_exist,$phenotype_file);
+      }
     }
-    }//if preg_match
-  }//foreach all_dir
-}
+    if ($counts_phenotypes){
 
+      echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#phenotype_search" aria-expanded="true" style="text-align:left;">
+      <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Phenotype search </h3>
+      </div>
+      <div id="phenotype_search" class="hide collapse"">';
+
+      if ($counts_phenotypes>1){
+        $GLOBALS['files_phenotype_count']=$counts_phenotypes;
+      foreach($files_phenotypes_exist as $index => $phenotype_file){
+          read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1));}
+
+        echo'<div class="all_phenotype_search" style="display: flex; justify-content: flex-end;">
+        <button  id="submit_all_forms"class="btn btn-info search_button" type="submit" style="margin:20px;"><span class="fas fa-search"></span> All Phenotype Search</button>
+        </div>';
+        }else{
+          read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype");
+        }
+        echo "</div>";
+        }// if no counts
+  }// if empty
+    }
+}
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // $n_passport_files=[];
-  function read_passport_file($passport_path,$passport_file) {
+  function read_passport_file($passport_path,$passport_file,$form_id) {
     
     
     $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$passport_file);
@@ -72,7 +230,7 @@
         echo "<i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name";
       echo "</div>";
 
-      echo "<div id=\"collapse_$frame_id\" class=\"hide collapse\" style=\" border-radius: 5px; border:solid 1px; background-color:#efefef; padding-top:7px\">";
+      echo "<div id=\"collapse_$frame_id\" class=\"hide collapse\" style=\" border-radius: 5px; border:groove 2px; background-color:#efefef; padding-top:7px\">";
       // array_push($GLOBALS['n_passport_files'],$frame_id);
       
       $pass_array = file("$passport_path/$passport_file");
@@ -83,9 +241,8 @@
       // echo "passport header: $header";
       
       $no_spc_file = str_replace(" ","\ ","$passport_path/$passport_file");
-        
 
-      echo "<form id=\"passport_form\" action=\"passport_search_output_avanced.php\" method=\"post\">";
+      echo "<form id=\"$form_id\" action=\"passport_search_output_avanced.php\" method=\"post\">";
         echo "<div class=\"container\" style=\"margin-left:20px\">";
             echo "<div class=\"row\">";
               echo "<div class=\"col\">";
@@ -118,129 +275,20 @@
             echo "</div>"; // col
             echo "</div>";
             echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
+            echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";
 
         echo"<div style=\"display: flex; justify-content: flex-end;\">";
-        echo "<button id=\"search_$frame_id\" name=\"file\" value=\"$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; width:95px\"><span class=\"fas fa-search\"></span> Search</button>";
+        echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; width:95px\"><span class=\"fas fa-search\"></span> Search</button>";
         echo"</div>";
         echo "</div>";
      echo "</form>"; 
     } // if file exist
   }
-?>
-
-<!-- INPUT FORM -->
-
-<!-- Default filter    --------------------------------->
-<div class="form margin-20">
-  <div style="margin:auto; max-width:1200px">
-
-      <!-- FORM OPPENED -->
-    <form id="egdb_passport_form" action="passport_search_output.php" method="get">
-      <div class="form-group">
-        <label for="search_box" style="font-size:16px">Insert an accession ID or passport keywords</label>
-        <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
-        <input id="search_box" type="search_box" class="form-control" name="search_keywords" style="border-color: #666">
-      </div>
-      <br>
-      <button type="submit" class="btn btn-info float-right" style="margin-top: -5px">Search</button>
-      <br>
-      <br>
-      <br>
-    </form>
-<!--  ------------------------------------------------------------->
-<br>
-
-
-<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#advanced" aria-expanded="true" style="text-align:center">
-  <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Advanced Search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
-</div>
-
-<div id="advanced" class="hide collapse">
-
-
-
-<!------------------------------------------- main -------------------------------------------------->
-<?php
-//
-
-$all_datasets = get_dir_and_files($passport_path); // call the function
-asort($all_datasets);
-
-$dir_counter = 0;
-$dir_counter2=true;
-
-foreach ($all_datasets as $expr_dataset) {
-  
-  if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
-    $dir_counter++;
-  }
-}
-
-
-//category organization
-if ($dir_counter) {
-  
-  echo "<label for=\"sel1\">Select Dataset</label>";
-  get_info_json($passport_path);
-  echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
-  
-  //get expression datasets from each dir
-  foreach ($all_datasets as $one_dataset) {
-    $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$one_dataset);
-    $data_set_name = str_replace("_"," ",$data_set_name);
-    
-    if ( !preg_match('/\.php$/i', $one_dataset) && is_dir("$passport_path/$one_dataset") && ($one_dataset != "comparator_gene_list.txt") && ($one_dataset != "comparator_lookup.txt") && !preg_match('/\.json$/i', $one_dataset) && file_exists("$passport_path/$one_dataset") ) {
-      echo "<option value=\"$passport_path/$one_dataset\">$data_set_name</option>";
-      if($dir_counter2)
-      {
-        $first_category= "$passport_path/$one_dataset";
-        $dir_counter2=false;
-      }
-    }
-  }    
-  echo   "</select>";
-
-  echo "<div id=\"frame\">";
-    get_info_json($first_category);
-  echo"</div>";
-
-}
- else 
- {
-    get_info_json($passport_path);
- }
 
 ?>
-</div>
-</div>
 
-<!-- FOOTER -->
-<?php include_once realpath("$easy_gdb_path/footer.php");?>
+<!-- --------------------------------------------END funnctiond php----------------------------------------------------------------------------------------------------- -->
 
-
-
-<!-- ERROR BANNER -->
-<div class="modal fade" id="no_gene_modal" tabindex="-1" aria-labelledby="genesNotFoundLabel" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog">
-  <!-- <div class="modal-dialog modal-sm"> -->
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title w-100 text-center" id="genesEmpty" style="color: red">❌ <b>Error</b></h1>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center;">
-          <p id="search_input_modal"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- -------------------------------------------------------------------------------------------------------------- -->
-
-<!-- IS BETTER TO ADD TO THE GENERAL CSS -->
 <style>  
   .info_icon {
     background-color:#4387FD;
@@ -270,9 +318,10 @@ if ($dir_counter) {
 
   .collapse_section{
 /*  text-decoration: underline;*/
-  background-color:white;
+  /* background-color:white; */
   color:black;
   border-radius: 5px;
+  margin-bottom: 0px;
   }  
 
   .collapse_section:hover  {
@@ -281,13 +330,27 @@ if ($dir_counter) {
   color:#fff;
 }
 
+#phenotype_search , #passport_search
+{ 
+  margin-left:20px;
+  background-color:#efefef;
+  border-radius: 0px 0px 5px 5px;
+  padding-top: 1px;
+
+}
 </style>
 
 
-<!-- JAVASCRIPT -->
+<!--..... JAVASCRIPT.................. -->
 <script> 
-$(document).ready(function () {
 
+function seleccionarCheckbox(id) {
+    var checkbox = document.getElementById(id);
+    checkbox.checked = !checkbox.checked;
+}
+
+
+$(document).ready(function () {
 
   function get_ajax_options(col_index,query_file,filter_id) {
     // alert("file: "+query_file+", col_index: "+col_index);
@@ -334,8 +397,13 @@ $(document).ready(function () {
 
     success: function (passport_array) {
       // alert(passport_array);
+
       var passport_filter = JSON.parse(passport_array);
       // alert(passport_filter);
+      counts_files=passport_filter[0];
+      passport_filter.shift();
+
+
     $("#frame").html(passport_filter.join("\n"));
 
     $('.sel_opt').before(function(){  
@@ -347,9 +415,10 @@ $(document).ready(function () {
   });
     }
   });
-  
+
 };
 
+// ...........................................................
 
 $('.sel_opt').before(function(){  
     var filter_id=this.id;
@@ -378,14 +447,9 @@ $('.sel_opt').before(function(){
     get_ajax_options(col_index,passport_full_path,filter_id);
     
   });
-  
 
-  // var file_path1 = "<?php //echo "$passport_path" ?>";
-  // //alert("file1: "+file_path1);
-  //
-
-  // var files=<?php //echo (json_encode($n_passport_files));?>;
   var all_filters=[];
+
   $(document).on('dblclick', '.select', function() {
     var attr_id=$(this).attr('id');
     var id = attr_id.replace("select_","");
@@ -401,12 +465,13 @@ $('.sel_opt').before(function(){
 
 });
 
+//............. function that add a filter to the textarea and add to array of filters.....................
 function add (id){
+
   if(!all_filters[id])
   {
     all_filters[id]=[];
   }
-
   var category_select = $('#' + id).val();
   // var filter_select=$('#select_' + id).val().join('\n');
 
@@ -442,7 +507,7 @@ function add (id){
       }
       else{
 
-      filter_select=$('#select_' + id).val().join('\n')
+      filter_select=$('#select_' + id).val().join("\n")
 
       filter_select.split("\n").forEach(n_filter=>{
       //create a dicctionaire
@@ -463,16 +528,16 @@ function add (id){
           $('#text_' + id).val($('#text_' + id).val() + `${filters.category} -> ${filters.filter}\n`);
       });
     }
-  
 }
 
+
+//..... function that delete a filter to the textarea and delete to array of filters.........
 $(document).on('click', '.delete', function() {
 
   event.preventDefault();
-  
+
   var parent_id=$(this).parent().attr('id');
   var id = parent_id.replace("button_","");
-
   var filters = $('#text_' + id).val();
 
   if(filters=="")
@@ -501,47 +566,128 @@ $(document).on('click', '.delete', function() {
 
 });
 
-$(document).on('click', '.search_button', function() {
-  var parent_id=$(this).attr('id');
-  var id = parent_id.replace("search_","");
+// $(document).on('click', '.search_button', function() {
+//   var parent_id=$(this).attr('id');
+//   var id = parent_id.replace("search_","");
+// });
 
-});
 
-  //check input gene before sending form
-  $(document).on('submit', '.egdb_search_file_form', function() {
-    var gene_id = $('#search_file_box').val();
+  // //check input gene before sending form
+  $(document).on('submit', '#egdb_passport_form', function() 
+  {
+    var gene_id = $('#search_box_default').val();
     var data_set_selected = false;
-    var file_database = "<?php echo $file_database; ?>";
+    var files_database = "<?php echo json_encode($is_dir); ?>";
 
-    $(document).on('each', '.sample_checkbox', function() {
-      if ($(this).is(':checked')) {
-        data_set_selected = true;
-        return false;
-      }
-    });
+    if(files_database === 'true')
+    { $('.form-check-input').each( function() {
+        if ($(this).is(':checked')) {
+          data_set_selected = true;
+        }
+      }); 
+    }else{data_set_selected = true;}   
 
-    // Forms
-    if (!gene_id) {
+    //   // Forms validation
+  if ((!data_set_selected) && (files_database === 'true')) {
+      $("#search_input_modal").html( "No dataset file/s selected" );
+      $('#no_gene_modal').modal('show');
+      return false;
+    } else if (!gene_id) {
       $("#search_input_modal").html( "No input provided in the search box" );
       $('#no_gene_modal').modal();
       return false;
-    }
-    else if (gene_id.length < 3) {
+    } else if (gene_id.length < 3) {
       $("#search_input_modal").html( "Input is too short, please provide a longer term to search" );
       $('#no_gene_modal').modal();
-      return false;
-    }
-    else if (file_database === '1' && !data_set_selected) {
-      $("#search_input_modal").html( "No annotation file/s selected" );
-      $('#no_gene_modal').modal('show');
       return false;
     }
     else {
       return true;
     };
-  });
+  }); 
+});
+
+// ...................all_phenotypes_filter...............................
+
+var counts_files=<?php echo $files_phenotype_count; ?>;
+var forms=[];
+var filters=[];
+$(document).on('click', '#submit_all_forms', function()
+ {
+  // alert(counts_files);
+  // get the information from each phenotype form
+  for(var index=1; index<=counts_files; index++)
+  {
+      var id = "phenotype"+index;
+      forms[index]= new FormData(document.getElementById(id));
+  }
+
+
+// Create a temporary form
+ var tempForm = document.createElement('form');
+ tempForm.action = 'passport_search_phenotypes.php';
+ tempForm.method = 'POST';
+  tempForm.style.display = 'none';
+
+// add elements
+  var forms_counts = document.createElement('input');
+  forms_counts.name = "counts";
+  forms_counts.value = counts_files;
+  tempForm.appendChild(forms_counts);
+
+ forms.forEach((data ,index) => {
+  data.forEach((value, key) => {
+  var input = document.createElement('input');
+  input.name = key+index;
+  if(key=="filters")
+  { 
+    input.value = value.split("\n").join("\t");
+  }
+  else{
+    input.value = value;
+  }
+
+  if(key=="passport")
+  {
+    input.name = key;
+  }else{
+    input.name = key+index;
+  }
   
+  tempForm.appendChild(input);
+  });
+ }); 
+
+  // Add the temporary form to the document
+document.body.appendChild(tempForm); 
+tempForm.submit();
 });
 
 </script>
 
+
+
+
+<!-- Modal popup erro message -->
+
+<div class="modal fade" id="no_gene_modal" tabindex="-1" role="dialog" aria-labelledby="genesNotFoundLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title  w-100 text-center" id="genesNotFoundLabel">❌ Error</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+          <!-- <span aria-hidden="true">&times;</span> -->
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center;">
+          <p id="search_input_modal"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------------------- -->
