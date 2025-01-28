@@ -53,6 +53,9 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
       // TABLE BEGIN
       echo "<div id=\"Annot_table_$table_counter\" class=\"collapse hide\"><table style=\"display:none\" id=\"tblAnnotations_$table_counter\" class=\"tblAnnotations table table-striped table-bordered\">\n";
       
+
+      echo "<div id=\"load_$table_counter\" class=\"loader\"></div>";
+
       // create table
       $tab_file = file("$annot_file");
       $first_line = array_shift($tab_file);
@@ -174,10 +177,12 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
     include_once realpath("$easy_gdb_path/tools/common_functions.php");
       
     // $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
-    // asort($all_datasets);
+
+
 
     if (!empty($datasets_select))
     { $all_datasets=$datasets_select;
+      asort($all_datasets);
       foreach ($all_datasets as $table_counter => $dir_or_file) {
         get_info_table($passport_path,$dir_or_file,$search_query,$table_counter,$quoted_search);
       }//foreach all_dir    
@@ -214,13 +219,16 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 <script type="text/javascript">
 $(document).ready(function(){  
   // //when data table is ready -> show the data table
-
+  
 $(".collapse").on('shown.bs.collapse', function(){
     var id=$(this).attr("id");
     id=id.replace("Annot_table_","");
-    // alert(id);
+    // alert('#load_'+id);
+
+    $('#load_'+id).remove();
 
     $('#tblAnnotations_'+id).css("display","table");
+
     
     $('#tblAnnotations_'+id).DataTable({
     dom:'Bfrtlpi',
