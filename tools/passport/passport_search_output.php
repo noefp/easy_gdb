@@ -7,7 +7,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
   <a class="float-right" href="/easy_gdb/help/01_search.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
-<a href="passport_search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<a class="float-left pointer_cursor " style="text-decoration: underline;" onClick="history.back()"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 <br>
 
 <!-- <p id="load" style="text-align: center"><b>Table Loading...</b></p> -->

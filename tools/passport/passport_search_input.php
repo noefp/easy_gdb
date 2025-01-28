@@ -66,7 +66,7 @@
             if ( is_dir("$passport_path/$expr_dataset") && file_exists("$passport_path/$expr_dataset") ) {
             {
                 echo "<div class=\"card-body\" style=\"margin-left:45px;padding: 5px;\">";
-                echo "<label class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"check_$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\" onclick=\"seleccionarCheckbox('$expr_dataset')\">$data_set_name</a></label>";
+                echo "<label class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\">$data_set_name</a></label>";
                 echo"</div>";     
             }
           }
@@ -343,13 +343,6 @@ if ($dir_counter) {
 
 <!--..... JAVASCRIPT.................. -->
 <script> 
-
-function seleccionarCheckbox(id) {
-    var checkbox = document.getElementById(id);
-    "ckeck_".checkbox.checked = !"ckeck_".checkbox.checked;
-
-}
-
 
 $(document).ready(function () {
 

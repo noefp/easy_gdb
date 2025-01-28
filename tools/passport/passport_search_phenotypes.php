@@ -365,9 +365,13 @@ function print_search_table($acc_link_common_array,$annot_files,$search_result) 
   echo "<h2 style=\"text-align:center\"> Results Phenotypes </h2><br>";
 //--------------------results list: ------------------------------------------------------------
   echo '<div class="alert alert-primary" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+        <span aria-hidden="true">×</span>
+        </button>
         <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
 
-  $pass_dir_name=str_replace($GLOBALS['passport_path']."/","",$GLOBALS['passport_path_file']); 
+  $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
+
   echo '<body>
         <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
     foreach($acc_link_common_array as $index => $acc_name)
@@ -382,9 +386,10 @@ function print_search_table($acc_link_common_array,$annot_files,$search_result) 
     echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $title table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";
 
       // TABLE BEGIN
-    echo"<p id=\"load_$file_name\" class=\"load\" style=\"text-align: center; display:none\"><b>Table Loading...</b></p>";
 
     echo "<div class=\"body collapse\" style=\"display:hide\" id=\"body_$file_name\"><table id=\"table_$file_name\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">";
+
+    echo "<div id=\"load_$file_name\" class=\"loader\"></div>"; // loading icon
 
 // //     // //   TABLE HEADER
       echo "<thead><tr>\n";
@@ -461,6 +466,7 @@ $(document).ready(function(){
 
       // //when data table is ready -> show the data table
       $('#table_'+id).css("display","table");
+      $('#load_'+id).remove();
 
       $('#table_'+id).dataTable({
         dom:'Bfrtlpi',
