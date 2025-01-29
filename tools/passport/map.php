@@ -1,8 +1,6 @@
 <!-- GERMPLASM PRINTED ON A MAP-->
 
 <?php
-  //echo "<br>The map shows all de <b>Acc ID</b>, which have coordinates, that we have in the database.<br><br>";
-
   $rows = [];
 
   // Get map info
@@ -15,15 +13,6 @@
     $header_cols = explode("\t", $file_header);
 
     $field_number = 0;
-
-  // foreach ($header_cols as $head_index => $hcol) {
-  // if (in_array($head_index,$map_array)){
-  //
-  // if ($unique_link == $hcol) {
-  // $field_number = $head_index;
-  // }
-  // } //close in_array
-  // } //close foreach
 
     foreach ($tab_file as $row_count => $line) {
       $columns = explode("\t", $line);
@@ -43,9 +32,7 @@
 
   } // end passport file exist
 
-  //print_r($rows);
   $total_rows = count($rows);
-  //echo "<br>total rows:$total_rows<br>";
 
   // Read country_coordinates.txt
   $country_coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt";
@@ -74,16 +61,13 @@
       $cols = explode ("\t", $line);
       $acc = $cols[$marker_acc_col];
       $trait = str_replace(" ", "_", $cols[$marker_column]);
-      //echo "trait: $trait<br>"; hay que conseguir unificar en uno solo valor
+      //echo "trait: $trait<br> $acc<br>"; //hay que conseguir unificar en uno solo valor
       $acc_traits[$acc] = $trait;
     }
-    //var_dump($acc_traits);
   }
-
 
   // Array- keep data to Javascript
   $data_map = [];
-  //$country_acc_map =[];
 
   // Iterate $rows 
   foreach ($rows as $row) {
@@ -100,12 +84,6 @@
       $longitude = $row['Longitude'];
     }
 
-    //if (!empty($rows)){
-    //echo "<pre>";
-    //var_dump(array_keys($rows[0])); // comprobación
-    //echo"</pre>";
-    //}
-
     // Verificate if lat & long are empty-> search in country_coords
     if (empty($latitude) || empty($longitude) ) {
       foreach($country_coords as $country_name => $coords) {
@@ -116,15 +94,10 @@
         }
       }
     }
-    //if (empty($latitude) || empty($longitude) ) {
-    //if ($country !== null && isset($country_coords[$country] ) ) {
-    //$latitude = $country_coords[$country]['latitude'];
-    //$longitude = $country_coords[$country]['longitude'];
-    //}
-    //}
 
     // Store data in data_map array
     if (!empty($latitude) && !empty($longitude) ) {
+      
       $data_map[] = [
         'acc' => $acc,
         'country' => $country,
@@ -135,31 +108,19 @@
     }
   }
 
-  // Convert $country_acc_map to correct format y listar acc en el Popup
-  // foreach($country_acc_map as $coords => $acc_list) {
-  // list($latitude,$longitude) = explode(',', $coords);
-  // $data_map[] = [
-  // 'acc' => implode(", ", $acc_list), // Listar Acc ID's
-  // 'country' => $country,
-  // 'latitude' => $latitude,
-  // 'longitude' => $longitude,
-  // ];
-  // }
-
-
   // Convert $data to JSON- to use it in Javascript part
   $json_data_map = json_encode($data_map);
-  //echo $json_data_map; // funciona
 
   // Personalized marker
   $marker_path = "$images_path/map_labels/"; 
+
 
   // if $traits_array is empty, use 'default'
   if (empty($traits_array)){
     $marker_traits_array = json_encode(['default']);
   } else {
   $marker_traits_array = json_encode($traits_array);
-  }
+}
 
   if (!empty($map_array) ) {
     echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
@@ -174,76 +135,76 @@
 
 <script>
 
-// MAP 
-// Get $data_map from PHP
-const data = <?php echo $json_data_map; ?>;
+function draw_map(){
+  // MAP 
+  // Get $data_map from PHP
+  const data = <?php echo $json_data_map; ?>;
 
-// Personalized markers with different traits
-markersPath = '<?php echo $marker_path; ?>';
+  // Personalized markers with different traits
+  markersPath = '<?php echo $marker_path; ?>';
 
-// Load $marker_traits_array in Javascript
-markerTraitsArray = <?php echo $marker_traits_array; ?>;
+  // Load $marker_traits_array in Javascript
+  //markerTraitsArray = <?php //echo $marker_traits_array; ?>;
 
-// List options of markers (traits)
-validTraits = JSON.parse('<?php echo $marker_traits_array; ?>');
+  // List options of markers (traits)
+  validTraits = JSON.parse('<?php echo $marker_traits_array; ?>');
 
-// function to get the trait
-function getIcon(trait) {
-  if (!validTraits.includes(trait) ) {
-    trait = 'default';
-  }
-
-if (trait == 'default') {
-    if ('<?php echo $sp_name; ?>' != '') {
-      iconUrl = '<?php echo $sp_name; ?>_default.png';
-    } else {
-      iconUrl = 'marker_default.png';
+  // function to get the trait
+  function getIcon(trait) {
+  
+    if (!validTraits.includes(trait) ) {
+      trait = 'default';
     }
-  } else {
-    if ('<?php echo $sp_name; ?>' != '') {
-      iconUrl = '<?php echo $sp_name; ?>_' + trait + '.png';
-    } else {
-      iconUrl = `${trait}.png`;
-    }
-  }
 
+    if (trait == 'default') {
+      if ('<?php echo $sp_name; ?>' != '') {
+        iconUrl = '<?php echo $sp_name; ?>_default.png';
+      } else {
+        iconUrl = 'marker_default.png';
+      }
+    } else {
+      if ('<?php echo $sp_name; ?>' != '') {
+        iconUrl = '<?php echo $sp_name; ?>_' + trait + '.png';
+      } else {
+        iconUrl = `${trait}.png`;
+      }
+    }
 
     // Verifica el iconUrl en la consola del navegador
-    console.log("iconUrl:", iconUrl); // Esto imprimirá el valor de iconUrl
+    //console.log("iconUrl:", iconUrl); // Esto imprimirá el valor de iconUrl
 
-
-  return new L.Icon ({
-  iconUrl: markersPath + iconUrl,
-  iconSize: [25, 25],
-  iconAnchor: [12, 12],
-  });
-}
-
-// MAP
-var map = L.map('map').setView([0, 0], 2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
-
-// Create a cluster groups
-var markers = L.markerClusterGroup();
-
-// Add markers 
-data.forEach(item => {
-  if (item.latitude && item.longitude) { // Verify coords 
-
-    var icon = getIcon(item.trait);
-    var marker = L.marker([item.latitude, item.longitude], {icon: icon} );
-
-    //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
-
-    var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
-
-    marker.bindPopup(markerLabel);
-    markers.addLayer(marker);
+    return new L.Icon ({
+    iconUrl: markersPath + iconUrl,
+    iconSize: [25, 25],
+    iconAnchor: [12, 12],
+    });
   }
-});
 
-// Añadir el grupo de clusters al mapa
-map.addLayer(markers);
+  // MAP
+  var map = L.map('map').setView([0, 0], 2);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
 
+  // Create a cluster groups
+  var markers = L.markerClusterGroup();
+
+  // Add markers 
+  data.forEach(item => {
+    if (item.latitude && item.longitude) { // Verify coords 
+    
+      var icon = getIcon(item.trait);
+      var marker = L.marker([item.latitude, item.longitude], {icon: icon} );
+
+      //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
+
+      var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+
+      marker.bindPopup(markerLabel);
+      markers.addLayer(marker);
+    }
+  });
+
+  // Añadir el grupo de clusters al mapa
+  map.addLayer(markers);
+}
 
 </script>
