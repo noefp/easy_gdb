@@ -164,34 +164,33 @@ function print_search_table($grep_input, $annot_file, $file_name) {
     $filters_values=search_numeric_values($grep_input);
     $results_no_numerics=search_no_numeric_table($tab_file,$filters_values['not_numeric'],$columns);
     $results=search_numeric_table($results_no_numerics,$filters_values['is_numeric'],$columns);
-
+//------------------------------------------------------------------------------------------------------------------------------------
+    echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>';
+    echo "<h3><u><i>Search</i></u></h3>";
+    if(!array_keys($GLOBALS['filters_dict'])[0]==""){ // if search isn't empty
+        foreach($GLOBALS['filters_dict'] as $key=>$values){
+        echo"<label><b>".$key." &#10132 "."</b></label>";
+        foreach($values as $value)
+        {
+          echo "<label>"."  ".$value." ,"."</label>";
+        }
+        echo"<br>";
+      } 
+    }
+    echo"</div>";
+    // echo"<br>\n";
+    // ----------------------------------------------------------------------------------------------------------------------------------------
 
       // echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_file\" aria-expanded=\"true\><i class=\"fas fa-sort\" style=\"color:#229dff\"></i>$file_name</div>";
       
     //   // TABLE BEGIN
-    echo"<p id=\"load\" style=\"text-align: center\"><b>Table Loading...</b></p>";
+    // echo"<p id=\"load\" style=\"text-align: center\"><b>Table Loading...</b></p>";
+    echo '<div id=load class="loader"></div>';
 
       echo "<div style=\"display:none\" id=\"body\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">";
-
-//------------------------------------------------------------------------------------------------------------------------------------ 
-      echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>';
-      echo "<h3><u><i>Search</i></u></h3>";
-      if(!array_keys($GLOBALS['filters_dict'])[0]==""){ // if search isn't empty
-          foreach($GLOBALS['filters_dict'] as $key=>$values){
-          echo"<label><b>".$key." &#10132 "."</b></label>";
-          foreach($values as $value)
-          {
-            echo "<label>"."  ".$value." ,"."</label>";
-          }
-          echo"<br>";
-        } 
-      }
-      echo"</div></div>";
-      // echo"<br>\n";
-// ----------------------------------------------------------------------------------------------------------------------------------------
       
       $title = str_replace("_"," ",$file_name);  
       echo "<h1 style=\"text-align:center\">$title</h1><br>";

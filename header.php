@@ -18,6 +18,7 @@ include_once "$conf_path/easyGDB_conf.php";
     <!-- compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
+    <link rel="stylesheet" href="/easy_gdb/css/loading_datatable.css">
 
     <?php 
       if ($custom_css_path && file_exists("$root_path/$custom_css_path")) {
