@@ -4,11 +4,11 @@
 <?php 
   include_once realpath("$easy_gdb_path/tools/common_functions.php");
   $pass_dir = test_input($_GET["dir_name"]); // get passport directory with files to list
-  $pass_dir_title = str_replace("_", " ", $pass_dir);
+  // $pass_dir_title = str_replace("_", " ", $pass_dir);
 ?>
 
 <div class="page_container" style="margin-top:20px">
-  <h1 class="text-center">Germplasm's species of <?php echo $pass_dir_title; ?></h1>
+  <h1 class="text-center">Germplasm's species of <?php echo $dbTitle; ?></h1>
   <br>
 
   <!-- Container for cards, printed by JavaScript -->
@@ -16,8 +16,8 @@
 
 <?php
   
-  $dir_name = $_GET['dir_name'];
-  $sub_path = "$passport_path/$dir_name";
+  // $dir_name = $_GET['dir_name'];
+  $sub_path = "$passport_path";
 
   if (file_exists("$sub_path/germplasm_list.json") ) {
     $germplasm_json_file = file_get_contents("$sub_path/germplasm_list.json");
@@ -49,7 +49,7 @@
   
         if (!preg_match('/^\./', $species) && is_dir($sub_path."/".$species) ) {
           $subdir_name[] = $species;
-          echo "<li><a href=\"02_pass_file_to_datatable.php?dir_name=$dir_name/$species\">$species</a></li>"; // simple list
+          echo "<li><a href=\"02_pass_file_to_datatable.php?dir_name=/$species\">$species</a></li>"; // simple list
         }
           
       } //end while
