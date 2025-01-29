@@ -22,7 +22,7 @@ $expression_path = "$root_path/expression_data";
 $private_expression_path = "$root_path/private_expression_data";
 
 //Passport
-$passport_path = "$root_path/passport";
+$passport_path = "$root_path/passport/example";
 $phenotype_imgs_path = "$images_path/descriptors_imgs";
 
 // header: site title, header image and logo

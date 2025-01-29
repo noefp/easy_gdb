@@ -6,7 +6,7 @@
       "common_name":"Cherimoya",
       "image":"sp1.png",
       "public":"1",
-      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_1"
+      "link":"02_pass_file_to_datatable.php?dir_name=Species_1"
     }
   },
   "Species_2":
@@ -16,7 +16,7 @@
       "common_name":"Avocado",
       "image":"sp2.png",
       "public":"1",
-      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_2"
+      "link":"02_pass_file_to_datatable.php?dir_name=Species_2"
     }
   },
   "Species_3":
@@ -26,7 +26,7 @@
       "common_name":"Mango",
       "image":"sp3.png",
       "public":"1",
-      "link":"02_pass_file_to_datatable.php?dir_name=example_DB/Species_3"
+      "link":"02_pass_file_to_datatable.php?dir_name=Species_3"
     }
   }
 }
