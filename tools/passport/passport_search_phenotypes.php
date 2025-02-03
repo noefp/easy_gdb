@@ -65,13 +65,13 @@ for($i=1;$i<=$files_counts;$i++) {
       $pass_json_file = file_get_contents("$passport_path_file/passport.json");
       $pass_hash = json_decode($pass_json_file, true);
       $unique_link=$pass_hash['acc_link'];
-      $hide_array = $pass_hash["hide_columns"];
       $results=[];
       $read_file_all=[];
       $acc_link_array=[];
       $i=[];
 
       search_info($all_filters,$file_name);
+      $passport_file_exist=false;
 
       foreach($all_filters as $file => $filters_dict){
         $file_found=false;
@@ -88,17 +88,33 @@ for($i=1;$i<=$files_counts;$i++) {
         if(!$file_found){echo("<i><h2>".$file.".txt"." File not found</h2></i>");}
       }
       $common_search=acc_link_common_array($acc_link_array);
+      natsort($common_search);
+
 
       if(!empty($common_search))
       {
-        print_search_table($common_search,$read_file_all,$results);
+        //--------------------results list: ------------------------------------------------------------
+        echo '<div class="alert alert-primary" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+        <span aria-hidden="true">×</span>
+        </button>
+        <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
+        echo '<body>
+        <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
+        foreach($common_search as $index => $acc_name)
+        {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
+        echo"</lu></body>";
+        echo "</div>";
+        //---------------------------------------------------------------------------------------
+
+        print_search_passport_table($common_search,$passport_path_file."/".$pass_hash['passport_file'],$pass_hash['passport_file']);
+        print_search_phenotype_table($common_search,$read_file_all,$results);
         // print_r($common_search);
       }
       else{
-        echo "<h3 style=\"margin-left:45%\"><b><i>No results</i></b></h3>";
+        echo '<div class="alert alert-warning" style="text-align:center">Results not found</div>';
       }
-
-    }       
+}
 ?>
 <!-- END MAIN  -->
 
@@ -360,25 +376,13 @@ function acc_link_common_array($acc_links_array){
 
 
 
-function print_search_table($acc_link_common_array,$annot_files,$search_result) {
+function print_search_phenotype_table($acc_link_common_array,$annot_files,$search_result) {
 
-  echo "<h2 style=\"text-align:center\"> Results Phenotypes </h2><br>";
-//--------------------results list: ------------------------------------------------------------
-  echo '<div class="alert alert-primary" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
-        <span aria-hidden="true">×</span>
-        </button>
-        <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
+  echo "<h2 style=\"text-align:center\"> Results Phenotypes </h2>";
 
   $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
-  echo '<body>
-        <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
-    foreach($acc_link_common_array as $index => $acc_name)
-    {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
-    echo"</lu></body>";
-    echo "</div>";
-//---------------------------------------------------------------------------------------
+
 
   foreach($annot_files as $file_name => $file_data)
   {
@@ -395,14 +399,12 @@ function print_search_table($acc_link_common_array,$annot_files,$search_result) 
       echo "<thead><tr>\n";
       $field_number = -1;
       foreach ($file_data['columns'] as $index => $col) {
-        if ( !in_array($index,$GLOBALS['hide_array']) ) {
-          echo "<th>$col</th>";
-  
-          // find column index for unique identifier that will link to accession info
-          if ($GLOBALS['unique_link'] == $col) {
-            $field_number = $index;
-          }
-        } //close in_array
+        echo "<th>$col</th>";
+
+        // find column index for unique identifier that will link to accession info
+        if ($GLOBALS['unique_link'] == $col) {
+          $field_number = $index;
+        }
       } //close foreach
       echo "</tr></thead>";
 
@@ -414,14 +416,10 @@ function print_search_table($acc_link_common_array,$annot_files,$search_result) 
         echo "<tr>";
         foreach(explode("\t",$sample_select) as $index => $data)
         {
-          if ( !in_array($index,$GLOBALS['hide_array']) ) {
-            if ($index == $field_number) 
-            {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
-          //  {echo "<td>$data</td>"; 
-          }elseif ($file_data['columns'][$index] == "Species")
-            {echo "<td><i>$data</i></td>";
-            }else{echo "<td>$data</td>\n";}
-          }
+          if ($index == $field_number) 
+          {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+        //  {echo "<td>$data</td>"; 
+          }else{echo "<td>$data</td>\n";}
         }
         echo "</tr>\n"; 
       }
@@ -429,6 +427,59 @@ function print_search_table($acc_link_common_array,$annot_files,$search_result) 
       echo "</tbody></table><br><br></div>";      
   }  
 } // End of function
+
+function print_search_passport_table($common_search,$root_passport_file,$passport_file_name)
+{
+  if (!file_exists($root_passport_file))
+  {
+    return -1;
+  }
+  echo "<br><h2 style=\"text-align:center\"> Results Passport </h2>";
+
+  $file_name=str_replace(".txt","",$passport_file_name);
+  $title=str_replace("_"," ",$file_name);
+
+  $read_passport_file=read_files($root_passport_file);
+
+  $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
+
+  echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $title table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";
+
+    // TABLE BEGIN
+  echo "<div class=\"body collapse\" style=\"display:hide\" id=\"body_$file_name\"><table id=\"table_$file_name\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">";
+
+    echo "<div id=\"load_$file_name\" class=\"loader\"></div>"; // loading icon
+    echo "<thead><tr>\n";
+    $field_number = -1;
+    foreach ($read_passport_file['columns'] as $index => $col) {
+      echo "<th>$col</th>";
+
+      // find column index for unique identifier that will link to accession info
+      if ($GLOBALS['unique_link'] == $col) {
+        $field_number = $index;
+      }
+    } //close foreach
+    echo "</tr></thead>";
+
+// //       // TABLE BODY
+    echo "<tbody>\n";
+    foreach($read_passport_file['tab_file'] as $sample_select){
+    if(in_array(explode("\t",$sample_select)[$field_number],$common_search))
+    {
+      echo "<tr>";
+      foreach(explode("\t",$sample_select) as $index => $data)
+      {
+        if ($index == $field_number) 
+        {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+      //  {echo "<td>$data</td>"; 
+        }else{echo "<td>$data</td>\n";}
+      }
+      echo "</tr>\n"; 
+    }
+  }
+    echo "</tbody></table><br><br></div><br>";      
+}  
+
 ?>
 
 <!-- End functions -->
