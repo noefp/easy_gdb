@@ -304,7 +304,8 @@ function search_info($filters_dict)
 
   echo "<thead><tr>";
   foreach($filters_dict as $file => $file_filters){
-      echo "<th><i>$file</i></th>";
+    $file_column=str_replace("_"," ",$file);
+    echo "<th><i>$file_column</i></th>";
   }
   echo "</tr></thead>";
   echo "<tbody><tr>";
@@ -378,7 +379,7 @@ function acc_link_common_array($acc_links_array){
 
 function print_search_phenotype_table($acc_link_common_array,$annot_files,$search_result) {
 
-  echo "<h2 style=\"text-align:center\"> Results Phenotypes </h2>";
+  echo "<h2 style=\"text-align:center\">Phenotypes Results</h2>";
 
   $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
@@ -434,7 +435,7 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
   {
     return -1;
   }
-  echo "<br><h2 style=\"text-align:center\"> Results Passport </h2>";
+  echo "<br><h2 style=\"text-align:center\">Passport Results</h2>";
 
   $file_name=str_replace(".txt","",$passport_file_name);
   $title=str_replace("_"," ",$file_name);
