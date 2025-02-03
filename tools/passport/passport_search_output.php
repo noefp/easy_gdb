@@ -74,8 +74,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
         }}
 
       foreach ($columns as $index => $col) {
-        if(!in_array($index, $json_info["hide_columns"]))
-        {echo "<th>$col</th>\n";}
+        echo "<th>$col</th>\n";
       }
       echo "</tr></thead>";
 
@@ -86,12 +85,11 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
       $datas = explode("\t", $tab_file[$n_line-2]);
       foreach($datas as $index => $data){
         // echo "<td>$datas[$n]</td>";
-          if(!in_array($index, $json_info["hide_columns"]))
-          {if($index == $field_number)
-            {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
-            }else
-            {echo "<td>$data</td>\n";}
-          }
+        if($index == $field_number)
+          {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$dir_or_file&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+          }else
+          {echo "<td>$data</td>\n";}
+          
         }
       echo "</tr>";
     }
@@ -119,7 +117,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 
 
         echo "<br><div style=\"text-align:center\"><h1><i>$dir_name</i></h1></div>";
-        echo "<div id=\"info_$dir_or_file\" class=\"alert alert-secondary\" role=\"alert\" style=\"text-align:center\">Results not found</div>";
+        echo "<div id=\"info_$dir_or_file\" class=\"alert alert-warning\" role=\"alert\" style=\"text-align:center\">Results not found</div>";
 
         $passport_file = $pass_hash["passport_file"];
         $path_passport_file=str_replace("//","/","$passport_path/$dir_or_file/$passport_file");
@@ -212,6 +210,8 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
   background-color: #6c757d;
   color:#fff;  
 }
+
+
 </style>
 
 
@@ -261,6 +261,7 @@ $(".collapse").on('shown.bs.collapse', function(){
             $(this).css("background-color", "");
         }
     );
+
   },
 });
 
