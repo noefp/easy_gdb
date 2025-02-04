@@ -71,8 +71,10 @@ for($i=1;$i<=$files_counts;$i++) {
       $i=[];
 
       search_info($all_filters,$file_name);
-      $passport_file_exist=false;
+      $pass_dir_name=str_replace($passport_path,"",$passport_path_file);
+      $pass_dir_name=str_replace("/","",$pass_dir_name);
 
+      
       foreach($all_filters as $file => $filters_dict){
         $file_found=false;
         foreach($pass_hash['phenotype_files'] as $phenotipe){
@@ -98,7 +100,7 @@ for($i=1;$i<=$files_counts;$i++) {
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
         <span aria-hidden="true">×</span>
         </button>
-        <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
+        <strong style="justify-content:center; display:flex">'.$unique_link.' Results: </strong>';
         echo '<body>
         <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
         foreach($common_search as $index => $acc_name)
@@ -381,7 +383,7 @@ function print_search_phenotype_table($acc_link_common_array,$annot_files,$searc
 
   echo "<h2 style=\"text-align:center\">Phenotypes Results</h2>";
 
-  $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
+  // $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
 
 
@@ -418,7 +420,7 @@ function print_search_phenotype_table($acc_link_common_array,$annot_files,$searc
         foreach(explode("\t",$sample_select) as $index => $data)
         {
           if ($index == $field_number) 
-          {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+          {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$GLOBALS[pass_dir_name]&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
         //  {echo "<td>$data</td>"; 
           }else{echo "<td>$data</td>\n";}
         }
@@ -442,7 +444,7 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
 
   $read_passport_file=read_files($root_passport_file);
 
-  $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
+  // $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
   echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $title table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";
 
@@ -471,7 +473,7 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
       foreach(explode("\t",$sample_select) as $index => $data)
       {
         if ($index == $field_number) 
-        {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+        {echo "<td><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$GLOBALS[pass_dir_name]&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
       //  {echo "<td>$data</td>"; 
         }else{echo "<td>$data</td>\n";}
       }
