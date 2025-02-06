@@ -26,7 +26,8 @@
     <a class="float-right" href="/easy_gdb/help/08_gene_expression.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
 
-<a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<!-- <a href="/easy_gdb/tools/expression/expression_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a> -->
+<a class="float-left pointer_cursor " style="text-decoration: underline;" onClick="history.back()"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 
 <div class="page_container" style="margin-top:20px">
   <br>
@@ -69,7 +70,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   // include realpath('02_expr_load_db_annotations.php');
   
   // array_push($table_code_array,"<div style=\"margin: auto; overflow: scroll;\"><table class=\"table table-striped\" id=\"tblResults\">");
-  array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\">");
+  array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\" style=\"display:none\">");
   
   
   
@@ -468,7 +469,9 @@ foreach($positions as $key => $value){
 
 <script type="text/javascript">
   
-  if (cartoons) {
+  var cartoons_file_found = <?php echo json_encode($cartoons_files_found);?>
+
+  if (cartoons && cartoons_file_found) {
     canvas = create_canvas(canvas_h,canvas_w);
     draw_gene_cartoons(canvas,imgObj,cartoons_all_genes,gene_list[0],ranges,colors);
 

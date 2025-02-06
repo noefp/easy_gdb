@@ -5,7 +5,9 @@
 
   <div id="avg_table" class="collapse hide">
 
-    <div class="data_table_frame">
+  <div id="load" class="loader"></div>
+
+  <!-- <div id="avg_table_frame" class="data_table_frame hide"> -->
 
 <?php
   
@@ -13,18 +15,18 @@
   
 ?>
 
-    </div> <!-- data_table_frame end -->
+    <!-- </div>  data_table_frame end -->
   
   </div> <!-- avg_table end -->
   
   <style>
  
-    table.dataTable td  {
-      max-width: 500px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
+ table.dataTable td,th  {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+  }
   
     .td-tooltip {
       cursor: pointer;
@@ -32,39 +34,20 @@
   
   </style>
 
+
+<script src="../../js/datatable.js"></script>
 <script type="text/javascript">
-  $("#avg_table").on('shown.bs.collapse', function(){
-    $("#tblResults").dataTable({
-      dom:'Bfrtlpi',
-      "oLanguage": {
-        "sSearch": "Filter by:"
-        },
-      buttons: [
-        'copy', 'csv', 'excel',
-          {
-            extend: 'pdf',
-            orientation: 'landscape',
-            pageSize: 'LEGAL'
-          },
-        'print', 'colvis'
-        ],
-      "sScrollX": "100%",
-        "sScrollXInner": "110%",
-        "bScrollCollapse": true,
-        retrieve: true, 
-        "drawCallback": function( settings ) {
-        $(".td-tooltip").tooltip();
-      },
-    });
+$(document).ready(function(){
+    $("#avg_table").on('shown.bs.collapse', function(){
 
-    $("#tblResults_filter").addClass("float-right");
-    $("#tblResults_info").addClass("float-left");
-    $("#tblResults_paginate").addClass("float-right");
+      $('#load').remove();
+      $('#tblResults').css("display","table");
+      datatable("#tblResults","");
 
-    $(document).ready(function(){
+
       $(".td-tooltip").tooltip();
-    });
-  });     
-
-  </script>
+  });
+});   
+  
+</script>
   

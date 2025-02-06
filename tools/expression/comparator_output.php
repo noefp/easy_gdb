@@ -10,7 +10,9 @@
 <div class="margin-20">
   <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
-<a href="/easy_gdb/tools/expression/comparator_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<!-- <a href="/easy_gdb/tools/expression/comparator_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a> -->
+<a class="float-left pointer_cursor " style="text-decoration: underline;" onClick="history.back()"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+
 <br>
 <h1 class="text-center">Comparison results</h1>
 
@@ -500,7 +502,7 @@ $full_header = array_unique($full_header);
 $sample_names = array_values($full_header);
 
 // create average table and its header
-array_push($table_code_array,"<table class=\"table\" id=\"tblResults\">");
+array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\" style=\"display:none\">");
 array_push($table_code_array,"<thead><tr><th>ID</th>");
   
 foreach ($full_header as $exp_name) {
