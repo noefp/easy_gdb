@@ -102,10 +102,12 @@ function datatable(table_id,select_id) {
             },
             {
               "extend": 'pdf',
+              "orientation": 'landscape',
+              "pageSize": 'LEGAL',
               "exportOptions": {
                 "rows": function ( idx, data, node ) {
                   return $(node).find('input.row-select').is(':checked');
-                }
+                },
               },
               action: function(e, dt, button, config) {
                 if ($(table_id+' tbody input.row-select:checked').length > 0) {
