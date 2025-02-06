@@ -97,17 +97,21 @@ h4 {
 }
 
 /* datatable css */
-.btn:hover{
-  background-color:rgb(94, 161, 255);
-} 
 
-/* .btn_select_all{ */
-  /* background-color:#4387FD; */
-  /* border-radius: 15px; */
-/* } */
+/* .btn{
+  border-radius: 15px;
+} */
 
-.btn{
-  /* background-color:rgb(94, 161, 255); */
+/* .btn_select_all{
+  background-color:#4387FD; 
+  border-radius: 15px !important; 
+/* } */ 
+
+.dataTables_wrapper button:hover {
+  background-color:rgb(94, 161, 255); 
+}
+
+.dataTables_wrapper button {  
   border-radius: 15px;
 
 }
