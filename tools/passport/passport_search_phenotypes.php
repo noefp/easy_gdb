@@ -74,7 +74,7 @@ for($i=1;$i<=$files_counts;$i++) {
       $pass_dir_name=str_replace($passport_path,"",$passport_path_file);
       $pass_dir_name=str_replace("/","",$pass_dir_name);
 
-      
+
       foreach($all_filters as $file => $filters_dict){
         $file_found=false;
         foreach($pass_hash['phenotype_files'] as $phenotipe){
@@ -307,7 +307,7 @@ function search_info($filters_dict)
   echo "<thead><tr>";
   foreach($filters_dict as $file => $file_filters){
     $file_column=str_replace("_"," ",$file);
-    echo "<th><i>$file_column</i></th>";
+      echo "<th><i>$file_column</i></th>";
   }
   echo "</tr></thead>";
   echo "<tbody><tr>";
@@ -381,7 +381,7 @@ function acc_link_common_array($acc_links_array){
 
 function print_search_phenotype_table($acc_link_common_array,$annot_files,$search_result) {
 
-  echo "<h2 style=\"text-align:center\">Phenotypes Results</h2>";
+  echo "<h2 style=\"text-align:center\">Phenotypes Results </h2>";
 
   // $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
@@ -491,7 +491,6 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
 <!--  CSS -->
 <style>
 
-
   table.dataTable td,th  {
     
     /* max-width: 500px; */
@@ -504,13 +503,19 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
   .td-tooltip {
     cursor: pointer;
   }
+
+  .btn:hover{
+    background-color:dodgerblue;
+  }
   
 </style>
 <!-- End CSS -->
 
 
-<!-- JS DATATABLE -->
+<!------------------- JS DATATABLE -------------------------------------------------------------------------------------->
+<script src="../../js/datatable.js"></script>
 <script type="text/javascript">
+
 $(document).ready(function(){
 
     $(".collapse").on('shown.bs.collapse', function(){
@@ -518,52 +523,18 @@ $(document).ready(function(){
           id=id.replace("body_","");
           // alert(id);
 
+
       // //when data table is ready -> show the data table
       $('#table_'+id).css("display","table");
       $('#load_'+id).remove();
 
-      $('#table_'+id).dataTable({
-        dom:'Bfrtlpi',
-        "oLanguage": {
-          "sSearch": "Filter by:"
-          },
-        buttons: [
-          'copy', 'csv', 'excel',
-            {
-              extend: 'pdf',
-              orientation: 'landscape',
-              pageSize: 'LEGAL'
-            },
-          'print', 'colvis'
-          ],
-        "sScrollX": "100%",
-        "sScrollXInner": "110%",
-        "bScrollCollapse": true,
-        retrieve: true,
-        colReorder: true,
-        "drawCallback": function( settings ) {
-      // $('#body').css("display","inline");
-      // $(".td-tooltip").tooltip();
-        $("table.dataTable tbody tr").hover(
-            function() {
-                // Al pasar el mouse
-                $(this).css("background-color", "#d1d1d1");
-            }, function() {
-                // Al retirar el mouse
-                $(this).css("background-color", "");
-            }
-        );
-      },
-    });
+       datatable('#table_'+id,id);
 
-    $(".dataTables_filter").addClass("float-right");
-    $(".dataTables_info").addClass("float-left");
-    $(".dataTables_paginate").addClass("float-right");
+  });
 
-    });
 });
-</script>
 
+</script>
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>

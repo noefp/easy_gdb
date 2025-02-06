@@ -96,3 +96,18 @@ h4 {
   top:1px;
 }
 
+/* datatable css */
+.btn:hover{
+  background-color:rgb(94, 161, 255);
+} 
+
+/* .btn_select_all{ */
+  /* background-color:#4387FD; */
+  /* border-radius: 15px; */
+/* } */
+
+.btn{
+  /* background-color:rgb(94, 161, 255); */
+  border-radius: 15px;
+
+}
