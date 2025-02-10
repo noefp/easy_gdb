@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<?php 
+<?php
 if (file_exists($_SERVER['DOCUMENT_ROOT']."/easy_gdb/configuration_path.php") ) {
   include_once($_SERVER['DOCUMENT_ROOT']."/easy_gdb/configuration_path.php");
 } elseif (file_exists($_SERVER['DOCUMENT_ROOT']."/configuration_path.php") ) {
@@ -20,7 +20,7 @@ include_once "$conf_path/easyGDB_conf.php";
     <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
     <link rel="stylesheet" href="/easy_gdb/css/loading_datatable.css">
 
-    <?php 
+    <?php
       if ($custom_css_path && file_exists("$root_path/$custom_css_path")) {
         echo "<link rel=\"stylesheet\" href=\"/$custom_css_path\">";
       }
@@ -29,10 +29,8 @@ include_once "$conf_path/easyGDB_conf.php";
 
 
 
-    <!-- <link rel="stylesheet" type="text/css" href="/easy_gdb/css/datatables.css"> -->
-    <!-- <link rel="stylesheet" href="/easy_gdb/js/DataTables/Select-1.2.6/css/select.dataTables.min.css"> -->
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
-    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"> -->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.5/css/colReorder.dataTables.min.css">
 
@@ -52,18 +50,12 @@ include_once "$conf_path/easyGDB_conf.php";
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/colreorder/1.5.5/js/dataTables.colReorder.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.bootstrap.min.js"></script> -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.bootstrap4.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.colVis.min.js"></script>
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.dataTables.min.js"></script> -->
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script> -->
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.foundation.min.js"></script> -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.jqueryui.min.js"></script> -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.semanticui.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -71,21 +63,15 @@ include_once "$conf_path/easyGDB_conf.php";
 
   <body>
 
-    <div class="container-fluid easygdb-top">
-      <!-- <p class="pull-left cover-title">
-        <?php //echo "$dbTitle";?>
-      </p> -->
-
-      <div style="background: url(<?php echo $images_path."/".$header_img;?>) left bottom; background-size:cover;">
-       <img class="cover-img" src=<?php echo "$images_path/$header_img";?> style="visibility: hidden;"/>
-       <!-- <a href=<?php //echo "$logo1_link";?> target="_blank"><img class="float-left img-rounded-5" width=<?php //echo "$logo1_width";?> src=<?php //echo "$images_path/$logo1";?> ></a> -->
-       <!-- <a href=<?php //echo "$logo2_link";?> target="_blank"><img class="float-right img-rounded-5" width=<?php //echo "$logo2_width";?> src=<?php //echo "$images_path/$logo2";?> ></a> -->
-       <!-- <a href=<?php //echo "$logo3_link";?> target="_blank"><img class="float-right institution_logo3 img-rounded-5" width=<?php //echo "$logo3_width";?> src=<?php //echo "$images_path/$logo3";?> ></a> -->
-      </div>
-    </div>
-
-    <!-- <div id="wrapper"> -->
-
+		<?php
+		if ($header_img) {
+			echo "<div class=\"container-fluid easygdb-top\">";
+				echo "<div style=\"background: url($images_path/$header_img) left bottom; background-size:cover;\">";
+					echo "<img class=\"cover-img\" src=$images_path/$header_img style=\"visibility: hidden;\"/>";
+      		echo "</div>";
+    		echo "</div>";
+			}
+		?>
 
 <?php include_once 'toolbar.php';?>
 
@@ -117,16 +103,16 @@ include_once "$conf_path/easyGDB_conf.php";
 
 <script>
   jQuery(document).ready(function() {
-    
+
     var jb_link = "/jbrowse/";
-    
+
     $(".jbrowse_link").click(function(event){
       event.preventDefault();
       jb_link = $(this).attr('href');
       $("#jb_ok_cookies").attr('href', jb_link);
       $("#jb_cookies_Modal").modal();
     });
-    
+
     $("#jb_ok_cookies").click(function(event){
       $("#jb_cookies_Modal").modal("hide");
     });
