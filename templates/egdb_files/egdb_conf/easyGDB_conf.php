@@ -25,10 +25,12 @@ $private_expression_path = "$root_path/private_expression_data";
 $passport_path = "$root_path/passport/example";
 $phenotype_imgs_path = "$images_path/descriptors_imgs";
 
-// header: site title, header image and logo
+//Site title, site logo and header image
 $dbTitle = "Easy GDB";
-$header_img = "header_img.png";
 $db_logo = "egdb_logo.png";
+
+// Select 0 to disable the header image, or provide an image filename to display it.
+$header_img = "header_img.png";
 
 //SWITCHES
 
