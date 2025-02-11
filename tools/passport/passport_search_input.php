@@ -42,6 +42,7 @@
       <?php
         $all_datasets = get_dir_and_files($passport_path); // call the function
         $is_dir=false;
+        sort($all_datasets);
         
         if ($all_datasets) {
           foreach ($all_datasets as $expr_dataset) {
@@ -54,7 +55,7 @@
         if($is_dir)
           {
             echo "<lable style=\"margin-left:5px\"><i>Select Dataset</i></lable>";
-            echo "<div class=\"card-group\" style=\"border:groove 1px; display:flex; flex-wrap:wrap\">";
+            echo "<div style=\"border:groove 1px;\">";
 
             foreach ($all_datasets as $expr_dataset) {
               if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
@@ -65,8 +66,8 @@
 
             if ( is_dir("$passport_path/$expr_dataset") && file_exists("$passport_path/$expr_dataset") ) {
             {
-                echo "<div class=\"card-body\" style=\"margin-left:45px;padding: 5px;\">";
-                echo "<label class=\"card-title\"><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\">$data_set_name</a></label>";
+                echo "<div style=\"margin-left:45px; display:inline-flex; width:180px\">";
+                echo "<label><input type=\"checkbox\" class=\"form-check-input\" id=\"$expr_dataset\" name=\"checkboxes[]\" value=\"$expr_dataset\"><a style=\"color:black\" class=\"pointer_cursor\">$data_set_name</a></label>";
                 echo"</div>";     
             }
           }
@@ -658,9 +659,6 @@ tempForm.submit();
 });
 
 </script>
-
-
-
 
 <!-- Modal popup erro message -->
 
