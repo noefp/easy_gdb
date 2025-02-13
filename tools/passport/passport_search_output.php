@@ -117,7 +117,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 
 
         echo "<br><div style=\"text-align:center\"><h1><i>$dir_name</i></h1></div>";
-        echo "<div id=\"info_$dir_or_file\" class=\"alert alert-warning\" role=\"alert\" style=\"text-align:center\">Results not found</div>";
+        echo "<div id=\"info_$dir_or_file\" class=\"alert alert-secondary\" role=\"alert\" style=\"text-align:center\">Results not found</div>";
 
         $passport_file = $pass_hash["passport_file"];
         $path_passport_file=str_replace("//","/","$passport_path/$dir_or_file/$passport_file");

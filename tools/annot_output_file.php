@@ -7,7 +7,7 @@
   <a class="float-right" href="/easy_gdb/help/05_annotation_extraction.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
-<a href="annot_input_list.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<a onClick="history.back()" class="float-left pointer_cursor" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
 <br>
 
 <!-- HTML -->
@@ -24,8 +24,6 @@
 <!-- Declare function to print table -->
 <?php
   function print_annot_table($desc_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
-
-    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
     $annot_file = str_replace(" ", "\\ ", $annot_file);
 
     $head_command = "head -n 1 $annot_file";
@@ -37,11 +35,16 @@
     $grep_command = "grep -i '$grep_input' $annot_file";
     exec($grep_command, $output);
 
+  if($output)
+  {
     $count_character = [];
+
+    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
 
     // TABLE BEGIN
     echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
 
+    echo "<div id=\"load\" class=\"loader\"></div>";
 
     // TABLE HEADER
     echo "<thead><tr>\n";
@@ -112,8 +115,13 @@
 
     $output = [];
     return($count_character);
-
-  } // TABLE END
+  }
+  else{
+    echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
+    No gene was found in the selected dataset
+    </div>';
+  }
+} // TABLE END
 ?>
 
 
@@ -131,6 +139,13 @@
       $one_gene = test_input2($gene_name);
       array_push($search_query, $one_gene);
     }
+
+    echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>';
+    echo "<h3 style=\"display:inline\"><i>Search Input</i></h3>";
+    echo "<div class=\"card-body\" style=\"padding-top:10px;padding-bottom:0px\">".implode("\t",$search_query)."</div></div>";
 
     // create HASH with ANNOTATION links
     if (file_exists("$json_files_path/tools/annotation_links.json")) {
@@ -166,32 +181,14 @@
 </div>
 <!-- END HTML -->
 
-
 <!-- JS DATATABLE -->
+<script src="../js/datatable.js"></script>
 <script type="text/javascript">
-  var c = <?php echo json_encode($count_character); ?>;
-  var y = [];
-  for(var i of c) {
-    y.push(i);
-  };
 
-  $(".tblAnnotations").dataTable({
-    dom:'Bfrtlpi',
-    "oLanguage": {
-      "sSearch": "Filter by:"
-      },
-    buttons: [
-      'copy', 'csv', 'excel', 'colvis'
-    ],
-    "sScrollX": "100%",
-    columnDefs: [
-      { "width": "400px", "targets": y }
-    ]
-  });
+  $('#load').remove();
+  $('.tblAnnotations').css("display","table");
+  datatable(".tblAnnotations","");
 
-  $(".dataTables_filter").addClass("float-right");
-  $(".dataTables_info").addClass("float-left");
-  $(".dataTables_paginate").addClass("float-right");
 </script>
 
 

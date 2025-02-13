@@ -347,45 +347,6 @@ $(document).ready(function(){
 
   datatable(".tblAnnotations","");
 
-//     $(".tblAnnotations").dataTable({
-//     dom:'Bfrtlpi',
-//     "oLanguage": {
-//       "sSearch": "Filter by:"
-//       },
-//     buttons: [
-//       'copy', 'csv', 'excel',
-//         {
-//           extend: 'pdf',
-//           orientation: 'landscape',
-//           pageSize: 'LEGAL'
-//         },
-//       'print', 'colvis'
-//       ],
-//     "sScrollX": "100%",
-//     "sScrollXInner": "110%",
-//     "bScrollCollapse": true,
-//     retrieve: true,
-//     colReorder: true,
-//     "drawCallback": function( settings ) {
-//    // $('#body').css("display","inline");
-//   // $(".td-tooltip").tooltip();
-//     $("table.dataTable tbody tr").hover(
-//         function() {
-//             // Al pasar el mouse
-//             $(this).css("background-color", "#d1d1d1");
-//         }, function() {
-//             // Al retirar el mouse
-//             $(this).css("background-color", "");
-//         }
-//     );
-//   },
-// });
-
-// $(".dataTables_filter").addClass("float-right");
-// $(".dataTables_info").addClass("float-left");
-// $(".dataTables_paginate").addClass("float-right");
-
-
 });
 </script>
 

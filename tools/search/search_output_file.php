@@ -7,7 +7,9 @@
   <a class="float-right" href="/easy_gdb/help/01_search.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 
-<a href="search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+<!-- <a href="search_input.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a> -->
+<a class="float-left pointer_cursor " style="text-decoration: underline;" onClick="history.back()"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
+
 <br>
 
 <!-- HTML -->
@@ -29,7 +31,6 @@
 
   function print_search_table($grep_input, $annot_file, $annot_hash, $dataset_name, $table_counter, $annotations_path) {
 
-    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
     $annot_file = str_replace(" ", "\\ ", $annot_file);
 
     $head_command = "head -n 1 $annot_file";
@@ -38,9 +39,14 @@
     $grep_command = "grep -i '$grep_input' $annot_file";
     exec($grep_command, $output);
 
+  if($output)
+  {
+    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
+    
+    echo "<div id=\"load\" class=\"loader\"></div>";
 
     // TABLE BEGIN
-    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
+    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">\n";
 
 
     // TABLE HEADER
@@ -160,7 +166,15 @@
     }
     echo "</tbody></table></div></div><br>\n";
     $output = [];
-  } // TABLE END
+
+  } // end if output
+  else
+  {
+    echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
+    No keyword was found in the selected dataset
+    </div>';
+  }
+} // TABLE END
   
 ?>
 
@@ -168,7 +182,13 @@
 <!-- SHOW INPUT -->
 <?php
   $search_input = test_input2($raw_input);
-  echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
+
+  echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>';
+  echo "<h3 style=\"display:inline\"><i>Search Input</i></h3>";
+  echo "<div class=\"card-body\" style=\"padding-top:10px;padding-bottom:0px\">$search_input</div></div>";
 ?>
 
 
@@ -228,54 +248,29 @@
 <!-- END HTML -->
 
 
-<!-- JS DATATABLE -->
+<!-- CSS DATATABLE -->
 <style>
  
-  table.dataTable td  {
-    max-width: 500px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  
   .td-tooltip {
-    cursor: pointer;
-  }
+      cursor: pointer;
+    }  
   
 </style>
 
+<!-- JS DATATABLE -->
+<script src="../../js/datatable.js"></script>
 <script type="text/javascript">
-$(".tblAnnotations").dataTable({
-  dom:'Bfrtlpi',
-  "oLanguage": {
-    "sSearch": "Filter by:"
-    },
-  buttons: [
-    'copy', 'csv', 'excel',
-      {
-        extend: 'pdf',
-        orientation: 'landscape',
-        pageSize: 'LEGAL'
-      },
-    'print', 'colvis'
-    ],
-   "sScrollX": "100%",
-    "sScrollXInner": "110%",
-    "bScrollCollapse": true,
-    "drawCallback": function( settings ) {
-    $(".td-tooltip").tooltip();
-  },
-});
-
-$(".dataTables_filter").addClass("float-right");
-$(".dataTables_info").addClass("float-left");
-$(".dataTables_paginate").addClass("float-right");
 
 $(document).ready(function(){
-  $(".td-tooltip").tooltip();
-});
- 
 
+  $('#load').remove();
+  $('.tblAnnotations').css("display","table");
+  datatable(".tblAnnotations","");
+
+
+  $(".td-tooltip").tooltip();
+
+}); 
 </script>
 
 <!-- FOOTER -->
