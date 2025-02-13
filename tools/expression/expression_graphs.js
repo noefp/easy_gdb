@@ -1,12 +1,19 @@
 var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546ead','#666','#999','#ccc','#000',"#a61101", "#c89", "#ab5700", "#798b00", "#437801", "#036aab", "#d0f", "#700982", "#fe9989", "#f8aedf", "#ffdf64", "#cbff89", "#6befff", "#f77ffa",'#b66'];
 
-var labels_length=[];
+// var labels_length=[];
 
-sample_array.forEach( sample => {
-  labels_length.push(sample.length);
-});
-height_labels=Math.max(...labels_length);
+// sample_array.forEach( sample => {
+//   labels_length.push(sample.length);
+// });
+// height_labels=Math.max(...labels_length);
 
+if (heatmap_series.length>8)
+{
+  height_heatmap=44*heatmap_series.length;
+
+}else{
+  height_heatmap=350;
+}
 
 // ######################################################## Lines
 
@@ -42,12 +49,12 @@ var options = {
   xaxis: {
     categories: sample_array,
     labels: {
-      rotate: -50,
-      rotateAlways: true,
-      hideOverlappingLabels: false,
-      trim: false,
-      maxHeight: 450,
-      minHeight: height_labels*4.5
+      rotate: -35,
+      rotateAlways: false,
+      // hideOverlappingLabels: false,
+      // trim: false
+      // maxHeight: 450,
+      // minHeight: height_labels*4.5
     }
   },
   yaxis: {
@@ -188,7 +195,7 @@ $( "#bars_btn" ).click(function() {
 var options = {
   series: heatmap_series,
   chart: {
-    height: 350,
+    height: height_heatmap,
     type: 'heatmap',
   },
   dataLabels: {
@@ -223,7 +230,15 @@ legend:{
     type: 'category',
     categories: sample_array,
     tickAmount: sample_array.length-2
-  }
+  },
+
+  // yaxis: {
+    // labels: {
+      // style: {
+        // fontSize: '14px',
+      // }
+    // }
+  // },
   
 };
 
@@ -284,15 +299,15 @@ var options = {
     type: 'category',
     categories: sample_array,
     tickAmount: (sample_array.length)-2,
-    labels: {
-      rotate: -50,
-      rotateAlways: true,
-      hideOverlappingLabels: false,
-      trim: false,
-      maxHeight: 300,
-      minHeight: height_labels*4.5,
+    // labels: {
+      // rotate: -50,
+      // rotateAlways: true,
+      // hideOverlappingLabels: false,
+      // trim: false,
+      // maxHeight: 300,
+      // minHeight: height_labels*4.5,
 
-    }
+    // }
   },
 
   yaxis: {
