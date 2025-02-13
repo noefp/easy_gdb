@@ -22,12 +22,6 @@ if ( preg_match('/^".+"$/',$raw_input ) ) {
   // echo "<p>RAW $raw_input</p>";
 }
 
-$search_input = test_input($raw_input);
-// $max_row = 25;
-
-
-echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
-
 function test_input($data) {
   
   $data = preg_replace('/[\<\>\t\;]+/',' ',$data);
@@ -51,6 +45,13 @@ function test_input($data) {
 
   return $data;
 }
+
+$search_input = test_input($raw_input);
+// $max_row = 25;
+
+
+echo "\n<br><h3>Search Input</h3>\n<div class=\"card bg-light\"><div class=\"card-body\">$search_input</div></div><br>\n";
+
 ?>
  
 <?php include_once realpath("search_annot.php");?>
