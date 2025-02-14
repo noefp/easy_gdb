@@ -1,6 +1,6 @@
 <!-- HEADER -->
 <?php include_once realpath("../../header.php");?>
-
+<?php include_once realpath("../modal.html");?>
 <!-- INFO -->
 <?php include_once realpath("search_info_modal.php");?>
 
@@ -112,28 +112,6 @@
     </form>
   </div>
 </div>
-
-
-<!-- ERROR BANNER -->
-<div class="modal fade" id="no_gene_modal" role="dialog">
-  <div class="modal-dialog modal-sm">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title  w-100 text-center" >❌ Error</h4>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center;">
-          <p id="search_input_modal"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>

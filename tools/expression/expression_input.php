@@ -1,4 +1,6 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
@@ -7,14 +9,9 @@
     <a class="float-right" href="/easy_gdb/help/08_gene_expression.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
   <br>
-  <h3 class="text-center">Gene Expression Viewer</h3>
-  
-  
-  <div class="form margin-20">
-    
-    <form id="get_expression_form" action="expression_output.php" method="post">
-    
-    
+  <h3 class="text-center">Gene Expression Viewer</h3>   
+  <div class="form margin-20">    
+    <form id="get_expression_form" action="expression_output.php" method="post">   
       <div class="form-group">
 <?php
 
@@ -255,7 +252,9 @@ if ($dir_counter) {
       var gene_count = (gene_lookup_input.match(/.+\n?/g)||[]).length
       
       if (gene_count == 0) {
-          alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          // alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $("#search_input_modal").html("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $('#no_gene_modal').modal();
           return false;
       }
       //check input genes from gene lookup before sending form
@@ -266,7 +265,9 @@ if ($dir_counter) {
       }
       
       if (gene_count > max_input) {
-          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $('#no_gene_modal').modal();
           return false;
       }
 

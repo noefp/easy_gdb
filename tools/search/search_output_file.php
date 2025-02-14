@@ -46,7 +46,7 @@
     echo "<div id=\"load\" class=\"loader\"></div>";
 
     // TABLE BEGIN
-    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">\n";
+    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">\n";
 
 
     // TABLE HEADER

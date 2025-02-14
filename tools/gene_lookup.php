@@ -1,4 +1,5 @@
 <?php include realpath('../header.php'); ?>
+<?php include realpath('modal.html'); ?>
 
 <div class="margin-20">
   <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
@@ -71,9 +72,19 @@ echo   "</div>";
         max_input = 10000;
       }
       if (gene_count > max_input) {
-          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $('#no_gene_modal').modal();
           return false;
       }
+
+      if ((gene_count == 0) && (gene_lookup_input == "") ) {
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("The gene list is empty");
+          $('#no_gene_modal').modal();
+          return false;
+      }
+
 
       return true;
     });

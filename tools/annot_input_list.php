@@ -1,5 +1,6 @@
 <!-- HEADER -->
 <?php include_once realpath("../header.php");?>
+<?php include_once realpath("modal.html");?>
 
 <!-- HELP -->
 <div class="margin-20">
@@ -115,29 +116,6 @@
   </div>
 </div>
 
-
-<!-- ERROR BANNER -->
-<div class="modal fade" id="no_gene_modal" role="dialog">
-  <div class="modal-dialog modal-sm">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <!-- <h4 class="modal-title" style="text-align: center;">ERROR</h4> -->
-        <h4 class="modal-title  w-100 text-center" >❌ Error</h4>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center;">
-          <p id="annot_input_modal"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
 
@@ -161,17 +139,17 @@ $(document).ready(function () {
 
     // Forms
     if (!gene_id) {
-      $("#annot_input_modal").html( "No input provided in the search box" );
+      $("#search_input_modal").html( "No input provided in the search box" );
       $('#no_gene_modal').modal();
       return false;
     }
     else if (gene_id.length < 3) {
-      $("#annot_input_modal").html( "Input is too short, please provide a longer term to search" );
+      $("#search_input_modal").html( "Input is too short, please provide a longer term to search" );
       $('#no_gene_modal').modal();
       return false;
     }
     else if (file_database === '1' && !data_set_selected && select_field) {
-      $("#annot_input_modal").html( "No annotation file/s selected" );
+      $("#search_input_modal").html( "No annotation file/s selected" );
       $('#no_gene_modal').modal();
       return false;
     }

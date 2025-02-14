@@ -1,4 +1,5 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script type="text/javascript" src="/easy_gdb/js/apexcharts.min.js"></script>
