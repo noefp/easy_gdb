@@ -4,6 +4,7 @@
 
 <!-- Load the QR library -->
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<!-- Load map libraries -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -24,6 +25,7 @@
     $translator_file = $pass_hash["translator"];
     $sp_name = $pass_hash["sp_name"];
     $featured_descriptors_file = $pass_hash["featured_descriptors"];
+    
   }
 
 //----- NUMERIC TO CATHEGORIC
@@ -632,8 +634,8 @@ if (!empty($featured_descriptors_file) ) {
   if (file_exists($featured_descriptors_path) ) {
     
     // containers
-    echo "<div class=\"container p-1 my-1 text-white\" style=\"background-color: #e0ea68; border: 1px solid grey\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-regular fa-star\"></i><b> Featured descriptors </b></h1></center></div></div>";
-    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    echo "<div class=\"container p-1 my-1 text-white feature-desc-cont\" style=\"background-color: #e0ea68; border: 1px solid grey;\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-regular fa-star\"></i><b> Featured descriptors </b></h1></center></div></div>";
+    echo "<div class =\"container p-7 my-3 border feature-desc-cont\"\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     echo "<div id=\"featured-descriptors\"></div>"; 
     echo "<br></div></div>";
 
@@ -648,15 +650,29 @@ if (!empty($featured_descriptors_file) ) {
 
 <!-- COORDENADAS -->
 <?php
-  
-$latitude_index = array_search('Latitude', $header);
-$longitude_index = array_search('Longitude', $header);
+
+if (array_search('Latitude', $header)) {
+  $latitude_index = array_search('Latitude', $header);
+  $latitude = $cols[$latitude_index];
+} else {
+  $latitude = null;
+}
+
+if (array_search('Longitude', $header)) {
+  $longitude_index = array_search('Longitude', $header);
+  $longitude = $cols[$longitude_index];
+} else {
+  $longitude = null;
+}
+
+// $latitude_index = array_search('Latitude', $header);
+// $longitude_index = array_search('Longitude', $header);
 $country_name_index = array_search('Country', $header);
 $country_code_index = array_search('Country code', $header);
 $collection_site_index = array_search('Collection site', $header);
 
-$latitude = $cols[$latitude_index];
-$longitude = $cols[$longitude_index];
+// $latitude = $cols[$latitude_index];
+// $longitude = $cols[$longitude_index];
 $country_name = $cols[$country_name_index];
 $country_code = $cols[$country_code_index];
 $collection_site = $cols[$collection_site_index];
@@ -682,7 +698,7 @@ if ($show_map) {
     if ( file_exists("$coords_file") ) {
             
       $country_to_coords_file = file_get_contents("$coords_file");        
-      //echo $country_to_coords_file; // print file content
+
       $rows_coords = explode("\n", $country_to_coords_file);
       $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
       $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
@@ -690,9 +706,6 @@ if ($show_map) {
   
       //  Defining $var of $coords_file - all options
       $full_name = "";
-      //$alpha2_code = "";
-      //$alpha3_code = ""; // útil para IHSM_SDB, puesto que incluyen el código en el archivo de datos
-      //$num_code = "";
       $country_latitude = "";
       $country_longitude = "";
   
@@ -702,33 +715,15 @@ if ($show_map) {
         if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]) {
           // GET var independent values - it depends on the file distribution
           $full_name = $cols_coords[0];  
-          // $alpha2_code = $cols_coords[1];
-          // $alpha3_code = $cols_coords[2];
-          // $num_code = $cols_coords[3];
           $country_latitude = $cols_coords[4]; 
           $country_longitude = $cols_coords[5];
-          // $country_longitude = str_replace(PHP_EOL, '', $long);
-          break; // ??? se podría quitar porque solo se están definiendo los valores
+          break; // finish when finds the country
         }
       }
   
-      // COMPROBACIÓN
-      if ($country_latitude != null) { 
-        // echo "<b>Country match info:</b><br>";
-        // echo "Full Name: $full_name<br>";
-        // //echo "Alpha2 Code: $alpha2_code<br>";
-        // //echo "Alpha3 Code: $alpha3_code<br>";
-        // //echo "Numeric Code: $num_code<br>";
-        // echo "Latitude: $country_latitude<br>";
-        // echo "Longitude: $country_longitude<br>";
-  
-      } else {
-          echo "<br>No location data available.";
-      }
-  
-      // if (empty($latitude&$longitude) ) { // llenar variable para Javascript
-      //   $latitude = $country_latitude;
-      //   $longitude = $country_longitude;
+      // // COMPROBACIÓN
+      // if (!$country_latitude) {
+      //   echo "<br>No location data available.";
       // }
   
       echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
@@ -799,11 +794,6 @@ if (!empty($phenotype_file_array)){
 
 ?>
 
-<!--
-    </div>
-  </div>
-  <br>
--->
 
 </div>
 
@@ -817,25 +807,38 @@ if (!empty($phenotype_file_array)){
 
 
 <script type="text/javascript">
-//----- QR CODE
-// $(document).ready(function () {
 
+//----- QR CODE
 var showQR = <?php echo $show_qr; ?>;
-//alert("qr?: "+showQR); 
 
 if (showQR) {
   url_qrcode = window.location.href;
-  //qr_id = $("#qrcode");
   qr_id = document.getElementById("qrcode")
 
   new QRCode(qr_id,url_qrcode);
 }
-// });
+
+//----- FEATURED DESCRIPTORS
+var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
+
+if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '') {
+  $('#featured-descriptors').html(featuredArrayJson);
+  $('.feature-desc-cont').css('display','block');
+}
+// Function to show featured descriptors
+// function showFeaturedDescriptors(featuredDescriptors) {
+//   var container = document.getElementById("featured-descriptors");
+//   if (container && allFeaturedDescriptors) {
+//     $('.feature-desc-cont').css('display','block');
+//     $('.feature-desc-cont').show();
+//     container.innerHTML = allFeaturedDescriptors; // Insert content in HTML div
+//   }
+// }
+
 
 //----- PRINT MAP
 
 var showMap = <?php echo $show_map; ?>;
-//alert("map?: "+showMap); 
 
 if(showMap) {
 
@@ -860,19 +863,6 @@ if(showMap) {
     marker.bindPopup(marker_label).openPopup();
 }
 
-  //----- FEATURED DESCRIPTORS
-  var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
-  //alert("ATENCIÓN "+featuredArrayJson);
-
-  $('#featured-descriptors').html(featuredArrayJson);
-
-  // Function to show featured descriptors
-  function showFeaturedDescriptors(featuredDescriptors) {
-    var container = document.getElementById("featured-descriptors");
-    if (container && allFeaturedDescriptors) {
-      container.innerHTML = allFeaturedDescriptors; // Insertar el contenido en el div
-    }
-  }
 
   $(document).ready(function(){
     $(".tblResults").dataTable({
@@ -913,18 +903,6 @@ $(".dataTables_filter").addClass("float-right");
 $(".dataTables_filter").addClass("float-left");
 $(".dataTables_filter").addClass("float-right");
 
-  // $(".tblResults").dataTable({
-  //   dom:'Bfrtlpi',
-  //   "oLanguage": {
-  //      "sSearch": "Filter by:"
-  //    },
-  //   "order": [],
-  //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  // });
-  //
-  // $(".tblResults_filter").addClass("float-right");
-  // $(".tblResults_info").addClass("float-left");
-  // $(".tblResults_paginate").addClass("float-right");
 });
 
 </script>
@@ -942,5 +920,10 @@ $(".dataTables_filter").addClass("float-right");
     overflow: hidden;
     text-align: center;
   }
+  
+  .feature-desc-cont{
+    display:none;
+  }
+  
   
 </style>

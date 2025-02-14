@@ -71,17 +71,23 @@
 
   // Iterate $rows 
   foreach ($rows as $row) {
-    if(isset($row["$unique_link"] ) ) {
-      $acc = $row["$unique_link"];
+    if(isset($row["$unique_link"])){
+    $acc = $row["$unique_link"];
     }
-    if(isset($row['Country'] ) ) {
-      $country = $row['Country'];
+    if(isset($row["Country"])){
+      $country = $row["Country"];
     }
-    if(isset($row['Latitude'] ) ) {
-      $latitude = $row['Latitude'];
+    if(isset($row["Latitude"])){
+      $latitude = $row["Latitude"];
+    } else {
+      $latitude = null;
+      $row["Latitude"] = null;
     }
-    if(isset($row['Longitude'] ) ) {
-      $longitude = $row['Longitude'];
+    if(isset($row["Longitude"])){
+      $longitude = $row["Longitude"];
+    } else {
+      $longitude = null;
+      $row["Longitude"] = null;
     }
 
     // Verificate if lat & long are empty-> search in country_coords

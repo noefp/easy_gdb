@@ -99,7 +99,12 @@ function print_table($file_path,$unique_link,$file_name,$show)
     $phenotype_file_array = $pass_hash["phenotype_files"];
     $unique_link = $pass_hash["acc_link"];
     $map_array = $pass_hash["map_columns"];
-
+    
+    //to convert column index to natural, starting in 1 instead of 0
+    foreach($map_array as &$val) {
+      $val -= 1;
+    }
+    
     $traits_array = $pass_hash["map_markers"];
     $sp_name = $pass_hash["sp_name"];
     $phenotype_file_marker_trait = $pass_hash["phenotype_file_marker_trait"];
