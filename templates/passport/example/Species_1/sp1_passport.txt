@@ -1,4 +1,4 @@
-ID	ACC Name	Species	Germplasm type	Country	Country code	Research Center	Biological status of accession	Collecting/acquisition sourceh	Latitude	Longitude
+ID	ACC Name	Species	Germplasm type	Country	Country code	Research Center	Biological status of accession	Collecting/acquisition source	Latitude	Longitude
 ID1	ACC1	Annona cherimola	Tree	Spain	ESP	easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
 ID2	ACC2	Annona cherimola	Tree	Spain	ESP	easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
 ID3	ACC3	Annona cherimola	Tree	Unknown		easyGDB	Clonal selection	Orchad	36.73555555555550	-3.689722222222220
