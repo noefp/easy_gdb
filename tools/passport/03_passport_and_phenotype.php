@@ -494,7 +494,7 @@ function file_to_table($file_path, $acc_name) {
 
     // Tabla con los datos crudos
     //echo "<div style=\"overflow:scroll\">";
-    echo "<table class=\"table tblResults\"><thead><tr>";
+    echo "<table class=\"table tblResults table-striped table-bordered\"><thead><tr>";
     
     foreach ($header as $col_name) {
       $descriptor_name = $col_name;
@@ -791,18 +791,13 @@ if (!empty($phenotype_file_array)){
 
 
 }
-
 ?>
-
 
 </div>
 
 
-
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php"); ?>
-
-
 
 
 

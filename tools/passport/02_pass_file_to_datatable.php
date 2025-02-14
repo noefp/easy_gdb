@@ -173,51 +173,55 @@ if ($show_map) {
 
 </style>
 
-
+<script src="../../js/datatable.js"></script>
 <script type="text/javascript">
   let show_col=<?php echo json_encode($collapse_show);?>; //This variable contains the ids of the tables shown for not to reload later
   let map_loaded=<?php echo json_encode($show_map);?>
   // alert(show_col);
   
-function load_data_table(table_id){
+function load_data_table(table_id,button_id){
 
-  $(table_id).dataTable({
-    dom:'Bfrtlpi',
-    "oLanguage": {
-      "sSearch": "Filter by:"
-      },
-    buttons: [
-      'copy', 'csv', 'excel',
-        {
-          extend: 'pdf',
-          orientation: 'landscape',
-          pageSize: 'LEGAL'
-        },
-      'print', 'colvis'
-      ],
-    "sScrollX": "100%",
-    "sScrollXInner": "100%",
-    "bScrollCollapse": false,
-    retrieve: true,
-    colReorder: true,
-    "drawCallback": function( settings ) {
-  // $('#body').css("display","inline");
-  // $(".td-tooltip").tooltip();
-    $("table.dataTable tbody tr").hover(
-        function() {
-            // Al pasar el mouse
-            $(this).css("background-color", "#d1d1d1");
-        }, function() {
-            // Al retirar el mouse
-            $(this).css("background-color", "");
-        }
-    );
-  },
-});
+  // id=table_id.replace("#tblAnnotations_","");
 
-$(".dataTables_filter").addClass("float-right");
-$(".dataTables_info").addClass("float-left");
-$(".dataTables_paginate").addClass("float-right");
+  datatable(table_id,button_id);
+
+//   $(table_id).dataTable({
+//     dom:'Bfrtlpi',
+//     "oLanguage": {
+//       "sSearch": "Filter by:"
+//       },
+//     buttons: [
+//       'copy', 'csv', 'excel',
+//         {
+//           extend: 'pdf',
+//           orientation: 'landscape',
+//           pageSize: 'LEGAL'
+//         },
+//       'print', 'colvis'
+//       ],
+//     "sScrollX": "100%",
+//     "sScrollXInner": "100%",
+//     "bScrollCollapse": false,
+//     retrieve: true,
+//     colReorder: true,
+//     "drawCallback": function( settings ) {
+//   // $('#body').css("display","inline");
+//   // $(".td-tooltip").tooltip();
+//     $("table.dataTable tbody tr").hover(
+//         function() {
+//             // Al pasar el mouse
+//             $(this).css("background-color", "#d1d1d1");
+//         }, function() {
+//             // Al retirar el mouse
+//             $(this).css("background-color", "");
+//         }
+//     );
+//   },
+// });
+
+// $(".dataTables_filter").addClass("float-right");
+// $(".dataTables_info").addClass("float-left");
+// $(".dataTables_paginate").addClass("float-right");
 
 };
 
@@ -227,7 +231,7 @@ $(document).ready(function(){
 // //when data table is ready -> show the class datatable
   $('#body').css("display","block");
   $('#load').remove();
-  load_data_table(".tblAnnotations");
+  load_data_table(".tblAnnotations","");
 
   if(map_loaded){
   draw_map();}
@@ -253,7 +257,7 @@ function get_ajax_options(table_id,file_path,unique_link,pass_dir) {
         // alert("opt_lines:"+opt_lines);
         $("#" + table_id).html(opt_lines.join(""));
         // alert("tabla");
-        load_data_table("#tblAnnotations_"+table_id);            
+        load_data_table("#tblAnnotations_"+table_id,table_id);            
      }
   });
 
