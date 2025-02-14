@@ -448,18 +448,23 @@ foreach($positions as $key => $value){
     //alert("cartoons_all_genes: "+JSON.stringify(cartoons_all_genes) );
   }
     
-  if (gene_list.length == 0) {
-    $( "#chart1" ).css("display","none");
-    $( "#chart2" ).css("display","none");
-    //$( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
-    alert("No gene was found in the selected dataset. Please, check gene names.")
-  }
+  // if (gene_list.length == 0) {
+  //   $( "#chart1" ).css("display","none");
+  //   $( "#chart2" ).css("display","none");
+  //   //$( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
+  //   alert("No gene was found in the selected dataset. Please, check gene names.")
+  // }
   
   var genes_not_found = <?php echo json_encode($not_found_genes) ?>;
   
-  if (genes_not_found) {
-    alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
-  }
+  if ((genes_not_found != "") && (gene_list.length != 0)) {
+
+    // alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
+    $("#genesNotFoundLabel").html("⚠️ Warning");
+    $("#search_input_modal").html("These input genes were not found in the selected dataset:<br><b>"+genes_not_found+"<b>");
+    $('#no_gene_modal').modal();
+
+  } 
 
 </script>
 
