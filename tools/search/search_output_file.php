@@ -75,10 +75,14 @@
           else {
             $header_name = $columns[$n];
             if ($header_name == "TAIR10" || $header_name == "Araport11") {
-              $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
+              $query_id = preg_replace(['/query_id/', '/\.\d+$/'], [$data[$n], ''], $annot_hash[$header_name]);
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
-            elseif ( strpos($data[$n], ';') && !preg_match("/Description/", $header_name) ) {
+            elseif (preg_match("/Phytozome/i", $header_name) && !preg_match("/Description/i", $header_name) ) {
+              $query_id = preg_replace(['/query_id/', '/V\d+\.\d+/'], [$data[$n], ''], $annot_hash[$header_name]);
+              echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
+            }
+            elseif ( strpos($data[$n], ';') && !preg_match("/Description/i", $header_name) ) {
               $ipr_data = explode(';', $data[$n]);
               $ipr_links = '';
               foreach ($ipr_data as $ipr_id) {
