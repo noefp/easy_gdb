@@ -23,7 +23,7 @@
 
     <!-- FORM OPPENED -->
     <div class="form-group">
-      <label for="search_box" style="font-size:16px">Paste a list of gene IDs</label>
+      <label for="annot_file_box" style="font-size:16px">Paste a list of gene IDs</label>
       <textarea type="search_box" class="form-control" id="annot_file_box" name="txtGenes" rows="5" style="border-color: #666"><?php echo "$input_gene_list"; ?></textarea>
     </div>
 
@@ -48,7 +48,7 @@
 
         // CHECK ANNOTATION FILES
         if ($dir_counter) {
-          echo  "<div class=\"form-group\"><label for=\"search_box\" style=\"font-size:16px\">Select your annotation/s file</label>";
+          echo  "<div class=\"form-group\"><span style=\"font-size:16px\">Select your annotation/s file</span>";
 
           foreach ($all_datasets as $dirs_and_files) {
             if (is_dir($annotations_path."/".$dirs_and_files)){ // get dirs and print categories

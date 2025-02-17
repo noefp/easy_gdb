@@ -26,7 +26,7 @@
 
     <!-- FORM OPPENED -->
     <div class="form-group">
-      <label for="search_box" style="font-size:16px">Insert a gene ID or annotation keywords</label>
+      <label for="search_file_box" style="font-size:16px">Insert a gene ID or annotation keywords</label>
       <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
       <input type="search_box" class="form-control" id="search_file_box" name="search_keywords" style="border-color: #666">
     </div>
@@ -51,7 +51,7 @@
 
         // CHECK ANNOTATION FILES
         if ($dir_counter) {
-          echo  "<div class=\"form-group\"><label for=\"search_box\" style=\"font-size:16px\">Select your annotation/s file</label>";
+          echo  "<div class=\"form-group\"><span style=\"font-size:16px\">Select your annotation/s file</span>";
 
           foreach ($all_datasets as $dirs_and_files) {
             if (is_dir($annotations_path."/".$dirs_and_files)){ // get dirs and print categories
