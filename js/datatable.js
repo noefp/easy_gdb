@@ -23,12 +23,14 @@ function datatable(table_id,select_id) {
   // -------------------------------------------------------------------------------------------------------------------------------
   // ------------ column search ----------------------------------------------------------------------------------------------------
         $(table_id+' thead tr').clone(true).appendTo(table_id+' thead');
+
     
         $(table_id+' thead tr:eq(0) th').each(function(i) {
           var title = $(this).text();
           if (title !== "Select") {
-         $(this).html('<input style= "text-align:center;width:auto; border: solid 1px #808080; border-radius: 4px;" type="text" placeholder="Search ' + title + '" />');
-          $('input', this).on('keyup change', function() {
+            $(this).html('<input style="text-align:center; border: solid 1px #808080; border-radius: 4px; width: calc(' + title.length + 'ch + 80px);" type="text" placeholder="Search ' + title + '" />');
+            // $(this).html('<input style= "text-align:center; border: solid 1px #808080; border-radius: 4px; padding-right: 0; type="text" placeholder="Search ' + title + '" />');
+        $('input', this).on('keyup change', function() {
           if (table.column(i).search() !== this.value || (table.column(i).search() == "" ) ){
             var colIndex = table.colReorder.transpose(i);
             if (table.column(colIndex).search() !== this.value) {
@@ -40,7 +42,7 @@ function datatable(table_id,select_id) {
           }
         });
       } else {
-        var html_element='<button  style=" width:110px; border-radius: 4px; white-space: nowrap;   border: solid 1px #808080" class="btn btn_select_all" id="toggle-select-btn'+select_id+'">Select All</button>';
+        var html_element = '<button style=" width:110px; border-radius: 4px; white-space: nowrap; border: solid 1px #808080; padding: 0;" class="btn btn_select_all" id="toggle-select-btn' + select_id + '"><span">Select All</span></button>';
         $(this).html(html_element); 
       }
     });
