@@ -1,10 +1,10 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script src="/easy_gdb/js/apexcharts.min.js"></script>
 
     <!-- <link rel="stylesheet" href="/easy_gdb/js/DataTables/Select-1.2.6/css/select.dataTables.min.css"> -->
-
 
 
 <div class="margin-20">
@@ -39,7 +39,14 @@ if ($hk_genes) {
 }
 
 if ($to_newest_v) {
-  echo "<p> Your gene list was converted to the latest gene version available.</p>";
+  
+  // echo "<p> Your gene list was converted to the latest gene version available.</p>";
+  echo '<div class="alert alert-info margin-20" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        <p>Your gene list was converted to the latest gene version available<p>';
+    
 }
 
 //if conversion to newest version was enabled and the comparator lookup file exist, save gene lookup in hash
@@ -217,7 +224,9 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
             else {
               $one_gene2 = $lookup_hash{$one_gene};
               // Newer version found
-              echo "<b>$one_gene</b>: Newer version found -> $one_gene2 <br>";
+            // echo'<div class="alert alert-info" role="alert" style="padding-top:10px;padding-bottom:0px;">';
+            echo "<b>$one_gene</b>: Newer version found -> $one_gene2 <br>";
+
               $newer_found = 1;
               
               if (!in_array($one_gene2,$gids)) {
@@ -280,6 +289,7 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
     }// end foreach
     
     // print("<pre>".print_r($gids,true)."</pre>");
+    echo "</div>"; //end alert-info
     
     
   } //end isset
@@ -483,7 +493,13 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 } // end foreach sample_hash
 
 if ($hk_genes && $to_newest_v && $newer_found) {
-  echo "<p><b>WARNING!</b> only genes in the newest version are normalized. Genes from older annotation versions with multiple gene matches in the newest version and viceversa should not be considered. In those cases consider to use the newest gene version as input</p>";
+
+  // echo "<p><b>WARNING!</b> only genes in the newest version are normalized. Genes from older annotation versions with multiple gene matches in the newest version and viceversa should not be considered. In those cases consider to use the newest gene version as input</p>";
+  echo '<div class="alert alert-warning" role="alert" style="padding-top:10px;padding-bottom:0px;">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+   <p><b>WARNING!</b> only genes in the newest version are normalized. Genes from older annotation versions with multiple gene matches in the newest version and viceversa should not be considered. In those cases consider to use the newest gene version as input</p></div>';
 }
 
 
@@ -761,70 +777,80 @@ array_push($table_code_array,"</tr>");
 array_push($table_code_array,"</table>");
 
 $samples_found = array_keys($replicates);
-  
-  
+
   if ($warning_switch) {
-     echo "<p style=\"color:red\"><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p>";
+    //  echo "<p style=\"color:red\"><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p>";
+  echo '<div class="alert alert-danger" role="alert" style="padding-top:10px;padding-bottom:0px;">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        <p><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p></div>';
   }
   
-?>
-  <center>
 
-<!-- #####################             Lines             ################################ -->
-    <?php include realpath("03_expr_load_lines_html.php");?>
-  </center>
+  include realpath('01_expr_colors_range.php');
 
-<!-- #####################             Heatmap             ################################ -->
-  <center>
+if(count($found_genes)!=0)
+{
+  echo "<center>";
+ #####################             Lines             ################################ 
+  include realpath("03_expr_load_lines_html.php");
+
+
+ #####################             Heatmap             ################################ 
+
+    include realpath("03_expr_load_heatmap_html.php");
+ 
+ #####################             Replicates           ################################ 
   
-    <?php include realpath("03_expr_load_heatmap_html.php");?>
-
-<!-- #####################             Replicates           ################################ -->
-  
-    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
     </div>
 
     <div id="replicates_graph" class="collapse hide">
 
-      <div id="chart2_frame" style="width:95%; border:2px solid #666; padding-top:7px">
+      <div id="chart2_frame" style="width:100%; border:2px solid #666; padding-top:7px;">
         <div class="form-group d-inline-flex" style="width: 450px;">
           <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
-          <select class="form-control" id="sel1">
-            <?php
+          <select class="form-control" id="sel1">';
               foreach ($found_genes as $gene => $kk) {
                 echo "<option value=\"$gene\">$gene</option>";
               }
-            ?>
-          </select>
-        </div>
+        echo '</select>
+         </div>
         <div id="chart2" style="min-height: 365px;"></div>
       </div>
 
-    </div> 
+    </div>'; 
 
-  </center>
+echo "</center>"; 
   
   
-<!-- #####################             datatable           ################################ -->
+#####################             datatable           ################################ 
    
- <?php include realpath("03_expr_load_avg_table_html.php")?>
+   include realpath("03_expr_load_avg_table_html.php");
 
-<?php
+
+
   
   // echo implode("\n", $table_code_array);
   $found_genes = array_keys($found_genes);
-  
+  // print_r($found_genes);
   // echo "replicates_all_genes<br>";
   // print_r($replicates_all_genes[$found_genes[3]]);
   // echo "<br>";
-  
+}else
+{
+  echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
+          No gene was found in the selected dataset
+          </div>';
+    echo "<script> $('.alert-info').remove() </script>";
+} 
 ?>
 <br>
 
 <?php 
 
-include realpath('01_expr_colors_range.php');
 include realpath('../../footer.php'); 
 
 ?>
@@ -842,27 +868,18 @@ include realpath('../../footer.php');
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
   var replicates_all_genes = <?php echo json_encode($replicates_all_genes) ?>;
     
-  if (gene_list.length == 0) {
-    $( "#chart1" ).css("display","none");
-    $( "#chart2" ).css("display","none");
-    $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
-  }
-  
-  // $("#tblResults").dataTable({
-  //   "dom":'Bfrtip',
-  //   "ordering": false,
-  //   "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  // });
-
-  // $("#tblResults_filter").addClass("float-right");
-  // $("#tblResults_info").addClass("float-left");
-  // $("#tblResults_paginate").addClass("float-right");
+  // if (gene_list.length == 0) {
+    // $( "#chart1" ).css("display","none");
+    // $( "#chart2" ).css("display","none");
+    // $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
+    // $("#search_input_modal").html( "No gene was found in the selected dataset. Please, check gene names." );
+    // $('#no_gene_modal').modal()
+  // }  
 
 </script>
   
 <script src="expression_graphs.js"></script>
 <script> $('#line_chart_frame').collapse('show')</script>
-
 <style>
   #range_color_btn{
     border-color: #b71005;

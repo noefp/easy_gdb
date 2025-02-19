@@ -102,24 +102,28 @@ h4 {
   border-radius: 15px;
 } */
 
-/* .btn_select_all{
-  background-color:#4387FD; 
-  border-radius: 15px !important; 
-/* } */ 
+.btn_select_all{
+  /* background-color:#4387FD;  */
+  border-radius: 5px !important; 
+  height: 30px !important;
+} 
 
 .dataTables_wrapper button:hover {
-  background-color:rgb(94, 161, 255); 
+  background-color:#465156 ; 
+  color:white;
 }
 
 .dataTables_wrapper button {  
-  border-radius: 15px;
-
+  border-radius: 5px;
 }
 
 table.dataTable td,th {
   max-width: 500px;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   text-overflow: ellipsis;
   overflow: hidden;
   text-align: center;
+  vertical-align: middle;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
 }

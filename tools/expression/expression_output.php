@@ -1,4 +1,5 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script type="text/javascript" src="/easy_gdb/js/apexcharts.min.js"></script>
@@ -339,8 +340,40 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
   
   
-  // if gene not found in input list
-  $not_found_genes = implode("\n",array_diff($gids,$found_genes)); 
+// if gene not found in input list
+
+  $not_found_genes = array_diff($gids, $found_genes);
+
+  if (!empty($not_found_genes)) {
+    $original_not_found_genes = $not_found_genes;
+
+    foreach ($not_found_genes as &$gid) { // add .1 to gene name search
+        $gid .= ".1";
+    }
+
+    $not_found_genes = array_diff($not_found_genes, $found_genes);
+
+    foreach ($not_found_genes as &$gid) {
+        // Remove ".1" and search the original gene
+        $original_gid = substr($gid, 0, -2);
+        if (in_array($original_gid, $original_not_found_genes)) {
+            $gid = $original_gid; // return the original gene name if dont find the gene with ".1"
+        }
+    }
+
+    $not_found_genes = implode("\n",$not_found_genes);
+}
+
+
+  if($not_found_genes && count($found_genes)!= 0)
+  {
+    echo '<br><div class="alert alert-warning" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>';
+    echo "<div class=\"card-body\" style=\"padding-top:10px;padding-bottom:0px;text-align: center;\"><b>Genes not found: </b> $not_found_genes </div></div>";
+
+  }
   
   
 } // if expr file exists
@@ -360,54 +393,62 @@ asort($positions);
 $first_info=true;
 $frame="";
 
-foreach($positions as $key => $value){
-  if($value!=0)
-  {
-    switch($key){
-      case 'cards':
-        include realpath('03_expr_load_cards_html.php');
-        $frame="cards_frame"; 
-        break;
-
-      case 'table' :
-        include realpath('03_expr_load_avg_table_html.php');
-        $frame="avg_table";
-        break;
-
-      case 'replicates':
-        include realpath('03_expr_load_replicates_html.php');
-        $frame="replicates_graph";
-        break;
-
-      case 'cartoons':
-        include realpath('03_expr_load_cartoons_html.php');
-        if($cartoons_files_found) // This variable is located in 03_expr_load_cartoons_html
-        {$frame="cartoons_frame";} 
-        break;
-
-      case 'heatmap':
-        include realpath('03_expr_load_heatmap_html.php');
-        $frame="heatmap_graph"; 
-        break;
-
-      case 'lines':
-        include realpath('03_expr_load_lines_html.php');
-        $frame="line_chart_frame";
-        break;
-
-      case 'description':
-        include realpath('01_expr_load_description.php');
-        if($description_files_found) // This variable is located in 01_expr_load_description
-        {$frame="description_frame";}
-        break;
-    }
-    if($first_info && $frame!="") // first position turn from hide to show
+if(count($found_genes)!= 0)
+{
+  foreach($positions as $key => $value){
+    if($value!=0)
     {
-      $first_info=false;
-      echo "<script> $('#$frame').collapse('show')</script>";
+      switch($key){
+        case 'cards':
+          include realpath('03_expr_load_cards_html.php');
+          $frame="cards_frame"; 
+          break;
+
+        case 'table' :
+          include realpath('03_expr_load_avg_table_html.php');
+          $frame="avg_table";
+          break;
+
+        case 'replicates':
+          include realpath('03_expr_load_replicates_html.php');
+          $frame="replicates_graph";
+          break;
+
+        case 'cartoons':
+          include realpath('03_expr_load_cartoons_html.php');
+          if($cartoons_files_found) // This variable is located in 03_expr_load_cartoons_html
+          {$frame="cartoons_frame";} 
+          break;
+
+        case 'heatmap':
+          include realpath('03_expr_load_heatmap_html.php');
+          $frame="heatmap_graph"; 
+          break;
+
+        case 'lines':
+          include realpath('03_expr_load_lines_html.php');
+          $frame="line_chart_frame";
+          break;
+
+        case 'description':
+          include realpath('01_expr_load_description.php');
+          if($description_files_found) // This variable is located in 01_expr_load_description
+          {$frame="description_frame";}
+          break;
+      }
+      if($first_info && $frame!="") // first position turn from hide to show
+      {
+        $first_info=false;
+        echo "<script> $('#$frame').collapse('show')</script>";
+      }
     }
-  }
-} // en sets elements
+  } // en sets elements
+}else
+{
+  echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
+          No gene was found in the selected dataset
+          </div>';
+}
 ?>
 
 <!-- </div> old end of page_container-->
@@ -447,23 +488,27 @@ foreach($positions as $key => $value){
     //alert("cartoons_all_genes: "+JSON.stringify(cartoons_all_genes) );
   }
     
-  if (gene_list.length == 0) {
-    $( "#chart1" ).css("display","none");
-    $( "#chart2" ).css("display","none");
-    //$( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
-    alert("No gene was found in the selected dataset. Please, check gene names.")
-  }
+  // if (gene_list.length == 0) {
+    // $("#search_input_modal").html( "No gene was found in the selected dataset. Please, check gene names." );
+    // $('#no_gene_modal').modal();
+
+  // }else
+  // {
+    var genes_not_found = <?php echo json_encode($not_found_genes) ?>;
   
-  var genes_not_found = <?php echo json_encode($not_found_genes) ?>;
-  
-  if (genes_not_found) {
-    alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
-  }
+    if ((genes_not_found != "") && (gene_list.length != 0)) {
+
+      // alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
+      $("#genesNotFoundLabel").html("⚠️ Warning");
+      $("#search_input_modal").html("These input genes were not found in the selected dataset:<br><b>"+genes_not_found+"<b>");
+      $('#no_gene_modal').modal();
+
+
+    } 
+  // }
 
 </script>
 
-
-  
 <script type="text/javascript" src="cartoons_kinetic.js"></script>
 <script src="expression_graphs.js"></script>
 
@@ -504,3 +549,5 @@ foreach($positions as $key => $value){
   
   
 </style>
+
+

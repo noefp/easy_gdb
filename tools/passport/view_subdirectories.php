@@ -4,34 +4,29 @@
 <?php 
   include_once realpath("$easy_gdb_path/tools/common_functions.php");
   $pass_dir = test_input($_GET["dir_name"]); // get passport directory with files to list
-  // $pass_dir_title = str_replace("_", " ", $pass_dir);
 ?>
 
 <div class="page_container" style="margin-top:20px">
   <h1 class="text-center">Germplasm's species of <?php echo $dbTitle; ?></h1>
   <br>
 
-  <!-- Container for cards, printed by JavaScript -->
+  <!-- Container for cards, printed later by JavaScript -->
    <div id="cards_container" class="row"></div>
 
 <?php
   
-  // $dir_name = $_GET['dir_name'];
-  $sub_path = "$passport_path";
-
-  if (file_exists("$sub_path/germplasm_list.json") ) {
-    $germplasm_json_file = file_get_contents("$sub_path/germplasm_list.json");
-    //var_dump($germplasm_json_file);
-    $germplasm_hash = json_decode($germplasm_json_file, true);
-    //var_dump($germplasm_hash);
-
-    $species = []; // array to keep subdir names
-    if (is_dir($sub_path) && $sub_dh = opendir($sub_path) ) {
-      
-      while (($species = readdir($sub_dh)) !== false) { //iterate all subdirs
+  $subdir_name = [];
   
-        if (!preg_match('/^\./', $species) && is_dir($sub_path."/".$species) ) {
-          $subdir_name[] = $species;
+  if (file_exists("$passport_path/germplasm_list.json") ) {
+    $germplasm_json_file = file_get_contents("$passport_path/germplasm_list.json");
+    $germplasm_hash = json_decode($germplasm_json_file, true);
+
+    if (is_dir($passport_path) && $sub_dh = opendir($passport_path) ) {
+      
+      while ( $species = readdir($sub_dh) ) { //iterate all subdirs as $species
+        
+        if (!preg_match('/^\./', $species) && is_dir($passport_path."/".$species) ) {
+          array_push($subdir_name,$species);
         }
           
       } //end while
@@ -40,15 +35,15 @@
       echo "<p><i>No subdirectories found</i>.</p>";
     }
 
-  } elseif ($sub_path) {// close if file_exists germplasm_list.json
+  } elseif ($passport_path) {// close if file_exists germplasm_list.json
 
-    $species = []; // array to keep subdir names
-    if (is_dir($sub_path) && $sub_dh = opendir($sub_path) ) {
+    if (is_dir($passport_path) && $sub_dh = opendir($passport_path) ) {
       
       while (($species = readdir($sub_dh)) !== false) { //iterate all subdirs
   
-        if (!preg_match('/^\./', $species) && is_dir($sub_path."/".$species) ) {
-          $subdir_name[] = $species;
+        if (!preg_match('/^\./', $species) && is_dir($passport_path."/".$species) ) {
+          array_push($subdir_name,$species);
+          
           echo "<li><a href=\"02_pass_file_to_datatable.php?dir_name=/$species\">$species</a></li>"; // simple list
         }
           
@@ -117,37 +112,6 @@
 <?php include_once realpath("$easy_gdb_path/footer.php"); ?>
 
 
-<style>
-  
-  .egdb_person_card {
-    min-height:150px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    padding: 10px 10px 0px;
-  }
-  
-  .person-card-text {
-    margin-bottom:2px;
-  }
-  .egdb_person_img {
-    height:140px;
-    object-fit: scale-down;
-/*    object-fit: none;*/
-  }
-
-  .egdb_person_card a:link {
-    color:#333;
-  }
-  .egdb_person_card:hover {
-    color:#333;
-    border-color: #000;
-    cursor:pointer;
-    text-decoration:none;
-  }
-</style>
-
-
 <script>
   const cardsData = <?php echo $json_cards_data; ?>;
 
@@ -176,3 +140,66 @@
   // Call function to generate cards
   generateCards(cardsData);
 </script>
+
+<style>
+  
+/*  .egdb_person_card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .egdb_person_card:hover {
+    transform: translateY(-5px);
+    border-color: rgb(53,58,64);
+    text-decoration: none;
+  }
+
+  .egdb_person_img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+*/  
+  .egdb_person_card {
+    min-height:150px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    padding: 10px 10px 0px;
+    min-width:200px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  
+  .egdb_person_card:hover {
+    transform: translateY(-5px);
+    border-color: rgb(53,58,64);
+    text-decoration: none;
+  }
+  
+  .person-card-text {
+    margin-bottom:2px;
+  }
+  .egdb_person_img {
+    height:140px;
+/*    object-fit: scale-down;*/
+    
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    
+  }
+
+  .egdb_person_card a:link {
+    color:#333;
+  }
+  .egdb_person_card:hover {
+    color:#333;
+    border-color: #000;
+    cursor:pointer;
+    text-decoration:none;
+  }
+</style>

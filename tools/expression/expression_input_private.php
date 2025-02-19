@@ -1,4 +1,6 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
@@ -109,8 +111,7 @@ if ($dir_counter) {
   
 }
 ?>
-      </div>
-      
+  </div>
       
       <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6">
@@ -254,7 +255,9 @@ if ($dir_counter) {
       var gene_count = (gene_lookup_input.match(/.+\n?/g)||[]).length
       
       if (gene_count == 0) {
-          alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          // alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $("#search_input_modal").html("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $('#no_gene_modal').modal();
           return false;
       }
       //check input genes from gene lookup before sending form
@@ -265,7 +268,9 @@ if ($dir_counter) {
       }
       
       if (gene_count > max_input) {
-          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $('#no_gene_modal').modal();
           return false;
       }
 

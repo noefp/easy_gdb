@@ -23,15 +23,20 @@
     $rows= [];
 
     //----- get info from passport.json of each species
-    if ( file_exists("$sub_path/$species/passport.json") ) {
-      $pass_json_file = file_get_contents("$sub_path/$species/passport.json");
+    if ( file_exists("$passport_path/$species/passport.json") ) {
+      $pass_json_file = file_get_contents("$passport_path/$species/passport.json");
       $pass_hash = json_decode($pass_json_file, true);
 
       $passport_file = $pass_hash["passport_file"];
       $unique_link = $pass_hash["acc_link"];
-      $map_array = $pass_hash["map_columns"];     
-
-      $full_passport_path = "$sub_path/$species/$passport_file";
+      $map_array = $pass_hash["map_columns"];
+      
+      //to convert column index to natural, starting in 1 instead of 0
+      foreach($map_array as &$val) {
+        $val -= 1;
+      }
+      
+      $full_passport_path = "$passport_path/$species/$passport_file";
       //echo "<b>full_passport_path</b>: $full_passport_path<br>";
 
 
@@ -102,9 +107,15 @@
           }
           if(isset($row["Latitude"])){
             $latitude = $row["Latitude"];
+          } else {
+            $latitude = null;
+            $row["Latitude"] = null;
           }
           if(isset($row["Longitude"])){
             $longitude = $row["Longitude"];
+          } else {
+            $longitude = null;
+            $row["Longitude"] = null;
           }
 
         // Verify if lat and long are empty
@@ -157,7 +168,7 @@
   //echo "json_data_map. $json_data_map<br>"; // funciona
 
   
-  if (!empty ($sub_path) && $show_map ) {
+  if (!empty($passport_path) && $show_map ) {
     echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
 
     echo "<div id=\"map\" style=\"height: 600px;\"></div></div>";

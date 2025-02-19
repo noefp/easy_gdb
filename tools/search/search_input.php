@@ -1,6 +1,6 @@
 <!-- HEADER -->
 <?php include_once realpath("../../header.php");?>
-
+<?php include_once realpath("../modal.html");?>
 <!-- INFO -->
 <?php include_once realpath("search_info_modal.php");?>
 
@@ -26,7 +26,7 @@
 
     <!-- FORM OPPENED -->
     <div class="form-group">
-      <label for="search_box" style="font-size:16px">Insert a gene ID or annotation keywords</label>
+      <label for="search_file_box" style="font-size:16px">Insert a gene ID or annotation keywords</label>
       <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
       <input type="search_box" class="form-control" id="search_file_box" name="search_keywords" style="border-color: #666">
     </div>
@@ -51,7 +51,7 @@
 
         // CHECK ANNOTATION FILES
         if ($dir_counter) {
-          echo  "<div class=\"form-group\"><label for=\"search_box\" style=\"font-size:16px\">Select your annotation/s file</label>";
+          echo  "<div class=\"form-group\"><span style=\"font-size:16px\">Select your annotation/s file</span>";
 
           foreach ($all_datasets as $dirs_and_files) {
             if (is_dir($annotations_path."/".$dirs_and_files)){ // get dirs and print categories
@@ -112,28 +112,6 @@
     </form>
   </div>
 </div>
-
-
-<!-- ERROR BANNER -->
-<div class="modal fade" id="no_gene_modal" role="dialog">
-  <div class="modal-dialog modal-sm">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title  w-100 text-center" >❌ Error</h4>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center;">
-          <p id="search_input_modal"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>

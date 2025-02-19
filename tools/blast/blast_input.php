@@ -1,4 +1,5 @@
 <?php include_once realpath("../../header.php");?>
+<?php include_once realpath("../modal.html");?>
 
 <div class="margin-20">
   <a class="float-right" href="/easy_gdb/help/02_blast.php" target="blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
@@ -21,7 +22,7 @@
     <div class="row">
 
       <div class="col-sm-6 col-md-6 col-lg-">
-        <?php include_once 'blast_dbs_select.php';?>
+        <?php  include_once 'blast_dbs_select.php';?>
       </div>
 
       <div class="col-sm-6 col-md-6 col-lg-">
@@ -39,7 +40,7 @@
 
     <hr>
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#adv_opt" aria-expanded="true" style="text-align:center">
-      <i class="fas fa-sort"></i> <h3 style="display:flex inline"> Blast options </h3> <i for="collapse_section" class="fas fa-sort"></i>
+      <i class="fas fa-sort" style="color:#229dff"></i> <h3 style="display:flex inline"> Blast options </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
     </div>
     <!-- <a data-toggle="collapse" data-target="#adv_opt" class="btn btn-light" style="background:gray">BLAST options</a> -->
     <br>
@@ -98,7 +99,6 @@
           <option value='blastp-fast'>blastp-fast</option>
           <option value='blastp-short'>blastp-short</option>
           <option value='blastx-fast'>blastx-fast</option>
-
           </select>
           
         </div>
@@ -162,28 +162,40 @@
       }
       
       if (seqnum > max_input) {
-          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
+          $("#search_input_modal").html( "A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
+          $('#no_gene_modal').modal()
           return false;
       }
       if (!input_seq || seq_length < 5) {
-          alert("Please provide a valid input sequence");
+          // alert("Please provide a valid input sequence");
+          $("#search_input_modal").html("Please provide a valid input sequence");
+          $('#no_gene_modal').modal()
           return false;
       }
       if (seq_type == "nt" && blast_program == "blastp") {
-          alert("BLASTp can not be used for an input nucleotide sequence");
+          // alert("BLASTp can not be used for an input nucleotide sequence");
+          $("#search_input_modal").html("BLASTp can not be used for an input nucleotide sequence");
+          $('#no_gene_modal').modal()
           return false;
       }
       if (seq_type == "prot" && blast_program != "blastp") {
-          alert("Input protein sequences can only be used with BLASTp");
+          // alert("Input protein sequences can only be used with BLASTp");
+          $("#search_input_modal").html("Input protein sequences can only be used with BLASTp");
+          $('#no_gene_modal').modal()
           return false;
       }
       if (blast_program == "blastn" && blast_db_type.match("\.phr")) {
-          alert("BLASTn can not be used for a protein database");
+          // alert("BLASTn can not be used for a protein database");
+          $("#search_input_modal").html("BLASTn can not be used for a protein database");
+          $('#no_gene_modal').modal()
           return false;
       }
       if ((blast_program == "blastp" || blast_program == "blastx") && !blast_db_type.match("\.phr")) {
         // $('#blast_form').submit(function() {
-          alert("BLASTp and BLASTx can only be used for a protein database");
+          // alert("BLASTp and BLASTx can only be used for a protein database");
+          $("#search_input_modal").html("BLASTp and BLASTx can only be used for a protein database");
+          $('#no_gene_modal').modal()
           return false;
         // });
       }

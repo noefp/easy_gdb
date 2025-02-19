@@ -35,16 +35,16 @@
     $grep_command = "grep -i '$grep_input' $annot_file";
     exec($grep_command, $output);
 
+  echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
+
   if($output)
   {
     $count_character = [];
 
-    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name</div>";
-
     // TABLE BEGIN
-    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse show\"><div class=\"data_table_frame\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">\n";
+    echo "<div id=\"Annot_table_$table_counter\" class=\"collapse\"><table id=\"tblAnnotations_$table_counter\" class=\"tblAnnotations table table-striped table-bordered\"style=\"display:none\">\n";
 
-    echo "<div id=\"load\" class=\"loader\"></div>";
+    echo "<div id=\"load_$table_counter\" class=\"loader\"></div>";
 
     // TABLE HEADER
     echo "<thead><tr>\n";
@@ -79,10 +79,14 @@
           else {
             $header_name = $columns[$n];
             if ($header_name == "TAIR10" || $header_name == "Araport11") {
-              $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$data[$n], ''], $annot_hash[$header_name]);
+              $query_id = preg_replace(['/query_id/', '/\.\d+$/'], [$data[$n], ''], $annot_hash[$header_name]);
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
-            elseif (strpos($data[$n], ';') && !preg_match("/Description/", $header_name) ) {
+            elseif (preg_match("/Phytozome/i", $header_name) && !preg_match("/Description/i", $header_name) ) {
+              $query_id = preg_replace(['/query_id/', '/V\d+\.\d+/'], [$data[$n], ''], $annot_hash[$header_name]);
+              echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
+            }
+            elseif (strpos($data[$n], ';') && !preg_match("/Description/i", $header_name) ) {
               $link_data = explode(';', $data[$n]);
               $link_links = '';
               foreach ($link_data as $link_id) {
@@ -101,7 +105,14 @@
               echo "<td><a href=\"$query_id\" target=\"_blank\">$data[$n]</a></td>\n";
             }
             else {
-              echo "<td>$data[$n]</td>\n";
+              $desc_length = strlen($data[$n]);
+              //echo $desc_length." ".$data[$n]."<br>";
+              
+              if ($desc_length >= 60) {
+                echo "<td class=\"td-tooltip\" title=\"$data[$n]\">$data[$n]</td>\n";
+              } else {
+                echo "<td>$data[$n]</td>\n";
+              }
             }
           }
         }
@@ -111,15 +122,15 @@
       }
       echo "</tr>\n";
     }
-    echo "</tbody></table></div></div><br>\n";
+    echo "</tbody></table><br><br></div>\n";
 
     $output = [];
     return($count_character);
   }
   else{
-    echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
+    echo '<div class="alert alert-danger" role="alert" style="text-align:center">
     No gene was found in the selected dataset
-    </div>';
+    </div><br>';
   }
 } // TABLE END
 ?>
@@ -185,9 +196,25 @@
 <script src="../js/datatable.js"></script>
 <script type="text/javascript">
 
-  $('#load').remove();
-  $('.tblAnnotations').css("display","table");
-  datatable(".tblAnnotations","");
+$(document).ready(function(){
+
+$('#Annot_table_1').addClass('show');
+$('#load_1').remove();
+$('#tblAnnotations_1').css("display","table");
+datatable("#tblAnnotations_1",'1');
+
+$(".collapse").on('shown.bs.collapse', function(){
+    var id=$(this).attr("id");
+    id=id.replace("Annot_table_","");
+
+$('#load_'+id).remove();
+$('#tblAnnotations_'+id).css("display","table");
+datatable("#tblAnnotations_"+id,id);
+
+
+$(".td-tooltip").tooltip();
+});
+});
 
 </script>
 

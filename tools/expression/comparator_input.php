@@ -1,4 +1,6 @@
 <?php include realpath('../../header.php'); ?>
+<?php include_once realpath("../modal.html");?>
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
@@ -63,7 +65,6 @@ echo "</textarea>";
 }
 ?>
         <br>
-
       </div>
     </div>
     
@@ -242,16 +243,9 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
     array_push($file_array,$gene_name);
   }
   
-  
-  
 }
 
-
-
 ?>
-
-      
-
       <button class="button btn btn-info float-right" id="btnSend" type="submit" form="comparator_form" formmethod="post">Compare</button>
       </form>
       <br>
@@ -353,12 +347,17 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
       }
       
       if (gene_count > max_input) {
-          alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $('#no_gene_modal').modal();
           return false;
       }
 
       if (gene_count == 0) {
-          alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          // alert("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $("#search_input_modal").html("No genes were included in the analysis. Gene count: "+gene_count+". Please, add some gene IDs to the input list box.");
+          $('#no_gene_modal').modal();
           return false;
       }
       
@@ -366,7 +365,9 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
       var numberOfChecked = $('input.sample_checkbox:checked').length;
       
       if (numberOfChecked == 0) {
-        alert("Please, select some samples.");
+        // alert("Please, select some samples.");
+        $("#search_input_modal").html("Please, select some samples.");
+        $('#no_gene_modal').modal()
         return false;
       }
       
@@ -385,8 +386,6 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
         $("#"+dataset+" input").prop('checked', false)
       }
       
-    });
-    
-    
+    });    
   });
 </script>

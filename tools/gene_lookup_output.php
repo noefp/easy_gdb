@@ -11,7 +11,7 @@
 
 <div class="page_container" style="margin-top:40px">
   
-<div class="data_table_frame">
+<!-- <div class="data_table_frame"> -->
 
 <?php
 $lookup_file = $_POST["lookup_db"];
@@ -61,7 +61,7 @@ else {
   }
   // echo "<p>time2: ".time()."</p>";
 
-  echo "<table class=\"table\" id=\"tblResults\"><thead><tr><th>input genes</th><th>genes found</th></thead>";
+  echo "<table class=\"table  \" id=\"tblResults\"><thead><tr><th>input genes</th><th>genes found</th></thead>";
 
   foreach ($gNamesArr as $input_gene) {
     $converted_gene = $gene_hash[trim($input_gene)];
@@ -83,11 +83,9 @@ else {
 
 }
 
-
-
 ?>
 
-</div>
+<!-- </div> -->
 </div>
 <br>
 <br>

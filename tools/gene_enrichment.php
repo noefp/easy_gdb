@@ -1,4 +1,6 @@
 <?php include realpath('../header.php'); ?>
+<?php include realpath('modal.html'); ?>
+
 <script src="/easy_gdb/js/openGPlink.js"></script>
 
 <div class="margin-20">
@@ -128,12 +130,17 @@ if ( file_exists("$json_files_path/tools/enrichment.json") ) {
          max_input = 10000;
       }
       if (gene_count > max_input) {
-        alert("A maximum of "+max_input+" gene IDs can be provided as input, your input has: "+gene_count);
-        return false;
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $('#no_gene_modal').modal();
+          return false;
       }
-      if (gene_count == 0) {
-        alert("No gene IDs were provided as input");
-        return false;
+
+      if ((gene_count == 0) && (gene_lookup_input == "") ) {
+          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
+          $("#search_input_modal").html("No gene IDs were provided as input");
+          $('#no_gene_modal').modal();
+          return false;
       }
       
       //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
