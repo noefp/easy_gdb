@@ -137,7 +137,6 @@ if ( file_exists("$json_files_path/tools/enrichment.json") ) {
       }
 
       if ((gene_count == 0) && (gene_lookup_input == "") ) {
-          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+gene_count);
           $("#search_input_modal").html("No gene IDs were provided as input");
           $('#no_gene_modal').modal();
           return false;
