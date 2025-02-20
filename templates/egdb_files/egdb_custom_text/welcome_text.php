@@ -1,3 +1,8 @@
+<div class="width900">
+  <br>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <h1>Welcome to <?php echo "$dbTitle";?> </h1>
       <h2>Subtitle h2</h2>
       <h3>Subtitle h3</h3>
@@ -23,4 +28,18 @@
       <div class="row">
         <img class='rounded col-xs-12 col-sm-12 col-md-12 col-lg-12' src='<?php echo "$images_path/header_img.png";?>' alt='img example'>
       </div>
-      
+    </div>
+  </div>
+  <br>
+  <?php 
+    if (!$rm_citation) {
+      if (file_exists(realpath("$custom_text_path/db_citation.php")) && filesize(realpath("$custom_text_path/db_citation.php")) >0) {
+        include_once realpath("$custom_text_path/db_citation.php");
+      }
+    }
+  ?>
+
+  <br>
+
+</div>
+

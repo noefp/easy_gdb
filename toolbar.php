@@ -8,7 +8,7 @@
   
 <?php 
   if ($db_logo && file_exists(realpath("$root_path/$images_path/$db_logo"))) {      
-    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\" style=\"margin-right:5px\"><img src=$images_path/$db_logo alt=\"DB_Logo\" style=\"height:25px; vertical-align:text-bottom;\"></a>";
+    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\" style=\"margin-right:5px\"><img id=\"site_logo\" src=$images_path/$db_logo alt=\"DB_Logo\" style=\"height:25px; vertical-align:text-bottom;\"></a>";
   }
 ?>
 

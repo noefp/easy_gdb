@@ -34,6 +34,9 @@ $header_img = "header_img.png";
 
 //SWITCHES
 
+// remove citation from welcome page
+$rm_citation = 1;
+
 // Select 1 to store annotations in files or 0 to store annotations in a relational database.
 $file_database = 1;
 
