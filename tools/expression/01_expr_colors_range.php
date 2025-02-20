@@ -14,7 +14,7 @@
     //   $annot_json_file = file_get_contents("$expression_path/expression_info.json");
     //   $annot_hash = json_decode($annot_json_file, true);
     if ($annot_hash) {
-      $annot_hash_color=$annot_hash['expression_colors'];
+      $annot_hash_color=$annot_hash[$dataset_name_ori]['expression_colors'];
       if($annot_hash_color)
       {
         if(count(array_diff(['colors','ranges_txt','ranges'],array_keys($annot_hash_color))) === 0)
@@ -31,6 +31,7 @@
                 echo "<script type='text/javascript'>
                       $('#color_default').css('display','block');
                       </script>";
+
               }
             }
           }
@@ -43,4 +44,5 @@
     const colors= <?php echo json_encode($colors)?>;
     const ranges_text =<?php echo json_encode($range_text)?>;
     const ranges =<?php echo json_encode($ranges)?>;
+
 </script>
