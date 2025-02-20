@@ -113,7 +113,7 @@ if ($dir_counter) {
         <div class="col-sm-6 col-md-6 col-lg-6">
     
           <div class="form-group">
-            <label for="usr">Find your gene/metabolite by name:</label>
+            <label for="autocomplete_gene">Find your gene/metabolite by name:</label>
       
             <div class="input-group mb-3">
               <input id="autocomplete_gene" type="text" class="form-control form-control-lg" placeholder="gene/metabolite name">

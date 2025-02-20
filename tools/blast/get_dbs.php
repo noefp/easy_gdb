@@ -6,7 +6,7 @@
   // $datasets = str_replace(" ","\ ",$datasets);
   
   if ($dh = opendir($datasets)){
-    echo "<select class=\"form-control\" id=\"sel1\" name=\"blast_db\">";
+    
     $datasets = str_replace(" ","\ ",$datasets);
   
     while (($bdb = readdir($dh)) !== false){ //iterate all files in dir
@@ -27,7 +27,6 @@
         }
       }
     }
-    echo "</select>";
   }
   
 // }
