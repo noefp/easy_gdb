@@ -1,23 +1,23 @@
 {
-  "Homo sapiens":
-    {"sps_name":"Homo sapiens",
-      "common_name":"Human",
-      "image":"human.png",
+  "Annona cherimola":
+    {"card_title":"Annona cherimola",
+      "card_subtitle":"Cherimoya",
+      "image":"cherimoya.png",
       "public":"1",
-      "link":"human.php"
+      "link":"cherimoya.php"
     },
-  "Other species":
-    {"sps_name":"Other species",
-      "common_name":"name1",
-      "image":"species1.png",
-      "public":"1",
-      "link":"species1.php"
-    },
-  "Other species2":
-    {"sps_name":"Other species2",
-      "common_name":"name2",
-      "image":"species2.png",
-      "public":"1",
-      "link":"species2.php"
-    }
+    "Mangifera indica":
+      {"card_title":"Mangifera indica",
+        "card_subtitle":"Mango",
+        "image":"mango.png",
+        "public":"1",
+        "link":"mango.php"
+      },
+    "Olea europaea":
+      {"card_title":"Olea europaea",
+        "card_subtitle":"Olive",
+        "image":"olive.png",
+        "public":"1",
+        "link":"olive.php"
+      }
 }
