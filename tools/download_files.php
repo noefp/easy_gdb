@@ -71,7 +71,7 @@ function get_dir_and_files($root, $dir_name, $sub_structure, &$counter) {
           else {//print first dirs and load subdirs
             // $counter++;
             $link_name = preg_replace('/\s|\./', '', $file_name) . '-' . $counter;
-            echo "<h3><a class=\"collapsed\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"true\"><i class=\"fas fa-angle-down\"></i><i class=\"fas fa-angle-right\"></i> <i class=\"fas fa-folder\"></i> $file_name</a></h3><div id=\"$link_name\" class=\"collapse show\"><div class=\"sub_header\"><ul class=\"download_list\" >";
+            echo "<h3><a class=\"collapsed dir_header\" href=\"#$link_name\" data-toggle=\"collapse\" aria-expanded=\"true\"><i class=\"fas fa-angle-down\"></i><i class=\"fas fa-angle-right\"></i> <i class=\"fas fa-folder\"></i> $file_name</a></h3><div id=\"$link_name\" class=\"collapse show\"><div class=\"sub_header\"><ul class=\"download_list\" >";
 						$counter++;
 
             get_dir_and_files($root, $dir_name, 1, $counter);
@@ -91,15 +91,19 @@ get_dir_and_files($root_path, $downloads_path, 0, $counter); // call the functio
 
 <style>
 
-.subdirectories {
-  margin-top: 10px;
-}
-
 .download_list {
   padding-left:0px;
   font-size: 18px;
   margin-bottom: 0px;
   margin-left: 20px;
+}
+
+.dir_header {
+  color: #555;
+}
+.dir_header:hover {
+  color:#0056b3;
+  text-decoration: none;
 }
 
 .sub_header {
@@ -108,6 +112,14 @@ get_dir_and_files($root_path, $downloads_path, 0, $counter); // call the functio
   margin-bottom: 20px;
   color: #555;
 }
+.subdirectories {
+  margin-top: 10px;
+}
+.subdirectories:hover {
+  color:#0056b3;
+  text-decoration: none;
+}
+
 
 [aria-expanded="true"] .fa-angle-right,
 [aria-expanded="false"] .fa-angle-down {
