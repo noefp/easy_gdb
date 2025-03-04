@@ -17,8 +17,10 @@ include_once "$conf_path/easyGDB_conf.php";
 
     <!-- compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="/easy_gdb/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="/easy_gdb/css/easy_gdb.css">
     <link rel="stylesheet" href="/easy_gdb/css/loading_datatable.css">
+
 
     <?php
       if ($custom_css_path && file_exists("$root_path/$custom_css_path")) {
@@ -26,25 +28,41 @@ include_once "$conf_path/easyGDB_conf.php";
       }
     ?>
 
-
-
-
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.5/css/colReorder.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="/easy_gdb/css/datatables/datatables.bootstrap4.min.css"> -->
+    <!-- <link rel="stylesheet" href="/easy_gdb/css/datatables/buttons.bootstrap4.min.css"> -->
+    <!-- <link rel="stylesheet" href="/easy_gdb/css/datatables/colReorder.dataTables.min.css"> -->
 
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="/easy_gdb/js/jquery.min.js"></script> -->
 
     <!-- Popper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- <script src="/easy_gdb/js/popper.min.js"></script> -->
 
     <!-- compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script src="/easy_gdb/js/bootstrap.min.js"></script> -->
+    
 
     <script src="/easy_gdb/js/download2.js"></script>
+
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/jquery.dataTables.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/dataTables.bootstrap4.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/dataTables.colReorder.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/dataTables.buttons.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/buttons.bootstrap4.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/buttons.colVis.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/buttons.html5.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/buttons.print.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/pdfmake.min.js"></script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="/easy_gdb/js/Datatables/vfs_fonts.js"></script> -->
+
+    <!-- <script src="/easy_gdb/js/jszip.min.js" type="text/javascript"></script> -->
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
