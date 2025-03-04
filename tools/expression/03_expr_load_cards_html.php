@@ -8,7 +8,7 @@
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
     echo '</div>';
 
-    echo '<div id="cards_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
+    echo '<div id="cards_frame" class="row collapse hide" style=" margin:0px; border:2px solid #666; padding-top:7px">';
 
 
       echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';
@@ -23,13 +23,13 @@
       echo '</div>';
 
 
-      echo "<div class=\"color-bar\" style=\"margin:20px\">";  
+      echo "<div class=\"color-bar\" style=\"margin:20px;\">";  
       echo "<table id=\"color-table-cards\" class=\"color\"></table>";
       echo "</div>"; 
 
 
 
-      echo '<div id="card_code" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="width:100%; padding-left:30px; padding-bottom:20px "></div>';
+      echo '<div id="card_code"></div>';
     echo '</div>';
     
   // }
@@ -86,9 +86,17 @@ function crearFila(colors,ranges,id) {
 </script>
 
 <style>
-
+#color-table-cards{
+ width: 80%;
+}
 #card_code {
-  text-align: center;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px; 
+  margin-left: auto;
+  margin-right: auto;
 }  
   
   .expr_card_body {
