@@ -144,7 +144,21 @@
             // }
             elseif (strpos($data[$n], ';')) {
               $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
-              echo "<td>$data_semicolon</td>\n";
+              $lines = explode("<br>", $data_semicolon);
+              $show_tooltip = false;
+
+              foreach ($lines as $line) {
+                if (strlen($line) >= 68) {
+                  $show_tooltip = true;
+                  break;
+                }
+              }
+              if ($show_tooltip) {
+                $title = implode("\t", $lines);
+                echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+              } else {
+                echo "<td>$data_semicolon</td>\n";
+              }
             }
             elseif ($annot_hash[$header_name]) {
               $query_id = str_replace('query_id', $data[$n], $annot_hash[$header_name]);
@@ -154,7 +168,7 @@
               $desc_length = strlen($data[$n]);
               //echo $desc_length." ".$data[$n]."<br>";
               
-              if ($desc_length >= 60) {
+              if ($desc_length >= 68) {
                 echo "<td class=\"td-tooltip\" title=\"$data[$n]\">$data[$n]</td>\n";
               } else {
                 echo "<td>$data[$n]</td>\n";
@@ -253,11 +267,18 @@
 
 <!-- CSS DATATABLE -->
 <style>
- 
-  .td-tooltip {
-      cursor: pointer;
-    }  
-  
+
+table.dataTable td {
+  white-space: nowrap;  
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+.td-tooltip {
+  cursor: pointer;
+  }
+    
+
 </style>
 
 <!-- JS DATATABLE -->
@@ -271,6 +292,8 @@ $(document).ready(function(){
   $('#load_1').remove();
   $('#tblAnnotations_1').css("display","table");
   datatable("#tblAnnotations_1",'1');
+  $(".td-tooltip").tooltip();
+
 
 $(".collapse").on('shown.bs.collapse', function(){
       var id=$(this).attr("id");
@@ -280,10 +303,9 @@ $(".collapse").on('shown.bs.collapse', function(){
   $('#tblAnnotations_'+id).css("display","table");
   datatable("#tblAnnotations_"+id,id);
 
-
-  $(".td-tooltip").tooltip();
 });
 }); 
+
 
 </script>
 

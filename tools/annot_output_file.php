@@ -98,7 +98,21 @@
             }
             elseif (strpos($data[$n], ';')) {
               $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
-              echo "<td>$data_semicolon</td>\n";
+              $lines = explode("<br>", $data_semicolon);
+              $show_tooltip = false;
+
+              foreach ($lines as $line) {
+                if (strlen($line) >= 68) {
+                  $show_tooltip = true;
+                  break;
+                }
+              }
+              if ($show_tooltip) {
+                $title = implode("\t", $lines);
+                echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+              } else {
+                echo "<td>$data_semicolon</td>\n";
+              }
             }
             elseif ($annot_hash[$header_name]) {
               $query_id = str_replace('query_id', $data[$n], $annot_hash[$header_name]);
@@ -192,6 +206,21 @@
 </div>
 <!-- END HTML -->
 
+<!-- CSS DATATABLE -->
+<style>
+
+table.dataTable td {
+  white-space: nowrap;  
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+  
+.td-tooltip {
+  cursor: pointer;
+  }   
+  
+</style>
+
 <!-- JS DATATABLE -->
 <script src="../js/datatable.js"></script>
 <script type="text/javascript">
@@ -203,6 +232,7 @@ $('#load_1').remove();
 $('#tblAnnotations_1').css("display","table");
 datatable("#tblAnnotations_1",'1');
 
+
 $(".collapse").on('shown.bs.collapse', function(){
     var id=$(this).attr("id");
     id=id.replace("Annot_table_","");
@@ -211,9 +241,9 @@ $('#load_'+id).remove();
 $('#tblAnnotations_'+id).css("display","table");
 datatable("#tblAnnotations_"+id,id);
 
+});
 
 $(".td-tooltip").tooltip();
-});
 });
 
 </script>

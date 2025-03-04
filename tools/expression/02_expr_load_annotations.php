@@ -47,11 +47,24 @@
             //echo "<td>$ipr_links</td>\n";
             $annot_col[$n] = "<td>".$ipr_links."</td>";
           }
-          elseif (strpos($annot_col[$n], ';') ) {
-            $data_semicolon = str_replace(';', ';' . "<br>", $annot_col[$n]);
-            $annot_col[$n] = "<td>".$data_semicolon."</td>";
+          elseif (strpos($data[$n], ';')) {
+            $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
+            $lines = explode("<br>", $data_semicolon);
+            $show_tooltip = false;
+
+            foreach ($lines as $line) {
+              if (strlen($line) >= 68) {
+                $show_tooltip = true;
+                break;
+              }
+            }
+            if ($show_tooltip) {
+              $title = implode("\t", $lines);
+              echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+            } else {
+              echo "<td>$data_semicolon</td>\n";
+            }
           }
-        
           # print id with link to database
           elseif ($annotation_hash[$header_name]) {
             $query_id = str_replace('query_id', $annot_col[$n], $annotation_hash[$header_name]);
@@ -63,7 +76,7 @@
             $desc_length = strlen($annot_col[$n]);
             //echo $desc_length." ".$data[$n]."<br>";
           
-            if ($desc_length >= 60) {
+            if ($desc_length >= 68) {
               $annot_col[$n] = "<td class=\"td-tooltip\" title=\"$annot_col[$n]\">$annot_col[$n]</td>";
             } else {
               $annot_col[$n] = "<td>".$annot_col[$n]."</td>";

@@ -22,10 +22,9 @@
   <style>
  
  table.dataTable td,th  {
-    max-width: 500px;
     white-space: nowrap;
     overflow: hidden;
-    text-align: center;
+    text-overflow: ellipsis; 
   }
   
     .td-tooltip {
