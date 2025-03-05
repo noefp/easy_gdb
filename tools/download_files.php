@@ -22,10 +22,10 @@ function get_dir_and_files($root, $dir_name, $sub_structure, &$counter) {
 							//save file size
 							$file_size = filesize("$root/$dir_name/$file_name");
 							// format file size
-							if ($file_size >= 1_073_741_824) { // Greater or equal to 1GB
-								$file_size = number_format($file_size / 1_073_741_824, 1) . " GB";
-							} elseif ($file_size >= 1_048_576) { // Greater or equal to 1MB
-								$file_size = number_format($file_size / 1_048_576, 1) . " MB";
+							if ($file_size >= 1073741824) { // Greater or equal to 1GB
+								$file_size = number_format($file_size / 1073741824, 1) . " GB";
+							} elseif ($file_size >= 1048576) { // Greater or equal to 1MB
+								$file_size = number_format($file_size / 1048576, 1) . " MB";
 							} else { // Less than 1MB
 								$file_size = number_format($file_size / 1024, 1) . " KB";
 							}
