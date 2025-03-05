@@ -25,6 +25,13 @@
     {
       "link":"",
       "annotation_file":"example/gene_annotations.txt",
-      "cartoons":"cartoons_example1.json"
+      "cartoons":"cartoons_example1.json",
+      "expression_colors":
+      {
+       "colors":["#c8c8c8","#f0c320","#ff8800","#ff7469","#de2515","#b71005","#0bb4ff","#4c2882"],
+       "ranges_txt":["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200"],
+       "ranges":[[0,0.99],[1,1.99],[2,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,49999.99]]
+      }
     }
+
 }

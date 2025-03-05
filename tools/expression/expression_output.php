@@ -372,16 +372,18 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       <span aria-hidden="true">&times;</span>
     </button>';
     echo "<div class=\"card-body\" style=\"padding-top:10px;padding-bottom:0px;text-align: center;\"><b>Genes not found: </b> $not_found_genes </div></div>";
-
   }
   
   
 } // if expr file exists
 ?>
-
+  <div id="color_default" class="alert alert-primary" role="alert" style="display:none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   <!-- This message would be displayed when the information in the Json "expression_colors" arrays does not match the size -->
-  <div id="color_default" class="alert alert-info" style="display:none"><strong>Info:</strong> The default palette has been selected because the size of the attributes
-"expression_colors" in <i>"expression_info.json"</i> do not match !!!</div>
+  <div id="color_error" class="card-body" style="padding-top:10px;padding-bottom:0px;text-align: center" ><strong>Info:</strong> The default color palette has been selected because the size of the attributes
+"expression colors" in <i>"expression_info.json"</i> do not match !!!</div></div>
 
 
 
