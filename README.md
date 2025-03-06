@@ -640,13 +640,13 @@ The order of the elements is from <b>lowest</b> to <b>highest</b> expression.
 
 ``` PHP
 $colors = ["#eceff1","#b3e5fc","#80cbc4","#ffee58","#ffb74d","#ff8f00","#ff4f00","#cc0000","#D72C79","#801C5A","#6D3917","#443627"];
-$range_text =["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200",">=500",">=1000",">=5000",">=8000"];
+$ranges_text =["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200",">=500",">=1000",">=5000",">=8000"];
 $ranges=[[0,0.99],[1,1.99],[2,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,499.99],[500,999.99],[1000,4999.99],[5000,7999.99],[8000,80000]];
 ```
 
 `colors`: place the color code in hexadecimal format that you want to use for each expression range.
 
-`range_text`: write the text to be displayed in each of the expression ranges.
+`ranges_text`: write the text to be displayed in each of the expression ranges.
 
 `ranges`:  array that contains the lower and upper limits of each range are defined. [low,up].
 
