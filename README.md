@@ -201,8 +201,6 @@ Then open the file `easyGDB_conf.php` in the folder `egdb_files/egdb_conf/` and 
 
 
 
-
-
 # Customization
 
 ## Customize file paths
@@ -223,12 +221,14 @@ For example, for development you could copy the `egdb_files` and rename it to th
 
 Example of the `configuration_path.php` file:
 
+  ``` php
     <?php
       //$conf_path = "/var/www/html/egdb_files/egdb_conf";
       //$conf_path = "/var/www/html/project1/egdb_conf";
       //$conf_path = "/var/www/html/project2/egdb_conf";
       $conf_path = "/var/www/html/active_project/egdb_conf";
     ?>
+```
 
 After the changes, reload the web browser `localhost:8000/easy_gdb/index.php` and check if you can see the home page of EasyGDB. Sometimes it is important to empty the web browser cache to be able to visualize the changes, especially when new images are added.
 
@@ -324,7 +324,7 @@ The annotations including more than one ID should be separated by ";", as shown 
 
 You can add custom annotation links in the annotation_links.json file: `egdb_files/json_files/tools/annotation_links.json`
 
-```
+```json
 {
   "TAIR10":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
   "Araport11":"http://www.arabidopsis.org/servlets/TairObject?type=locus&name=query_id",
@@ -427,7 +427,7 @@ You can also add custom links for the BLAST output by customizing the `egdb_file
 
 ``` json
 {
-"sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}", "sample_blast_DB_proteins.fasta":"/easy_gdb/gene.php?name={subject}&annot=example/gene_annotations.txt",
+  "sample_blast_DB_genome.fasta":"/jbrowse/?data=data%2Feasy_gdb_sample&loc={chr}%3A{start}..{end}", "sample_blast_DB_proteins.fasta":"/easy_gdb/gene.php?name={subject}&annot=example/gene_annotations.txt",
   "sample_blast_DB_nucleotides.fasta":"#",
   "sample_uniprot.fasta":"https://www.uniprot.org/uniprot/{subject}"
 }
@@ -476,7 +476,7 @@ This tool allows to perform a gene set enrichment analysis through the tool g:Pr
 
 In the example below, the title "A.thaliana" is the name shown for selection in the input page. "gprofiler_sps" : "athaliana" is the name required in the g:Profiler tool. Available species IDs can be found at https://biit.cs.ut.ee/gprofiler/page/organism-list.
 
-```
+``` json
 {
   "A.thaliana":
     {"gprofiler_sps" : "athaliana",
@@ -523,7 +523,7 @@ Also, just by placing the expression files in the `expression_data` directory wi
 
 Now, to customize the visualization methods in the Expression Viewer it is possible to edit the values of the variable `$positions` in the `easyGDB_conf.php` file. Set the value of any tool to 0 to disable it, and to 1 or any number greater than 1 to enable it and set the order in which they will appear in the graphical interface, starting for 1 on top of the output page and adding below the next visualization methods as the values increase.
 
-```
+```php
 // Expression tools order: 0 for not shown, >=1 to setup the order
 $positions=[
   'description' => 1,
@@ -595,7 +595,7 @@ A simple way to create the cartoons is to generate a whole picture using one lay
 Drawings in the separate images should not overlap, and black color should be used for drawing borders, captions, arrows or other elements than the actual expression tissue.
 
 
-```
+``` JSON
 {
   "cartoons":
     [
@@ -634,7 +634,41 @@ Drawings in the separate images should not overlap, and black color should be us
     ]
 }
 ```
+### Customise the expression color scale
+To customise the general expression color scale, which will then be used in the expression tools, in  the `easyGDB_conf.php` file you can define the colors, ranges and labels.
+The order of the elements is from <b>lowest</b> to <b>highest</b> expression.
 
+``` PHP
+$colors = ["#eceff1","#b3e5fc","#80cbc4","#ffee58","#ffb74d","#ff8f00","#ff4f00","#cc0000","#D72C79","#801C5A","#6D3917","#443627"];
+$range_text =["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200",">=500",">=1000",">=5000",">=8000"];
+$ranges=[[0,0.99],[1,1.99],[2,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,499.99],[500,999.99],[1000,4999.99],[5000,7999.99],[8000,80000]];
+```
+
+`colors`: place the color code in hexadecimal format that you want to use for each expression range.
+
+`range_text`: write the text to be displayed in each of the expression ranges.
+
+`ranges`:  array that contains the lower and upper limits of each range are defined. [low,up].
+
+If you want to create a specific color palette for each dataset, you can configure it in the `expression_info.json` file located in the `/json_files/tools` folder and there put the variables shown above in the section of each dataset with the keyword "expression_colors" like this.
+
+``` JSON
+{
+ "Example3 - Dataset with cartoons.txt":
+    {
+      "link":"",
+      "annotation_file":"example/gene_annotations.txt",
+      "cartoons":"cartoons_example1.json",
+      "expression_colors":
+      {
+       "colors":["#c8c8c8","#f0c320","#ff8800","#ff7469","#de2515","#b71005","#0bb4ff","#4c2882"],
+       "ranges_txt":["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200"],
+       "ranges":[[0,0.99],[1,1.99],[2,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,49999.99]]
+      }
+    }
+}
+```
+In case of not adding these variables or any error defining them in the `easyGDB_conf` and/or in the `expression_info.json` , a default color palette will be loaded.
 
 ### Expression comparator
 
@@ -698,7 +732,7 @@ The `passport.json` file (example shown below), allows to set up the passport op
 
 -   `featured_descriptors` JSON file to highlight a set of important traits, so they appear in a section on the top of the accession information page.
 
-```
+``` json
 {
   "passport_file":"sp2_passport.txt",
   "acc_link":"ACC name",
