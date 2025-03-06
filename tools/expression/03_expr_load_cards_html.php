@@ -90,7 +90,7 @@ function crearFila(colors,ranges,id) {
  width: 80%;
 }
 #card_code {
-  width: 80%;
+  width: 100%;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
