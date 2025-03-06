@@ -1,0 +1,11 @@
+{
+	"search":1,
+	"blast":2,
+	"jbrowse":3,
+	"seq_ext":4,
+	"annot_ext":5,
+	"lookup":6,
+	"enrichment":7,
+	"gene_expr":8,
+	"comparator_lookup":9
+}
