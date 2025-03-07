@@ -91,7 +91,7 @@
               $link_links = '';
               foreach ($link_data as $link_id) {
                 $query_id = str_replace('query_id', $link_id, $annot_hash[$header_name]);
-                $link_links .= "<a href=\"$query_id\" target=\"_blank\">$link_id</a>;<br>";
+                $link_links .= "<a href=\"$query_id\" target=\"_blank\">$link_id</a><br>";
               }
               $link_links = rtrim($link_links, ';<br>');
               echo "<td>$link_links</td>\n";
@@ -122,7 +122,7 @@
               $desc_length = strlen($data[$n]);
               //echo $desc_length." ".$data[$n]."<br>";
               
-              if ($desc_length >= 60) {
+              if ($desc_length >= 68) {
                 echo "<td class=\"td-tooltip\" title=\"$data[$n]\">$data[$n]</td>\n";
               } else {
                 echo "<td>$data[$n]</td>\n";

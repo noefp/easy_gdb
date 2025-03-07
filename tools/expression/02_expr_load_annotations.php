@@ -41,14 +41,14 @@
             $ipr_links = '';
             foreach ($ipr_data as $ipr_id) {
               $query_id = str_replace('query_id', $ipr_id, $annotation_hash[$header_name]);
-              $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+              $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a><br>";
             }
             $ipr_links = rtrim($ipr_links, ';<br>');
             //echo "<td>$ipr_links</td>\n";
             $annot_col[$n] = "<td>".$ipr_links."</td>";
           }
-          elseif (strpos($data[$n], ';')) {
-            $data_semicolon = str_replace(';', ';'."<br>", $data[$n]);
+          elseif (strpos($annot_col[$n], ';')) {
+            $data_semicolon = str_replace(';', ';'."<br>", $annot_col[$n]);
             $lines = explode("<br>", $data_semicolon);
             $show_tooltip = false;
 
@@ -60,9 +60,9 @@
             }
             if ($show_tooltip) {
               $title = implode("\t", $lines);
-              echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+              $annot_col[$n] = "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
             } else {
-              echo "<td>$data_semicolon</td>\n";
+              $annot_col[$n] = "<td>$data_semicolon</td>\n";
             }
           }
           # print id with link to database

@@ -87,7 +87,7 @@
               $ipr_links = '';
               foreach ($ipr_data as $ipr_id) {
                 $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+                $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a><br>";
               }
               $ipr_links = rtrim($ipr_links, ';<br>');
               echo "<td>$ipr_links</td>\n";
