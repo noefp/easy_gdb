@@ -441,7 +441,55 @@ You can provide any other links and use the variables in the example (`{subject}
 -   No link: using a value of `#` will produce self links. For example for genes not included in your easy GDB database.
 -   Gene name external links: the variable `{subject}` will be replaced by the subject gene name. It can be used to link to external databases, such as UniProt in the example above.
 
-In the case of the installation of EasyGDB using the PostgreSQL relational database, the BLAST output will link to the easy GDB gene page by default unless other information is included in the JSON file.
+In the case of the installation of EasyGDB using the PostgreSQL relational database (no longer maintained), the BLAST output will link to the easy GDB gene page by default unless other information is included in the JSON file.
+
+#### BLAST with multiple databases
+
+You can blast your sequences against multiple databases in the same query. 
+To enable this option, you need to set `$multiple_blast_db` in `egdb_files/egdb_conf/easyGDB_conf.php` to 1. 
+Then, you just need to copy the BLAST databases inside the folders `nucleotides` and `proteins` in the `blast_dbs` folder using a different subfolder for each species,
+ such as `nucleotides/Danio_rerio/` and `nucleotides/Mola_mola/`. BLAST species folders MUST NOT include spaces in their names.
+
+```
+    blast_dbs/
+    |---- nucleotides/
+       |---- species1/
+          |---- sps1_mrna.fasta.nsq
+          |---- sps1_mrna.fasta.nsi
+          |---- sps1_mrna.fasta.nsd
+          |---- sps1_mrna.fasta.nog
+          |---- sps1_mrna.fasta.nin
+          |---- sps1_mrna.fasta.nhr
+          |---- sps1_genome.fasta.nsq
+          |---- sps1_genome.fasta.nsi
+          |---- sps1_genome.fasta.nsd
+          |---- sps1_genome.fasta.nog
+          |---- sps1_genome.fasta.nin
+          |---- sps1_genome.fasta.nhr
+       |---- species2/
+          |---- sps2_mrna.fasta.nsq
+          |---- sps2_mrna.fasta.nsi
+          |---- sps2_mrna.fasta.nsd
+          |---- sps2_mrna.fasta.nog
+          |---- sps2_mrna.fasta.nin
+          |---- sps2_mrna.fasta.nhr
+    |---- proteins/
+       |---- species1/
+          |---- sps1_proteins.fasta.psq
+          |---- sps1_proteins.fasta.psi
+          |---- sps1_proteins.fasta.psd
+          |---- sps1_proteins.fasta.pog
+          |---- sps1_proteins.fasta.pin
+          |---- sps1_proteins.fasta.phr
+       |---- species2/
+          |---- sp2_proteins.fasta.psq
+          |---- sp2_proteins.fasta.psi
+          |---- sp2_proteins.fasta.psd
+          |---- sp2_proteins.fasta.pog
+          |---- sp2_proteins.fasta.pin
+          |---- sp2_proteins.fasta.phr
+```
+
 
 ### Sequence extraction
 
