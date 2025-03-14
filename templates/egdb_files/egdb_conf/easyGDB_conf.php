@@ -90,19 +90,17 @@ $positions=[
 
 //Generic colors and ranges of expression
 
-// This section defines the colors, ranges and range labels for the color scale used generically in the expression tools.
+// This section defines the colors, ranges and range labels for the color scale used in the expression tools.
 // The order of the elements is from lowest to highest expression.
-// *"colors":place the color code you want to use for each range of expression.
-// *"ranges_text": write the text to be displayed in each of the expression ranges.
-// *"ranges": array that contains the lower and upper limits of each range are defined. [low,up].
+// $colors: place the color code you want to use for each range of expression.
+// $ranges_text: write the text to be displayed in each of the expression ranges.
+// $ranges: array that contains the lower and upper limits of each range. [lower,uppper].
 
 $colors = ["#eceff1","#b3e5fc","#80cbc4","#ffee58","#ffb74d","#ff8f00","#ff4f00","#cc0000","#D72C79","#801C5A","#6D3917","#443627"];
 $ranges_text =["<1",">=1",">=2",">=5",">=10",">=50",">=100",">=200",">=500",">=1000",">=5000",">=8000"];
 $ranges=[[0,0.99],[1,1.99],[2,4.99],[5,9.99],[10,49.99],[50,99.99],[100,199.99],[200,499.99],[500,999.99],[1000,4999.99],[5000,7999.99],[8000,80000]];
 
-// If you want to create a specific color palette for each dataset, you can configure it in the expression_info.json 
-// file located in the /json_files/tools folder and there put the variables shown above in the section of each dataset.
-
+// If you want to create a specific color palette for each dataset, you can configure it in the json_files/tools/expression_info.json 
 
 
 // Passport
@@ -124,6 +122,9 @@ $max_expression_input = 15;
 $max_annotation_input = 5000;
 
 // BLAST
+//enable BLAST in multiple databases simultaneously
+$multiple_blast_db = 1;
+
 $blast_example=">protein_or_DNA
 ATGAGTTGTGGGGAGGGATTTATGTCACCACAAATAGAGACTAAAGGAAGTGTTGGATTC
 AAAGCGGGTGTTAAAGAGTACAAATTGATTTATTATACTCCTGAATACGAAACCAAAGAT

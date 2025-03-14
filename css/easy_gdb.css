@@ -198,3 +198,34 @@ table.dataTable td,th {
   margin-bottom: 10px;
 }
 
+/* blast_input.php */
+.blast_attr label, .yellow_col { /*apply with form-group */
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+}
+
+.sequence_box { /* apply with form-control */
+  width: 200px;
+  border-radius: 20px;
+  border: 1px solid rgb(53, 58, 64);
+  padding: 10px;
+  width: 100%;
+}
+
+.blast_box { /* apply with form-control */
+  width: 200px;
+  border-radius: 20px;
+  border: 1px solid rgb(53, 58, 64);
+  padding: 10px;
+  width: 100%;
+}
+
+#blast-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}

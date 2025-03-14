@@ -6,15 +6,21 @@
 </div>
 <br>
 
-<h3 class="text-center">BLAST</h3>
+<h2 class="text-center"><i class="fas fa-dna" style="color:#555"></i> BLAST</h2>
+<br>
+<div id="blast-container" class="margin-20" style="margin:auto; max-width:900px">
 
-<div class="margin-20" style="margin:auto; max-width:900px">
+  <?php if ($multiple_blast_db == 0): ?>
+    <form id="blast_form" action="blast_output_single.php" method="post">
+  <?php endif; ?>
 
-  <form id="blast_form" action="blast_output.php" method="post">
+  <?php if ($multiple_blast_db == 1): ?>
+    <form id="blast_form" action="loading_blast.php" method="post">
+  <?php endif; ?>
 
-    <div class="form-group">
+    <div class="form-group blast_attr">
       <label for="blast_sequence">Paste a sequence</label>
-      <textarea id="blast_sequence" name="query" class="form-control" rows="12" style="font-family:Monospace">
+      <textarea id="blast_sequence" name="query" class="form-control sequence_box" rows="12" style="font-family:Monospace">
 <?php echo "$blast_example" ?>
       </textarea>
     </div>
@@ -27,7 +33,7 @@
 
       <div class="col-sm-6 col-md-6 col-lg-">
         <label for="blast_program" class="yellow_col">BLAST program</label>
-        <select class="form-control" id="blast_program" name="blast_prog">
+        <select class="form-control blast_box" id="blast_program" name="blast_prog">
           <option value='blastn'>BLASTn</option>
           <option value='blastp'>BLASTp</option>
           <option value='blastx' selected>BLASTx</option>
@@ -40,17 +46,17 @@
 
     <hr>
     <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#adv_opt" aria-expanded="true" style="text-align:center">
-      <i class="fas fa-sort" style="color:#229dff"></i> <h3 style="display:flex inline"> Blast options </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
+      <i class="fas fa-sort" style="color:#229dff"></i> <h3 style="display:flex inline"> Advanced options </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
     </div>
     <!-- <a data-toggle="collapse" data-target="#adv_opt" class="btn btn-light" style="background:gray">BLAST options</a> -->
-    <br>
+    
     <div id="adv_opt" class="collapse">
 
       <div class="row text-left">
 
         <div class="col-sm-6 col-md-6 col-lg-">
           <label for="blast_hits" class="yellow_col">Max hit number</label>
-          <select class="form-control" id="blast_hits" name="max_hits">
+          <select class="form-control blast_box" id="blast_hits" name="max_hits">
             <option value='10' selected>10</option>
             <option value='20'>20</option>
             <option value='40'>40</option>
@@ -60,7 +66,7 @@
 
         <div class="col-sm-6 col-md-6 col-lg-">
             <label for="blast_eval" class="yellow_col">Max <i>e</i> value</label>
-            <select class="form-control" id="blast_eval" name="evalue">
+            <select class="form-control blast_box" id="blast_eval" name="evalue">
             <option value='10'>10</option>
             <option value='1e-3' selected>1e-3</option>
             <option value='1e-6'>1e-6</option>
@@ -75,7 +81,7 @@
 
         <div class="col-sm-6 col-md-6 col-lg-">
           <label for="blast_matrix" class="yellow_col">Matrix</label>
-          <select class="form-control" id="blast_matrix" name="blast_matrix">
+          <select class="form-control blast_box" id="blast_matrix" name="blast_matrix">
             <option value='BLOSUM45'>BLOSUM45</option>
             <option value='BLOSUM52'>BLOSUM55</option>
             <option value='BLOSUM62' selected>BLOSUM62</option>
@@ -90,8 +96,8 @@
         </div>
         
         <div class="col-sm-6 col-md-6 col-lg-">
-          <label for="blast_task">Task</label>
-          <select class="form-control" id="blast_task" name="task">
+          <label class="yellow_col" for="blast_task">Task</label>
+          <select class="form-control blast_box" id="blast_task" name="task">
           <option value='none' selected>default</option>
           <option value='blastn-short'>blastn-short</option>
           <option value='dc-megablast'>dc-megablast (more sensitive but slower)</option>
