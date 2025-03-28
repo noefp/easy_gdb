@@ -8,7 +8,7 @@
 
 <h2 class="text-center"><i class="fas fa-dna" style="color:#555"></i> BLAST</h2>
 <br>
-<div id="blast-container" class="margin-20" style="margin:auto; max-width:900px">
+<div id="blast-container" class="margin-20">
 
   <?php if ($multiple_blast_db == 0): ?>
     <form id="blast_form" action="blast_output_single.php" method="post">
@@ -20,7 +20,7 @@
 
     <div class="form-group blast_attr">
       <label for="blast_sequence">Paste a sequence</label>
-      <textarea id="blast_sequence" name="query" class="form-control sequence_box" rows="12" style="font-family:Monospace">
+      <textarea id="blast_sequence" name="query" class="form-control sequence_blast_box" rows="12">
 <?php echo "$blast_example" ?>
       </textarea>
     </div>

@@ -123,7 +123,8 @@ if ($multiple_blast_db == 1) {
                 $file_extension = pathinfo($file, PATHINFO_EXTENSION);
                 // Check if the file extension is in the allowed list
                 if (in_array($file_extension, $allowed_extensions)) {
-                    $database_list[] = str_replace("_", " ", $file); // Add file to list
+                    // $database_list[] = str_replace("_", " ", $file); // Add file to list
+                    $database_list[] = $file; // Add file to list
                 }
             }
         }
@@ -152,7 +153,8 @@ if ($multiple_blast_db == 1) {
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
   foreach ($nucleotide_dbs as $db) {
-    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db</li>";
+    $db_name = str_replace("_", " ", $db);
+    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</li>";
   }
 
   echo "</ul>";
@@ -164,7 +166,8 @@ if ($multiple_blast_db == 1) {
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
   foreach ($protein_dbs as $db) {
-    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db</li>";
+    $db_name = str_replace("_", " ", $db);
+    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</li>";
   }
 
   echo "</ul>";
