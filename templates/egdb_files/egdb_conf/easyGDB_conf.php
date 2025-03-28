@@ -56,6 +56,7 @@ $tb_tools = 1;
 $tb_search = 1;
 $tb_blast = 1;
 $tb_jbrowse = 1;
+$tb_jbrowse2 = 2;
 $tb_seq_ext = 1;
 $tb_annot_ext = 1;
 $tb_lookup = 1;

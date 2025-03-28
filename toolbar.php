@@ -44,6 +44,9 @@
           if ($tb_jbrowse) {
             echo '<a class="dropdown-item jbrowse_link" href="/jbrowse/" target="_blank">Genome Browser</a>';
           }
+          if ($tb_jbrowse2) {
+            echo '<a class="dropdown-item jbrowse_link" href="/jbrowse2/" target="_blank">Synteny Viewer</a>';
+          }
           if ($tb_seq_ext) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
           }
