@@ -26,7 +26,7 @@
               if((count($annot_hash_color['colors']) == count($annot_hash_color['ranges_txt'])) && (count($annot_hash_color['ranges_txt']) == count($annot_hash_color['ranges'])))
               {
                 $colors=$annot_hash_color['colors'];
-                $range_text=$annot_hash_color['ranges_txt'];
+                $ranges_text=$annot_hash_color['ranges_txt'];
                 $ranges=$annot_hash_color['ranges'];
 
                 echo "<script type='text/javascript'>
