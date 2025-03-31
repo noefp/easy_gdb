@@ -12,6 +12,8 @@ cp -r ../templates/* ../../;
 ln -s -f /var/www/html/apache/easy_gdb_apache.conf /etc/apache2/sites-enabled/000-default.conf;
 cd ../../
 
+#JBrowse1
+
 echo -e "\033[31mDo you want to install JBrowse 1?\033[0m (Y/n)"
 read -p "> " option
 option=${option:-Y}
@@ -42,29 +44,37 @@ case "$option" in
         ;;
 esac
 
+
+# jbrowse2
+
+echo -e "\033[31mDo you want to install JBrowse 2?\033[0m (Y/n)"
+read -p "> " option
+option=${option:-Y}
+
+while [[ $option != 'Y' && $option != 'y' && $option != 'N' && $option != 'n' ]]; do
+    echo -e "\033[31mDo you want to install JBrowse 2?\033[0m (Y/n)"
+    read -p "> "  option
+    option=${option:-Y}
+done
+
+case "$option" in
+    [Yy])
+            apt-get install tabix;
+            curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
+            bash nodesource_setup.sh
+            apt-get install nodejs
+            #cd ../;
+
+            npm install -g @jbrowse/cli;
+            jbrowse create jbrowse2;
+            mkdir -p jbrowse2/data;
+        ;;
+    [Nn])
+        echo "JBrowse 2 will not be installed"
+        ;;
+esac
+
 echo ""
 echo -e "\033[32mEasyGDB installed succesfully, follow the next link to see your genomic portal:\033[0m"
 echo -e "\033[1;34mlocalhost:8000/easy_gdb/\033[0m"
 echo ""
-
-# Work in progress
-# read -p "Do you want to download JBrowse 2? (Y/n) " option
-# option=${option:-Y}
-
-# while [[ $option != 'Y' && $option != 'n' ]]; do
-#     read -p "Do you want to download JBrowse 2? (Y/n) " option
-#     option=${option:-Y}
-# done
-
-# if [ "$option" == "Y" ]; then
-# apt-get install tabix;
-# curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
-# bash nodesource_setup.sh
-# apt-get install nodejs
-# cd ../;
-
-# npm install -g @jbrowse/cli;
-# jbrowse create jbrowse2;
-# mkdir -p jbrowse2/data;
-# fi
-

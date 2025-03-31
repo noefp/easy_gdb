@@ -49,10 +49,10 @@ var options = {
   xaxis: {
     categories: sample_array,
     labels: {
-      rotate: -35,
-      rotateAlways: false,
-      // hideOverlappingLabels: false,
-      // trim: false
+      rotate: -50,
+      rotateAlways: true,
+      hideOverlappingLabels: false,
+      trim: false
       // maxHeight: 450,
       // minHeight: height_labels*4.5
     }
@@ -299,15 +299,15 @@ var options = {
     type: 'category',
     categories: sample_array,
     tickAmount: (sample_array.length)-2,
-    // labels: {
-      // rotate: -50,
-      // rotateAlways: true,
-      // hideOverlappingLabels: false,
-      // trim: false,
+    labels: {
+      rotate: -50,
+      rotateAlways: true,
+      hideOverlappingLabels: false,
+      trim: false,
       // maxHeight: 300,
       // minHeight: height_labels*4.5,
 
-    // }
+    }
   },
 
   yaxis: {

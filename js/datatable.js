@@ -7,7 +7,7 @@ function datatable(table_id,select_id) {
     if ($(table_id+' thead tr').length < 2) { //if the table has already been deployed before
   
         //  create data table checkbox column at the first position
-        $(table_id+' thead tr:eq(0)').prepend('<th>Select</th>');
+        $(table_id+' thead tr:eq(0)').prepend('<th style="max-width: 120px">Select</th>');
         $(table_id+' tbody tr').each(function() {
           $(this).prepend('<td><input type="checkbox" class="row-select"></td>');
         });
