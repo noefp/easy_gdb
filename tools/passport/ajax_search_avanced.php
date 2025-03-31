@@ -13,7 +13,7 @@ $pass_hash = json_decode($pass_json_file, true);
 $passport_file = $pass_hash["passport_file"];
 $phenotype_file_array = $pass_hash["phenotype_files"];
 // $unique_link = $pass_hash["acc_link"];
-$hide_array = $pass_hash["hide_columns"];
+// $hide_array = $pass_hash["hide_columns"];
 
 
 if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path_file.'/'.$passport_file)   ) {
@@ -25,7 +25,7 @@ array_push($all_passport_array,'<div class="collapse_section pointer_cursor" dat
 <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3>
 </div>
 <div id="passport_search" class="show collapse">');
-$one_passport_array=read_passport_file($passport_path_file,$passport_file,$hide_array,"passport");
+$one_passport_array=read_passport_file($passport_path_file,$passport_file,"passport");
 // array_push($all_passport_array,read_passport_file($passport_path_file,$passport_file));
 $all_passport_array=array_merge($all_passport_array,$one_passport_array);
 array_push($all_passport_array,"</div>");  
@@ -37,14 +37,14 @@ if (!empty($phenotype_file_array)){
   <div id="phenotype_search" class="show collapse"">');
   if (count($phenotype_file_array)>1){
     foreach ($phenotype_file_array as $index => $phenotype_file) {
-      $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file,$hide_array,"phenotype".($index+1));
+      $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1));
       $all_passport_array=array_merge($all_passport_array,$phenotype_passport_array);
     }
     array_push($all_passport_array,"<div class=\"all_phenotype_search\" style=\"display: flex; justify-content: flex-end;\">");
     array_push($all_passport_array,"<button id=\"submit_all_forms\" class=\"btn btn-info search_button\"  type=\"submit\" style=\"margin:20px;\"><span class=\"fas fa-search\"></span> All Phenotype Search</button>");
     array_push($all_passport_array, "</div>");
   }else{
-    $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file_array[0],$hide_array,"phenotype");
+    $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype");
     $all_passport_array=array_merge($all_passport_array,$phenotype_passport_array);
   }
   array_push($all_passport_array, "</div>");
@@ -56,7 +56,7 @@ echo (json_encode($all_passport_array));
 
 // $n_passport_files=[];
 
-function read_passport_file($passport_path,$passport_file,$hide_array,$form_id) {
+function read_passport_file($passport_path,$passport_file,$form_id) {
   
   $passport_array = array();
 
@@ -92,8 +92,7 @@ function read_passport_file($passport_path,$passport_file,$hide_array,$form_id) 
               array_push($passport_array,"<select class=\"form-control sel_opt\" id=\"$frame_id\" name=\"$no_spc_file\" style=\"width:auto; display: inline-block;\">");
               // echo "<option selected></option>";
               foreach ($header_array as $index => $value) {
-                if(!in_array($index,$hide_array))
-                {array_push($passport_array,"<option name=\"$index\">$value</option>");}
+                array_push($passport_array,"<option name=\"$index\">$value</option>");
               }
               array_push($passport_array,"</select>");
 
