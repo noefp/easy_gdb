@@ -494,7 +494,9 @@ function file_to_table($file_path, $acc_name) {
 
     // Tabla con los datos crudos
     //echo "<div style=\"overflow:scroll\">";
-    echo "<table class=\"table tblResults table-striped table-bordered\"><thead><tr>";
+    echo "<table id=\"table_$collapse_id\" class=\"table tblResults table-striped table-bordered\" style=\"display:none\"><thead><tr>";
+
+    echo "<div id=\"load_$collapse_id\" class=\"loader\"></div>"; // loading icon
     
     foreach ($header as $col_name) {
       $descriptor_name = $col_name;
@@ -860,7 +862,15 @@ if(showMap) {
 
 
   $(document).ready(function(){
-    $(".tblResults").dataTable({
+
+$(".collapse").on('shown.bs.collapse', function(){    
+
+  var id=this.id;
+
+  $("#load_"+id).remove();
+  $("#table_"+id).show();
+
+    $("#table_"+id).dataTable({
       dom:'Bfrtlpi',
       "oLanguage": {
         "sSearch": "Filter by:"
@@ -900,6 +910,8 @@ $(".dataTables_filter").addClass("float-right");
 
 });
 
+});
+
 </script>
 
 <style>
@@ -920,5 +932,9 @@ $(".dataTables_filter").addClass("float-right");
     display:none;
   }
   
-  
+  .collapse_section:hover {
+/*  text-decoration: underline;*/
+  background-color: #999 !important;
+
+}
 </style>

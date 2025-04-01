@@ -1,13 +1,13 @@
 <?php 
   //echo "$images_path<br>"; // tiene una "/" al inicio    ¡¡ OJO !!
   //echo "sp_name: $sp_name<br>";
-  $gallery_path  = "$root_path$images_path/gallery/$sp_name/$acc_name";
+  $gallery_path  = "$root_path/$images_path/gallery/$sp_name/$acc_name";
   //echo "gallery_path = $gallery_path<br>";
   $thumbnails = [];
   $active = 'active';
+  $is_gallery = is_dir($gallery_path) ;
 
-
-  if (is_dir($gallery_path) ) {
+  if ($is_gallery) {
     //echo "existe gallery_path: $gallery_path<br>";
     echo"<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-images\"></i><b> Gallery </b></h1></center>";
     echo"</div></div>";
@@ -36,7 +36,7 @@
       closedir($dir);
     }
   } else {
-    //echo "Gallery_path not found for $acc_name<br>";
+    // echo "Gallery_path not found for $acc_name<br>";
   }
 
 ?>
@@ -98,21 +98,26 @@
 
 
 <script>
+
   $(document).ready(function(){
-    $('#galleryCarousel').carousel(); // Initialise the carousel
+    var gallery=<?php echo json_encode($is_gallery); ?>;
 
-    // Intersection Observer to control the visibility of the carousel
-    const galleryCarousel = document.getElementById('galleryCarousel');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          $('#galleryCarousel').carousel('cycle'); // Active
-        } else {
-          $('#galleryCarousel').carousel('pause'); // Pause
-        }
-      });
-    }, { threshold: 0.5 }); // It is visible if it is seen, at least, 50% of carousel
+    if(gallery) {
 
-    observer.observe(galleryCarousel);
+        $('#galleryCarousel').carousel(); // Initialise the carousel
+        // Intersection Observer to control the visibility of the carousel
+        const galleryCarousel = document.getElementById('galleryCarousel');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              $('#galleryCarousel').carousel('cycle'); // Active
+            } else {
+              $('#galleryCarousel').carousel('pause'); // Pause
+            }
+          });
+        }, { threshold: 0.5 }); // It is visible if it is seen, at least, 50% of carousel
+
+        observer.observe(galleryCarousel);
+    }
   });
 </script>

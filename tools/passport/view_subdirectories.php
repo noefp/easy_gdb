@@ -187,7 +187,7 @@
 /*    object-fit: scale-down;*/
     
     width: 100%;
-    object-fit: cover;
+    object-fit:contain;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     
