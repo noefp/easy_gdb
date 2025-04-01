@@ -56,7 +56,7 @@ $tb_tools = 1;
 $tb_search = 1;
 $tb_blast = 1;
 $tb_jbrowse = 1;
-$tb_jbrowse2 = 2;
+$tb_jbrowse2 = 1;
 $tb_seq_ext = 1;
 $tb_annot_ext = 1;
 $tb_lookup = 1;
@@ -124,7 +124,7 @@ $max_annotation_input = 5000;
 
 // BLAST
 //enable BLAST in multiple databases simultaneously
-$multiple_blast_db = 1;
+$multiple_blast_db = 0;
 
 $blast_example=">protein_or_DNA
 ATGAGTTGTGGGGAGGGATTTATGTCACCACAAATAGAGACTAAAGGAAGTGTTGGATTC
