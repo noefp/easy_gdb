@@ -1,109 +1,230 @@
-<?php include realpath('../header.php'); ?>
-
-<div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
-</div>
-
-<a href="/easy_gdb/tools/gene_lookup.php" class="float-left" style="text-decoration: underline;"><i class="fas fa-reply" style="color:#229dff"></i> Back to input</a>
-<br>
-
-<h1 class="text-center">Gene Version Lookup</h1>
-
-<div class="page_container" style="margin-top:40px">
-  
-<!-- <div class="data_table_frame"> -->
-
-<?php
-$lookup_file = $_POST["lookup_db"];
-$input_gene_list = $_POST["txtGenes"];
-
-$gene_hash = [];
-$gNamesArr=array_filter(explode("\n",trim($_POST["txtGenes"])),function($gName) {return ! empty($gName);});
-// $gNamesArr = explode( "\n",trim($_POST["txtGenes"]) );
-
-if (sizeof($gNamesArr)==0) {
-  echo "<h3>The gene list was empty!</h3>";
-} 
-else {
-
-  // echo "<p>time1: ".time()."</p>";
-  $tab_file = file($lookup_file);
-  $columns = [];
-  $count = 1;
-  foreach ($tab_file as $line) {
-    $trimmed_line = trim($line);
-    $columns = str_getcsv($trimmed_line,"\t");
-    
-    $count++;
-    
-      // if ($count < 5) {
-      //   echo "<p>line.".$line.".line</p>";
-      //   echo "<p>line.".$trimmed_line.".line</p>";
-      //
-      //   echo "<p>gene1: $columns[0], gene2: $columns[1]</p>";
-      
-    if ($gene_hash[trim($columns[0])]) {
-      $gene_hash[trim($columns[0])] = $gene_hash[trim($columns[0])].";".trim($columns[1]);
-    } else {
-      $gene_hash[trim($columns[0])] = trim($columns[1]);
-    }
-
-    if ($gene_hash[trim($columns[1])]) {
-      $gene_hash[trim($columns[1])] = $gene_hash[trim($columns[1])].";".trim($columns[0]);
-    } else {
-      $gene_hash[trim($columns[1])] = trim($columns[0]);
-    }
-      
-        // $gene_hash[trim($columns[0])] = trim($columns[1]);
-        // $gene_hash[trim($columns[1])] = trim($columns[0]);
-      
-      // }
-  }
-  // echo "<p>time2: ".time()."</p>";
-
-  echo "<table class=\"table  \" id=\"tblResults\"><thead><tr><th>input genes</th><th>genes found</th></thead>";
-
-  foreach ($gNamesArr as $input_gene) {
-    $converted_gene = $gene_hash[trim($input_gene)];
-    
-    if ( preg_match("/;/", $converted_gene ) ) {
-      
-      $multi_genes = explode(";",$converted_gene);
-      
-      foreach ($multi_genes as $one_gene) {
-        echo "<tr style=\"background-color:#FFEFEF\"><td>$input_gene</td><td>".$one_gene."</td></tr>";
-      }
-    } else {
-      echo "<tr><td>$input_gene</td><td>".$converted_gene."</td></tr>";
-    }
-  }
-
-  echo "</table>";
-// echo "<p>time3: ".time()."</p>";
-
-}
-
+<!-- HEADER -->
+<?php 
+  include realpath('../header.php');
+  include_once realpath("$root_path/easy_gdb/tools/common_functions.php");
 ?>
 
-<!-- </div> -->
+<!-- RETURN AND HELP -->
+<div class="margin-20">
+  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank">
+    <i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help
+  </a>
 </div>
-<br>
-<br>
-<script type="text/javascript">
-  $("#tblResults").dataTable({
-  	"dom":'Bfrtlpi',
-    "oLanguage": {
-       "sSearch": "Filter by:"
-     },
-    "ordering": false,
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-  });
-  
-  $("#tblResults_filter").addClass("float-right");
-  $("#tblResults_info").addClass("float-left");
-  $("#tblResults_paginate").addClass("float-right");
 
+<a class="float-left pointer_cursor" style="text-decoration: underline;" onClick="history.back()">
+  <i class="fas fa-reply" style="color:#229dff"></i> Back to input
+</a>
+<br>
+
+<!-- HTML -->
+<h1 class="text-center margin-20">Gene Version Lookup <i class="fas fa-search" style="color:#555;"></i></h1>
+<div class="page_container">
+
+<?php
+function get_lookup_lines($desc_input, $lookup_file) {
+  $lookup_file = str_replace(" ", "\\ ", $lookup_file);
+
+  usort($desc_input, function($a, $b) {
+    return strlen($b) - strlen($a);
+  });
+
+  $temp_pattern_file = tempnam(sys_get_temp_dir(), 'pattern_');
+  file_put_contents($temp_pattern_file, implode("\n", $desc_input));
+
+  $grep_command = "grep -i -f" . escapeshellarg($temp_pattern_file) . " " . escapeshellarg($lookup_file);
+  exec($grep_command, $output);
+  unlink($temp_pattern_file);
+
+  return $output;
+}
+
+function highlightLine($line, $desc_input) {
+  $max_highlight = 10000;
+  if (count($desc_input) > $max_highlight) {
+    return $line;
+  }
+
+  $chunkSize = 50;
+  $chunks = array_chunk($desc_input, $chunkSize);
+
+  foreach ($chunks as $chunk) {
+    $pattern = '/' . implode('|', array_map(function($gene) {
+        return preg_quote($gene, '/');
+    }, $chunk)) . '/i';
+
+    $line = preg_replace_callback(
+      $pattern,
+      function($matches) {
+        return "<mark>{$matches[0]}</mark>";
+      },
+      $line
+    );
+  }
+  return $line;
+}
+
+
+function print_lookup_table($desc_input, $output, $lookup_file) {
+  if (empty($output)) {
+    echo '<div class="alert alert-danger" role="alert" style="text-align:center">
+            No gene was found in the selected dataset
+          </div><br>';
+    return;
+  }
+
+  $head_command = "head -n 1 $lookup_file";
+  $output_head = trim(shell_exec($head_command));
+  $columns = explode("\t", $output_head);
+  $col_number = count($columns);
+
+  echo "<div id=\"Lookup_table\" class=\"collapse show\">";
+  echo "<table id=\"tblLookup\" class=\"tblLookup table table-striped table-bordered\">\n";
+  echo "<div id=\"load\" class=\"loader\"></div>";
+
+  // TABLE HEADER
+  echo "<thead><tr>\n";
+  foreach ($columns as $col) {
+    echo "<th>$col</th>";
+  }
+  echo "</tr></thead>\n";
+
+  // TABLE BODY
+  echo "<tbody>\n";
+  foreach ($output as $line) {
+    $line = highlightLine($line, $desc_input);
+
+    $data = explode("\t", $line);
+
+    echo "<tr>\n";
+    for ($n = 0; $n < $col_number; $n++) {
+      if (!isset($data[$n])) {
+        echo "<td></td>\n";
+        continue;
+      }
+
+      if (strpos($data[$n], ';') !== false) {
+        $data_semicolon = str_replace(';', "<br>", $data[$n]);
+        $lines_semicolon = explode("<br>", $data_semicolon);
+        $show_tooltip = false;
+        foreach ($lines_semicolon as $lineItem) {
+          if (strlen($lineItem) >= 68) {
+            $show_tooltip = true;
+            break;
+          }
+        }
+        if ($show_tooltip) {
+          $title = implode("\t", $lines_semicolon);
+          echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+        } else {
+          echo "<td>$data_semicolon</td>\n";
+        }
+
+      } else {
+        if (strlen($data[$n]) >= 68) {
+          echo "<td class=\"td-tooltip\" title=\"{$data[$n]}\">{$data[$n]}</td>\n";
+        } else {
+          echo "<td>{$data[$n]}</td>\n";
+        }
+      }
+    }
+    echo "</tr>\n";
+  }
+  echo "</tbody></table></div><br><br>\n";
+}
+?>
+
+<?php
+// POST INPUT
+$gNamesArr = array_filter(
+  preg_split('/[\s;,:]+/', trim($_POST["txtGenes"])),
+  function($gName) { return $gName !== ''; }
+);
+
+if(empty($gNamesArr)) {
+  echo '<div class="alert alert-danger" role="alert" style="text-align:center">
+          No genes to search provided
+        </div><br>';
+} else {
+  $search_query = [];
+  foreach ($gNamesArr as $gene_name) {
+    $search_query[] = test_input2($gene_name);
+  }
+
+  $annot_file = $_POST["lookup_db"];
+
+  $lines_found = get_lookup_lines($search_query, $annot_file);
+
+  if (!empty($search_query)) {
+    $notFound = [];
+    foreach ($search_query as $gene) {
+      $found = false;
+      foreach ($lines_found as $line) {
+        if (stripos($line, $gene) !== false) {
+          $found = true;
+          break;
+        }
+      }
+      if (!$found) {
+        $notFound[] = $gene;
+      }
+    }
+    if (!empty($notFound)) {
+      echo '<div class="alert alert-warning" role="alert" style="display:block;">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 style="display:inline">Genes not found</h3>
+              <div class="card-body" style="padding-top:0px;padding-bottom:0px">'
+                . implode("<br>", $notFound) .
+              '</div>
+            </div>';
+    }
+  }
+
+  print_lookup_table($search_query, $lines_found, $annot_file);
+}
+?>
+
+<br>
+</div>
+<!-- END HTML -->
+
+<!-- CSS DATATABLE -->
+<style>
+  table.dataTable td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .td-tooltip {
+    cursor: pointer;
+  }
+  mark {
+    background-color: #c0ffc8;
+    padding: 0.2em 0;
+  }
+</style>
+
+<!-- JS DATATABLE -->
+<script src="../js/datatable.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#tblLookup').addClass('show');
+    $('#load').remove();
+    $('#tblLookup').css("display","table");
+    datatable("#tblLookup",'1');
+
+    $(".collapse").on('shown.bs.collapse', function(){
+      var id = $(this).attr("id");
+      id = id.replace("Lookup_table","");
+      $('#load').remove();
+      $('#tblLookup').css("display","table");
+      datatable("#tblLookup", id);
+    });
+
+    $(".td-tooltip").tooltip();
+  });
 </script>
 
-
-<?php include realpath('../footer.php'); ?>
+<!-- FOOTER -->
+<?php include_once realpath("$easy_gdb_path/footer.php");?>
