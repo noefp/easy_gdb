@@ -129,6 +129,23 @@ table.dataTable td,th {
   word-break: keep-all;
 }
 
+.dt-button-collection .dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.columns-show {
+  cursor: pointer;
+  color:white;
+  background-color:#6c757d;
+}
+
+.columns-show:hover {
+  background-color:#465156 ; 
+  color:white;
+}
+
 /* species.php */
 
 #species_menu_container {
