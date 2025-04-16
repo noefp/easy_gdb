@@ -382,7 +382,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       <span aria-hidden="true">&times;</span>
     </button>
   <!-- This message would be displayed when the information in the Json "expression_colors" arrays does not match the size -->
-  <div id="color_error" class="card-body" style="padding-top:10px;padding-bottom:0px;text-align: center" ><strong>Info:</strong> The default color scale has been selected because the size of the attributes
+  <div id="color_error" class="card-body" style="padding:0px;text-align: center" ><strong>Info:</strong> The default color scale has been selected because the size of the attributes
 "expression colors" in <i>"expression_info.json"</i> do not match !!!</div></div>
 
 
