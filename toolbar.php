@@ -113,18 +113,33 @@
     </ul>
   
   <?php
-    if ($tb_search_box) {
-      echo '<form class="ml-auto form-inline" id="egdb_search_form" action="/easy_gdb/tools/search/search_output.php" method="get">';
+  if ($tb_search_box) {
+    if ($file_database) {
+      echo '<div class="d-flex mt-2 mt-md-0 justify-content-start justify-content-md-end w-100">';
+      echo '<form class="input-group" id="egdb_search_file_form" action="/easy_gdb/tools/search/search_output_file.php" method="get" style="width: auto;">';
+      echo '<input type="search" class="form-control" id="search_file_box" name="search_keywords" placeholder="Search">';
+      echo '<input type="hidden" name="search_all" value="1">';
+      echo '<div class="input-group-append">';
+      echo '<button type="submit" class="btn btn-info">';
+      echo '<i class="fa fa-search" style="font-size:16px;color:white"></i>';
+      echo '</button>';
+      echo '</div>';
+      echo '</form>';
+      echo '</div>';
+    }
+    else {
+        echo '<form class="ml-auto form-inline" id="egdb_search_form" action="/easy_gdb/tools/search/search_output.php" method="get">';
         echo '<input type="search_box" class="form-control mr-sm-2" id="search_box" name="search_keywords" placeholder="Search">';
         echo '<button type="submit" class="btn btn-info"><i class="fa fa-search" style="font-size:16px;color:white"></i></button>';
-      echo '</form>';
+        echo '</form>';
+      }
     }
 
     // if ($tb_login) {
     //     echo'<a id="login_link" class="ml-auto" style="color:white; cursor:pointer" data-toggle="modal" data-target="#loginModal">Log In <i class="fa fa-sign-in-alt" style="font-size:16px;color:white"></i></a>';
     //     echo'<a id="logout_link" class="ml-auto" style="color:white; cursor:pointer; display:none">Log Out <i class="fa fa-sign-out-alt" style="font-size:16px;color:white"></i></a>';
     // }
- ?>
+  ?>
   
   </div>
 
