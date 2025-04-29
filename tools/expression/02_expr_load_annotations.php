@@ -86,8 +86,10 @@
         }//close for
 
         $annot_string = implode("\n", $annot_col);
-        $annotations_hash_file[$gene_key] = $annot_string;
+        $annotations_hash_file[strtoupper($gene_key)] = $annot_string;
       }//close foreach
     }//if annot_hash
+    $annotations_hash_file_empty=implode("\n",array_fill(0,$col_number,"<td></td>"));
+
   }//if file db
 ?>

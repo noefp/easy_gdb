@@ -304,7 +304,13 @@ if ( file_exists("$expr_file") && isset($gids) ) {
       
       //################################################################################################## ADD ANNOTATIONS
       if ($file_database) {
-        array_push($table_code_array,$annotations_hash_file[$gene_name]);
+        // print_r(!empty($annotations_hash_file[strtoupper($gene_name)]));
+
+        if(!empty($annotations_hash_file[strtoupper($gene_name)])){
+          array_push($table_code_array,$annotations_hash_file[strtoupper($gene_name)]);
+        }else{
+          array_push($table_code_array,$annotations_hash_file_empty);
+        }
       }
       else {
         array_push($table_code_array,$annotations_hash2[$gene_name]);
