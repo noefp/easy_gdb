@@ -3,6 +3,8 @@
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script type="text/javascript" src="/easy_gdb/js/apexcharts.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/4.4.0/apexcharts.min.js"></script> -->
+
 
 <script type="text/javascript" src="/easy_gdb/js/kinetic-v5.1.0.min.js"></script>
 
