@@ -21,6 +21,9 @@ $custom_css_path = "$egdb_files_folder/css/custom.css";
 $expression_path = "$root_path/expression_data";
 $private_expression_path = "$root_path/private_expression_data";
 
+//Coexpression
+$coexpression_path = "$root_path/coexpression";
+
 //Passport
 $passport_path = "$root_path/passport/example";
 $phenotype_imgs_path = "$images_path/descriptors_imgs";
