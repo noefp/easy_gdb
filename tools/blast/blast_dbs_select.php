@@ -1,6 +1,6 @@
 <?php
 
-if ($multiple_blast_db == 0) {
+if (!$multiple_blast_db) {
   $counter = 0;
   $first_category;
 
@@ -43,7 +43,7 @@ if ($multiple_blast_db == 0) {
 <script>
   var multiple_blast_db = <?php echo $multiple_blast_db; ?>;
 
-  if (multiple_blast_db == 0) {
+  if (!multiple_blast_db) {
     $(document).ready(function () {
     
       var counter = '<?php echo $counter ?>';
@@ -93,7 +93,7 @@ if ($multiple_blast_db == 0) {
 
 <?php
 
-if ($multiple_blast_db == 1) {
+if ($multiple_blast_db) {
 
   // Arrays to store nucleotide and protein database entries
   $nucleotide_dbs = [];
@@ -141,11 +141,13 @@ if ($multiple_blast_db == 1) {
   $protein_path = $blast_dbs_path . "/proteins";
 
 
-  $end_ls = ['fasta','fa','fna','fas','ffn','faa','mpfa','frn'];
+  // $end_ls = ['fasta','fa','fna','fas','ffn','faa','mpfa','frn'];
 
   // Retrieve files in nucleotide and protein directories
-  get_databases($nucleotide_path, $nucleotide_dbs, $end_ls);
-  get_databases($protein_path, $protein_dbs, $end_ls);
+  // get_databases($nucleotide_path, $nucleotide_dbs, $end_ls);
+  // get_databases($protein_path, $protein_dbs, $end_ls);
+  get_databases($nucleotide_path, $nucleotide_dbs, ['nhr']);
+  get_databases($protein_path, $protein_dbs, ['phr']);
 
   // Display Nucleotide databases
   echo "<div class=\"form-group blast_attr\" id='nucleotide_db_list'>";
@@ -153,7 +155,10 @@ if ($multiple_blast_db == 1) {
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
   foreach ($nucleotide_dbs as $db) {
-    $db_name = str_replace("_", " ", $db);
+    $db_name = preg_replace('/\.[a-z]+\.nhr$/i', '', $db);
+    // $db_name = str_replace([".phr", ".nhr"], "", $db);
+    // $db_name = str_replace(".fasta", "", $db);
+    $db_name = str_replace("_", " ", $db_name);
     echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</li>";
   }
 
@@ -166,7 +171,10 @@ if ($multiple_blast_db == 1) {
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
   foreach ($protein_dbs as $db) {
-    $db_name = str_replace("_", " ", $db);
+    $db_name = preg_replace('/\.[a-z]+\.phr$/i', '', $db);
+    // $db = str_replace(".phr", "", $db);
+    // $db_name = str_replace(".fasta", "", $db);
+    $db_name = str_replace("_", " ", $db_name);
     echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</li>";
   }
 
@@ -180,7 +188,7 @@ if ($multiple_blast_db == 1) {
 <script>
   var multiple_blast_db = <?php echo $multiple_blast_db; ?>;
 
-  if (multiple_blast_db == 1) {
+  if (multiple_blast_db) {
     $(document).ready(function () {
       var blast_dbs_path = '<?php echo $blast_dbs_path; ?>';
       var blast_get_dbs_url = '<?php echo $blast_get_dbs; ?>';

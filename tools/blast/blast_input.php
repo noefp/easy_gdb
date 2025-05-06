@@ -10,12 +10,10 @@
 <br>
 <div id="blast-container" class="margin-20">
 
-  <?php if ($multiple_blast_db == 0): ?>
-    <form id="blast_form" action="blast_output_single.php" method="post">
-  <?php endif; ?>
-
-  <?php if ($multiple_blast_db == 1): ?>
+  <?php if ($multiple_blast_db): ?>
     <form id="blast_form" action="loading_blast.php" method="post">
+  <?php else: ?>
+    <form id="blast_form" action="blast_output_single.php" method="post">
   <?php endif; ?>
 
     <div class="form-group blast_attr">
