@@ -15,14 +15,21 @@
 <br>
   <h4>Selected Databases:</h4>
   <?php if (!empty($_POST['blast_db'])): ?>
-      <ul>
-          <?php foreach ($_POST['blast_db'] as $db): ?>
-              <li><?php echo htmlspecialchars($db); ?></li>
-          <?php endforeach; ?>
-      </ul>
-  <?php else: ?>
-      <p>No databases selected.</p>
-  <?php endif; ?>
+    <ul>
+        <?php foreach ($_POST['blast_db'] as $db): ?>
+            <?php
+            // echo "<li>".$db."</li>";
+                // Remove file extensions
+                $display_name = preg_replace('/\.[a-z]+\.(phr|nhr)$/i', '', $db);
+                // Replace underscores with spaces
+                $display_name = str_replace("_", " ", $display_name);
+            ?>
+            <li><?php echo htmlspecialchars($display_name); ?></li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>No databases selected.</p>
+<?php endif; ?>
   <div class="align-right">
       <a href="blast_input.php">
           <i class="fas fa-reply"></i> New Search
@@ -93,7 +100,9 @@
     </div>
     <br>
     <!-- Table Data -->
-    <div id="SGN_output" style="margin:20px;"></div>
+    <div class="table-responsive">
+      <div id="SGN_output" style="margin:20px;"></div>
+    </div>
 </div>
 
 <!-- End of Table Data -->
@@ -168,6 +177,23 @@ function find_file_in_directory($directory, $filename) {
   return null;
 }
 
+// $blast_dbs = [];
+// foreach ($_POST['blast_db'] as $filename) {
+//   $name = str_replace(" ", "_", $filename);
+//   $find_path = find_file_in_directory($blast_dbs_path . "/proteins", $name);
+
+//   if (!$find_path) {
+//       $find_path = find_file_in_directory($blast_dbs_path . "/nucleotides", $name);
+//   }
+
+//   if ($find_path) {
+//       $blast_dbs[] = $find_path;
+//   } else {
+//       error_log("File not found: " . $name);
+//   }
+// }
+
+
 $blast_dbs = [];
 foreach ($_POST['blast_db'] as $filename) {
   $name = str_replace(" ", "_", $filename);
@@ -178,7 +204,8 @@ foreach ($_POST['blast_db'] as $filename) {
   }
 
   if ($find_path) {
-      $blast_dbs[] = $find_path;
+      $db_path = preg_replace('/\.(phr|nhr)$/', '', $find_path);
+      $blast_dbs[] = $db_path;
   } else {
       error_log("File not found: " . $name);
   }
@@ -262,11 +289,11 @@ foreach ($blast_dbs as $blast_db) {
   } elseif (in_array($blast_prog, ["blastp", "blastx", "tblastx"])) {
       $blast_cmd = "\"$query\" | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
   }
-  //echo $blast_cmd;
+  // echo $blast_cmd."<br><br>";
 
   $blast_res = shell_exec('printf ' . $blast_cmd);
   $blast_res = str_replace('<a name=', "<a id=", $blast_res);
-  //echo $blast_res;
+  // echo $blast_res."<br>";
 
   if ($blast_res) {
     $blast_results[$blast_db] = $blast_res;
@@ -291,14 +318,15 @@ foreach ($blast_dbs as $blast_db) {
 
   
 
-  $links_hash;
-    
-  if ( file_exists("$blast_dbs_path/blast_links.json") ) {
-      $links_json_file = file_get_contents("$blast_dbs_path/blast_links.json");
+  $links_hash=[];
+
+  // if ( file_exists("$blast_dbs_path/blast_links.json") ) {
+  if ( file_exists("$json_files_path/tools/blast_links.json") ) {
+      $links_json_file = file_get_contents("$json_files_path/tools/blast_links.json");
       $links_hash = json_decode($links_json_file, true);
-      if ($links_hash["annot_file"]) {
-        $annot = $links_hash["annot_file"];
-      }
+      // if ($links_hash["annot_file"]) {
+      //   $annot = $links_hash["annot_file"];
+      // }
   }
 
 
@@ -379,7 +407,7 @@ foreach ($blast_dbs as $blast_db) {
         if ($subject) {
           //echo $subject;
           
-          list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send); 
+          list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
           $coordinates_checked = _check_coordinates($sstart,$send);
           $sstart = $coordinates_checked[0];
           $send = $coordinates_checked[1];
@@ -464,7 +492,6 @@ foreach ($blast_dbs as $blast_db) {
           $desc = preg_replace('/[\'\"]+/','',$desc);
           
           $species=str_replace("_", " ", $nameFD);
-          
           array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td>$desc</td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td></tr>");
           // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$e_value</td><td>$score</td><td>$desc</td></tr>");
           array_push($res_tab_txt, "$nameFD\t$nameDB\t$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$e_value\t$score\t$desc");
@@ -564,6 +591,7 @@ foreach ($blast_dbs as $blast_db) {
       $coordinates_checked = _check_coordinates($sstart,$send);
       $sstart = $coordinates_checked[0];
       $send = $coordinates_checked[1];
+      
       list($s_link,$target_type) = _get_subject_link($links_hash,$blast_db_name,$subject,$sstart,$send);
       $mm = $mismatch-$gaps;  
       // remove quotes from descriptions
@@ -607,11 +635,9 @@ foreach ($blast_dbs as $blast_db) {
 
 
 
- 
 }
 
 $name = str_replace("</b>", "", $query_name);
-
  
  
 ?>
@@ -886,7 +912,7 @@ if (format === "csv") {
 
 /* Dropdown button */
 .dropbtn {
-  background-color: #c9302c;
+  background-color: #6c757d;
   color: white;
   padding: 10px 16px;
   font-size: 16px;
@@ -896,7 +922,7 @@ if (format === "csv") {
 }
 
 .dropbtn:hover {
-  background-color: #808080;
+  background-color: #465156;
 }
 
 .dropdown-content {
