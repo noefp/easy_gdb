@@ -10,12 +10,17 @@
   <br>
   <h2 class="text-center">Gene Sequence Downloading</h3>
   <div id="sequence-container" class="form margin-20">
-    <?php if ($multiple_blast_db == 0): ?>
-      <form id="download_fasta_form" action="blast/blastdbcmd_single.php" method="post">
-    <?php endif; ?>
-    <?php if ($multiple_blast_db == 1): ?>
-      <form id="download_fasta_form" action="blast/blastdbcmd_multiple.php" method="post">
-    <?php endif; ?>
+    
+    <?php 
+    if (isset($multiple_blast_db) && $multiple_blast_db) {
+      $multiple_blast_db = 1;
+      echo "<form id=\"download_fasta_form\" action=\"blast/blastdbcmd_multiple.php\" method=\"post\">";
+    } else {
+      $multiple_blast_db = 0;
+      echo "<form id=\"download_fasta_form\" action=\"blast/blastdbcmd_single.php\" method=\"post\">";
+    }
+    ?>
+
     <div class="sequence_attr">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
       <textarea class="form-control sequence_box" id="txtDownloadGenes" rows="8" name="gids">
