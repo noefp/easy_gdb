@@ -6,12 +6,12 @@
 </div>
 <br>
 
-<div id="dlgDownload">
+<!-- <div id="dlgDownload"> -->
+  <h1 class="text-center">Sequence Extraction <i class="fas fa-download" style="color:#555"></i></h1>
   <br>
-  <h2 class="text-center">Gene Sequence Downloading</h3>
-  <div id="sequence-container" class="form margin-20">
-    
-    <?php 
+  <div id="sequence-container" class="form margin-20" style="margin:auto; max-width:900px">
+
+  <?php
     if (isset($multiple_blast_db) && $multiple_blast_db) {
       $multiple_blast_db = 1;
       echo "<form id=\"download_fasta_form\" action=\"blast/blastdbcmd_multiple.php\" method=\"post\">";
@@ -19,7 +19,7 @@
       $multiple_blast_db = 0;
       echo "<form id=\"download_fasta_form\" action=\"blast/blastdbcmd_single.php\" method=\"post\">";
     }
-    ?>
+  ?>
 
     <div class="sequence_attr">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
@@ -33,7 +33,7 @@
         <?php include_once 'blast/blast_dbs_select.php';?>
       </div>
       
-      <?php if ($multiple_blast_db == 1): ?>
+      <?php if ($multiple_blast_db): ?>
         <!-- Hidden input to store selected databases -->
         <input type="hidden" name="selected_dbs" id="selected_dbs" value="">
       <?php endif; ?>
@@ -41,10 +41,11 @@
       <button class="button btn btn-info float-right" id="btnSend" type="submit" form="download_fasta_form" formmethod="post">Download</button>
       </form>
       <br>
-      <br>
+      
   </div>
 
-</div>
+<!-- </div> -->
+<br>
 
 <?php include realpath('../footer.php'); ?>
 
@@ -59,7 +60,7 @@
 <script>
   var multiple_blast_db = <?php echo $multiple_blast_db; ?>;
 
-  if (multiple_blast_db == 0) {
+  if (!multiple_blast_db) {
     $(document).ready(function () {
 
       $('#download_fasta_form').submit(function () {
@@ -101,7 +102,7 @@
 <script>
   var multiple_blast_db = <?php echo $multiple_blast_db; ?>;
   
-  if (multiple_blast_db == 1) {
+  if (multiple_blast_db) {
     $(document).ready(function () {
 
       $('#download_fasta_form').submit(function () {
