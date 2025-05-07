@@ -10,16 +10,20 @@
 <br>
 <div id="blast-container" class="margin-20">
 
-  <?php if ($multiple_blast_db): ?>
-    <form id="blast_form" action="loading_blast.php" method="post">
-  <?php else: ?>
-    <form id="blast_form" action="blast_output_single.php" method="post">
-  <?php endif; ?>
+<?php 
+if (isset($multiple_blast_db) && $multiple_blast_db) {
+  $multiple_blast_db = 1;
+  echo "<form id=\"blast_form\" action=\"loading_blast.php\" method=\"post\">";
+} else {
+  $multiple_blast_db = 0;
+  echo "<form id=\"blast_form\" action=\"blast_output_single.php\" method=\"post\">";
+}
+?>
 
     <div class="form-group blast_attr">
       <label for="blast_sequence">Paste a sequence</label>
       <textarea id="blast_sequence" name="query" class="form-control sequence_blast_box" rows="12">
-<?php echo "$blast_example" ?>
+<?php echo "$blast_example"; ?>
       </textarea>
     </div>
 
