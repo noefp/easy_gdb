@@ -2,8 +2,8 @@
 
 
 <!-- <div style="max-width:900px; margin:auto"> -->
-  <br>
-  <h1>About Us</h1>
+  <!-- <br>
+  <h1>About Us</h1> -->
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <?php include_once realpath("$custom_text_path/about.php");?>
