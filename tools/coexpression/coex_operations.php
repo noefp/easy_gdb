@@ -95,9 +95,9 @@ else {
         $annots_array[] = explode("\t", $row);
       }
     }
-  
+
     foreach ($annots_array as $array) {
-      $gene_annot = preg_replace('/\.\d+$/', '', $array[0]); // ISOFORMS
+      $gene_annot = $array[0];
       if (array_key_exists($gene_annot, $gene_cor_array) && is_scalar($gene_cor_array[$gene_annot])) {
         array_shift($array);
         $gene_cor_array[$gene_annot] = array_merge([$gene_cor_array[$gene_annot]], $array);
@@ -133,32 +133,54 @@ else {
             else {
               $header_name = $columns[$n + 1];
               if ($header_name == "TAIR10" || $header_name == "Araport11") {
-                $query_id = preg_replace(['/query_id/', '/\.\d$/'], [$info[$n], ''], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$info[$n]</a></td>";
+                $query_id = preg_replace(['/query_id/', '/\.\d+$/'], [$info[$n], ''], $annot_hash[$header_name]);
+                echo "<td><a href=\"$query_id\" target=\"_blank\">$info[$n]</a></td>\n";
               }
-              elseif ($header_name == "InterPro") {
-                $ipr_data = explode("::", $info[$n]);
-                $ipr_links = "";
+              elseif (preg_match("/Phytozome/i", $header_name) && !preg_match("/Description/i", $header_name) ) {
+                $query_id = preg_replace(['/query_id/', '/V\d+\.\d+/'], [$info[$n], ''], $annot_hash[$header_name]);
+                echo "<td><a href=\"$query_id\" target=\"_blank\">$info[$n]</a></td>\n";
+              }
+              elseif ( strpos($info[$n], ';') && !preg_match("/Description/i", $header_name) ) {
+                $ipr_data = explode(';', $info[$n]);
+                $ipr_links = '';
                 foreach ($ipr_data as $ipr_id) {
                   $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                  $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>;<br>";
+                  $ipr_links .= "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a><br>";
                 }
                 $ipr_links = rtrim($ipr_links, ';<br>');
-                echo "<td>$ipr_links</td>";
+                echo "<td>$ipr_links</td>\n";
               }
-              elseif ($header_name == "Description") {
-                $desc_data = str_replace("::", ";<br>", $info[$n]);
-                echo "<td>$desc_data</td>";
+              elseif (strpos($info[$n], ';')) {
+                $data_semicolon = str_replace(';', ';'."<br>", $info[$n]);
+                $lines = explode("<br>", $data_semicolon);
+                $show_tooltip = false;
+
+                foreach ($lines as $line) {
+                  if (strlen($line) >= 66) {
+                    $show_tooltip = true;
+                    break;
+                  }
+                }
+                if ($show_tooltip) {
+                  $title = implode("\t", $lines);
+                  echo "<td class=\"td-tooltip\" title=\"$title\">$data_semicolon</td>\n";
+                } else {
+                  echo "<td>$data_semicolon</td>\n";
+                }
               }
-              elseif ($annot_hash[$header_name]) {
+                          elseif ($annot_hash[$header_name]) {
                 $query_id = str_replace('query_id', $info[$n], $annot_hash[$header_name]);
-                echo "<td><a href=\"$query_id\" target=\"_blank\">$info[$n]</a></td>";
-              }
-              elseif ($header_name == "GO" || $header_name == "GO Description") {
-                echo "<td title=\"$info[$n]\">$info[$n]</td>";
+                echo "<td><a href=\"$query_id\" target=\"_blank\">$info[$n]</a></td>\n";
               }
               else {
-                echo "<td>$info[$n]</td>";
+                $desc_length = strlen($info[$n]);
+                //echo $desc_length." ".$data[$n]."<br>";
+                
+                if ($desc_length >= 66) {
+                  echo "<td class=\"td-tooltip\" title=\"$info[$n]\">$info[$n]</td>\n";
+                } else {
+                  echo "<td>$info[$n]</td>\n";
+                }
               }
             }
           }

@@ -70,7 +70,7 @@
 
 <!-- CSS -->
 <style>
-   table.dataTable td,th  {
+   table.dataTable td  {
     max-width: 500px;
     white-space: nowrap;
     overflow: hidden;
@@ -88,12 +88,18 @@
 </style>
 
 
-    <!-- JS DATATABLE -->
+<!-- JS DATATABLE -->
 <script src="../../js/datatable.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-  datatable("#tblCorrelations","1")
-  })
+    datatable("#tblCorrelations", "1");
+
+    setTimeout(function () {
+      $('#tblCorrelations').DataTable().order([2, 'desc']).draw();
+    }, 100);  // Set to 200 if necessary
+
+    $(".td-tooltip").tooltip();
+  });
 </script>
 
 
