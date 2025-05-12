@@ -146,8 +146,8 @@ if ($multiple_blast_db) {
   // Retrieve files in nucleotide and protein directories
   // get_databases($nucleotide_path, $nucleotide_dbs, $end_ls);
   // get_databases($protein_path, $protein_dbs, $end_ls);
-  get_databases($nucleotide_path, $nucleotide_dbs, ['nhr']);
-  get_databases($protein_path, $protein_dbs, ['phr']);
+  get_databases($blast_dbs_path, $nucleotide_dbs, ['nhr']);
+  get_databases($blast_dbs_path, $protein_dbs, ['phr']);
 
   // Display Nucleotide databases
   echo "<div class=\"form-group blast_attr\" id='nucleotide_db_list'>";

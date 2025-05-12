@@ -197,10 +197,10 @@ function find_file_in_directory($directory, $filename) {
 $blast_dbs = [];
 foreach ($_POST['blast_db'] as $filename) {
   $name = str_replace(" ", "_", $filename);
-  $find_path = find_file_in_directory($blast_dbs_path . "/proteins", $name);
+  $find_path = find_file_in_directory($blast_dbs_path, $name);
 
   if (!$find_path) {
-      $find_path = find_file_in_directory($blast_dbs_path . "/nucleotides", $name);
+      $find_path = find_file_in_directory($blast_dbs_path, $name);
   }
 
   if ($find_path) {
