@@ -4,7 +4,7 @@
 
 <!-- RETURN AND HELP -->
 <div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/06_gene_lookup.php" target="_blank">
+  <a class="float-right" href="/easy_gdb/help/10_coexpression.php" target="_blank">
     <i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help
   </a>
 </div>
@@ -32,7 +32,7 @@
   $search_input = test_input2($raw_input);
 
   if ($search_input) {
-    echo '<br>
+    echo '
     <div class="alert alert-primary" role="alert" style="display:block;">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
         <span aria-hidden="true">&times;</span>

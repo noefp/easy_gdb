@@ -9,13 +9,22 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
-<!-- RETURN AND HELP -->
-<div class="margin-20">
-  <a class="float-right" href="/easy_gdb/help/01_search.php" target="_blank">
-    <i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help
-  </a>
-</div>
-<br>
+<!-- HELP -->
+<?php 
+if (!file_exists("$custom_text_path/tools/coexpression.php")) {
+  echo '
+  <div class="margin-20">
+    <a class="float-right" href="/easy_gdb/help/10_coexpression.php" target="_blank">
+      <i class="fa fa-info" style="font-size:20px;color:#229dff"></i> Help
+    </a>
+  </div>
+  <br><br>
+  ';
+}
+else {
+  echo '<br><br>';
+}
+?>
 
 
 <!-- HTML -->
@@ -24,6 +33,13 @@
   <br>
 
   <div id="gene-correlation-container" class="form margin-20" style="margin:auto; max-width:900px">
+
+<!-- OPTIONAL TEXT -->
+<?php 
+if (file_exists("$custom_text_path/tools/coexpression.php")) {
+  include_once realpath("$custom_text_path/tools/coexpression.php");
+}
+?>
 
     <!-- INPUT FORM -->
     <div class="form">
