@@ -47,7 +47,9 @@
 					case 'comparator_lookup':
 						echo "<li><a href=\"/easy_gdb/help/09_expression_comparator.php\"> Expression comparator</a>";
 						break;
-
+          case 'coexpression':
+            echo "<li><a href=\"/easy_gdb/help/10_coexpression.php\"> Coexpression Search</a>";
+            break;
 				}
 			}
 		}
@@ -63,6 +65,7 @@
 		echo "<li><a href=\"/easy_gdb/help/07_gene_enrichment.php\"> Gene set enrichment</a>";
 		echo "<li><a href=\"/easy_gdb/help/08_gene_expression.php\"> Expression viewer</a>";
 		echo "<li><a href=\"/easy_gdb/help/09_expression_comparator.php\"> Expression comparator</a>";
+    echo "<li><a href=\"/easy_gdb/help/10_coexpression.php\"> Coexpression Search</a>";
 	}
 ?>
 	</ul>
