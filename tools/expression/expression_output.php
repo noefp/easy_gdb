@@ -1,5 +1,5 @@
 <?php include realpath('../../header.php'); ?>
-<?php include_once realpath("../modal.html");?>
+<?php //include_once realpath("../modal.html");?>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script type="text/javascript" src="/easy_gdb/js/apexcharts.min.js"></script>
@@ -350,7 +350,7 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
 // if gene not found in input list
 
-  $not_found_genes = array_diff($gids, $found_genes);
+  $not_found_genes = array_diff(array_map("strtolower", $gids),array_map("strtolower", $found_genes));
 
   if (!empty($not_found_genes)) {
     $original_not_found_genes = $not_found_genes;
@@ -385,15 +385,13 @@ if ( file_exists("$expr_file") && isset($gids) ) {
   
 } // if expr file exists
 ?>
-  <div id="color_default" class="alert alert-primary" role="alert" style="display:none">
+  <!-- <div id="color_default" class="alert alert-primary" role="alert" style="display:none">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
       <span aria-hidden="true">&times;</span>
-    </button>
+    </button> -->
   <!-- This message would be displayed when the information in the Json "expression_colors" arrays does not match the size -->
-  <div id="color_error" class="card-body" style="padding:0px;text-align: center" ><strong>Info:</strong> The default color scale has been selected because the size of the attributes
-"expression colors" in <i>"expression_info.json"</i> do not match !!!</div></div>
-
-
+  <!-- <div id="color_error" class="card-body" style="padding:0px;text-align: center" ><strong>Info:</strong> The default color scale has been selected because the size of the attributes
+"expression colors" in <i id="file_error"></i> do not match !!!</div></div> -->
 
 <?php include realpath('01_expr_colors_range.php');
 
@@ -504,17 +502,14 @@ if(count($found_genes)!= 0)
 
   // }else
   // {
-    var genes_not_found = <?php echo json_encode($not_found_genes) ?>;
+    // var genes_not_found = <?php //echo json_encode($not_found_genes) ?>;
   
-    if ((genes_not_found != "") && (gene_list.length != 0)) {
-
-      // alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
-      $("#genesNotFoundLabel").html("⚠️ Warning");
-      $("#search_input_modal").html("These input genes were not found in the selected dataset:<br><b>"+genes_not_found+"<b>");
-      $('#no_gene_modal').modal();
-
-
-    } 
+    // if ((genes_not_found != "") && (gene_list.length != 0)) {
+    //   // alert( "These input genes were not found in the selected dataset:\n\n"+genes_not_found );
+    //   $("#genesNotFoundLabel").html("⚠️ Warning");
+    //   $("#search_input_modal").html("These input genes were not found in the selected dataset:<br><b>"+genes_not_found+"<b>");
+    //   $('#no_gene_modal').modal();
+    // } 
   // }
 
 </script>
