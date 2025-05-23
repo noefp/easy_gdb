@@ -5,7 +5,7 @@
 <!-- RETURN AND HELP -->
 <div class="margin-20">
   <a class="float-right" href="/easy_gdb/help/10_coexpression.php" target="_blank">
-    <i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help
+    <i class="fa fa-info" style="font-size:20px;color:#229dff"></i> Help
   </a>
 </div>
 
@@ -18,6 +18,12 @@
 <h1 class="text-center margin-20">Coexpression Search <i class="fas fa-network-wired" style="color:#555;"></i></h1>
 <div class="page_container">
 
+<!-- OPTIONAL TEXT -->
+<?php 
+if (file_exists("$custom_text_path/tools/coexpression_output.php")) {
+  include_once realpath("$custom_text_path/tools/coexpression_output.php");
+}
+?>
 
 <!-- GET INPUT -->
 <?php
@@ -70,7 +76,7 @@
 
 <!-- CSS -->
 <style>
-   table.dataTable td  {
+  table.dataTable td  {
     max-width: 500px;
     white-space: nowrap;
     overflow: hidden;
@@ -81,10 +87,15 @@
     padding-right: 15px !important;
     word-break: keep-all; 
   }
-  
-    .td-tooltip {
-      cursor: pointer;
-    }
+
+  .td-tooltip {
+    cursor: pointer;
+  }
+
+  .coex-tooltip {
+    cursor: help;
+    border-bottom: 1px dotted #999;
+  }
 </style>
 
 
@@ -99,6 +110,8 @@
     }, 100);  // Set to 200 if necessary
 
     $(".td-tooltip").tooltip();
+    $(".coex-tooltip").tooltip();
+
   });
 </script>
 

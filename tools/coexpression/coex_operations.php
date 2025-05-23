@@ -19,7 +19,9 @@ if ($quoted_search) {
 }
 
 // GREP1
-$grep_gene = "zgrep -i '$desc_input' $lookup_file/*.txt";
+$desc_arg = escapeshellarg($desc_input);
+$folder_arg = escapeshellarg($lookup_file) . '/*.txt';
+$grep_gene = "zgrep -i $desc_arg $folder_arg";
 exec($grep_gene, $gene_module);
 
 $gene_module_string = $gene_module[0];
@@ -108,7 +110,10 @@ else {
     echo "<table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
 
     // TABLE HEAD
-    $columns = array('Gene', 'Correlation');
+$columns = array(
+  'Gene',
+  '<span class="coex-tooltip" data-toggle="tooltip" title="Correlation coefficient (Pearson) between the query gene and other genes within the same WGCNA module. Only positive correlations ≥ 0.8 are shown">Correlation</span>'
+);
     $columns = array_merge($columns, $head_columns);
     $col_number = count($columns);
     echo "<thead><tr>";
