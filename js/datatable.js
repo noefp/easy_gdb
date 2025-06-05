@@ -44,6 +44,10 @@ function datatable(table_id,select_id) {
     
       var table=$(table_id).DataTable({
         dom:'Bfrtlpi',
+        aLengthMenu: [
+          [25, 50, 100, 200, -1],
+          [25, 50, 100, 200, "All"]
+        ],
         "oLanguage": {
           "sSearch": "Filter by:"
           },
@@ -191,6 +195,7 @@ function datatable(table_id,select_id) {
               $(this).css("background-color", "");
           }
         );
+        updateToggleButton();
       },
     });
   
