@@ -264,15 +264,15 @@ if ($dir_counter) {
             echo "</div>";
 
             echo "<div class=\"d-flex\" style=\"display: inline-block;margin:10px\">";
-              echo "<select multiple id=\"select_$frame_id\" size=\"11\" class=\"form-control select\"></select>";
-              echo "<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px\" placeholder=\"0\">";
+              echo "<select multiple id=\"select_$frame_id\" size=\"5\" class=\"form-control select\"></select>";
+              echo "<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
         
-              echo "<div id=\"button_$frame_id\" style=\"margin:10px;margin-top:60px;width:20%; text-align: center\">";
-              echo "<button class=\"btn btn-success add\" style=\"width:90%;height:20%;font-size:small\">Add <span class=\"fas fa-angle-double-right\"></span></button><br>";
-              echo "<button class=\"btn btn-danger delete\" style=\"margin-top:40px; width:90%;height:20%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>";
+              echo "<div id=\"button_$frame_id\" style=\"margin:10px;margin-top:20px;width:20%; text-align: center\">";
+              echo "<button class=\"btn btn-success add\" style=\"width:90%;font-size:small\">Add <span class=\"fas fa-angle-double-right\"></span></button><br>";
+              echo "<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>";
               echo "</div>";
 
-            echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"10\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize: none\"></textarea>"; 
+            echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"4\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true\"></textarea>"; 
             echo "</div>"; // col
             echo "</div>";
             echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
@@ -376,7 +376,7 @@ $(document).ready(function () {
             $('#'+'select_' + filter_id).css("width","100%");
             $('#'+'select_' + filter_id).css("height","100%");
             $('#'+'select_' + filter_id).attr("multiple","multiple");
-            $('#'+'select_' + filter_id).attr("size","11");
+            $('#'+'select_' + filter_id).attr("size","5");
         }
       }
     });

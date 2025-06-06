@@ -103,20 +103,20 @@ function read_passport_file($passport_path,$passport_file,$form_id) {
           array_push($passport_array,"</div>");
 
           array_push($passport_array,"<div class=\"d-flex\" style=\"display: inline-block;margin:10px\">");
-            array_push($passport_array,"<select multiple id=\"select_$frame_id\" size=\"11\" class=\"form-control select\"></select>");
+            array_push($passport_array,"<select multiple id=\"select_$frame_id\" size=\"5\" class=\"form-control select\"></select>");
             array_push($passport_array,"<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px\" placeholder=\"0\">");
       
-            array_push($passport_array,"<div id=\"button_$frame_id\" style=\"margin:10px;margin-top:60px;width:20%; text-align: center\">");
-            array_push($passport_array,"<button class=\"btn btn-success add\" style=\"width:90%;height:20%;font-size:small\">Add <span class=\"fas fa-angle-double-right\"></span></button><br>");
-            array_push($passport_array,"<button class=\"btn btn-danger delete\" style=\"margin-top:40px; width:90%;height:20%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>");
+            array_push($passport_array,"<div id=\"button_$frame_id\" style=\"margin:10px;margin-top:20px;width:20%; text-align: center\">");
+            array_push($passport_array,"<button class=\"btn btn-success add\" style=\"width:90%;font-size:small\">Add <span class=\"fas fa-angle-double-right\"></span></button><br>");
+            array_push($passport_array,"<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>");
             array_push($passport_array,"</div>");
 
-          array_push($passport_array,"<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"10\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize: none\"></textarea>"); 
+          array_push($passport_array,"<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"5\" cols=\"4\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true\"></textarea>"); 
           array_push($passport_array,"</div>"); // col
           array_push($passport_array,"</div>");
 
       array_push($passport_array,"<div style=\"display: flex; justify-content: flex-end;\">");
-      array_push($passport_array,"<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; width:95px\"><span class=\"fas fa-search\"></span> Search</button></div>");
+      array_push($passport_array,"<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px\"><span class=\"fas fa-search\"></span> Search</button></div>");
       array_push($passport_array,"<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>");
       array_push($passport_array,"<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>");
       array_push($passport_array,"</div>");
