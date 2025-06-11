@@ -52,23 +52,57 @@ if (file_exists("$custom_text_path/tools/coexpression.php")) {
 
           <?php
           include_once realpath("$easy_gdb_path/tools/common_functions.php");
-          $fold_found = get_dir_and_files($coexpression_path);
+          $all_datasets = get_dir_and_files($coexpression_path);
+          asort($all_datasets);
+          $dir_hash = array();
+          $datasets_array = array();
 
-          echo "<div class=\"form-group\">";
-          echo "<label for=\"sel1\">Select Dataset</label>";
-          echo "<select class=\"form-control\" id=\"sel1\" name=\"get_dataset\">";
+          echo "<label for=\"cat1\">Select Dataset</label>";
+          echo "<select class=\"form-control\" id=\"cat1\" name=\"cat1\">";
 
-          asort($fold_found);
-          foreach ($fold_found as $folder) {
-            $full_path = $coexpression_path . '/' . $folder;
-            if (is_dir($full_path)) {
-              $res = str_replace("_", " ", $folder);
-              $res = ucfirst($res);
-              echo "<option value=\"$full_path\">$res</option>";
+          $dir_counter = 0;
+          $first_category = "";
+
+          foreach ($all_datasets as $item) {
+            if (is_dir("$coexpression_path/$item")) {
+              $dir_name = str_replace("_", " ", $item);
+              echo "<option>$dir_name</option>";
+
+              if ($dir_counter == 0) {
+                $first_category = $dir_name;
+              }
+
+              $files_in_dir = get_dir_and_files("$coexpression_path/$item");
+              foreach ($files_in_dir as $dataset_file) {
+                if (!preg_match('/\.php$/i', $dataset_file) && !preg_match('/\.json$/i', $dataset_file) && file_exists("$coexpression_path/$item/$dataset_file")) {
+                  $dataset_name = preg_replace('/\.[a-z]{3}$/', '', $dataset_file);
+                  $dataset_name = str_replace("_", " ", $dataset_name);
+                  array_push($datasets_array, "<option value=\"$coexpression_path/$item/$dataset_file\">$dataset_name</option>");
+                }
+              }
+
+              sort($datasets_array);
+              $dir_hash[$dir_name] = $datasets_array;
+              $datasets_array = array();
+              $dir_counter++;
             }
           }
 
-          echo "</select>";
+          echo "</select><br>";
+          echo "<select class=\"form-control\" id=\"sel1\" name=\"get_dataset\">";
+
+          foreach ($dir_hash[$first_category] as $option) {
+            echo $option;
+          }
+
+          echo "</select><br>";
+          ?>
+
+          <script>
+            var coex_categories = <?php echo json_encode($dir_hash); ?>;
+          </script>
+
+          <?php
           echo "<br>";
           echo "<button type=\"submit\" class=\"btn btn-info float-right\" form=\"search_cor\">Search</button>";
           echo "</div>";
@@ -122,11 +156,21 @@ $(document).ready(function () {
     });
   }
 
-  // First dataset for autocomplete
-  let first_dataset = $('#sel1').val();
-  ajax_call(first_dataset);
+  function update_dataset_dropdown(category) {
+    let options = coex_categories[category];
+    $('#sel1').html(options);
+    let first_dataset = $('#sel1').val();
+    ajax_call(first_dataset);
+  }
 
-  // Change dataset
+  let initial_category = $('#cat1').val();
+  update_dataset_dropdown(initial_category);
+
+  $('#cat1').change(function () {
+    let new_category = $(this).val();
+    update_dataset_dropdown(new_category);
+  });
+
   $('#sel1').change(function () {
     let selected_dataset = $('#sel1').val();
     ajax_call(selected_dataset);
