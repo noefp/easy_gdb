@@ -115,7 +115,8 @@
   <?php
   if ($tb_search_box) {
     if ($file_database) {
-      echo '<div class="d-flex mt-2 mt-md-0 justify-content-start justify-content-md-end w-100">';
+      echo '<div class="ml-auto">';
+      // echo '<div class="d-flex mt-2 mt-md-0 justify-content-start justify-content-md-end w-100">';
       echo '<form class="input-group" id="egdb_search_file_form" action="/easy_gdb/tools/search/search_output_file.php" method="get" style="width: auto;">';
       echo '<input type="search" class="form-control" id="search_file_box" name="search_keywords" placeholder="Search">';
       echo '<input type="hidden" name="search_all" value="1">';
