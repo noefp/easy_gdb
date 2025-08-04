@@ -25,6 +25,7 @@
     $translator_file = $pass_hash["translator"];
     $sp_name = $pass_hash["sp_name"];
     $featured_descriptors_file = $pass_hash["featured_descriptors"];
+    $numerics_columns_without_average = $pass_hash["numerics_columns_without_average"];
     
   }
 
@@ -72,7 +73,7 @@
 
 $descriptor_primary_name = "";
 
-function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img, $convert_json, $translator_json, $featured_descriptors_json, $all_featured_descriptors, $sp_name) {
+function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img, $convert_json, $translator_json, $featured_descriptors_json, $all_featured_descriptors, $sp_name,$numerics_columns_without_average) {
   //var_dump($convert_json); // funciona
   //var_dump($translator_json); // funciona
 
@@ -88,11 +89,12 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
   }
   
   $obj_average = [];
-  
   if (file_exists($file_path) ) {
     $tab_file = file($file_path);
     $header_line = trim(array_shift($tab_file) );
     $header = explode("\t", $header_line);
+    // set the json info about the numeric columns without average
+    $numerics_no_average = isset($numerics_columns_without_average[$file]) ? $numerics_columns_without_average[$file] : [];
     
     foreach ($tab_file as $line) {
       $cols = explode("\t", $line);
@@ -104,17 +106,23 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
         foreach ($cols as $col_index => $col_value) {
           
           $descriptor_name = $header[$col_index];
-          $descriptor_value = $col_value;
-          //echo "<p>descriptor_name: $descriptor_name, descriptor_value: $descriptor_value</p>";
-          
-          if ($descriptor_value){
-            //save data in obj_average to print when all possible replicates are collected
-            if ($obj_average[$descriptor_name] ) {
-              array_push($obj_average[$descriptor_name], $descriptor_value);
-            } else {
-              $obj_average[$descriptor_name] = []; // If not, create it
-              array_push($obj_average[$descriptor_name], $descriptor_value);
-            }
+          // if col_index isn't in $numerics_no_average, add the value to $featured_descriptors
+          if(!in_array($col_index+1,$numerics_no_average))
+          {
+            $descriptor_value = $col_value;
+           }else {
+            // else add "The value of this section is in the table below"
+            $descriptor_value = "The value of this section is in the table below";
+          }
+
+            if ($descriptor_value){
+              //save data in obj_average to print when all possible replicates are collected
+              if ($obj_average[$descriptor_name] ) {
+                array_push($obj_average[$descriptor_name], $descriptor_value);
+              } else {
+                $obj_average[$descriptor_name] = []; // If not, create it
+                array_push($obj_average[$descriptor_name], $descriptor_value);
+              }
           } // end IF descriptor value
         } // col foreach
       } // end array_filter
@@ -123,7 +131,13 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
 
     $section = str_replace("_", " ", $file);
     $section = str_replace(".txt", "", $section);
-    echo "<div style=\"background-color:#e0ea68 ; border: 2px solid #e0ea68\"><i class=\"fa\">&#xf105;</i><b> $section</b></div><br>";
+    $collapse_sec = str_replace(".txt", "", $file);
+
+    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\" background-color:#e0ea68 ; border: 2px solid #e0ea68\">
+    <i class=\"fas fa-angle-down\"></i><b> $section</b>
+    </div><br>";
+
+    echo "<div id=\"collapse_$collapse_sec\" class=\"collapse show phenotype_section_collapse\">";
     
     foreach($obj_average as $descriptor_name => $descriptor_value_list) {
           
@@ -141,7 +155,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
         $descriptor_primary_name = $descriptor_name;
       }
 
-//----- Cathegoric data
+//----- Cathegoric data ----------------------------------------------
       $pattern = "/[a-z]/i";
       if (preg_match($pattern, $joint_unique_list) ) {
         
@@ -211,6 +225,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           } else {
             $img_upov = str_replace("value", $descriptor_value, $descriptor_img);
             
+            echo "<div style=\"overflow-x:auto\">";
             echo "<table style=\"border: 2px solid\"><head><tr>";
           
             foreach($img_opt_array as $one_option) {
@@ -272,7 +287,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
               }
             } // end foreach
           
-            echo "</tr></body></table><br>";
+            echo "</tr></body></table></div><br>";
           } // close ELSE
 
         } // close if img_options
@@ -487,12 +502,12 @@ function file_to_table($file_path, $acc_name) {
     $file = preg_replace('/.+\//', "", $file_path);
     $collapse_id = str_replace(".txt", "", $file) . "_collapse";
 
-    // Crear la sección colapsable con un ID único
+    // Create a collapsible section for raw data
     echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#$collapse_id\" aria-expanded=\"false\" style=\"color: white; background-color: grey\">";
     echo "<span class=\"fas fa-sort\" style=\"color:#e0ea68\"></span> Raw data </div>";
     echo "<div id=\"$collapse_id\" class=\"collapse\">";
 
-    // Tabla con los datos crudos
+    // Table with raw data
     //echo "<div style=\"overflow:scroll\">";
     echo "<table id=\"table_$collapse_id\" class=\"table tblResults table-striped table-bordered\" style=\"display:none\"><thead><tr>";
 
@@ -646,8 +661,6 @@ if (!empty($featured_descriptors_file) ) {
 
 ?>
 
-
-
   <!-- MAP -->
 
 <!-- COORDENADAS -->
@@ -774,16 +787,16 @@ if (!empty($phenotype_file_array)){
     echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
-    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
+    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name,$numerics_columns_without_average);
 //    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
 
 
-    //print_r($featured_array); // array completo
+    // print_r($featured_array); // array completo
     //$featured_array_json = json_encode($featured_array);
 
     file_to_table($phenotype_file_full_path, $acc_name);
     
-    echo "</div></div>";
+    echo "</div></div></div>";
     
   }
   
@@ -802,6 +815,38 @@ if (!empty($phenotype_file_array)){
 <?php include_once realpath("$easy_gdb_path/footer.php"); ?>
 
 
+<!-- STYLES CSS -->
+<style>
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  table.dataTable td,th  {
+    max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+  }
+  
+  .feature-desc-cont{
+    display:none;
+  }
+  
+  .collapse_section:hover {
+/*  text-decoration: underline;*/
+  background-color: #999 !important;
+
+}
+
+.phenotype_section:hover {
+  color: grey !important;
+}
+</style>
+<!-- END STYLES -->
+
+<!-- SCRIPTS JS -->
 
 <script type="text/javascript">
 
@@ -909,32 +954,32 @@ $(".dataTables_filter").addClass("float-left");
 $(".dataTables_filter").addClass("float-right");
 
 });
-
 });
 
+//----- Phenotype section collapse
+// This section is used to change the icon when the phenotype section is collapsed or expanded
+// It uses Bootstrap collapse events to change the icon accordingly
+// The icon is changed to a down arrow when the section is expanded and to a right arrow
+var phenotypeSectionClicked = false;
+$(".phenotype_section").on('click', function(){
+  phenotypeSectionClicked = true;
+});
+
+$(".phenotype_section_collapse").on('show.bs.collapse', function(){
+  if (phenotypeSectionClicked) {
+    var id_collapse = (this.id).replace("collapse_","");
+    $("#phenotype_"+id_collapse).find("i").first().removeClass();
+    $("#phenotype_"+id_collapse).find("i").first().addClass("fas fa-angle-down");
+    phenotypeSectionClicked = false;
+  }
+});
+
+$(".phenotype_section_collapse").on('hide.bs.collapse', function(){
+  if (phenotypeSectionClicked) {
+    var id_collapse = (this.id).replace("collapse_","");
+    $("#phenotype_"+id_collapse).find("i").removeClass();
+    $("#phenotype_"+id_collapse).find("i").first().addClass("fas fa-angle-right");
+    phenotypeSectionClicked = false;
+  }
+});
 </script>
-
-<style>
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  table.dataTable td,th  {
-    max-width: 500px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-align: center;
-  }
-  
-  .feature-desc-cont{
-    display:none;
-  }
-  
-  .collapse_section:hover {
-/*  text-decoration: underline;*/
-  background-color: #999 !important;
-
-}
-</style>
