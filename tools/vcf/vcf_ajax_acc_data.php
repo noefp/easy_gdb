@@ -4,6 +4,7 @@
 $tabix_cmd = $_POST["tabix_cmd"];
 $vcf_file = $_POST["vcf_file"];
 $passport_dir = $_POST["passport_dir"];
+$vcf_dir = $_POST["vcf_dir"];
 
 //$passport_dir = "Chickpea_10K";
 
@@ -53,7 +54,7 @@ foreach ($acc_data as $index => $col) {
   
   $acc_name = $header_array[$index];
   
-  array_push($html_array,"<tr><td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir&acc_id=$acc_name\">$acc_name</a></td>");
+  array_push($html_array,"<tr><td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$vcf_dir&acc_id=$acc_name\">$acc_name</a></td>");
   
   
   // save accession results in an array
@@ -72,6 +73,8 @@ array_push($html_array,"</tbody>\n");
 $header_array=[];
 
 // return results in an array with the html code ready to print
+// echo json_encode($html_array);
 echo json_encode($html_array);
+
 
 ?>

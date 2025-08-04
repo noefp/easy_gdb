@@ -244,3 +244,166 @@ function datatable(table_id,select_id) {
     }
   }
   
+
+  function datatable_with_subtable(table_id,subtable_id) {
+    
+    $(table_id).DataTable({
+    dom: 'Bfrtlpi',
+    "oLanguage": {
+      "sSearch": "Filter by:"
+    },
+    buttons: [
+      {
+        extend: 'copy',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+
+            header: function (data, columnIdx, node) {
+
+              if ($(node).text().trim().toLowerCase() === 'snpeff' && $(table_id).find(subtable_id).length) {
+                  // return 'SNPeff_01';
+                var headers = [];
+
+                $(subtable_id).find('tr').first().find('th').each(function() {
+                  // headers.push('<th>'+$(this).text().trim()+'</th>');
+                  headers.push($(this).text().trim());
+
+                });
+                return "SNPeff: " + headers.join(' | ');
+                }
+              return data;
+            },
+
+            body: function (data, row, column, node) {
+              var $subtable = $(node).find(subtable_id);
+              if ($subtable.length && $(table_id)) {
+                var values = [];
+                $subtable.find('tr').eq(1).find('td').each(function(i) {
+                  values.push($(this).text().trim());
+                });
+                return values.join(' | ');
+              }
+              return $(node).text().trim();
+            }
+          }
+        }
+      },
+      {
+        extend: 'excel',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+
+            header: function (data, columnIdx, node) {
+
+              if ($(node).text().trim().toLowerCase() === 'snpeff' && $(table_id).find(subtable_id).length) {
+                  // return 'SNPeff_01';
+                var headers = [];
+
+                $(subtable_id).find('tr').first().find('th').each(function() {
+                  // headers.push('<th>'+$(this).text().trim()+'</th>');
+                  headers.push($(this).text().trim());
+
+                });
+                return "SNPeff: " + headers.join(' | ');
+                }
+              return data;
+            },
+
+            body: function (data, row, column, node) {
+              var $subtable = $(node).find(subtable_id);
+              if ($subtable.length) {
+                var values = [];
+                $subtable.find('tr').eq(1).find('td').each(function(i) {
+                  values.push($(this).text().trim());
+                });
+                return values.join(' | ');
+              }
+              return $(node).text().trim();
+            }
+          }
+        }
+      },
+      {
+        extend: 'csv',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+
+            header: function (data, columnIdx, node) {
+
+              if ($(node).text().trim().toLowerCase() === 'snpeff' && $(table_id).find(subtable_id).length) {
+                  // return 'SNPeff_01';
+                var headers = [];
+
+                $(subtable_id).find('tr').first().find('th').each(function() {
+                  // headers.push('<th>'+$(this).text().trim()+'</th>');
+                  headers.push($(this).text().trim());
+
+                });
+                return "SNPeff: " + headers.join(' | ');
+                }
+              return data;
+            },
+
+            body: function (data, row, column, node) {
+              var $subtable = $(node).find(subtable_id);
+              if ($subtable.length) {
+                var values = [];
+                $subtable.find('tr').eq(1).find('td').each(function(i) {
+                  values.push($(this).text().trim());
+                });
+                return values.join(' | ');
+              }
+              return $(node).text().trim();
+            }
+          }
+        }
+      },
+      {
+        // replicar esto en las demas formas de exportar
+        extend: 'pdf',
+        orientation: 'landscape',
+        pageSize: 'LEGAL',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+
+            header: function (data, columnIdx, node) {
+
+              if ($(node).text().trim().toLowerCase() === 'snpeff' && $(table_id).find(subtable_id).length) {
+                  // return 'SNPeff_01';
+                var headers = [];
+
+                $(subtable_id).find('tr').first().find('th').each(function() {
+                  // headers.push('<th>'+$(this).text().trim()+'</th>');
+                  headers.push($(this).text().trim());
+
+                });
+                return "SNPeff: " + headers.join(' | ');
+                }
+              return data;
+            },
+
+            body: function (data, row, column, node) {
+              var $subtable = $(node).find(subtable_id);
+              if ($subtable.length) {
+                var values = [];
+                $subtable.find('tr').eq(1).find('td').each(function(i) {
+                  values.push($(this).text().trim());
+                });
+                return values.join(' | ');
+              }
+              return $(node).text().trim();
+            }
+          }
+        }
+      },
+      'colvis'
+    ],
+    "sScrollX": "100%",
+    "sScrollXInner": "100%",
+    "bScrollCollapse": true,
+  });
+}

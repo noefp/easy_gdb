@@ -1,80 +1,110 @@
 <!-- HEADER -->
-<?php include_once realpath("../../header.php");?>
+<?php include_once realpath("../../header.php");
+      include_once realpath("$easy_gdb_path/tools/common_functions.php");
+      include_once realpath("../modal.html");
+?>
+
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 <br>
-<br>
-
+<h2 style="text-align: center;"> SNP Extraction </h2>
 
 <?php
 
-if (file_exists("$vcf_path/vcf.json")) {
-  $vcf_json_file = file_get_contents("$vcf_path/vcf.json");
-  $vcf_hash = json_decode($vcf_json_file, true);
-}
+// ------------------------------ GET VCF DATASETS FROM JSON FILE ------------------------------------------------
+if (file_exists($json_files_path."/tools/vcf.json")) {
+    $vcf_json_file = file_get_contents($json_files_path."/tools/vcf.json");
+    $vcf_hash = json_decode($vcf_json_file, true);
+    $json_exists = true;
+    $vcf_dir_array= array_keys($vcf_hash);
 
-$chr_file_array = $vcf_hash["chr_files"];
-$gene_names_file = "$vcf_path"."/".$vcf_hash["gene_names_file"];
-$gff_file = "$vcf_path"."/".$vcf_hash["gff_file"];
-$jb_dataset = $vcf_hash["jb_data_folder"];
+      $all_datasets = get_dir_and_files($vcf_path); // call the function for get dirs and files
 
-// echo "gene_names_file: $gene_names_file <br>";
-// print_r($chr_file_array);
-// echo "gff_file: $gff_file <br>";
+      $is_dir = false;
+      $first_dir=true;
 
+      sort($all_datasets);
 
-$genes_array = [];
-
-if ( file_exists($gene_names_file) ) {
-  $tab_file = file($gene_names_file);
-
-  //gets each replicate value for each gene
-  foreach ($tab_file as $line) {
-    $gene_name = trim($line);
-
-    array_push($genes_array,$gene_name);
+      foreach ($all_datasets as $vcf_dataset) {
+        
+        if (is_dir($vcf_path."/".$vcf_dataset) && in_array($vcf_dataset,$vcf_dir_array)){ // get dirs in the folder vcf and json file and print categories
+          $is_dir=true;
+        }
+      }
+  }else{
+    echo "<div class=\"alert alert-danger\" role=\"alert\" style=\"text-align:center; margin-top:10px\"> <b> vcf.json not found</b></div>";
+    $json_exists = false;
   }
+
+echo'<div id="container" class ="form margin-20" style="margin:auto; max-width:900px">';
+
+if($is_dir)
+  {
+
+    echo '<label for="dataset_select">Select dataset</label>
+    <select class="form-control form-control-lg" id="dataset_select" name="vcf_dataset">';
+
+    foreach ($all_datasets as $vcf_dataset) {
+      if ((is_dir($vcf_path."/".$vcf_dataset)) && in_array($vcf_dataset,$vcf_dir_array)){ // get dirs and print categories
+
+        // echo $vcf_dataset. " | ". in_array($vcf_dataset,$vcf_dir_array);
+        $data_set_name = preg_replace('/\.[a-z]{3}$/',"",$vcf_dataset);
+        $data_set_name = str_replace("_"," ",$data_set_name);
+
+        echo "<option value=\"$vcf_dataset\">$data_set_name</option>";
+
+        if($first_dir)
+        {
+          $vcf_path_file= "$vcf_path/$vcf_dataset";
+          $first_folder= $vcf_dataset;
+          $first_dir=false;
+        }
+      }
+  } 
+  echo "</select>";
 }
+ else 
+ {
+    $vcf_path_file="$vcf_path";
+    $first_folder= "";
+ }
+
+// echo $vcf_path_file;
+// ------------------------------------------------------------------------------
   
 ?>
 
 <!-- FORMULARIOS -->
-<div style="margin:auto; max-width:1000px">
 
-  <div class="form-group">
-    <label for="usr">Find your gene coordinates</label>
 
-    <div class="input-group mb-3">
+  <div class="form-group"  style="margin:30px !important">
+    <label for="autocomplete_gene">Find your gene coordinates</label>
+
+    <div class="input-group mb-3" >
       <input id="autocomplete_gene" type="text" class="form-control form-control-lg" placeholder="gene name">
       <div class="input-group-append">
         <button id="get_gene_coords" class="btn btn-success"><i class="fas fa-angle-double-down" style="font-size:28px;color:white;width:50px"></i></button>
       </div>
     </div>
-
   </div>
 
-  <div id="jbrowse_frame">
-  </div>
-  <br>
+<!-- <div id="jbrowse_frame_and_table" class="alert" style="display: none;"><button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close"> <span aria-hidden="true">&times;</span></button> -->
+<div id="jbrowse_frame"></div>
 
   <div id="gff_html_card" class="card bg-light text-dark" style="display: none">
     <div class="card-body">
       <table class="table table-bordered" style="line-height: 1; font-size:14px">
         <thead><tr><th>Chr</th><th>feature</th><th>start</th><th>end</th><th>strand</th><th>info</th></tr></thead>
         <tbody id="gff_html_res"></tbody>
-      </table>
-      
+      </table>  
     </div>
-  </div><br>
-
-  <br>
-
-
-
+  </div>
+<!-- </div> -->
+    <hr>
 
 <form id="egdb_vcf_form" action="vcf_extract_output.php" method="get">
-  <div class="form-group">
-    <label for="search_box">Select a genomic region</label> 
+  <div class="form-group" style="margin:30px !important">
+    <label>Select a genomic region</label> 
     <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
 
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
@@ -91,61 +121,32 @@ if ( file_exists($gene_names_file) ) {
         </div>
         <input id="vcf_input_start" type="text" class="form-control form-control-lg" placeholder="region start" name="vcf_start">
         <input id="vcf_input_end" type="text" class="form-control form-control-lg" placeholder="region end" name="vcf_end">
+        <input type=hidden class="vcf_dataset_file form-control form-control-lg"  name="snp_file">
         <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
       
   </div>
 
 </form>
-
-  <br>
   <hr>
-  <br>
 
 
 
 <form id="egdb_vcf_id_form" action="vcf_id_extract_output.php" method="get">
-  <div class="form-group">
-    <label for="search_box">Type a SNP ID</label> 
+  <div class="form-group" style="margin:30px !important">
+    <label for="vcf_snip_id">Type a SNP ID</label> 
     <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
 
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
         <input id="vcf_snip_id" type="text" class="form-control form-control-lg" placeholder="SNP ID" name="snp_id">
+        <input type=hidden class="vcf_dataset_file form-control form-control-lg"  name="snp_file">
         <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
       
   </div>
-
-  <br>
-  <br>
-  <br>
 </form>
 
-
 </div>
-
-
-<!-- CARTELITO DE ERROR -->
-<div class="modal fade" id="vcf_error_modal" role="dialog">
-  <div class="modal-dialog modal-sm">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" style="text-align: center;">ERROR</h4>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center;">
-          <p id="error_p_modal"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
@@ -154,9 +155,20 @@ if ( file_exists($gene_names_file) ) {
 
 $(document).ready(function () {
     
-  var names = <?php echo json_encode($genes_array) ?>;
-  //alert("hi: "+names[0])
-    
+  var json_files_path = "<?php echo $json_files_path; ?>";
+  var vcf_path = "<?php echo $vcf_path; ?>";
+  var vcf_path_file= "<?php echo $vcf_path_file; ?>";
+  var json_exists = "<?php echo json_encode($json_exists); ?>";
+  var first_folder= "<?php echo $first_folder; ?>";
+  var chr_select = [];
+
+  if(json_exists == "false") { // if json file not exist hide the container
+    $("#container").hide();
+  }else{
+      update_json_info_ajax_call(json_files_path,first_folder,vcf_path);
+  }
+  
+
   $( "#autocomplete_gene" ).autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(names, request.term);
@@ -164,7 +176,8 @@ $(document).ready(function () {
     }
   });
   
-  
+  // ----------- Ajax call functions------------------------
+
   function get_gff_ajax_call(query_gene,gff_file,jb_dataset) {
     //alert("Car.genes.gff2: "+query_gene+", "+gff_file);
     
@@ -177,36 +190,73 @@ $(document).ready(function () {
         
         var gff_lines = JSON.parse(gff_array);
         
-        //alert("Car.genes.gff3: "+gff_array);
+        // alert("Car.genes.gff3: "+gff_array);
         
+
         $("#gff_html_res").html(gff_lines.join("<br>"));
         $("#gff_html_card").css("display","block");
         // var table_width = $("#gff_html_res").width() + 30;
         // $("#gff_html_card").css("width",table_width+"px");
         
-        
-        //var jb_dataset = "easy_gdb_sample";
-        //var jb_gene_name = "gene1.1";
+      
         var jb_gene_name = query_gene;
-        
-        
-        $("#jbrowse_frame").html("<a class=\"float-right jbrowse_link\" href=\"/jbrowse/?data=data%2F"+jb_dataset+"&loc="+jb_gene_name+"&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a><iframe class=\"jb_iframe\" src=\"/jbrowse/?data=data%2F"+jb_dataset+"&loc="+jb_gene_name+"&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\"><p>Your browser does not support iframes.</p> </iframe>");
-        
+    
+        var close_button = "<button class=\"close\" title=\"Close\"><span class=\"close\" onclick=\"$('#jbrowse_frame, #gff_html_card').hide();\">&times;</span></button><br>";
+        $("#jbrowse_frame").html(close_button+"<a class=\"float-left jbrowse_link\" href=\"/jbrowse/?data=data%2F"+jb_dataset+"&loc="+jb_gene_name+"&tracks=DNA%2Ctranscripts&highlight=\">Full screen</a><iframe class=\"jb_iframe\" src=\"/jbrowse/?data=data%2F"+jb_dataset+"&loc="+jb_gene_name+"&tracks=DNA%2Ctranscripts&highlight=\" name=\"jbrowse_iframe\"><p>Your browser does not support iframes.</p> </iframe>");
+
+        $('#jbrowse_frame').show();
+        $('#gff_html_card').show();
         
       }
     });
     
   }; // end ajax_call
-  
-  
+
+function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
+
+  jQuery.ajax({
+    type: 'POST',
+    url: 'ajax_update_json_info.php',
+    data: {'json_files_path': json_files_path, 'vcf_dir': vcf_dir, 'vcf_path': vcf_path},
+    success: function(data) {
+      var json_info = JSON.parse(data);
+
+      gff_file = json_info.gff_file;
+      jb_dataset = json_info.jb_dataset;
+      names = json_info.genes_array;
+      $("#chr_select").html(json_info.chr_select);
+    }
+  });
+}
+  //--------------------------------------------- 
+  //----------------select dataset---------------
+
+  $(document).ready(function() {
+    var vcf_dataset = $('#dataset_select').val();
+    $(".vcf_dataset_file").attr("value",vcf_dataset);
+  })
+
+  $('#dataset_select').change(function() {
+    vcf_dataset = $('#dataset_select').val();
+    $(".vcf_dataset_file").attr("value",vcf_dataset);
+
+    var vcf_dataset_path = vcf_path+"/"+vcf_dataset;
+    update_json_info_ajax_call(json_files_path,vcf_dataset,vcf_path);
+   
+  })
+// ---------------------------------------------  
   
   $('#get_gene_coords').click(function() {
     
     var query_gene = $('#autocomplete_gene').val();
-    var gff_file = "<?php echo "$gff_file"; ?>";
-    var jb_dataset = "<?php echo "$jb_dataset"; ?>";
-    //alert("Car.genes.gff: "+query_gene+", "+gff_file);
-    
+    // var gff_file = "<?php //echo "$gff_file"; ?>";
+    // var jb_dataset = "<?php //echo "$jb_dataset"; ?>";
+
+    if (query_gene === "") {
+      $("#search_input_modal").html( "No input provided in the gene coordinates" );
+      $('#no_gene_modal').modal();
+      return false;
+    }
     get_gff_ajax_call(query_gene,gff_file,jb_dataset);
     
   });
@@ -217,8 +267,20 @@ $(document).ready(function () {
     var vcf_end = $('#vcf_input_end').val();
     
     if (!vcf_start || !vcf_end) {
-      $("#error_p_modal").html( "No input provided in the region search coordinates" );
-      $('#vcf_error_modal').modal();
+      $("#search_input_modal").html( "No input provided in the region search coordinates" );
+      $('#no_gene_modal').modal();
+      return false;
+    }
+    else {
+      return true;
+    }
+  });
+
+    $('#egdb_vcf_id_form').submit(function() {
+    var snip_id = $('#vcf_snip_id').val();
+    if (snip_id === "") {
+      $("#search_input_modal").html( "No input provided in the SNP ID" );
+      $('#no_gene_modal').modal();
       return false;
     }
     else {
