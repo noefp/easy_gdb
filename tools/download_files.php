@@ -31,10 +31,10 @@ function get_dir_and_files($root, $dir_name, $sub_structure, &$counter) {
 							}
 							//add table name
 							if (!$file_list) {
-								array_push($file_list,"<div class=\"row\"><div class=\"col-sm-6\">File</div><div class=\"col-sm-3\">Last modified</div><div class=\"col-sm-3\">Size</div></div>");
+								array_push($file_list,"<div class=\"row\"><div class=\"col-sm-8\">File</div><div class=\"col-sm-2\">Last modified</div><div class=\"col-sm-2\">Size</div></div>");
 							}
 							//save downloadable files
-              array_push($file_list,"<div class=\"row\"><div class=\"col-sm-6\"><a href=\"/$dir_name/$file_name\" download><i class=\"fas fa-file\"></i> $file_name</a></div><div class=\"col-sm-3\">$file_date</div><div class=\"col-sm-3\">$file_size</div></div>");
+              array_push($file_list,"<div class=\"row\"><div class=\"col-sm-8\"><a href=\"/$dir_name/$file_name\" download><i class=\"fas fa-file\"></i> $file_name</a></div><div class=\"col-sm-2\">$file_date</div><div class=\"col-sm-2\">$file_size</div></div>");
 
               //print downloadable files
               //echo "<li><a href=\"/$dir_name/$file_name\" download>$file_name</a></li>";
