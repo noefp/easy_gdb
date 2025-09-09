@@ -102,17 +102,17 @@ include_once "$conf_path/easyGDB_conf.php";
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h5 class="modal-title">Cookies policy</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Cookies policy</h4>
       </div>
       <div class="modal-body">
-        <p>
+        <p style="margin:0px">
           Jbrowse uses cookies to remember your configuration in the genome browser, such as track load and position.
           When using Jbrowse in this site you accept the use of these cookies.
         </p>
       </div>
       <div class="modal-footer">
-        <a id="jb_ok_cookies" href="/jbrowse/" target="_blank" type="button" class="btn btn-default">OK</a>
+        <a id="jb_ok_cookies" href="/jbrowse/" target="_blank" type="button" class="btn btn-info">OK</a>
       </div>
     </div>
 
