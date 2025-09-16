@@ -56,55 +56,67 @@ function datatable(table_id,select_id) {
               "extend": 'copy',
                "exportOptions": {
                 "rows": function ( idx, data, node ) {
-                  return $(node).find('input.row-select').is(':checked');
+                  if ($(table_id+' tbody input.row-select:checked').length > 0) {
+                    return $(node).find('input.row-select').is(':checked');
+                  } else {
+                    return $(node).find('input.row-select');
+                  }
                 },
                   "columns": function (idx, data, node) {
                     return $(node).is(':visible') && idx !== 0;
                 }
               },
-              action: function(e, dt, button, config) {
-                if ($(table_id+' tbody input.row-select:checked').length > 0) {
-                  $.fn.dataTable.ext.buttons.copyHtml5.action.call(this, e, dt, button, config);
-                } else {
-                  alert("Please select rows to copy.");
-                }
-              }
+              // action: function(e, dt, button, config) {
+              //   if ($(table_id+' tbody input.row-select:checked').length > 0) {
+              //     $.fn.dataTable.ext.buttons.copyHtml5.action.call(this, e, dt, button, config);
+              //   } else {
+              //     alert("Please select rows to copy.");
+              //   }
+              // }
             },
             {
               "extend": 'csv',
               "exportOptions": {
                 "rows": function ( idx, data, node ) {
-                  return $(node).find('input.row-select').is(':checked');
+                  if ($(table_id+' tbody input.row-select:checked').length > 0) {
+                    return $(node).find('input.row-select').is(':checked');
+                  } else {
+                    return $(node).find('input.row-select');
+                  }
                 },
                 "columns": function (idx, data, node) {
                   return $(node).is(':visible') && idx !== 0;
               }
               },
-              action: function(e, dt, button, config) {
-                if ($(table_id+' tbody input.row-select:checked').length > 0) {
-                  $.fn.dataTable.ext.buttons.csvHtml5.action.call(this, e, dt, button, config);
-                } else {
-                  alert("Please select rows to export as CSV.");
-                }
-              }
+              // action: function(e, dt, button, config) {
+              //   if ($(table_id+' tbody input.row-select:checked').length > 0) {
+              //     $.fn.dataTable.ext.buttons.csvHtml5.action.call(this, e, dt, button, config);
+              //   } else {
+              //     alert("Please select rows to export as CSV.");
+              //   }
+              // }
             },
             {
               "extend": 'excel',
               "exportOptions": {
                 "rows": function ( idx, data, node ) {
-                  return $(node).find('input.row-select').is(':checked');
+                  if ($(table_id+' tbody input.row-select:checked').length > 0) {
+                    return $(node).find('input.row-select').is(':checked');
+                  } else {
+                    return $(node).find('input.row-select');
+                  }
                 },
                 "columns": function (idx, data, node) {
                   return $(node).is(':visible') && idx !== 0;
               }
               },
-              action: function(e, dt, button, config) {
-                if ($(table_id+' tbody input.row-select:checked').length > 0) {
-                  $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
-                } else {
-                  alert("Please select rows to export as Excel.");
-                }
-              }
+              // action: function(e, dt, button, config) {
+              //   if ($(table_id+' tbody input.row-select:checked').length > 0) {
+              //     $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+              //   } else {
+              //     alert("Please select rows to export as Excel.");
+              //   }
+              // }
             },
             {
               "extend": 'pdf',
@@ -112,37 +124,47 @@ function datatable(table_id,select_id) {
               "pageSize": 'LEGAL',
               "exportOptions": {
                 "rows": function ( idx, data, node ) {
-                  return $(node).find('input.row-select').is(':checked');
+                  if ($(table_id+' tbody input.row-select:checked').length > 0) {
+                    return $(node).find('input.row-select').is(':checked');
+                  } else {
+                    return $(node).find('input.row-select');
+                  }
                 },
                 "columns": function (idx, data, node) {
                   return $(node).is(':visible') && idx !== 0;
               }
               },
-              action: function(e, dt, button, config) {
-                if ($(table_id+' tbody input.row-select:checked').length > 0) {
-                  $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
-                } else {
-                  alert("Please select rows to export as PDF.");
-                }
-              }
+              // action: function(e, dt, button, config) {
+              //   if ($(table_id+' tbody input.row-select:checked').length > 0) {
+              //     $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
+              //   } else {
+              //     // alert("Please select rows to export as PDF.");
+              //     $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
+
+              //   }
+              // }
             },
             {
               "extend": 'print',
               "exportOptions": {
                 "rows": function ( idx, data, node ) {
-                  return $(node).find('input.row-select').is(':checked');
+                  if ($(table_id+' tbody input.row-select:checked').length > 0) {
+                    return $(node).find('input.row-select').is(':checked');
+                  } else {
+                    return $(node).find('input.row-select');
+                  }
                 },
                 "columns": function (idx, data, node) {
                   return $(node).is(':visible') && idx !== 0;
               }
               },
-              action: function(e, dt, button, config) {
-                if ($(table_id+' tbody input.row-select:checked').length > 0) {
-                  $.fn.dataTable.ext.buttons.print.action.call(this, e, dt, button, config);
-                } else {
-                  alert("Please select rows to print.");
-                }
-              }
+              // action: function(e, dt, button, config) {
+              //   if ($(table_id+' tbody input.row-select:checked').length > 0) {
+              //     $.fn.dataTable.ext.buttons.print.action.call(this, e, dt, button, config);
+              //   } else {
+              //     alert("Please select rows to print.");
+              //   }
+              // }
             },
             {
               extend: 'colvis',
@@ -188,10 +210,8 @@ function datatable(table_id,select_id) {
   
         $("table.dataTable tbody tr").hover(
           function() {
-              // Al pasar el mouse
               $(this).css("background-color", "#d1d1d1");
           }, function() {
-              // Al retirar el mouse
               $(this).css("background-color", "");
           }
         );
@@ -245,7 +265,7 @@ function datatable(table_id,select_id) {
   }
   
 
-  function datatable_with_subtable(table_id,subtable_id) {
+  function datatable_with_subtable(table_id,subtable_id='') {
     
     $(table_id).DataTable({
     dom: 'Bfrtlpi',
@@ -277,12 +297,15 @@ function datatable(table_id,select_id) {
 
             body: function (data, row, column, node) {
               var $subtable = $(node).find(subtable_id);
-              if ($subtable.length && $(table_id)) {
+              if ($subtable.length) {
                 var values = [];
-                $subtable.find('tr').eq(1).find('td').each(function(i) {
-                  values.push($(this).text().trim());
+                $subtable.find('tr').not(':eq(0)').each(function(i) {
+                  $(this).find('td').each(function(i) {
+                    values.push($(this).text().trim() + ' | ');
+                  });
+                  values.push('\n');
                 });
-                return values.join(' | ');
+                return values.join('');
               }
               return $(node).text().trim();
             }
@@ -315,10 +338,13 @@ function datatable(table_id,select_id) {
               var $subtable = $(node).find(subtable_id);
               if ($subtable.length) {
                 var values = [];
-                $subtable.find('tr').eq(1).find('td').each(function(i) {
-                  values.push($(this).text().trim());
+                $subtable.find('tr').not(':eq(0)').each(function(i) {
+                  $(this).find('td').each(function(i) {
+                    values.push($(this).text().trim() + ' | ');
+                  });
+                  values.push('\n');
                 });
-                return values.join(' | ');
+                return values.join('');
               }
               return $(node).text().trim();
             }
@@ -351,10 +377,13 @@ function datatable(table_id,select_id) {
               var $subtable = $(node).find(subtable_id);
               if ($subtable.length) {
                 var values = [];
-                $subtable.find('tr').eq(1).find('td').each(function(i) {
-                  values.push($(this).text().trim());
+                $subtable.find('tr').not(':eq(0)').each(function(i) {
+                  $(this).find('td').each(function(i) {
+                    values.push($(this).text().trim() + ' | ');
+                  });
+                  values.push('\n');
                 });
-                return values.join(' | ');
+                return values.join('');
               }
               return $(node).text().trim();
             }
@@ -390,20 +419,38 @@ function datatable(table_id,select_id) {
               var $subtable = $(node).find(subtable_id);
               if ($subtable.length) {
                 var values = [];
-                $subtable.find('tr').eq(1).find('td').each(function(i) {
-                  values.push($(this).text().trim());
+                $subtable.find('tr').not(':eq(0)').each(function(i) {
+                  $(this).find('td').each(function(i) {
+                    values.push($(this).text().trim() + ' | ');
+                  });
+                  values.push('\n');
                 });
-                return values.join(' | ');
+                return values.join('');
               }
               return $(node).text().trim();
             }
           }
         }
       },
-      'colvis'
+      {
+        extend: 'colvis',
+      }
     ],
     "sScrollX": "100%",
     "sScrollXInner": "100%",
     "bScrollCollapse": true,
+    retrieve: true,
+    colReorder: true,
+
+    "drawCallback": function( settings ) {
+
+        $(""+table_id+" tbody tr").hover(
+          function() {
+              $(this).css("background-color", "#d1d1d1");
+          }, function() {
+              $(this).css("background-color", "");
+          }
+        );
+      },
   });
 }
