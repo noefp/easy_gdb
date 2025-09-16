@@ -1,12 +1,12 @@
 <?php
+// Ajax call to get SNP information and accessions with variants for a given SNP position
+// Called from vcf_extract_output.php
 
-// GET selected line (one position SNP) tabix command and vcf_file with path from AJAX call
+// GET tabix command and vcf_file with path
 $tabix_cmd = $_POST["tabix_cmd"];
 $vcf_file = $_POST["vcf_file"];
-$passport_dir = $_POST["passport_dir"];
 $vcf_dir = $_POST["vcf_dir"];
 
-//$passport_dir = "Chickpea_10K";
 
 
 // create array to store results in html format, ready to join for printing

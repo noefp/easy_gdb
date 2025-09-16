@@ -1,4 +1,7 @@
 <?php
+// get input variables from vcf_extract_input.php
+// when is changed the vcf dataset selection (multispecies)
+
 $json_files_path = $_POST['json_files_path'];
 $vcf_dir = $_POST['vcf_dir'];
 $vcf_path = $_POST['vcf_path'];

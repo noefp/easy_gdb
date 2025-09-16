@@ -13,7 +13,6 @@
 
 <br>
 <h2 style="text-align: center;"> SNP Extraction </h2>
-
 <?php
 
 // ------------------------------ GET VCF DATASETS FROM JSON FILE ------------------------------------------------
@@ -43,7 +42,16 @@ if (file_exists($json_files_path."/tools/vcf.json")) {
 
 echo'<div id="container" class ="form margin-20" style="margin:auto; max-width:900px">';
 
-if($is_dir)
+?>
+
+
+  <div class="form-group" >
+    <label for="acc_list">Paste a list of ACC IDs</label>
+    <textarea type="search_box" class="form-control" id="acc_list_box" rows="5" style="border-color: #666"></textarea>
+  </div>
+
+<?php
+  if($is_dir)
   {
 
     echo '<label for="dataset_select">Select dataset</label>
@@ -81,11 +89,9 @@ if($is_dir)
 include_once realpath("gff_and_jbrowse.php");
 ?>
 
-<!-- FORM -->
-
-<form id="egdb_vcf_form" action="vcf_extract_output.php" method="get">
+<form id="egdb_vcf_form" action="vcf_extract_acc_list_output.php" method="get">
   <div class="form-group" style="margin:30px !important">
-    <label>Select a genomic region</label> 
+    <label for="search_box">Select a genomic region</label> 
     <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
 
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
@@ -103,6 +109,8 @@ include_once realpath("gff_and_jbrowse.php");
         <input id="vcf_input_start" type="text" class="form-control form-control-lg" placeholder="region start" name="vcf_start">
         <input id="vcf_input_end" type="text" class="form-control form-control-lg" placeholder="region end" name="vcf_end">
         <input type=hidden class="vcf_dataset_file form-control form-control-lg"  name="snp_file">
+        <input type=hidden class="acc_list_select form-control form-control-lg"  name="acc_list">
+
         <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
       
@@ -111,9 +119,7 @@ include_once realpath("gff_and_jbrowse.php");
 </form>
   <hr>
 
-
-
-<form id="egdb_vcf_id_form" action="vcf_id_extract_output.php" method="get">
+<form id="egdb_vcf_id_form" action="vcf_id_extract_acc_list_output.php" method="get">
   <div class="form-group" style="margin:30px !important">
     <label for="vcf_snip_id">Type a SNP ID</label> 
     <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
@@ -121,6 +127,7 @@ include_once realpath("gff_and_jbrowse.php");
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
         <input id="vcf_snip_id" type="text" class="form-control form-control-lg" placeholder="SNP ID" name="snp_id">
         <input type=hidden class="vcf_dataset_file form-control form-control-lg"  name="snp_file">
+        <input type=hidden class="acc_list_select form-control form-control-lg"  name="acc_list">
         <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
       
@@ -149,6 +156,7 @@ $(document).ready(function () {
       update_json_info_ajax_call(json_files_path,first_folder,vcf_path);
   }
   
+
 function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
 
   jQuery.ajax({
@@ -157,7 +165,6 @@ function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
     data: {'json_files_path': json_files_path, 'vcf_dir': vcf_dir, 'vcf_path': vcf_path},
     success: function(data) {
       var json_info = JSON.parse(data);
-      // alert("json_info: "+json_info);
 
       gff_file = json_info.gff_file;
       jb_dataset = json_info.jb_dataset;
@@ -167,6 +174,7 @@ function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
   });
 }
   //--------------------------------------------- 
+
   //----------------select dataset---------------
 
   $(document).ready(function() {
@@ -182,16 +190,26 @@ function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
     update_json_info_ajax_call(json_files_path,vcf_dataset,vcf_path);
    
   })
-// ---------------------------------------------  
+// --------------------------------------------- 
+
 
   //check input before sending form
   $('#egdb_vcf_form').submit(function() {
     var vcf_start = $('#vcf_input_start').val();
     var vcf_end = $('#vcf_input_end').val();
-    
-    if (!vcf_start || !vcf_end) {
-      $("#search_input_modal").html( "No input provided in the region search coordinates" );
-      $('#no_gene_modal').modal();
+    var acc_list = $("#acc_list_box").val();
+
+    $(".acc_list_select").val(acc_list);
+
+
+    if (!vcf_start || !vcf_end || !acc_list) {
+      if(!acc_list){
+        $("#search_input_modal").html( "No input provided in the ACC list" );
+        $('#no_gene_modal').modal();
+      }else{
+        $("#search_input_modal").html( "No input provided in the region search coordinates" );
+        $('#no_gene_modal').modal();
+      }
       return false;
     }
     else {
@@ -201,9 +219,18 @@ function update_json_info_ajax_call(json_files_path,vcf_dir,vcf_path) {
 
     $('#egdb_vcf_id_form').submit(function() {
     var snip_id = $('#vcf_snip_id').val();
-    if (snip_id === "") {
+    var acc_list = $("#acc_list_box").val();
+
+    $(".acc_list_select").val(acc_list);
+
+    if (snip_id === "" || !acc_list) {
+      if(!acc_list){
+        $("#search_input_modal").html( "No input provided in the ACC list" );
+        $('#no_gene_modal').modal();
+      }else{      
       $("#search_input_modal").html( "No input provided in the SNP ID" );
       $('#no_gene_modal').modal();
+    }
       return false;
     }
     else {
