@@ -27,7 +27,7 @@
   <h1 class="text-center">Gene Version Lookup <i class="fas fa-search" style="color:#555"></i></h1>
   <br>
 
-  <div id="gene-version-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
     <?php
       function get_second_line($file_path) {

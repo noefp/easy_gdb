@@ -32,7 +32,7 @@ else {
   <h1 class="text-center">Coexpression Search <i class="fas fa-network-wired" style="color:#555"></i></h1>
   <br>
 
-  <div id="gene-correlation-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
 <!-- OPTIONAL TEXT -->
 <?php 

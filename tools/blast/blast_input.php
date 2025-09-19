@@ -6,9 +6,9 @@
 </div>
 <br>
 
-<h2 class="text-center"><i class="fas fa-dna" style="color:#555"></i> BLAST</h2>
+<h1 class="text-center">BLAST <i class="fas fa-dna" style="color:#555"></i></h1>
 <br>
-<div id="blast-container" class="margin-20">
+<div id="tool-container" class="margin-20" style="margin:auto; max-width:900px">
 
 <?php 
 if (isset($multiple_blast_db) && $multiple_blast_db) {

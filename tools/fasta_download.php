@@ -9,7 +9,7 @@
 <!-- <div id="dlgDownload"> -->
   <h1 class="text-center">Sequence Extraction <i class="fas fa-download" style="color:#555"></i></h1>
   <br>
-  <div id="sequence-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
   <?php
     if (isset($multiple_blast_db) && $multiple_blast_db) {
