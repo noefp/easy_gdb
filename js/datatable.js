@@ -193,7 +193,7 @@ function datatable(table_id,select_id) {
 
       
         "sScrollX": "100%",
-        "sScrollXInner": "110%",
+        "sScrollXInner": "100%",
         "bScrollCollapse": true,
         retrieve: true,
         colReorder: true,
@@ -391,7 +391,6 @@ function datatable(table_id,select_id) {
         }
       },
       {
-        // replicar esto en las demas formas de exportar
         extend: 'pdf',
         orientation: 'landscape',
         pageSize: 'LEGAL',
@@ -441,6 +440,7 @@ function datatable(table_id,select_id) {
     "bScrollCollapse": true,
     retrieve: true,
     colReorder: true,
+    order: [], // Disable initial sorting
 
     "drawCallback": function( settings ) {
 
@@ -453,4 +453,44 @@ function datatable(table_id,select_id) {
         );
       },
   });
+    $(".dataTables_filter").addClass("float-right");
+    $(".dataTables_info").addClass("float-left");
+    $(".dataTables_paginate").addClass("float-right");
+}
+
+
+  function datatable_basic(table_id) {
+    
+    $(table_id).DataTable({
+      dom: 'Bfrtlpi',
+      language: {
+        search: "Filter by:"
+      },
+      buttons: [
+        { extend: 'copy', exportOptions: { columns: ':visible' } },
+        { extend: 'excel', exportOptions: { columns: ':visible' } },
+        { extend: 'csv', exportOptions: { columns: ':visible' } },
+        { extend: 'pdf', orientation: 'landscape', pageSize: 'LEGAL', exportOptions: { columns: ':visible' } },
+        { extend: 'colvis' }
+      ],
+      "sScrollX": "100%",
+      "sScrollXInner": "100%",
+      "bScrollCollapse": true,
+      retrieve: true,
+      colReorder: true,
+      order: [], // Desactiva orden inicial
+    "drawCallback": function( settings ) {
+
+        $(""+table_id+" tbody tr").hover(
+          function() {
+              $(this).css("background-color", "#d1d1d1");
+          }, function() {
+              $(this).css("background-color", "");
+          }
+        );
+      },
+    });
+    $(".dataTables_filter").addClass("float-right");
+    $(".dataTables_info").addClass("float-left");
+    $(".dataTables_paginate").addClass("float-right");
 }
