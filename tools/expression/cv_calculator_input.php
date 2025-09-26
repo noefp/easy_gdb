@@ -6,16 +6,27 @@
 
 <div id="dlgDownload">
   <div class="margin-20">
-    <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
+    <!-- <a class="float-right" href="/easy_gdb/help/09_expression_comparator.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a> -->
   </div>
   <br>
   
   <h3 class="text-center">Coefficient of Variation Calculator</h3><br>
-  <div class="form margin-20">
-  
+<div class="form margin-20">
+
   <!-- FORM -->
-    <form id="comparator_form" action="cv_calculator_output.php" method="post">
-    <br>
+<form id="comparator_form" action="cv_calculator_output.php" method="post">
+
+  <div class="form-group" style="text-align: center;">
+    <h4 for="cvMode"><b>CV calculation mode</b>
+      <small><i class="fas fa-info-circle text-info pointer_cursor td-tooltip"></i></small>
+    </h4>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="cvMode" name="cvMode" value="1">
+      <label class="custom-control-label" for="cvMode">
+        <span id="allSelected" style='color:#229dff'><b>Variation between all replicates</b></span> / <span id="meanSelected">Variation between sample means</span>
+      </label>
+    </div>
+  </div>
 
     <?php
 
@@ -45,7 +56,7 @@
 
   //category organization
   if ($dir_counter) {
-  
+  echo"<h4>Select samples</h4>";
   echo "<input style=\"display:none\" name=\"categories\" value=1>"; // if there are categories, set the value to 1
   
   foreach ($all_datasets as $dirs_and_files) {
@@ -54,6 +65,7 @@
       $all_dir_datasets = get_dir_and_files($expression_path."/".$dirs_and_files); // call the function
 
       $dir_name = str_replace("_"," ",$dirs_and_files);
+
       echo "<div class=\"card\">";
       echo "<div class=\"card-body\" style=\"widht: 100%\">";
       echo "<div class=\"row\"><h4>$dir_name</h4></div>";
@@ -167,10 +179,15 @@
 
 echo   "</div>";
 
+ 
 
+?>      
+      <div class="row g-3 float-right">
+         <div class="mean_threshold col-auto" style="padding: 0;"><label for="minExpr" style="padding: 5px;">Minimum mean expression threshold </label></div>
+        <div class=" mean_threshold col-auto" style="padding: 0;"><input  class="form-control" type="number" id="minExpr" name="minExpr" min="0" step="0.1" placeholder="2" style="width:90px; margin-left:5px; margin-right:15px;" value="2"></div>
+        <div class="col-auto" style="padding: 0;"><button class="button btn btn-info mb-3" id="btnSend" type="submit" form="comparator_form" formmethod="post">Calculate</button></div>
+      </div>
 
-?>
-      <button class="button btn btn-info float-right" id="btnSend" type="submit" form="comparator_form" formmethod="post">Calculate</button>
 </form>
  <!-- Fin FORM  -->
       <br>
@@ -192,6 +209,11 @@ echo   "</div>";
   [aria-expanded="false"] .fa-chevron-circle-down {
       display:none;
   }
+  .tooltip .tooltip-inner {
+  white-space: nowrap;   /* evita saltos de línea */
+  max-width: none;       /* elimina el límite de ancho */
+}
+
   
   </style>
 
@@ -199,7 +221,7 @@ echo   "</div>";
   $(document).ready(function () {
     
     // var names = <?php echo json_encode($file_array) ?>;
-        
+    $('.mean_threshold').hide();    
     
     $('#comparator_form').submit(function () {
 
@@ -208,14 +230,28 @@ echo   "</div>";
       
       //var numberOfChecked = $('input:sample_checkbox:checked').length;
       var numberOfChecked = $('input.sample_checkbox:checked').length;
+      var expr_threshold = $('#minExpr').val();
       
       if (numberOfChecked <= 1 ) {
         // alert("Please, select some samples.");
         $("#search_input_modal").html("Please select two or more samples.");
         $('#no_gene_modal').modal()
         return false;
+      }else{
+        if (expr_threshold <= 0 && expr_threshold != "") {
+          // alert("Please, select a valid expression threshold.");
+          $("#search_input_modal").html("Please select a valid expression threshold.");
+          $('#no_gene_modal').modal()
+          return false;
+        }else{
+          if(expr_threshold === "" ){
+            $('#minExpr').val(2.0);
+          }
+        }
+
       }
-      
+      // $('#btnSend').prop('disabled', true);
+      // $('#btnSend').html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'); 
       return true;
     });
     
@@ -231,6 +267,36 @@ echo   "</div>";
         $("#"+dataset+" input").prop('checked', false)
       }
       
-    });    
+    });  
+    
+    //toggle text when switch is clicked
+    $('#cvMode').click(function() {
+      if ($('#cvMode').is(':checked')) {
+        $('#allSelected').html("Variation between all replicates");
+        $('#meanSelected').html("<b>Variation between sample means</b>");
+        $('#meanSelected').css('color','#229dff');
+        $('#allSelected').css('color','black');
+        $('.mean_threshold').show();
+      } else {
+        $('#meanSelected').html("Variation between sample means");
+        $('#allSelected').html("<b>Variation between all replicates</b>");
+        $('#allSelected').css('color','#229dff');
+        $('#meanSelected').css('color','black');
+        $('.mean_threshold').hide();
+      }
+    });
+
+  $(function () {
+    $('.td-tooltip').tooltip({
+      html: true,
+      trigger: 'hover',
+      title: "<div style='font-size: 0.75rem;'>Choose how the coefficient of variation (CV) is calculated:<br><strong>– Variation between all replicates:</strong> CV is calculated using each replicate’s value.<br><strong>– Variation between sample means:</strong> CV is calculated using the mean of replicate values for each sample.</div>",
+    });
+  });
+
   });
 </script>
+<!-- Bootstrap y Font Awesome -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
