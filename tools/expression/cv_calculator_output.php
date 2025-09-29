@@ -1,4 +1,8 @@
-<?php include realpath('../../header.php'); ?>
+<?php
+
+use function PHPSTORM_META\elementType;
+
+ include realpath('../../header.php'); ?>
 <?php include_once realpath("../modal.html");?>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
@@ -44,7 +48,7 @@ else{
   $newer_found = 0;
 
   foreach ($_POST['sample_names'] as $sample) {
-    list($file,$exp) = explode("@", $sample);
+    list($file,$exp) = explode("@", $sample); // file is the dataset file, exp is the sample name
 
     if ($_POST['categories']) {
       //echo "Categories $file <br>";
@@ -78,7 +82,7 @@ $columns = [];
 $replicates = [];
 $header = [];
 
-ini_set( 'memory_limit', '2048M' );
+ini_set( 'memory_limit', '2048M' ); // increase memory limit
 
 // iterate each dataset selected in the comparator input
 foreach($sample_hash as $expr_file => $comparator_samples_array) {
@@ -87,20 +91,22 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
   if ( file_exists("$expr_file") ) {
     
     $tab_file = file("$expr_file");
-    $first_line = array_shift($tab_file);
-    $header = explode("\t", rtrim($first_line));
+    $first_line = array_shift($tab_file); // get and remove first line from array
+    $header = explode("\t", rtrim($first_line)); 
     $header_index = array_intersect($header, $comparator_samples_array); //array_intersect returns the intersection of two arrays and returns the values that are common to both arrays
 
 //gets each replicate value for each gene
     foreach ($tab_file as $line) {
-    $columns = explode("\t", trim($line));
-    $gene_name = $columns[0];
+    $columns = explode("\t", trim($line)); // trim to remove any extra spaces or new lines
+    $gene_name = $columns[0]; // first column is gene name
+
+        // iterate each sample in the header_index array (which contains only the samples selected in the input form)
 
       foreach ($header_index as $index => $sample_name) {
-          if (!isset($replicates[$gene_name][$sample_name])) {
+          if (!isset($replicates[$gene_name][$sample_name])) { // if gene and sample not set, initialize as empty dictionary
               $replicates[$gene_name][$sample_name] = [];
           }
-          $replicates[$gene_name][$sample_name][] = $columns[$index];
+          $replicates[$gene_name][$sample_name][] = $columns[$index]; // add replicate value
         }
     }
   } // if file exists
@@ -113,7 +119,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 $replicates_means = [];
 
 // calculate mean for each replicate
-if ($cvMean) {
+if ($cvMean) { // if mean mode, calculate mean for each sample
   foreach ($replicates as $gene_name => $samples) {
       foreach ($samples as $sample_name => $values) {
           if (count($values) > 0) {
@@ -131,12 +137,16 @@ if ($cvMean) {
       }
   }
 } else {
-  $replicates_means = $replicates; // if not mean mode, use replicates values directly
-  // foreach ($replicates as $gene_name => $samples) {
-  //     foreach ($samples as $sample_name => $values) {
-  //         $replicates_means[$gene_name][$sample_name] = $values; // if not mean mode, use replicates values directly
-      // }
-  // }
+  // $replicates_means = $replicates; // if not mean mode, use replicates values directly
+  foreach ($replicates as $gene_name => $samples) {
+      foreach ($samples as $sample_name => $values) {
+        if(max($values) >= 1) { // only include replicates if at least one of them is equal or above the 1
+          $replicates_means[$gene_name][$sample_name] = $values; // if not mean mode, use replicates values directly
+        }else{
+          $replicates_means[$gene_name][$sample_name] = [null]; // if  are below 1, set to null
+        }
+      }
+  }
 }
 
 // print_r($replicates['Vamp7']); // debug line
@@ -146,18 +156,19 @@ $gene_cv = [];
 foreach ($replicates_means as $gene_name => $samples_means) {
     $all_values = [];
 
-  if (!$cvMean) {
+  if (!$cvMean) { // if not mean mode, merge all replicates values into a single array
         foreach ($samples_means as $values) {
         $all_values = array_merge($all_values, $values);
       }  
-  }else {  
+  }else {  // if mean mode, push each sample value array into the all_values array
     foreach ($samples_means as $values) {
         array_push($all_values, $values);
     }
   }
 
     $n = count($all_values);
-    if ($n > 1 && !in_array(null, $all_values)) { // need at least 2 values to calculate std dev and cv, and no null values
+
+    if ($n > 1 && !in_array(null, $all_values)) { // need at least 2 values to calculate std dev and cv, and no null values into the array
       $avg_all_samples = array_sum($all_values) / $n;
       $sum_sq_diff = 0;
       foreach ($all_values as $v) {
@@ -167,19 +178,20 @@ foreach ($replicates_means as $gene_name => $samples_means) {
       //$std_dev = sqrt($sum_sq_diff / ($n)); // population standard deviation
       $cv = ($avg_all_samples != 0) ? ($std_dev / $avg_all_samples)*100 : null; //if mean is 0, cv is not defined because it would involve division by zero  
     } 
-    else {
+    else { // if not enough values or null values, set cv to null
         $cv = null;
     }
 
     $gene_cv[$gene_name] = $cv;
 }
 
-// echo $gene_cv['Pp3c20_17010V3.1']."<br>";
-
+// debug line
+// echo $gene_cv['Pp3c20_17010V3.1']."<br>"; 
 // echo $gene_cv['Pp3c3_1510V3.1']."<br>";
 // echo $gene_cv['Pp3c14_24450V3.1']."<br>";
 // print_r($replicates_means['Pp3c7_1420V3.1']);
 // echo $gene_cv['Pp3c7_1420V3.1']."<br>";
+// 
 
 //filter out null values
 $filtered_gene_cv = array_filter($gene_cv, function($cv) {
@@ -193,39 +205,63 @@ asort($filtered_gene_cv);
 // get top 10 genes with lowest CV
 $top_genes = array_slice($filtered_gene_cv, 0, 10, true);
 
+// print_r($top_genes); // debug line
+
 // get all sample names for table header
 $sample_names = [];
-if($cvMean) {
-  foreach ($replicates_means as $gene => $samples) {
-    foreach ($samples as $sample_name => $mean_value) {
-        $sample_names[$sample_name] = true;
-    }
-  }
- $sample_names = array_keys($sample_names);
-}else {
-    foreach ($replicates_means as $gene => $samples) {
-      foreach ($samples as $sample_name => $mean_value) {
-        $sample_names[$sample_name] = count($mean_value);
+// print_r(array_keys($top_genes)[0]);
+
+if($category_number > 1) { // if more than one category was selected, get all sample names from all top genes
+    if($cvMean) {
+      foreach (array_keys($top_genes) as $gene) {
+        foreach ($replicates_means[$gene] as $sample_name => $mean_value) {
+            $sample_names[$sample_name] = true;
+        }
       }
-    }
-  
+    $sample_names = array_keys($sample_names); // get only the keys (sample names)
+    }else {
+      foreach (array_keys($top_genes) as $gene) {
+        foreach ($replicates_means[$gene] as $sample_name => $mean_value) {
+            if($mean_value !== [null]) {
+            $sample_names[$sample_name] = count($mean_value);
+            // echo $sample_name." ".count($mean_value)." -> ".implode(", ", $mean_value)."<br>";
+            }
+          }
+        }
+    } 
 }
+else { // if only one category was selected, get all sample names from the first top_gene
+  if($cvMean) {
+    foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) { // get sample names from the first top gene
+          $sample_names[$sample_name] = true;
+    }
+    $sample_names = array_keys($sample_names);
+  }else {
+    foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) {
+          $sample_names[$sample_name] = count($mean_value);
+        }
+  }
+}
+echo "<br>";
 
 
-// create mean table and its header10,34,23,54,9
+
+// create mean table with datatable
+  echo '<div id="load" class="loader"></div>';
+
 echo "<div id=\"table_container\" style=\"display:none\">";
 echo "<table id=\"cv_table\" class=\"table table-striped table-bordered\">";
 echo "<thead><tr><th>Gene ID</th><th>Coef. Variation (%)</th>";
 
-if (!$cvMean) {
-  foreach ($sample_names as $sample_name => $replicates_count) {
+if (!$cvMean) { // if not mean mode
+  foreach ($sample_names as $sample_name => $replicates_count) { // $sample_names is an associative array with sample name as key and number of replicates as value
     for ($i=0; $i<$replicates_count; $i++) {
       echo "<th>$sample_name</th>";
     }
   }
   echo "</tr></thead><tbody>";
 
-  foreach ($top_genes as $gene_name => $cv) {
+  foreach ($top_genes as $gene_name => $cv) { 
       echo "<tr>";
       echo "<td>$gene_name</td>";
       echo "<td><b>" . sprintf("%1\$.2f", $cv) . "</b></td>";
@@ -238,7 +274,7 @@ if (!$cvMean) {
     }
       echo "</tr>";
   }
-} else {
+} else { // if mean mode
 
   foreach ($sample_names as $sample_name) {
       echo "<th>$sample_name</th>";
@@ -281,7 +317,8 @@ include realpath('../../footer.php');
 <script src="../../js/datatable.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-
+  
+      $('#load').hide();
       $('#table_container').show();
       // datatable("#tblResults","");
       datatable_basic("#cv_table");
