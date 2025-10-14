@@ -62,6 +62,11 @@ var options = {
       text: 'Expression value'
     }
   },
+  
+  grid: {
+      padding: { left: 40, right: 40, top: 10, bottom: 10 } // grid padding to avoid cutting  value labels
+  },
+
   legend: {
     position: 'top',
     horizontalAlign: 'center',
@@ -315,6 +320,10 @@ var options = {
         title: {
       text: 'Expression value'
     }
+  },
+  
+  grid: {
+      padding: { left: 40, right: 40, top: 10, bottom: 10 } // grid padding to avoid cutting  value labels
   },
   legend: {
     show: false
