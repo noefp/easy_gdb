@@ -1,9 +1,8 @@
 <?php
-
-use function PHPSTORM_META\elementType;
-
  include realpath('../../header.php'); ?>
 <?php include_once realpath("../modal.html");?>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
 <script src="/easy_gdb/js/apexcharts.min.js"></script>
@@ -244,13 +243,31 @@ else { // if only one category was selected, get all sample names from the first
 }
 echo "<br>";
 
+// ---------------------------------- GENE SEARCH ----------------------------------------
+echo '<br><div class="input-group" style="max-width:700px; margin:auto">
+  <input id="autocomplete_gene" type="text" class="form-control" placeholder="Find your gene" aria-label="Find your gene" aria-describedby="button_search">
+  <button class="btn btn-primary" type="button" id="button_search" style="margin-left:10px">Search</button>
+  </div>
+  <div id="search_results_frame" style="display:none">
+     <button type="button" id="close_search_results" class="close" title="Close">
+      <span aria-hidden="true">&times;</span>
+     </button>
+    <br><div id="search_results_table"></div><br><br>
+    <h3 id="search_results_boxplot_title" style="text-align:center;"></h3>
+    <div id="search_results_boxplot" style="display:none;"></div>
+  </div><br><br>';
 
 
-// create mean table with datatable
-  echo '<div id="load" class="loader"></div>';
+// ------------------------------------ create table with 10 genes with lowest CV ------------------------------------
+echo '<div class="collapse_section pointer_cursor banner" data-toggle="collapse" data-target="#table_frame" aria-expanded="true">
+  <i class="fas fa-sort"></i> 10 genes with lowest CV
+    </div>';
+
+echo '<div id="table_frame" class="collapse show">';
+echo '<div id="load" class="loader"></div>';
 
 echo "<div id=\"table_container\" style=\"display:none\">";
-echo "<table id=\"cv_table\" class=\"table table-striped table-bordered\">";
+echo "<br><table id=\"cv_table\" class=\"table table-striped table-bordered\">";
 echo "<thead><tr><th>Gene ID</th><th>Coef. Variation (%)</th>";
 
 if (!$cvMean) { // if not mean mode
@@ -293,9 +310,29 @@ if (!$cvMean) { // if not mean mode
       echo "</tr>";
   } 
 }  
-echo "</tbody></table></div>"; // end table and container
+echo "</tbody></table><br><br>"; // end table and container
+
+$replicates_filtered = [];
+foreach (array_keys($filtered_gene_cv) as $gene_name) {
+  $replicates_filtered[$gene_name] = $replicates[$gene_name] ?? null;
+}
+
 ?>
-<br><br>
+
+  <!-- ------------------ boxplot ----------------  -->
+  <center><div class="form-group d-inline-flex" style="width: 450px;">
+    <label for="sel_gene" style="width: 150px; margin-top:7px"><b>Select gene:</b></label>
+    <select class="form-control" id="sel_gene">
+      <?php
+        foreach (array_keys($top_genes) as $gene) {
+          echo "<option value=\"$gene\">$gene</option>";
+        }
+      ?>
+    </select>
+  </div></center>
+<div id="boxplot"></div>
+</div></div>
+
 
 <?php
 include realpath('../../footer.php');
@@ -313,7 +350,7 @@ include realpath('../../footer.php');
     } */
   </style>
 
-
+<script src="https://unpkg.com/simple-statistics@latest/dist/simple-statistics.min.js"></script>
 <script src="../../js/datatable.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -323,6 +360,174 @@ $(document).ready(function(){
       // datatable("#tblResults","");
       datatable_basic("#cv_table");
       // $(".td-tooltip").tooltip();
-});   
-</script>
+});
 
+
+
+function boxplot(data_array, boxplot_id="boxplot") {
+  var boxplot_chart="";
+
+  var options = {
+
+        legend: {
+          show: true,
+          position: 'bottom', 
+          horizontalAlign: 'center', 
+          // showForSingleSeries: true,
+        },
+          series: [
+          {
+            name: 'box',
+            type: 'boxPlot',
+            data: data_array
+          },
+        ],
+          chart: {
+          type: 'boxPlot',
+          height: 350,
+          zoom: {
+            enabled: true,   
+            type: 'xy',
+            allowMouseWheelZoom: false  
+          }
+        },
+        // colors: ['#008FFB', '#FEB019'],
+        title: {
+          text: 'BoxPlot chart',
+          align: 'left',
+        },
+        xaxis: {
+          type: 'category',
+          labels: {
+            rotate: -50,
+            rotateAlways: true,
+            hideOverlappingLabels: false,
+            trim: false
+          }
+        },
+        grid: {
+          padding: { left: 40, right: 40, top: 10, bottom: 10 } // grid padding to avoid cutting  value labels
+        },
+      };
+
+    boxplot_chart = new ApexCharts(document.querySelector("#"+boxplot_id), options);
+    return boxplot_chart;
+}
+
+  var genes = {};
+  var values=[];
+  var data = [];
+
+  var top_genes_name = <?php echo json_encode(array_keys($top_genes)); ?>;
+  var replicates_filtered  = <?php echo json_encode($replicates_filtered); ?>;
+  var filtered_gene_cv = <?php echo json_encode($filtered_gene_cv); ?>; // get all genes no nulls
+  var replicates_means = <?php echo json_encode($replicates_means); ?>;
+
+
+  Object.keys(replicates_filtered).forEach(function(gene_name, index) {
+    genes[gene_name] = [];
+
+    Object.keys(replicates_filtered[gene_name]).forEach(function(sample, index) {
+      const values = Object.values(replicates_filtered[gene_name][sample]);
+      const sortedValues = values.slice().sort((a, b) => a - b).map(Number);
+        genes[gene_name].push({
+          x: sample,
+          y: [
+            sortedValues[0],
+            ss.quantileSorted(sortedValues, 0.25),
+            ss.quantileSorted(sortedValues, 0.5),
+            ss.quantileSorted(sortedValues, 0.75),
+            sortedValues[sortedValues.length - 1]
+          ]
+        });
+    });
+  })
+  // console.log(ss.min(Object.values(top_genes_data['Ubr4']['EphrinB2_cko'])));
+  // console.log(genes[top_genes_name[0]]);
+  
+  var boxplot_chart = boxplot(genes[top_genes_name[0]]);
+  var boxplot_chart_search = boxplot([],"search_results_boxplot");
+  boxplot_chart.render();
+  boxplot_chart_search.render();
+
+  // boxplot_chart_search.render();
+
+  $('#sel_gene').change(function() {
+    // console.log(genes[this.value]);
+    // boxplot(genes[this.value]);
+    boxplot_chart.updateSeries(
+        [
+          {
+            name: 'box',
+            type: 'boxPlot',
+            data: genes[this.value]
+          },
+        ],);
+
+  });
+
+
+$( "#autocomplete_gene" ).autocomplete({
+      source: function(request, response) {
+        var results = $.ui.autocomplete.filter(Object.keys(filtered_gene_cv), request.term);
+        response(results.slice(0, 15));
+        if(results == "")
+        {$('#autocomplete_gene').css("background-color",'#f17c7c')}
+        else {$('#autocomplete_gene').css("background-color", "white")}
+      }
+    });
+
+
+$('#autocomplete_gene').on('input', function() {
+  if($(this).val() == "")
+  {$('#autocomplete_gene').css("background-color", "white")}
+});
+
+//call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
+function ajax_call_table(replicates, cv,cvMean, gene_name) {
+  jQuery.ajax({
+    type: "POST",
+    url: 'ajax_cv_calculator_table.php',
+    data: {'replicates': replicates, 'cv': cv, 'cvMean': cvMean, 'gene_name': gene_name},
+
+    success: function (table_array) {
+      var row_table = JSON.parse(table_array);
+      $('#search_results_table').html(row_table.join(""));
+      datatable_basic("#cv_table_2");
+      
+    }
+  });
+}; // end ajax_call function
+
+
+
+$('#button_search').click(function () {
+      var selected_gene = $('#autocomplete_gene').val().trim();
+      // console.log(selected_gene);
+
+    $('#search_results_frame').show();
+    $('#search_results_boxplot').show();
+    $('#search_results_boxplot_title').text(selected_gene);
+
+    ajax_call_table(replicates_means[selected_gene], filtered_gene_cv[selected_gene], <?php echo json_encode($cvMean);?>, selected_gene);
+      
+
+
+    // console.log(replicates_filtered[selected_gene]);
+    // console.log(genes[selected_gene]);
+    boxplot_chart_search.updateSeries(
+        [
+          {
+            name: 'box',
+            type: 'boxPlot',
+            data: genes[selected_gene]
+          },
+        ],);
+
+       
+});
+
+$("#close_search_results").click(function() {
+  $('#search_results_frame').hide();
+});
+</script>
