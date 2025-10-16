@@ -1,9 +1,3 @@
-<?php 
-// if ($tb_login) {
-//   include_once 'login_modal.php';
-// }
-?>
-
 <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top" style="padding-left:10px">
   
 <?php 
