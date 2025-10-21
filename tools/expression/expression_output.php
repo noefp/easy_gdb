@@ -401,6 +401,9 @@ asort($positions);
 $first_info=true;
 $frame="";
 
+// check if images are available for cards
+$images_cards = (!isset($annot_hash[$dataset_name_ori]["images"]) || empty($annot_hash[$dataset_name_ori]["images"]))  ? false : true;
+
 if(count($found_genes)!= 0)
 {
   foreach($positions as $key => $value){
@@ -408,8 +411,9 @@ if(count($found_genes)!= 0)
     {
       switch($key){
         case 'cards':
+          if($images_cards){ // This image variable is located
           include realpath('03_expr_load_cards_html.php');
-          $frame="cards_frame"; 
+          $frame="cards_frame";} 
           break;
 
         case 'table' :
