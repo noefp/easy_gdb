@@ -127,6 +127,41 @@ $( "#bars_btn" ).click(function() {
   
 });
 
+  $("#tools_lines").change(function() {
+    if(this.checked) {
+      // alert("checked");
+      line_chart.updateOptions({
+        chart: {
+          zoom: {
+            enabled: true,
+            type: 'xy',
+          }
+        },
+        toolbar: {
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true
+          }
+        }
+      });
+    } else {
+      line_chart.updateOptions({
+        chart: {
+          zoom: {
+            enabled: false,
+            type: 'xy'
+          }
+        },
+        toolbar: {
+          show: false
+        }
+      });
+    }
+  });
+
 
 // ######################################################## Heatmap
 
@@ -217,15 +252,15 @@ var options = {
       }
     }
   },
-legend:{
-  fontSize: 13,
-  showForSingleSeries: true,
-  markers: {
-    size: 10,
-    shape: 'circle',
-    strokeWidth: 2,
+  legend:{
+    fontSize: 13,
+    showForSingleSeries: true,
+    markers: {
+      size: 10,
+      shape: 'circle',
+      strokeWidth: 2,
+    },
   },
-},
 
   title: {
     text: 'Heatmap'
@@ -272,6 +307,41 @@ var heatmap_chart = new ApexCharts(document.querySelector("#chart1"), options);
       replicates_one_gene
     )
 
+  });
+
+  $("#tools_replicates").change(function() {
+    if(this.checked) {
+      // alert("checked");
+      scatter_chart.updateOptions({
+        chart: {
+          zoom: {
+            enabled: true,
+            type: 'xy',
+          }
+        },
+        toolbar: {
+          tools: {
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true
+          }
+        }
+      });
+    } else {
+      scatter_chart.updateOptions({
+        chart: {
+          zoom: {
+            enabled: false,
+            type: 'xy'
+          }
+        },
+        toolbar: {
+          show: false
+        }
+      });
+    }
   });
   
   

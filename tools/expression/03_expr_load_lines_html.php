@@ -12,6 +12,14 @@
           <button id="lines_btn" type="button" class="btn btn-danger">Lines</button>
           <button id="bars_btn" type="button" class="btn btn-primary">Bars</button>
 
+        <!-- toolbar activation -->
+        <div class="custom-control custom-switch" style="display: flex; justify-content: flex-end; margin-right: 10px;">
+        <input type="checkbox" class="custom-control-input" id="tools_lines">
+        <label class="custom-control-label" for="tools_lines">
+          <span id="tools_lines"><b>Tools</b></span>
+        </label>
+        </div> 
+         <!-- chart  -->
         <div id="chart_lines" style="min-height: 550px;"></div>
         
       </div>

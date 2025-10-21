@@ -18,7 +18,14 @@
             ?>
           </select>
         </div>
-
+        <!-- toolbar activation -->
+        <div class="custom-control custom-switch" style="display: flex; justify-content: flex-end; margin-right: 10px;">
+        <input type="checkbox" class="custom-control-input" id="tools_replicates">
+        <label class="custom-control-label" for="tools_replicates">
+          <span id="tools_replicates"><b>Tools</b></span>
+        </label>
+        </div>
+        <!-- chart  -->
         <div id="chart2" style="min-height: 365px;"></div>
         <hr>
         <label style="color: black; font-size: 12px; display: show;"><b>Replicate count:</b></label>
