@@ -10,18 +10,21 @@
   }
     
   if ($annot_hash[$annot_filename]) {
-    $jb_link = $annot_hash[$annot_filename]["jbrowse"];
+    if ($annot_hash[$annot_filename]["jbrowse"]) {
+      
+      $jb_link = $annot_hash[$annot_filename]["jbrowse"];
     
-    if (preg_match('/\{gene_name\}/', $jb_link, $match)) {
-      $jb_link = preg_replace('/\{gene_name\}/',$jb_gene_name,$jb_link);
+      if (preg_match('/\{gene_name\}/', $jb_link, $match)) {
+        $jb_link = preg_replace('/\{gene_name\}/',$jb_gene_name,$jb_link);
+      }
+    
+      echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true"><i class="fas fa-sort" style="color:#229dff"></i> Genome Browser</div>';
+      echo '<div id="jb_section" class="collapse show">';
+      echo "<a class=\"float-right jbrowse_link\" href=\"$jb_link\">Full screen</a>";
+      echo "<iframe class=\"jb_iframe\" src=\"$jb_link\" name=\"jbrowse_iframe\">";
+      echo "<p>Your browser does not support iframes.</p> </iframe>";
+      echo '</div>';
     }
-    
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#jb_section" aria-expanded="true"><i class="fas fa-sort" style="color:#229dff"></i> Genome Browser</div>';
-    echo '<div id="jb_section" class="collapse show">';
-    echo "<a class=\"float-right jbrowse_link\" href=\"$jb_link\">Full screen</a>";
-    echo "<iframe class=\"jb_iframe\" src=\"$jb_link\" name=\"jbrowse_iframe\">";
-    echo "<p>Your browser does not support iframes.</p> </iframe>";
-    echo '</div>';
   }
   else if ("$root_path/jbrowse/data/") {
       
