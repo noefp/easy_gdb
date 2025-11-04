@@ -41,16 +41,18 @@ else{
   echo "<p class=\"text-center\"><b>Variation between all replicates</b></p>";
 }
 
+
 // get each sample and their dataset and save it in a hash key=dataset-file value=array of experiments from that dataset
   $sample_hash = [];
   $found_categories = [];
   $newer_found = 0;
+  $multicategory_found = false;
 
   foreach ($_POST['sample_names'] as $sample) {
     list($file,$exp) = explode("@", $sample); // file is the dataset file, exp is the sample name
 
     if ($_POST['categories']) {
-      //echo "Categories $file <br>";
+      // echo "Categories $file <br>";
       $path_array = explode("/", rtrim($file));
       $category = $path_array[count($path_array)-2];
       $found_categories[$category]=1;
@@ -68,9 +70,54 @@ else{
   $category_number = count(array_keys($found_categories));
 
   if ($category_number > 1) {
+    $multicategory_found = true;
     echo "<p id=\"category_warning\" style=\"animation: l1 1s linear 4 alternate; text-align:center; color:red\"><b>WARNING!</b> Samples from multiple categories were selected (".join(", ", array_keys($found_categories)) ."). Ensure that this selection is consistent with your analysis</p>";
-  }
+  }else
+    {
 
+      //------------if only one category, load json info -------------- 
+      $annot_hash=[];
+      $link_found = false;
+      $annot_json_file_found = false;
+
+      //load expression_info.json
+        if ( file_exists("$json_files_path/tools/expression_info.json") ) {
+          $annot_json_file = file_get_contents("$json_files_path/tools/expression_info.json");
+          $annot_hash = json_decode($annot_json_file, true);
+        }
+
+ // check if any link with query_id exists in the selected datasets
+      foreach (array_keys($sample_hash) as $dataset_path) {
+
+        if (isset($annot_hash[explode("/",$dataset_path)[count(explode("/",$dataset_path))-1]]['link'])) {
+
+          $gene_link= $annot_hash[explode("/",$dataset_path)[count(explode("/",$dataset_path))-1]]['link'];
+
+          if (preg_match('/g=query_id/', $gene_link)) {
+              $link_found = true;
+              break;
+           }
+        }
+      }
+
+  // if no link found , check if any annotation file exists in the selected datasets
+    if (!$link_found) {
+      foreach (array_keys($sample_hash) as $dataset_path) {
+
+        if (isset($annot_hash[explode("/",$dataset_path)[count(explode("/",$dataset_path))-1]]['annotation_file'])) {
+
+          $gene_link= $annot_hash[explode("/",$dataset_path)[count(explode("/",$dataset_path))-1]]['link'];
+          $annot_link= $annot_hash[explode("/",$dataset_path)[count(explode("/",$dataset_path))-1]]['annotation_file'];
+
+            if($gene_link != "#" && preg_match('/.txt/', $annot_link)) { // check annotation file exists and link is not #
+              $annot_json_file_found = true;
+              break;
+            }
+          }
+        }
+      }
+  }
+  
 ?>
 
 <div class="page_container" style="margin-top:20px">
@@ -210,7 +257,11 @@ $top_genes = array_slice($filtered_gene_cv, 0, 10, true);
 $sample_names = [];
 // print_r(array_keys($top_genes)[0]);
 
-if($category_number > 1) { // if more than one category was selected, get all sample names from all top genes
+if(empty($top_genes)) {
+  echo "<div class=\"alert alert-danger\" style=\"text-align:center;\" role=\"alert\"><p style=\"margin:0px\">No genes found with the selected parameters</p></div>";
+}else {
+  if($category_number > 1) { // if more than one category was selected, get all sample names from all top genes
+  
     if($cvMean) {
       foreach (array_keys($top_genes) as $gene) {
         foreach ($replicates_means[$gene] as $sample_name => $mean_value) {
@@ -228,19 +279,19 @@ if($category_number > 1) { // if more than one category was selected, get all sa
           }
         }
     } 
-}
-else { // if only one category was selected, get all sample names from the first top_gene
-  if($cvMean) {
-    foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) { // get sample names from the first top gene
+  }
+  else { // if only one category was selected, get all sample names from the first top_gene
+    if($cvMean) {
+      foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) { // get sample names from the first top gene
           $sample_names[$sample_name] = true;
-    }
-    $sample_names = array_keys($sample_names);
-  }else {
-    foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) {
+      }
+      $sample_names = array_keys($sample_names);
+    }else {
+      foreach ($replicates_means[array_keys($top_genes)[0]] as $sample_name => $mean_value) {
           $sample_names[$sample_name] = count($mean_value);
         }
+    }
   }
-}
 echo "<br>";
 
 // ---------------------------------- GENE SEARCH ----------------------------------------
@@ -256,8 +307,6 @@ echo '<br><div class="input-group" style="max-width:700px; margin:auto">
     <h3 id="search_results_boxplot_title" style="text-align:center;"></h3>
     <div id="search_results_boxplot" style="display:none;"></div>
   </div><br><br>';
-
-
 // ------------------------------------ create table with 10 genes with lowest CV ------------------------------------
 echo '<div class="collapse_section pointer_cursor banner" data-toggle="collapse" data-target="#table_frame" aria-expanded="true">
   <i class="fas fa-sort"></i> 10 genes with lowest CV
@@ -270,37 +319,55 @@ echo "<div id=\"table_container\" style=\"display:none\">";
 echo "<br><table id=\"cv_table\" class=\"table table-striped table-bordered\">";
 echo "<thead><tr><th>Gene ID</th><th>Coef. Variation (%)</th>";
 
-if (!$cvMean) { // if not mean mode
-  foreach ($sample_names as $sample_name => $replicates_count) { // $sample_names is an associative array with sample name as key and number of replicates as value
-    for ($i=0; $i<$replicates_count; $i++) {
-      echo "<th>$sample_name</th>";
+  if (!$cvMean) { // if not mean mode
+    foreach ($sample_names as $sample_name => $replicates_count) { // $sample_names is an associative array with sample name as key and number of replicates as value
+      for ($i=0; $i<$replicates_count; $i++) {
+        echo "<th>$sample_name</th>";
+      }
     }
-  }
-  echo "</tr></thead><tbody>";
+    echo "</tr></thead><tbody>";
 
-  foreach ($top_genes as $gene_name => $cv) { 
+    foreach ($top_genes as $gene_name => $cv) { 
       echo "<tr>";
-      echo "<td>$gene_name</td>";
+      if($link_found && !$multicategory_found) {
+        $gene_url = str_replace("query_id", $gene_name, $gene_link);
+        echo "<td><a href=\"$gene_url\" target=\"_blank\">$gene_name</a></td>";
+      } else {
+        if($annot_json_file_found && !$multicategory_found) {
+            echo "<td><a href=\"/easy_gdb/gene.php?name=$gene_name&annot=$annot_link\" target=\"_blank\">$gene_name</a></td>";
+        }else {
+            echo "<td>$gene_name</td>";
+        }
+      }
       echo "<td><b>" . sprintf("%1\$.2f", $cv) . "</b></td>";
 
       foreach ($sample_names as  $sample_name => $replicates_count) {
         for ($i=0; $i<$replicates_count; $i++) {
           $mean_data = isset($replicates_means[$gene_name][$sample_name]) ? sprintf("%1\$.2f",$replicates_means[$gene_name][$sample_name][$i]) : "-";
           echo "<td>$mean_data</td>";
+        }
       }
-    }
       echo "</tr>";
-  }
-} else { // if mean mode
+    }
+  } else { // if mean mode
 
   foreach ($sample_names as $sample_name) {
       echo "<th>$sample_name</th>";
   }
   echo "</tr></thead><tbody>";
 
-  foreach ($top_genes as $gene_name => $cv) {
+    foreach ($top_genes as $gene_name => $cv) {
       echo "<tr>";
-      echo "<td>$gene_name</td>";
+      if($link_found && !$multicategory_found) {
+        $gene_url = str_replace("query_id", $gene_name, $gene_link);
+        echo "<td><a href=\"$gene_url\" target=\"_blank\">$gene_name</a></td>";
+      } else {
+        if($annot_json_file_found && !$multicategory_found) {
+            echo "<td><a href=\"/easy_gdb/gene.php?name=$gene_name&annot=$annot_link\" target=\"_blank\">$gene_name</a></td>";
+        }else {
+            echo "<td>$gene_name</td>";
+        }
+      }
       echo "<td><b>" . sprintf("%1\$.2f", $cv) . "</b></td>";
 
       foreach ($sample_names as $sample_name) {
@@ -308,19 +375,19 @@ if (!$cvMean) { // if not mean mode
           echo "<td>$mean_data</td>";
       }
       echo "</tr>";
-  } 
-}  
-echo "</tbody></table><br><br>"; // end table and container
+    } 
+  }  
+  echo "</tbody></table><br><br>"; // end table and container
 
-$replicates_filtered = [];
-foreach (array_keys($filtered_gene_cv) as $gene_name) {
-  $replicates_filtered[$gene_name] = $replicates[$gene_name] ?? null;
+  $replicates_filtered = [];
+  foreach (array_keys($filtered_gene_cv) as $gene_name) {
+    $replicates_filtered[$gene_name] = $replicates[$gene_name] ?? null;
+  }
 }
-
 ?>
 
   <!-- ------------------ boxplot ----------------  -->
-  <center><div class="form-group d-inline-flex" style="width: 450px;">
+  <center><div id="boxplot_frame" style="display: none;"><div class="form-group d-inline-flex" style="width: 450px;">
     <label for="sel_gene" style="width: 150px; margin-top:7px"><b>Select gene:</b></label>
     <select class="form-control" id="sel_gene">
       <?php
@@ -329,7 +396,7 @@ foreach (array_keys($filtered_gene_cv) as $gene_name) {
         }
       ?>
     </select>
-  </div></center>
+  </div></div></center>
 <div id="boxplot"></div>
 </div></div>
 
@@ -338,17 +405,13 @@ foreach (array_keys($filtered_gene_cv) as $gene_name) {
 include realpath('../../footer.php');
 ?>
 
- <style>
+<style>
  table.dataTable td,th  {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; 
   }
- 
-    /* .td-tooltip {
-      cursor: pointer;
-    } */
-  </style>
+</style>
 
 <script src="https://unpkg.com/simple-statistics@latest/dist/simple-statistics.min.js"></script>
 <script src="../../js/datatable.js"></script>
@@ -414,11 +477,15 @@ function boxplot(data_array, boxplot_id="boxplot") {
     return boxplot_chart;
 }
 
+// ---------------------------------- GENE SEARCH SCRIPT ----------------------------------------
+var top_genes_name = <?php echo json_encode(array_keys($top_genes)); ?>; // get top genes names 
+
+if(top_genes_name.length > 0) { // if there are top genes to plot
+
   var genes = {};
   var values=[];
   var data = [];
 
-  var top_genes_name = <?php echo json_encode(array_keys($top_genes)); ?>;
   var replicates_filtered  = <?php echo json_encode($replicates_filtered); ?>;
   var filtered_gene_cv = <?php echo json_encode($filtered_gene_cv); ?>; // get all genes no nulls
   var replicates_means = <?php echo json_encode($replicates_means); ?>;
@@ -444,13 +511,14 @@ function boxplot(data_array, boxplot_id="boxplot") {
   })
   // console.log(ss.min(Object.values(top_genes_data['Ubr4']['EphrinB2_cko'])));
   // console.log(genes[top_genes_name[0]]);
+  $('#boxplot_frame').show();
   
   var boxplot_chart = boxplot(genes[top_genes_name[0]]);
-  var boxplot_chart_search = boxplot([],"search_results_boxplot");
   boxplot_chart.render();
-  boxplot_chart_search.render();
 
-  // boxplot_chart_search.render();
+  var boxplot_chart_search = boxplot([],"search_results_boxplot");
+  boxplot_chart_search.render();
+}
 
   $('#sel_gene').change(function() {
     // console.log(genes[this.value]);
@@ -484,14 +552,15 @@ $('#autocomplete_gene').on('input', function() {
 });
 
 //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-function ajax_call_table(replicates, cv,cvMean, gene_name) {
+function ajax_call_table(replicates, cv,cvMean, gene_name, multicategory_found, link_found, gene_link,  annot_json_file_found, annot_link) {
   jQuery.ajax({
     type: "POST",
     url: 'ajax_cv_calculator_table.php',
-    data: {'replicates': replicates, 'cv': cv, 'cvMean': cvMean, 'gene_name': gene_name},
+    data: {'replicates': replicates, 'cv': cv, 'cvMean': cvMean, 'gene_name': gene_name, 'multicategory_found': multicategory_found, 'link_found': link_found, 'gene_link': gene_link, 'annot_json_file_found': annot_json_file_found, 'annot_link': annot_link},
 
     success: function (table_array) {
       var row_table = JSON.parse(table_array);
+      // console.log(row_table.join(""));
       $('#search_results_table').html(row_table.join(""));
       datatable_basic("#cv_table_2");
       
@@ -509,7 +578,7 @@ $('#button_search').click(function () {
     $('#search_results_boxplot').show();
     $('#search_results_boxplot_title').text(selected_gene);
 
-    ajax_call_table(replicates_means[selected_gene], filtered_gene_cv[selected_gene], <?php echo json_encode($cvMean);?>, selected_gene);
+    ajax_call_table(replicates_means[selected_gene], filtered_gene_cv[selected_gene], <?php echo json_encode($cvMean);?>, selected_gene, <?php echo json_encode($multicategory_found);?>, <?php echo json_encode($link_found);?>, <?php echo json_encode($gene_link);?>, <?php echo json_encode($annot_json_file_found);?>, <?php echo json_encode($annot_link);?>);
       
 
 
