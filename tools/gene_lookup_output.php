@@ -22,7 +22,6 @@
 
 <?php
 function get_lookup_lines($desc_input, $lookup_file) {
-  $lookup_file = str_replace(" ", "\\ ", $lookup_file);
 
   usort($desc_input, function($a, $b) {
     return strlen($b) - strlen($a);
@@ -31,7 +30,8 @@ function get_lookup_lines($desc_input, $lookup_file) {
   $temp_pattern_file = tempnam(sys_get_temp_dir(), 'pattern_');
   file_put_contents($temp_pattern_file, implode("\n", $desc_input));
 
-  $grep_command = "grep -i -f" . escapeshellarg($temp_pattern_file) . " " . escapeshellarg($lookup_file);
+  $grep_command = "grep -i -f " . escapeshellarg($temp_pattern_file) . " ".escapeshellarg($lookup_file);
+  
   exec($grep_command, $output);
   unlink($temp_pattern_file);
 
