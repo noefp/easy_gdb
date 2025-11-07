@@ -1,15 +1,24 @@
 <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top" style="padding-left:10px">
-  
+ 
+<!-- warning debug mode  (if set to 1, save all errors and warnings logs. If set to 0, not save warnings logs but save errors logs)-->
 <?php 
-  if ($db_logo && file_exists(realpath("$root_path/$images_path/$db_logo"))) {      
-    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\" style=\"margin-right:5px\"><img id=\"site_logo\" src=$images_path/$db_logo alt=\"DB_Logo\" style=\"height:25px; vertical-align:text-bottom;\"></a>";
-  }
+  if (!isset($warning_debug) || !$warning_debug) {
+   ini_set('error_reporting', E_ALL & ~E_WARNING & ~E_NOTICE); // show all errors except notices (notices are warnings)
+}
 ?>
 
 <?php 
-  if (!$tb_rm_home) {
+  if (isset($db_logo) && $db_logo && file_exists(realpath("$root_path/$images_path/$db_logo"))) {      
+    echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\" style=\"margin-right:5px\"><img id=\"site_logo\" src=$images_path/$db_logo alt=\"DB_Logo\" style=\"height:25px; vertical-align:text-bottom;\"></a>";
+  }
+  
+?>
+
+<?php 
+  if (isset($tb_rm_home) && !$tb_rm_home && isset($dbTitle)) {
     echo "<a class=\"navbar-brand\" href=\"/easy_gdb/index.php\"> $dbTitle</a>";
   }
+
 ?>
 
   <!-- Toggler/collapsibe Button -->
@@ -20,37 +29,37 @@
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
       <?php 
-        if ($tb_species) {
+        if (isset($tb_species) && $tb_species) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
         }
         
-        if ($tb_tools) {
+        if (isset($tb_tools) && $tb_tools) {
           echo '<li class="nav-item dropdown">';
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>';
           echo '<div class="dropdown-menu">';
           
-          if ($tb_search) {
+          if (isset($tb_search) && $tb_search) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/search/search_input.php">Search</a>';
           }
-          if ($tb_blast) {
+          if (isset($tb_blast) && $tb_blast) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/blast/blast_input.php">BLAST</a>';
           }
-          if ($tb_jbrowse) {
+          if (isset($tb_jbrowse) && $tb_jbrowse) {
             echo '<a class="dropdown-item jbrowse_link" href="/jbrowse/" target="_blank">Genome Browser</a>';
           }
-          if ($tb_jbrowse2) {
+          if (isset($tb_jbrowse2) && $tb_jbrowse2) {
             echo '<a class="dropdown-item jbrowse_link" href="/jbrowse2/" target="_blank">Synteny Viewer</a>';
           }
-          if ($tb_seq_ext) {
+          if (isset($tb_seq_ext) && $tb_seq_ext) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/fasta_download.php">Sequence Extraction</a>';
           }
-          if ($tb_annot_ext) {
+          if (isset($tb_annot_ext) && $tb_annot_ext) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/annot_input_list.php">Annotation Extraction</a>';
           }
-          if ($tb_lookup) {
+          if (isset($tb_lookup) && $tb_lookup) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_lookup.php">Gene Version Lookup</a>';
           }
-          if ($tb_enrichment) {
+          if (isset($tb_enrichment) && $tb_enrichment) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_enrichment.php">Gene Set Enrichment</a>';
           }
           
@@ -58,7 +67,7 @@
           echo '</li>';
         }
         
-        if ($tb_gene_expr) {
+        if (isset($tb_gene_expr) && $tb_gene_expr) {
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
             echo '<div class="dropdown-menu">';
@@ -69,7 +78,7 @@
           echo '</li>';
         }
         
-        if ($tb_passport) {
+        if (isset($tb_passport) && $tb_passport) {
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Passport and Phenotype</a>';
             echo '<div class="dropdown-menu">';
@@ -79,27 +88,27 @@
           echo '</li>';
         }
         
-        if ($tb_downloads) {
+        if (isset($tb_downloads) && $tb_downloads) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/downloads.php">Downloads</a></li>';
         }
         
-        if ($tb_about) {
+        if (isset($tb_about) && $tb_about) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/about.php">About</a></li>';
         }
 
-        if ($tb_more) {
+        if (isset($tb_more) && $tb_more) {
           include_once realpath("$easy_gdb_path/more.php");
         }
 
-        if ($tb_help) {
+        if (isset($tb_help) && $tb_help) {
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/help/00_help.php">Help</a></li>';
         }
 
-        if ($tb_custom) {
+        if (isset($tb_custom) && $tb_custom) {
           include_once realpath("$custom_text_path/custom_toolbar.php");
         }
 
-        if ($tb_private) {
+        if (isset($tb_private) && $tb_private) {
           echo '<li class="nav-item"><a id="tbp_link" class="nav-link" href="#"><b>Private links</b></a></li>';
         }
       ?>
@@ -107,8 +116,8 @@
     </ul>
   
   <?php
-  if ($tb_search_box) {
-    if ($file_database) {
+  if (isset($tb_search_box) && $tb_search_box) {
+    if (isset($file_database) && $file_database) {
       echo '<div class="ml-auto">';
       // echo '<div class="d-flex mt-2 mt-md-0 justify-content-start justify-content-md-end w-100">';
       echo '<form class="input-group" id="egdb_search_file_form" action="/easy_gdb/tools/search/search_output_file.php" method="get" style="width: auto;">';
