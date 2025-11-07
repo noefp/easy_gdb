@@ -133,7 +133,7 @@ $columns = array(
         for ($n = 0; $n < ($col_number - 1); $n++) {
           if (isset($info[$n])) {
             if (is_numeric($info[$n]) && $info[$n] <= 1) {
-              echo "<td>$info[$n]</td>";
+              echo "<td><b>$info[$n]</b></td>";
             }
             else {
               $header_name = $columns[$n + 1];

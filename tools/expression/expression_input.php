@@ -258,7 +258,7 @@ if ($dir_counter) {
           return false;
       }
       //check input genes from gene lookup before sending form
-      var max_input = "<?php echo $max_expression_input ?>";
+      var max_input = "<?php echo isset($max_expression_input) ? $max_expression_input : false ?>";
       
       if (!max_input) {
         max_input = 15;
