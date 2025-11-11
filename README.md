@@ -52,45 +52,24 @@ Now we will use git to clone the EasyGDB docker-compose repository: Open a termi
 
 Go into the easyGDB_docker folder
 
-    cd easyGDB_docker
+    cd easyGDB_docker/src
 
-Then, build the container (inside the easyGDB_docker folder; Docker Desktop should be started):
-
-    docker-compose build
-
-Start the container using the Docker desktop application, or use the terminal, in the easyGDB_docker folder, to run:
-
-    docker-compose up -d
-
-The flag -d (--detach) allows to detach the docker in the terminal. It is necessary to start the container (it can be done using the terminal or the Desktop application) everytime you want to access the genomic portal, using `docker-compose start`. You can stop it with `docker-compose stop`. `docker_compose ps` will let you know which containers are running (The Docker Desktop application allows to start and stop the easyGDB container using a user-friendly graphical interface).
-
-Inside the Docker container, EasyGDB is installed at `/var/www/html/` and we can find and modify the genomics portal data in our file system at `easyGDB_docker/src/`.
-
-Now, we will clone the EasyGDB code in the Docker container. Open a terminal inside the easy_gdb Docker container using the Docker desktop application or running the next command in the system terminal at the easyGDB_docker folder:
-
-    docker-compose exec easy_gdb /bin/bash
-
-Clone the easy_GBD code from Github:
+Clone the easy_gdb repository
 
     git clone https://github.com/noefp/easy_gdb.git
 
-Now, we will create the configuration and example folder structure. Still inside the easy_gdb Docker container terminal, go to the install folder inside easy_gdb (`easy_gdb/install/`) :
+Then, build the container (inside the easyGDB_docker folder; Docker Desktop should be started):
 
-    cd easy_gdb/install/
+    docker compose build
 
-and run the `setup.sh` script:
+Start the container using the Docker desktop application, or use the terminal, in the easyGDB_docker folder, to run:
 
-    bash setup.sh
+    docker compose up -d
 
-When running the EasyGDB setup, if you choose to install JBrowse Perl prerequisites, it might take some minutes. Please be patient. It is needed if you want to include a genome browser in your genomics portal.
+The flag -d (--detach) allows to detach the docker in the terminal. It is necessary to start the container (it can be done using the terminal or the Desktop application) everytime you want to access the genomic portal, using `docker compose start`. You can stop it with `docker compose stop`. `docker_compose ps` will let you know which containers are running (The Docker Desktop application allows to start and stop the easyGDB container using a user-friendly graphical interface).
 
-When the setup finishes, this should create some folders, subfolders and files at the same level as easy_gdb. You can take a look using your file browser at `src` or in the terminal (inside the Docker container) using the command:
-
-    ls -lh /var/www/html
 
 You should be able to see the folders `annotations`, `apache`, `blast_dbs`, `db_example_annotations`, `downloads`, `easy_gdb`, `egdb_files`, `expression_data`, `jbrowse`, `jbrowse_example_data`, `lookup`, `passport`, `private_expression_data` and `vcf`. Inside these folders there are some example templates to help you customize your own genomics web portal.
-
-If you are using the Docker terminal, now you can exit it by typing `exit` in the opened terminal.
 
 At this moment all the features of easy_gdb should be already available. In a web browser (Chrome, Firefox, etc.) go to: `localhost:8000/easy_gdb/`. You should be able to see an example of EasyGDB running.
 
@@ -242,9 +221,11 @@ Below we will see how to customize each page of the genomic portal step by step.
 
 In the configuration file `egdb_files/egdb_conf/easyGDB_conf.php` you can customize the header variables `$dbTitle`, `$header_img` and `$db_logo` to change the site title, header image and site logo. The images are stored at `egdb_files/egdb_images/`. Try to change them and reload the web browser `localhost:8000/easy_gdb/index.php` to see the changes.
 
-   $dbTitle=  "Your site title"
+    $dbTitle=  "Your site title"
     $header_img = "your header image file name";
     $db_logo=  "your toolbar logo file name";
+
+If `header_img=""` then remove the header and put the toolbar at the top.
 
 ### Footer logos
 
@@ -502,9 +483,10 @@ The variable `$max_extract_seq_input` (in `easyGDB_conf.php`) controls the maxim
 
 ### Gene version lookup
 
-The Gene version lookup tool is useful to convert a list of gene identifiers to the equivalent list of genes in a different annotation version, or equivalent orthologs in other species, such as the closest model organism. This tool should work if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. 
+The Gene version lookup tool is useful to convert a list of gene identifiers to the equivalent list of genes in a different annotation version, or equivalent orthologs in other species, such as the closest model organism. This tool should work if some lookup files are placed in the `lookup` folder. Remove the provided examples and create your own lookup files following the same format. (Note: in the first row, add a header that indicates what the gene identifier represents)
 
 ```
+Gene_V1    Gene_V2
 gene1.1	gene1_v2.1
 gene2.1	gene2_v2.1;gene3_v2
 gene3.1	gene4_v2.1
@@ -790,8 +772,8 @@ The `passport.json` file (example shown below), allows to set up the passport op
   "img_src_msg":"<p>The images used in the Phenotype descriptors come from x et al.</p>",
   "map_columns":[0,7,10,11],
   "map_markers":["value1","value2","value3"],
-  “phenotype_file_marker_trait”:”sp2_phenotype_2.txt”,
-  “marker_column”:”15”,
+  "phenotype_file_marker_trait":"sp2_phenotype_2.txt",
+  "marker_column":"15",
   "sp_name":"Species_2",
   "convert_to_cathegoric":"convert_numeric_to_cathegoric.json",
   "translator":"translator.json",
@@ -814,8 +796,8 @@ Open a terminal using docker-compose or Docker desktop
 
 Upload your sequences to JBrowse. This is how the gene models were uploaded in the example:
 
-    jbrowse$ bin/prepare-refseqs.pl --fasta ../easy_gdb/templates/jbrowse/genome.fasta --out data/easy_gdb_sample
-    jbrowse$ bin/flatfile-to-json.pl -gff ../easy_gdb/templates/jbrowse/gene_models.gff --key "EasyGDB gene models" --trackLabel egdb_gene_models --trackType CanvasFeatures --type mRNA --out data/easy_gdb_sample
+    jbrowse$ bin/prepare-refseqs.pl --fasta ../easy_gdb/templates/jbrowse_example_data/genome.fasta --out data/easy_gdb_sample
+    jbrowse$ bin/flatfile-to-json.pl -gff ../easy_gdb/templates/jbrowse_example_data/gene_models.gff --key "EasyGDB gene models" --trackLabel egdb_gene_models --trackType CanvasFeatures --type mRNA --out data/easy_gdb_sample
     jbrowse$ bin/generate-names.pl --tracks egdb_gene_models --out data/easy_gdb_sample/
 
 When adding new tracks, edit the file `data/easy_gdb_sample/trackList.json` to customize them in JBrowse. Below there is an example of the gene model track with a link to the database (`url`).
