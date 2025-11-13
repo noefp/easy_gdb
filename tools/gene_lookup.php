@@ -1,18 +1,3 @@
-<?php
-  if (isset($_POST['ajax_gene_lookup']) && $_POST['ajax_gene_lookup'] == '1') {
-    $file = $_POST['file'];
-    $second_line = get_second_line($file);
-    $data_set_name = preg_replace('/\.[a-z]{3}$/', "", basename($file));
-    $data_set_name = str_replace("_", " ", $data_set_name);
-
-    echo "<div id=\"color_default\" class=\"alert alert-primary\" role=\"alert\" style=\"display:block;margin:0px\">";
-    echo "<div class=\"card-body\" style=\"padding:0px;text-align:center\">";
-    echo "Example genes for <strong>$data_set_name</strong>:<br>$second_line";
-    echo "</div></div>";
-    exit;
-  }
-?>
-
 <?php include realpath('../header.php'); ?>
 <?php include realpath('modal.html'); ?>
 
@@ -29,24 +14,18 @@
 
   <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
-    <?php
-      function get_second_line($file_path) {
-        $lines = file($file_path);
-        return $lines[1] ?? 'No second line available';
-      }
-    ?>
-
-    <?php 
-      include_once realpath("$easy_gdb_path/tools/common_functions.php");
-      $sps_found = get_dir_and_files($lookup_path);
-      $num_files = count($sps_found);
-      echo "<div id=\"color_error\"></div>";
-    ?>
+     <?php 
+      echo "<div id=\"color_default\" class=\"alert alert-primary\" role=\"alert\" style=\"display:block;margin:0px\">";
+      echo "<div  class=\"card-body\" style=\"padding:0px;text-align:center\">";
+      // echo "Example genes for <strong>$data_set_name</strong>:<br>$second_line";
+      echo "</div></div>";
+    ?> 
     <br>
 
     <form id="gene_version_lookup">
     <label for="txtGenes">Paste a list of gene IDs</label>
-    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10"><?php echo "$input_gene_list" ?></textarea>
+    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10"></textarea>
+
     <br>
 
 
@@ -56,22 +35,19 @@
       $sps_found = get_dir_and_files($lookup_path);
       echo "<div class=\"form-group\">";
       echo "<label for=\"sel1\">Select Dataset</label>";
-      echo "<select class=\"form-control\" id=\"sel1\" name=\"lookup_db\" onchange=\"loadExampleGenes(this.value)\">";
+      echo "<select class=\"form-control\" id=\"sel1\" name=\"lookup_db\">";
 
       foreach ($sps_found as $bdb) {
-        if (preg_match('/\.txt$/', $bdb, $match)) {
+        if (preg_match('/\.txt$/', $bdb)) {
           $blast_db = str_replace(".txt","",$bdb);
           $blast_db = str_replace("_"," ",$blast_db);
-          echo "<option dbtype=\"$match[0]\" value=\"$lookup_path/$bdb\">$blast_db</option>";
+          echo "<option value=\"$lookup_path/$bdb\">$blast_db</option>";
         }
       }
-
       echo "</select>";
       echo "</div>";
 
     ?>
-
-
       <button type="submit" class="btn btn-info float-right" form="gene_version_lookup" formaction="gene_lookup_output.php" formmethod="post">Search</button>
     </form>
     <br>
@@ -83,6 +59,7 @@
 
 <script>
 $(document).ready(function () {
+
   $('#gene_version_lookup').submit(function () {
     var gene_lookup_input = $('#txtGenes').val().trim();
     
@@ -95,44 +72,48 @@ $(document).ready(function () {
     if (!max_input) max_input = 10000;
 
     if (!gene_lookup_input) {
-      $("#search_input_modal2").html("The gene list is empty.");
-      $('#no_gene_modal2').modal();
+      $("#search_input_modal").html("The gene list is empty.");
+      $('#no_gene_modal').modal();
       return false;
     }
     else if (gene_lookup_input.length <= 3) {
-      $("#search_input_modal2").html("Input is too short, please provide a longer term to search.");
-      $('#no_gene_modal2').modal();
+      $("#search_input_modal").html("Input is too short, please provide a longer term to search.");
+      $('#no_gene_modal').modal();
       return false;
     }
 
     if (gene_count > max_input) {
-      $("#search_input_modal2").html(
+      $("#search_input_modal").html(
         "A maximum of " + max_input + " sequences can be provided as input, your input has <strong>" + gene_count + "</strong>\."
       );
-      $('#no_gene_modal2').modal();
+      $('#no_gene_modal').modal();
       return false;
     }
 
     return true;
   });
 
-  var defaultDataset = $('#sel1').val();
-  if (defaultDataset) {
-    loadExampleGenes(defaultDataset);
+  function ajax_gene_lookup(selectedDataset) {
+    var selectedDataset = $('#sel1').val();
+    $.ajax({
+      type: "POST",
+      url: "ajax_gene_lookup.php",
+      data: {'file': selectedDataset},
+      success: function (response) {
+        var data =JSON.parse(response);
+        $("#color_default .card-body").html("Example genes for <strong>"+data.data_set_name+"</strong>:<br>"+data.second_line.join(" "));
+        $('#txtGenes').val(data.input_list.join("\n")); 
+        // $('#txtGenes').attr("placeholder", data.input_list.join("\n"));
+      }
+    });
   }
+
+  ajax_gene_lookup();
+
+  $('#sel1').change(function() {
+    ajax_gene_lookup();
+  });
+
 });
 </script>
 
-<script>
-  function loadExampleGenes(filePath) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "", true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      document.getElementById("color_error").innerHTML = xhr.responseText;
-    }
-  };
-  xhr.send("ajax_gene_lookup=1&file=" + encodeURIComponent(filePath));
-}
-</script>

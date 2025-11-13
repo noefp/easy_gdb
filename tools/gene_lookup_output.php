@@ -30,8 +30,8 @@ function get_lookup_lines($desc_input, $lookup_file) {
   $temp_pattern_file = tempnam(sys_get_temp_dir(), 'pattern_');
   file_put_contents($temp_pattern_file, implode("\n", $desc_input));
 
-  $grep_command = "grep -i -f " . escapeshellarg($temp_pattern_file) . " ".escapeshellarg($lookup_file);
-  
+  $grep_command = "grep -i -f " . escapeshellarg($temp_pattern_file) . " " .escapeshellarg($lookup_file);
+
   exec($grep_command, $output);
   unlink($temp_pattern_file);
 
@@ -72,7 +72,7 @@ function print_lookup_table($desc_input, $output, $lookup_file) {
     return;
   }
 
-  $head_command = "head -n 1 $lookup_file";
+  $head_command = "head -n 1 " . escapeshellarg($lookup_file);
   $output_head = trim(shell_exec($head_command));
   $columns = explode("\t", $output_head);
   $col_number = count($columns);
