@@ -22,9 +22,8 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
 
     <div class="form-group blast_attr">
       <label for="blast_sequence">Paste a sequence</label>
-      <textarea id="blast_sequence" name="query" class="form-control sequence_blast_box" rows="12">
-<?php echo "$blast_example"; ?>
-      </textarea>
+      <textarea id="blast_sequence" class="form-control sequence_blast_box" rows="12"><?php echo "$blast_example"; ?></textarea>
+      <textarea id="blast_sequence_output" name="query" class="form-control sequence_blast_box d-none"></textarea>
     </div>
 
     <div class="row">
@@ -137,80 +136,170 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
     //   blast_program = $('#blast_program').val();
     //   alert("blast_program: "+blast_program);
     // });
+    var multiple_blast_db = <?php echo ((isset($multiple_blast_db)) && ($multiple_blast_db===1)) ? 1 : 0; ?>;
+    // alert("multiple_blast_db: "+ multiple_blast_db);
 
     $('#blast_button').click(function () {
       var seq_type = "nt";
-      var input_seq = $('#blast_sequence').val();
-      var blast_db = $('#sel1').val();
-      var blast_db_type = $('#sel1').children(":selected").attr("dbtype");;
+
+      var input_seq = $('#blast_sequence').val().trim();
+      // alert("input_seq: "+input_seq);
+
+
+      if(!multiple_blast_db)
+      { var blast_db = $('#sel1').val();
+        var blast_db_type = $('#sel1').children(":selected").attr("dbtype");
+      }else
+      {  var blast_db_type = ($('#nucleotide_db_list .nucleotide-checkbox:checked, #protein_db_list .protein-checkbox:checked').val()) ? 
+                             ($('#nucleotide_db_list .nucleotide-checkbox:checked, #protein_db_list .protein-checkbox:checked').val()) : "";
+      }
+          
       var blast_program = $('#blast_program').val();
 
-      input_seq = input_seq.trim();
+      //input_seq_lines = input_seq.match(/^>[^\n]+\n([^>]*)/gm); // get only sequence lines, ignore fasta headers
 
-      var trimmed_seq = input_seq.trim();
-      trimmed_seq = trimmed_seq.replace(/^>.+\n/,"");
-      trimmed_seq = trimmed_seq.replace(/\n/g,"");
-      var seq_length = trimmed_seq.length;
+      
+     //      Check input genes from BLAST output before sending form
+    // ---------------------------------------------------------------------------------------------------------------------------
+      const input_seq_header_sequence = [];
+      if(input_seq.match(/^>/gm)){ // if fasta format
 
-      var nt_count = (trimmed_seq.match(/[ACGNTacgnt]/g)||[]).length
+        let match;
+        const regex = /^>([^\n]+)\n([^>]*)/gm;
 
-      if (nt_count < seq_length*0.9) {
-        seq_type = "prot";
+        // Regular expression: /^>([^\n]+)\n([^>]*)/gm
+        //
+        // ^>         → matches lines that start with the character '>'
+        // ([^\n]+)   → group 1: capture one or more (+) characters of the header (that are not newlines) until the newline
+        // \n         → newline character separating the header from the sequence
+        // ([^>]*)    → group 2: captures the sequence until the next '>' or the end of the text (all characters that are not '>')
+        //
+        // Flags:
+        // g → global, find all matches in the text
+        // m → multiline, makes  match the start/end of each line (not just the start/end of the whole text)
+
+        // while loop to find all matches in the input sequence
+        while ((match = regex.exec(input_seq)) !== null) {
+          // alert("match: "+ JSON.stringify(match[1])+ " , "+ JSON.stringify(match[2]));
+          const header = ">" + match[1].trim(); // header [1]position is the first capturing group ([^\n]+)
+          const sequence = match[2].replace(/\s+/g,"").trim();  // sequence (remove all whitespace) [2]position is the second capturing group ([^>]*)
+          input_seq_header_sequence.push({header, sequence});  // push object with header and sequence; 
+        }
+      }else{
+        input_seq_header_sequence.push({header: "", sequence: input_seq.replace(/\n/g,"").trim()}); // remove newlines from sequence "g" for global;
       }
 
-      // alert("nt_count: "+nt_count+" seq_length: "+seq_length+" seq_type: "+seq_type);
-      // alert("blast_program: "+blast_program+" blast_db: "+blast_db);
+      // alert("sequences in input: "+ JSON.stringify(input_seq_header_sequence));
+// -----------------------------------------------------------------------------------------------------------------------------
 
-      //check input genes from BLAST output before sending form
-      seqnum = input_seq.match(/>/g).length
-      var max_input = "<?php echo $max_blast_input ?>";
+      // if input sequence is empty
+      if (input_seq === "") {
+        // alert("Please provide an input sequence");
+        $("#search_input_modal").html("Please provide an input sequence");
+        $('#no_gene_modal').modal()
+        return false;
+      }
+
+     // check that at least one BLAST database is selected
+      if(blast_db_type === "" || typeof blast_db_type === "undefined") {
+          // alert("Please select at least one BLAST database");
+        $("#search_input_modal").html("Please select at least one BLAST database");
+        $('#no_gene_modal').modal()
+        return false;
+      }
+
+      seqnum = input_seq_header_sequence.length // count number of sequences in input form
+      var max_input = "<?php echo isset($max_blast_input) ? $max_blast_input : 0 ?>";
       
       if (!max_input) {
         max_input = 10;
       }
-      
+
+      // if more than max_input sequences, prevent form submission
       if (seqnum > max_input) {
-          // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
-          $("#search_input_modal").html( "A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
-          $('#no_gene_modal').modal()
-          return false;
+        // alert("A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
+        $("#search_input_modal").html( "A maximum of "+max_input+" sequences can be provided as input, your input has: "+seqnum);
+        $('#no_gene_modal').modal()
+        return false;
       }
-      if (!input_seq || seq_length < 5) {
+
+
+     // validate each input sequence
+      var check_input = input_seq_header_sequence.some(function(seq, index){
+
+        var seq_length = seq.sequence.length;
+
+        var nt_count = (seq.sequence.match(/[ACGNTacgnt]/g)).length // count nucleotides characters in sequence
+
+        if (nt_count < seq_length*0.9) { // if less than 90% of characters are nucleotides, consider it a protein sequence
+          seq_type = "prot";
+        }
+
+        if (!seq.sequence || seq_length < 5) {
           // alert("Please provide a valid input sequence");
           $("#search_input_modal").html("Please provide a valid input sequence");
-          $('#no_gene_modal').modal()
-          return false;
-      }
-      if (seq_type == "nt" && blast_program == "blastp") {
-          // alert("BLASTp can not be used for an input nucleotide sequence");
-          $("#search_input_modal").html("BLASTp can not be used for an input nucleotide sequence");
-          $('#no_gene_modal').modal()
-          return false;
-      }
-      if (seq_type == "prot" && blast_program != "blastp") {
-          // alert("Input protein sequences can only be used with BLASTp");
-          $("#search_input_modal").html("Input protein sequences can only be used with BLASTp");
-          $('#no_gene_modal').modal()
-          return false;
-      }
-      if (blast_program == "blastn" && blast_db_type.match("\.phr")) {
-          // alert("BLASTn can not be used for a protein database");
-          $("#search_input_modal").html("BLASTn can not be used for a protein database");
-          $('#no_gene_modal').modal()
-          return false;
-      }
-      if ((blast_program == "blastp" || blast_program == "blastx") && !blast_db_type.match("\.phr")) {
-        // $('#blast_form').submit(function() {
-          // alert("BLASTp and BLASTx can only be used for a protein database");
-          $("#search_input_modal").html("BLASTp and BLASTx can only be used for a protein database");
-          $('#no_gene_modal').modal()
-          return false;
-        // });
-      }
+          $('#no_gene_modal').modal();
+          return true;
+        }
+        
+        if (seq_type === "nt" && blast_program === "blastp") {
+              // alert("BLASTp can not be used for an input nucleotide sequence");
+              $("#search_input_modal").html("BLASTp can not be used for an input nucleotide sequence");
+              $('#no_gene_modal').modal()
+              return true;
+          }
 
-      return true;
+        if (seq_type === "prot" && blast_program !== "blastp") {
+              // alert("Input protein sequences can only be used with BLASTp");
+              $("#search_input_modal").html("Input protein sequences can only be used with BLASTp");
+              $('#no_gene_modal').modal()
+              return true;
+          }
+
+        if (blast_program === "blastn" && blast_db_type.match("\.phr")) {
+              // alert("BLASTn can not be used for a protein database");
+              $("#search_input_modal").html("BLASTn can not be used for a protein database");
+              $('#no_gene_modal').modal()
+              return true;
+          }
+          // alert("blast_db_type: "+blast_db_type);
+
+        if ((blast_program === "blastp" || blast_program === "blastx") && !blast_db_type.match("\.phr")) {
+          //   // $('#blast_form').submit(function() {
+          //     // alert("BLASTp and BLASTx can only be used for a protein database");
+              $("#search_input_modal").html("BLASTp and BLASTx can only be used for a protein database");
+              $('#no_gene_modal').modal()
+          //     // console.log("BLASTp and BLASTx can only be used for a protein database");
+              return true;
+          //   // });
+          }
+          
+          // check that only letters are provided in the sequence input field for protein sequences and nucleotide sequences  
+          const nueclotides_proteins_char = /[^A-Za-z]/; // only letters
+          if(nueclotides_proteins_char.test(seq.sequence) ) {
+            // alert("Please provide a valid input sequence");
+            if(seq.header !== "") {
+              $("#search_input_modal").html("<b>"+ seq.header + "</b>" + "<br>Please provide a valid input sequence" + " (only letters are allowed)");
+            }
+            else {
+              $("#search_input_modal").html("Please provide a valid input sequence" + " (only letters are allowed)");
+            }
+              $('#no_gene_modal').modal();
+              return true;
+          }
+      });
+
+      if ((check_input) ? false : true) {
+        // if all inputs are valid, submit form
+        let seq_output = input_seq_header_sequence.map(item => `${item.header.replace(/[^A-Za-z0-9 >]/g,"_")}\n${item.sequence}`).join("\n");
+        // alert("text: "+ text);
+        $("#blast_sequence_output").text(seq_output);
+        return true;
+      }else {
+        // if any input is invalid, prevent form submission
+        return false;
+      }
     });
-
   });
 </script>
 
