@@ -274,34 +274,29 @@ function _check_coordinates($tmp_start,$tmp_end) {
 //   // Return the species link and target type
 //   return array($s_link, $target_type);
 // }
-
-
+ // Check if the parameters are valid 
+  $blast_prog   = (in_array($blast_prog, ["blastn", "tblastn","blastp","tblastx","blastx"])) ? $blast_prog : die("error blast prog");
+  $blast_filter = (in_array($blast_filter, ["yes","no"])) ? $blast_filter : die("error blast filter");
+  $evalue       = floatval($evalue);
+  $blast_task   = (in_array($blast_task,["","-task blastn-short","-task dc-megablast","-task megablast","-task blastp-fast","-task blastp-short","-task blastx-fast"])) ? $blast_task : die("error blast task"); 
+  $max_hits     = intval($max_hits);  
+  $query_arg    = escapeshellarg($query);
+  $blast_matrix  = escapeshellarg($blast_matrix);
 
 // Loop through each database in the blast_db array
 foreach ($blast_dbs as $blast_db) {
 
-
   $blast_cmd = "";
+  // Get the path to the blast database
+  $blast_db_path     = (preg_match('/\.FASTA$/i', $blast_db)) ? $blast_db : die("error blast db"); 
 
-  // check inputs are valid
-  $blast_prog   = (in_array($blast_prog, ["blastn", "tblastn","blastp","tblastx","blastx"])) ? $blast_prog : die("error blast prog");
-  $blast_db     = (preg_match('/\.FASTA$/i', $blast_db)) ? $blast_db : die("error blast db"); 
-  $blast_filter = (in_array($blast_filter, ["yes","no"])) ? $blast_filter : die("error blast filter");
-  $evalue       = floatval($evalue);
-  $blast_task   = (in_array($blast_task,["","-task blastn-short","-task dc-megablast","-task megablast","-task blastp-fast","-task blastp-short","-task blastx-fast"])) ? $blast_task : die("error blast task"); 
-  $max_hits     = intval($max_hits);     // value forced to integer
-  $blast_matrix = escapeshellarg($blast_matrix);
-  $query        = escapeshellarg($query);
-
-
-  // print_r($query);
 
   if ($blast_prog == "blastn") {
-    $blast_cmd = "$query  | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    $blast_cmd = "$query_arg  | $blast_prog -db $blast_db_path -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
   } elseif ($blast_prog == "tblastn") {
-      $blast_cmd = "$query | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+      $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
   } elseif (in_array($blast_prog, ["blastp", "blastx", "tblastx"])) {
-      $blast_cmd = "$query | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
+      $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
   }
   // echo $blast_cmd."<br><br>";
 
