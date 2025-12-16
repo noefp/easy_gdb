@@ -139,6 +139,12 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
     var multiple_blast_db = <?php echo ((isset($multiple_blast_db)) && ($multiple_blast_db===1)) ? 1 : 0; ?>;
     // alert("multiple_blast_db: "+ multiple_blast_db);
 
+    
+    // $('#blast_task').change(function () {
+    //   var task = $('#blast_task').val();
+    //   alert("task: "+task);
+    // });
+
     $('#blast_button').click(function () {
       var seq_type = "nt";
 
@@ -155,6 +161,8 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
       }
           
       var blast_program = $('#blast_program').val();
+
+      var task = $('#blast_task').val();
 
       //input_seq_lines = input_seq.match(/^>[^\n]+\n([^>]*)/gm); // get only sequence lines, ignore fasta headers
 
@@ -285,6 +293,28 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
               $("#search_input_modal").html("Please provide a valid input sequence" + " (only letters are allowed)");
             }
               $('#no_gene_modal').modal();
+              return true;
+          }
+
+        //   - blastp-fast, blastp-short → proteins
+        //   - blastx-fast → nucleotides (translate to  proteins)
+        //   - blastn-short, dc-megablast, megablast → nucleotides
+
+          if (seq_type === "nt" && blast_program === "blastn" && (task === 'blastp-fast' || task === "blastp-short")) {
+              $("#search_input_modal").html("<b>Task: "+task+"</b><br> can not be used for an input nucleotide sequence");
+              $('#no_gene_modal').modal()
+              return true;
+          }
+        
+        if (seq_type === "prot" && blast_program === "blastp" && (task !== 'blastp-fast' && task !== "blastp-short" && task !== "none")) {
+              $("#search_input_modal").html("<b>Task: "+task+"</b><br> can not be used for an input proteins sequence");
+              $('#no_gene_modal').modal()
+              return true;
+          }
+
+        if (seq_type === "nt" && blast_program === "blastx" && (task !== "blastx-fast" && task !== "none")) {
+              $("#search_input_modal").html("<b>Task: "+task+"</b><br> can not be used for BLASTx program");
+              $('#no_gene_modal').modal()
               return true;
           }
       });
