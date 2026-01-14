@@ -17,9 +17,9 @@
 
 <?php
   if ($file_database) {
-    echo "<form id=\"egdb_search_file_form\" action=\"search_output_file.php\" method=\"get\">";
+    echo "<form id=\"egdb_search_file_form_annot\" action=\"search_output_file.php\" method=\"get\">";
   } else {
-    echo "<form id=\"egdb_search_file_form\" action=\"search_output.php\" method=\"get\">";
+    echo "<form id=\"egdb_search_file_form_annot\" action=\"search_output.php\" method=\"get\">";
   }
 ?>
 
@@ -150,7 +150,7 @@
 <!-- JAVASCRIPT -->
 <script> 
 $(document).ready(function () {
-  $('#egdb_search_file_form').submit(function() {
+  $('#egdb_search_file_form_annot').submit(function() {
     var gene_id = $('#search_file_box').val();
     var data_set_selected = false;
     var file_database = "<?php echo $file_database; ?>";
