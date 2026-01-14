@@ -41,7 +41,7 @@ if (!$multiple_blast_db) {
 ?>
 
 <script>
-  var multiple_blast_db = <?php echo $multiple_blast_db; ?>;
+  var multiple_blast_db = <?php echo isset($multiple_blast_db) ? $multiple_blast_db : 0; ?>;
 
   if (!multiple_blast_db) {
     $(document).ready(function () {
@@ -137,8 +137,8 @@ if ($multiple_blast_db) {
 
 
   // Define paths to nucleotide and protein directories
-  $nucleotide_path = $blast_dbs_path . "/nucleotides";
-  $protein_path = $blast_dbs_path . "/proteins";
+  // $nucleotide_path = $blast_dbs_path . "/nucleotides";
+  // $protein_path = $blast_dbs_path . "/proteins";
 
 
   // $end_ls = ['fasta','fa','fna','fas','ffn','faa','mpfa','frn'];
@@ -148,6 +148,7 @@ if ($multiple_blast_db) {
   // get_databases($protein_path, $protein_dbs, $end_ls);
   get_databases($blast_dbs_path, $nucleotide_dbs, ['nhr']);
   get_databases($blast_dbs_path, $protein_dbs, ['phr']);
+
 
   // Display Nucleotide databases
   echo "<div class=\"form-group blast_attr\" id='nucleotide_db_list'>";

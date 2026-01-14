@@ -160,12 +160,15 @@ else {
 <?php include_once 'footer.php';?>
 
 <script>
-  var query_gene = "<?php echo $gene_name ?>";
-  var sps_name = "<?php echo $species_name ?>";
-  var annot_v = "<?php echo $annot_version ?>";
-  document.getElementById('query_gene').innerHTML = query_gene+" &nbsp; <i>"+sps_name+"</i> &nbsp; v"+annot_v;
-  
+  var file_database = <?php echo isset($file_database) ? $file_database : "false"; ?>; 
+
+  if (!file_database) {
+    var query_gene = "<?php echo $gene_name ?>";
+    var sps_name = "<?php echo $species_name ?>";
+    var annot_v = "<?php echo $annot_version ?>";
+    document.getElementById('query_gene').innerHTML = query_gene+" &nbsp; <i>"+sps_name+"</i> &nbsp; v"+annot_v; 
+    
   // document.getElementById('query_gene').innerHTML = query_gene;
   // document.getElementById('query_gene').style.display = "block";
-
+  }
 </script>

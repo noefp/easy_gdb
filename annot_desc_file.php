@@ -1,4 +1,4 @@
-<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#annot_section" aria-expanded="true">
+<div id ="collapse_annot_section" class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#annot_section" aria-expanded="true">
     <i class="fas fa-sort" style="color:#229dff"></i> Functional descriptions
 </div>
 
@@ -68,6 +68,7 @@
                 }
 
             } elseif (strpos($data[$n], ';')) {
+
                 $ipr_data = explode(";", $data[$n]);
                 $desc_data = explode(";", $data[$n + 1]);
                 $ipr_count = count($ipr_data);
@@ -77,7 +78,9 @@
                     $desc_ipr = $desc_data[$i];
 
                     $query_id = str_replace('query_id', $ipr_id, $annot_hash[$header_name]);
-                    $db_link = "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>";
+                    
+                    $db_link = ($query_id != "") ? "<a href=\"$query_id\" target=\"_blank\">$ipr_id</a>" : $ipr_id;
+                    
                     $db_description = $desc_ipr;
                     $db_source = $sources[$n];
 
@@ -95,7 +98,6 @@
                 if ($data[$n]) {
                     $db_link = "<a href=\"$query_id\" target=\"_blank\">$data[$n]</a>";
                 }
-
             } else {
                 if ($data[$n]) {
                     $db_link = $data[$n];
@@ -124,3 +126,23 @@
   <!-- TABLE END -->
 
 </div>
+
+<script>
+  $(document).ready(function () {
+    var data = <?php echo json_encode($data); ?>;
+    var annot_file = <?php echo  json_encode(preg_match('/\.txt$/i', $annot_file)); ?>;
+    // alert("annot_file: "+ annot_file);
+    if(!annot_file){
+      $("#collapse_annot_section").hide();
+      $("#annot_section").hide();
+    }
+    else 
+    {
+      if (data.length === 0) {
+      $(".annot_table").hide();
+      $("#annot_section").append('<div class="alert alert-danger" style="text-align:center;" role="alert">No annotations found</div>');
+    }
+  }
+   
+  } );
+</script>

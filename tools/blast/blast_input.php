@@ -194,6 +194,7 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
           input_seq_header_sequence.push({header, sequence});  // push object with header and sequence; 
         }
       }else{
+        // if not fasta format, consider whole input as a single sequence
         input_seq_header_sequence.push({header: "", sequence: input_seq.replace(/\n/g,"").trim()}); // remove newlines from sequence "g" for global;
       }
 

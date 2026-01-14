@@ -1,7 +1,8 @@
 <?php include_once realpath("../../header.php");?>
 
 <script type="text/javascript" src="../../js/kinetic-v5.1.0.min.js"></script>
-<script src="../../js/blast_canvas_graph.js?v=<?php echo time(); ?>"></script>
+<!-- ?v=x to force cache busting for development purpose. This parameter avoids cache refresh. not used in production -->
+<script src="../../js/blast_canvas_graph.js?v=<?php echo time(); ?>"></script> 
 
 
 <br><br>
@@ -38,6 +39,7 @@
 </div>
 <br><br>
 
+<!-- Canvas Graph -->
 <div class="frame_container">
     <div class="blast_canvas_frame">
        
@@ -64,10 +66,11 @@
     </div> -->
     <!-- End of Legend -->
 </div>
+<!-- End of Canvas Graph -->
 <br>
 <br>
-<!-- Table Data -->
 
+<!-- Table and Dropdown button -->
 <div class="frame_container">
     <!-- Table and Dropdown Section -->
       <div style="display: flex; justify-content: flex-start; align-items: flex-start;">
@@ -112,7 +115,7 @@
 //echo getcwd();
 
 $query = $_POST["query"];
-
+// echo $query."<br>";
 //all_blast_results = []; // Array to store results for each database
 $blast_dbs = []; //its paths
 $blast_results = []; // blast raw resylts
@@ -322,11 +325,8 @@ foreach ($blast_dbs as $blast_db) {
   echo "<div style=\"margin:60px;min-width:1020px\">$blast_res</div>";
 
 
-
-
-
   
-
+// get blast links in json file
   $links_hash=[];
 
   // if ( file_exists("$blast_dbs_path/blast_links.json") ) {
@@ -361,7 +361,7 @@ foreach ($blast_dbs as $blast_db) {
     $query_line_on = 0;
     $query_length = 0;
 
-
+    //  process blast result line by line
     $lines = explode("\n", $blast_res);
   
     foreach ($lines as $line) {
@@ -369,10 +369,10 @@ foreach ($blast_dbs as $blast_db) {
       //echo "<br>";
       // matching QUERY=
       // display the result html.
-
       if (preg_match('/Query\=\<\/b\>\s*(\S*)/', $line, $match)) {
         $query = $match[1];
         $query_name = $match[0];
+
         $blast_db_name = preg_replace('/.*\//',"", $blast_db);
         $blast_db_name = str_replace('_'," ", $blast_db_name);
         //echo $blast_db_name;
@@ -626,7 +626,9 @@ foreach ($blast_dbs as $blast_db) {
       array_push($json_array, $description_hash);
     }
       $blast_table = join('', $res_html);
+      // $blast_table .= "</table>";
       $blast_out_txt = join('\n', $res_tab_txt);
+
 
 
 
@@ -647,8 +649,6 @@ foreach ($blast_dbs as $blast_db) {
 }
 
 $name = str_replace("</b>", "", $query_name);
- 
- 
 ?>
 
 
