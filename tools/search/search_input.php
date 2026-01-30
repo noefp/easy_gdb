@@ -26,9 +26,9 @@
 
     <!-- FORM OPPENED -->
     <div class="form-group">
-      <label for="search_file_box" style="font-size:16px">Insert a gene ID or annotation keywords</label>
+      <label for="search_file_box_annot" style="font-size:16px">Insert a gene ID or annotation keywords</label>
       <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
-      <input type="search_box" class="form-control" id="search_file_box" name="search_keywords" style="border-color: #666">
+      <input type="search_box" class="form-control" id="search_file_box_annot" name="search_keywords" style="border-color: #666">
     </div>
 
 
@@ -151,7 +151,7 @@
 <script> 
 $(document).ready(function () {
   $('#egdb_search_file_form_annot').submit(function() {
-    var gene_id = $('#search_file_box').val();
+    var gene_id = $('#search_file_box_annot').val();
     var data_set_selected = false;
     var file_database = "<?php echo $file_database; ?>";
     var select_field = $('.sample_checkbox').length > 0;
