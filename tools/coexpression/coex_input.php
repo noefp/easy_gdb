@@ -192,7 +192,7 @@ $(document).ready(function () {
       $('#no_gene_modal2').modal();
       return false;
     }
-    else if (gene_lookup_input.length <= 2) {
+    else if (gene_lookup_input.length < 2) {
       $("#search_input_modal2").html("Input is too short, please provide a longer gene ID.");
       $('#no_gene_modal2').modal();
       return false;

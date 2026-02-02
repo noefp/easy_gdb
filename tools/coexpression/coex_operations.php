@@ -21,7 +21,7 @@ if ($quoted_search) {
 // GREP1
 $desc_arg = escapeshellarg($desc_input);
 $folder_arg = escapeshellarg($lookup_file) . '/*.txt';
-$grep_gene = "zgrep -i $desc_arg $folder_arg";
+$grep_gene = "zgrep -iw $desc_arg $folder_arg"; // This looks for the gene as a whole word (-w) and case insensitive (-i)
 exec($grep_gene, $gene_module);
 
 $gene_module_string = $gene_module[0];
