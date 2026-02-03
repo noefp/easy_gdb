@@ -37,7 +37,7 @@ else {
   $module_file = glob("$lookup_file/$module*");
 
   // GREP2
-  $grep_gene_cor = "zgrep '$gene' '$module_file[0]'";
+  $grep_gene_cor = "zgrep -w '$gene' '$module_file[0]'";
   exec($grep_gene_cor, $gene_cor);
 
   $gene_names = explode("\t", $gene_cor[0]);
@@ -56,7 +56,7 @@ else {
   }
 
   // ARRAY GENE COLUMN
-  $gene_index = preg_grep("/$gene/", $gene_names);
+  $gene_index = preg_grep("/^" . preg_quote($gene, '/') . "$/", $gene_names);
   $gene_column = key($gene_index) + 1;
 
   $cut_command = "zcat '$module_file[0]' | cut -f1,'$gene_column'";
