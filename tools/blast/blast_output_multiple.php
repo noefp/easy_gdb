@@ -203,9 +203,9 @@ foreach ($_POST['blast_db'] as $filename) {
   $name = str_replace(" ", "_", $filename);
   $find_path = find_file_in_directory($blast_dbs_path, $name);
 
-  if (!$find_path) {
-      $find_path = find_file_in_directory($blast_dbs_path, $name);
-  }
+  // if (!$find_path) {
+  //     $find_path = find_file_in_directory($blast_dbs_path, $name);
+  // }
 
   if ($find_path) {
       $db_path = preg_replace('/\.(phr|nhr)$/', '', $find_path);
@@ -291,41 +291,44 @@ foreach ($blast_dbs as $blast_db) {
 
   $blast_cmd = "";
   // Get the path to the blast database
-  $blast_db_path     = (preg_match('/\.FASTA$/i', $blast_db)) ? $blast_db : die("error blast db"); 
-
+  // $blast_db_path     = (preg_match('/\.FASTA$/i', $blast_db)) ? preg_replace('/\.(phr|nhr)$/', '',$blast_db) : die("error blast db"); 
+  // $blast_db_path     = (file_exists($blast_db)) ? preg_replace('/\.(phr|nhr)$/', '', $blast_db) : die("error blast db");
+  // echo $blast_db;
+  // $db_path = preg_replace('/\.(phr|nhr)$/', '', $find_path);
 
   if ($blast_prog == "blastn") {
-    $blast_cmd = "$query_arg  | $blast_prog -db $blast_db_path -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    if(file_exists($blast_db.".nhr"))
+    {$blast_cmd = "$query_arg  | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";}
   } elseif ($blast_prog == "tblastn") {
-      $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    if(file_exists($blast_db.".nhr"))
+     {$blast_cmd = "$query_arg | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";}
   } elseif (in_array($blast_prog, ["blastp", "blastx", "tblastx"])) {
-      $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
+    if(file_exists($blast_db.".phr"))
+      {$blast_cmd = "$query_arg | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";}
   }
   // echo $blast_cmd."<br><br>";
-
-  $blast_res = shell_exec('printf ' . $blast_cmd);
-  $blast_res = str_replace('<a name=', "<a id=", $blast_res);
+  // $blast_cmd = "";
+  $blast_res = ($blast_cmd != "") ? shell_exec('printf ' . $blast_cmd) : "";
+  $blast_res = ($blast_res != "") ? str_replace('<a name=', "<a id=", $blast_res) : "";
   // echo $blast_res."<br>";
 
   if ($blast_res) {
+
     $blast_results[$blast_db] = $blast_res;
+      // Replace underscores with spaces
+    $nameDB = substr($blast_db, strrpos($blast_db, "/") + 1);
+    $nameFD = basename(dirname($blast_db));
+
+    // list($species_link, $target_type) = _get_species_link($s_link_hash, $nameFD, $species_path);
+    echo "<div style=\"margin:60px;min-width:1020px\"><h3>Results for Database: $nameDB</h3></div>";
+    echo "<div style=\"margin:60px;min-width:1020px\">$blast_res</div>";
+
   } else {
     echo "<p>Error executing BLAST for database: $blast_db</p>";
   }
 
-  // Replace underscores with spaces
-  $nameDB = substr($blast_db, strrpos($blast_db, "/") + 1);
-  $nameFD = basename(dirname($blast_db));
 
 
-  // list($species_link, $target_type) = _get_species_link($s_link_hash, $nameFD, $species_path);
-
-  echo "<div style=\"margin:60px;min-width:1020px\"><h3>Results for Database: $nameDB</h3></div>";
-  
-  echo "<div style=\"margin:60px;min-width:1020px\">$blast_res</div>";
-
-
-  
 // get blast links in json file
   $links_hash=[];
 

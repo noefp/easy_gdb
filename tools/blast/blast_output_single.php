@@ -68,7 +68,7 @@
 
   // check inputs are valid
   $blast_prog   = (in_array($blast_prog, ["blastn", "tblastn","blastp","tblastx","blastx"])) ? $blast_prog : die("error blast prog");
-  $blast_db_path     = (preg_match('/\.FASTA$/i', $blast_db)) ? escapeshellcmd($blast_db) : die("error blast db"); 
+  // $blast_db_path     = (preg_match('/\.FASTA$/i', $blast_db)) ? escapeshellcmd($blast_db) : die("error blast db"); 
   $blast_filter = (in_array($blast_filter, ["yes","no"])) ? $blast_filter : die("error blast filter");
   $evalue       = floatval($evalue);
   $blast_task   = (in_array($blast_task,["","-task blastn-short","-task dc-megablast","-task megablast","-task blastp-fast","-task blastp-short","-task blastx-fast"])) ? $blast_task : die("error blast task"); 
@@ -76,24 +76,29 @@
   $blast_matrix = escapeshellarg($blast_matrix);
   $query_arg    = escapeshellarg($query);
 
+  $blast_cmd = "";
 
   if ($blast_prog == "blastn") {
-    $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
-  }
-  if ($blast_prog == "tblastn") {
-    $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";
+    if(file_exists($blast_db.".nhr"))
+    {$blast_cmd = "$query_arg  | $blast_prog -db $blast_db -dust $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";}
+  } elseif ($blast_prog == "tblastn") {
+    if(file_exists($blast_db.".nhr"))
+     {$blast_cmd = "$query_arg | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -num_descriptions $max_hits -num_alignments $max_hits -html -max_hsps 3";}
+  } elseif (in_array($blast_prog, ["blastp", "blastx", "tblastx"])) {
+    if(file_exists($blast_db.".phr"))
+      {$blast_cmd = "$query_arg | $blast_prog -db $blast_db -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";}
   }
 
-  if ($blast_prog == "blastp" || $blast_prog == "blastx" || $blast_prog == "tblastx") {
-    $blast_cmd = "$query_arg | $blast_prog -db $blast_db_path -seg $blast_filter -evalue $evalue $blast_task -matrix $blast_matrix -num_descriptions $max_hits -num_alignments $max_hits -html";
-  }
-
-  $blast_res = shell_exec('printf '.$blast_cmd);
-  $blast_res = str_replace('<a name=',"<a id=", $blast_res);
+ $blast_res = ($blast_cmd != "") ? shell_exec('printf ' . $blast_cmd) : "";
+ $blast_res = ($blast_res != "") ? str_replace('<a name=', "<a id=", $blast_res) : "";
+  
   
   //echo "<p>$blast_cmd</p>";
-  
-  echo "<div style=\"margin:20px;min-width:1020px\">$blast_res</div>";
+  if ($blast_res) {
+  echo "<div style=\"margin:20px;min-width:1020px\">$blast_res</div>";}
+  else {
+  echo "<p>Error executing BLAST for database: $blast_db</p>";
+  }
 
   function _get_subject_link($s_link_hash,$db_name,$subject_name,$s_start,$s_end,$annot_file) {
     
