@@ -157,6 +157,9 @@ if ($multiple_blast_db) {
 
   foreach ($nucleotide_dbs as $db) {
     $db_name = preg_replace('/\.[a-z]+\.nhr$/i', '', $db);
+    if ($db_name) {
+      $db_name = preg_replace('/\.nhr$/i', '', $db_name);
+    }
     // $db_name = str_replace([".phr", ".nhr"], "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
@@ -173,6 +176,9 @@ if ($multiple_blast_db) {
 
   foreach ($protein_dbs as $db) {
     $db_name = preg_replace('/\.[a-z]+\.phr$/i', '', $db);
+    if ($db_name) {
+      $db_name = preg_replace('/\.phr$/i', '', $db_name);
+    }
     // $db = str_replace(".phr", "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
