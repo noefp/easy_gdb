@@ -2,8 +2,12 @@
  
 <!-- warning debug mode  (if set to 1, save all errors and warnings logs. If set to 0, not save warnings logs but save errors logs)-->
 <?php 
+
+
   if (!isset($warning_debug) || !$warning_debug) {
    ini_set('error_reporting', E_ALL & ~E_WARNING & ~E_NOTICE); // show all errors except notices (notices are warnings)
+}else{
+   ini_set('error_reporting', E_ALL); // show all errors
 }
 ?>
 
@@ -71,9 +75,14 @@
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
             echo '<div class="dropdown-menu">';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Expression viewer</a>';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/comparator_input.php">Expression comparator</a>';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';
+            if(!isset($tb_expr_viewer) || $tb_expr_viewer)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_input.php">Expression viewer</a>';}
+            if(!isset($tb_expr_comparator) || $tb_expr_comparator)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/comparator_input.php">Expression comparator</a>';}
+            if(!isset($tb_cv_calculator) || $tb_cv_calculator)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/cv_calculator_input.php">CV calculator</a>';}
+            if(!isset($tb_expr_datasets) || $tb_expr_datasets)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';}
             echo '</div>';
           echo '</li>';
         }
@@ -82,8 +91,12 @@
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Passport and Phenotype</a>';
             echo '<div class="dropdown-menu">';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';
-              echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/passport_search_input.php">Search</a>';
+            if(!isset($tb_navigation) || $tb_navigation)
+              {if(file_exists("$passport_path/germplasm_list.json")) // check if passport germplasm_list file exist 
+                      {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';} // multiple subdirectories (species)
+                else  {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/02_pass_file_to_datatable.php">Navigation</a>';}} // single directory only one species
+            if(!isset($tb_search_passport) || $tb_search_passport)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/passport_search_input.php">Search</a>';}
             echo '</div>';
           echo '</li>';
         }
