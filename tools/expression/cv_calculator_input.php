@@ -21,9 +21,9 @@
       <small><i class="fas fa-info-circle text-info pointer_cursor td-tooltip"></i></small>
     </h4>
     <div class="custom-control custom-switch">
-      <input type="checkbox" class="custom-control-input" id="cvMode" name="cvMode" value="1">
+      <input type="checkbox" class="custom-control-input" id="cvMode" name="cvMode" value="0">
       <label class="custom-control-label" for="cvMode">
-        <span id="allSelected" style='color:#229dff'><b>Variation between all replicates</b></span> / <span id="meanSelected">Variation between sample means</span>
+        <span id="meanSelected" style='color:#229dff'><b>Variation between sample means</b></span> / <span id="allSelected">Variation between all replicates</span>
       </label>
     </div>
   </div>
@@ -221,7 +221,7 @@ echo   "</div>";
   $(document).ready(function () {
     
     // var names = <?php echo json_encode($file_array) ?>;
-    $('.mean_threshold').hide();    
+    // $('.mean_threshold').hide();    
     
     $('#comparator_form').submit(function () {
 
@@ -272,17 +272,17 @@ echo   "</div>";
     //toggle text when switch is clicked
     $('#cvMode').click(function() {
       if ($('#cvMode').is(':checked')) {
-        $('#allSelected').html("Variation between all replicates");
-        $('#meanSelected').html("<b>Variation between sample means</b>");
-        $('#meanSelected').css('color','#229dff');
-        $('#allSelected').css('color','black');
-        $('.mean_threshold').show();
-      } else {
         $('#meanSelected').html("Variation between sample means");
         $('#allSelected').html("<b>Variation between all replicates</b>");
         $('#allSelected').css('color','#229dff');
         $('#meanSelected').css('color','black');
         $('.mean_threshold').hide();
+      } else {
+        $('#allSelected').html("Variation between all replicates");
+        $('#meanSelected').html("<b>Variation between sample means</b>");
+        $('#meanSelected').css('color','#229dff');
+        $('#allSelected').css('color','black');
+        $('.mean_threshold').show();
       }
     });
 

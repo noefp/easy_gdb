@@ -26,7 +26,7 @@ if (isset($_POST['cvMode']))
 {
   $cvMean = $_POST['cvMode'];
 }else {
-  $cvMean= 0;
+  $cvMean= 1;
 }
 
 $minExpr = 0;
@@ -249,7 +249,7 @@ asort($filtered_gene_cv);
 
 
 // get top 10 genes with lowest CV
-$top_genes = array_slice($filtered_gene_cv, 0, 10, true);
+$top_genes = array_slice($filtered_gene_cv, 0, 100, true);
 
 // print_r($top_genes); // debug line
 
@@ -307,9 +307,9 @@ echo '<br><div class="input-group" style="max-width:700px; margin:auto">
     <h3 id="search_results_boxplot_title" style="text-align:center;"></h3>
     <div id="search_results_boxplot" style="display:none;"></div>
   </div><br><br>';
-// ------------------------------------ create table with 10 genes with lowest CV ------------------------------------
+// ------------------------------------ create table with 100 genes with lowest CV ------------------------------------
 echo '<div class="collapse_section pointer_cursor banner" data-toggle="collapse" data-target="#table_frame" aria-expanded="true">
-  <i class="fas fa-sort"></i> 10 genes with lowest CV
+  <i class="fas fa-sort"></i> Genes with lowest CV
     </div>';
 
 echo '<div id="table_frame" class="collapse show">';
