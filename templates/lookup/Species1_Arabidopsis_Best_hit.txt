@@ -1,3 +1,4 @@
+Species1 v3 ID	A. thaliana ID
 gene1.1	AT3G02850
 gene2.1	AT5G12210
 gene3.1	AT3G61650

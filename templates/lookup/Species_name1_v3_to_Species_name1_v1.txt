@@ -1,3 +1,4 @@
+Species1 v3 ID	Species1 v1 ID
 gene1.1	gene1_v1.1
 gene2.1	gene2_v1.1
 gene3.1	gene3_v1.1
