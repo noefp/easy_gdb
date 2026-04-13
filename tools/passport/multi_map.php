@@ -192,8 +192,9 @@
     });
   }
 
-  var map = L.map('map').setView([0, 0], 2);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+  var map = L.map('map', {scrollWheelZoom: false}).setView([0, 0], 2);
+  
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
   var markers = L.markerClusterGroup();
 
@@ -202,8 +203,9 @@
           var icon = getIcon(item.species, item.trait);
           var marker = L.marker([item.latitude, item.longitude], {icon: icon});
 
-          var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>/${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`;
+          var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`;
 
+          // console.log("<?php //echo $pass_dir; ?>");
           marker.bindPopup(markerLabel);
           markers.addLayer(marker);
       }

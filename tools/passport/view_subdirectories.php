@@ -3,7 +3,7 @@
 
 <?php 
   include_once realpath("$easy_gdb_path/tools/common_functions.php");
-  $pass_dir = test_input($_GET["dir_name"]); // get passport directory with files to list
+  // $pass_dir = test_input($_GET["dir_name"]); // get passport directory with files to list
 ?>
 
 <div class="page_container" style="margin-top:20px">
