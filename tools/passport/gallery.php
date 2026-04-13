@@ -9,15 +9,26 @@
 
   if ($is_gallery) {
     //echo "existe gallery_path: $gallery_path<br>";
-    echo"<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-images\"></i><b> Gallery </b></h1></center>";
-    echo"</div></div>";
+    // echo"<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#gallery\" aria-expanded=\"true\>";
+    // echo"<div class=\"container p-1 my-3 bg-secondary text-white collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#gallery\" aria-expanded=\"true\">
+    //       <center><h1><i class=\"fas fa-sort\"></i><b> Gallery </b><i class=\"fa-solid fa-images\"></i></h1></center>";
+    // echo"</div>";
+
+echo '
+<div class="container p-1 my-3 bg-secondary text-white collapse_section pointer_cursor collapse_background"
+     data-toggle="collapse" data-target="#gallery" aria-expanded="true"
+     style="display:flex; align-items:center; justify-content:center; position:relative; user-select:none; background-color: #6b6b6b;">
+    <i class="fas fa-sort" style="position:absolute; left:10px"></i>
+    <h1><b> Gallery </b></h1></div>';
+
   
     //Left and right controls . carousel
-    echo"<div id=\"galleryCarousel\" class=\"container carousel slide p-7 my-3 border\" data-ride=\"carousel\"><div class=\"carousel-inner\"><br>";
+    echo"<div id=\"gallery\" class=\"container collapse show\" aria-labelledby=\"gallery\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\">";
+    echo"<div id=\"galleryCarousel\" class=\"container carousel slide p-1 my-3\" data-ride=\"carousel\"><div class=\"carousel-inner\"><br>";
     echo "<a class=\"carousel-control-prev\" href=\"#galleryCarousel\" role=\"button\" data-slide=\"prev\"><span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span><span class=\"sr-only\">Previous</span></a>";
     echo "<a class=\"carousel-control-next\" href=\"#galleryCarousel\" role=\"button\" data-slide=\"next\"><span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span><span class=\"sr-only\">Next</span></a>";
 
-    if ($dir = opendir($gallery_path) ) {
+    if ($dir = opendir($gallery_path) ) { 
       // Read files of directory
       while (($file = readdir($dir)) !== false) {
         // Check that $file is an img
@@ -53,7 +64,9 @@
       ?>
     </div>
   </div>
+</div>  <!-- close collapse --> 
 </div> <!-- close galleryCarousel -->
+</div> <!-- close container -->
 
 
 <style>

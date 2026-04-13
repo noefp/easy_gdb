@@ -1,6 +1,8 @@
 <!-- HEADER -->
 <?php include_once realpath("../../header.php");?>
 <?php include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
+<!-- <?php //include_once realpath("../modal.html");?> -->
+<!-- <?php //include_once realpath("$easy_gdb_path/tools/passport_functions.php");?> -->
 
 <!-- Load the QR library -->
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -21,24 +23,25 @@
     $pass_json_file = file_get_contents("$passport_path/$pass_dir/passport.json");
     $pass_hash = json_decode($pass_json_file, true);
 
-    $numeric_to_cathegoric_json = $pass_hash["convert_to_cathegoric"]; 
+    $numeric_to_categoric_json = $pass_hash["convert_to_categoric"]; 
     $translator_file = $pass_hash["translator"];
     $sp_name = $pass_hash["sp_name"];
-    $featured_descriptors_file = $pass_hash["featured_descriptors"];
+    $featured_descriptors_file = $pass_hash["featured_traits"];
     $numerics_columns_without_average = $pass_hash["numerics_columns_without_average"];
+    // echo "numeric_to_categoric_json: ".$numeric_to_categoric_json;
     
   }
 
-//----- NUMERIC TO CATHEGORIC
-  $convert_json_path = "$passport_path/$pass_dir/$numeric_to_cathegoric_json";
-  //echo $convert_json_path;
+//----- NUMERIC TO CATEGORIC
+  $convert_json_path = "$passport_path/$pass_dir/$numeric_to_categoric_json";
+  // echo $convert_json_path;
   $convert_json = [];
   if (file_exists($convert_json_path) ) {
     $convert_json_file = file_get_contents($convert_json_path);
     $convert_json = json_decode($convert_json_file, true);
-    //var_dump($convert_json);
+    // var_dump($convert_json);
   } else {
-    //echo "<br>NOT FOUND convert_to_cathegoric";
+    //echo "<br>NOT FOUND convert_to_categoric";
     //var_dump($convert_json_path);
   }
 
@@ -97,7 +100,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
     $numerics_no_average = isset($numerics_columns_without_average[$file]) ? $numerics_columns_without_average[$file] : [];
     
     foreach ($tab_file as $line) {
-      $cols = explode("\t", $line);
+      $cols = array_map('trim', explode("\t", $line)); // trim spaces because some columns have spaces in the end of the line.
       
       if (array_filter($cols, function($value) use ($acc_name) { 
         return strnatcasecmp($value, $acc_name) == 0; 
@@ -112,12 +115,12 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
             $descriptor_value = $col_value;
            }else {
             // else add "The value of this section is in the table below"
-            $descriptor_value = "The value of this section is in the table below";
+            $descriptor_value = "The value is in the table below";
           }
 
             if ($descriptor_value){
               //save data in obj_average to print when all possible replicates are collected
-              if ($obj_average[$descriptor_name] ) {
+              if (isset($obj_average[$descriptor_name]) ) {
                 array_push($obj_average[$descriptor_name], $descriptor_value);
               } else {
                 $obj_average[$descriptor_name] = []; // If not, create it
@@ -133,9 +136,9 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
     $section = str_replace(".txt", "", $section);
     $collapse_sec = str_replace(".txt", "", $file);
 
-    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\" background-color:#e0ea68 ; border: 2px solid #e0ea68\">
-    <i class=\"fas fa-angle-down\"></i><b> $section</b>
-    </div><br>";
+    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section phenotype_traits\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\"display:flex; align-items:center;\">
+    <i class=\"fas fa-angle-down\" style=\"margin-left:10px;margin-right:10px;\"></i><h3 style=\"margin:0px\"><b>$section</b></h3>
+    </div><br>";  
 
     echo "<div id=\"collapse_$collapse_sec\" class=\"collapse show phenotype_section_collapse\">";
     
@@ -146,16 +149,17 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
       //echo "$descriptor_name: $joint_unique_list <br>";
       
       // get info from JSON
-      if (($translator_json[$file][$descriptor_name] ) ) {
+      if (isset($translator_json[$file][$descriptor_name] ) && !empty($translator_json[$file][$descriptor_name]) ) {
         $translator_obj = $translator_json[$file][$descriptor_name];
-        $descriptor_primary_name = $translator_obj["primary_descriptor"];
-        $descriptor_secondary_name = $translator_obj["secondary_descriptor"];
+        $descriptor_primary_name = (!isset($translator_obj["primary_descriptor"]) || empty($translator_obj["primary_descriptor"]) ) ? $descriptor_name : $translator_obj["primary_descriptor"];
+        $descriptor_secondary_name = (!isset($translator_obj["secondary_descriptor"]) || empty($translator_obj["secondary_descriptor"]) ) ? "" : $translator_obj["secondary_descriptor"];
       } else {
         //echo "Translation not found<br>";
         $descriptor_primary_name = $descriptor_name;
+        $descriptor_secondary_name = "";
       }
 
-//----- Cathegoric data ----------------------------------------------
+//----- Categoric data ----------------------------------------------
       $pattern = "/[a-z]/i";
       if (preg_match($pattern, $joint_unique_list) ) {
         
@@ -178,13 +182,13 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
         //$joint_unique_list_printed = str_replace("_", " ", $joint_unique_list);
         
         // Get info from JSON
-        $descriptor_img = $descriptors_obj[$descriptor_name]["img_name"];
-        $img_opt_array = $descriptors_obj[$descriptor_name]["options"];
+        $descriptor_img = isset($descriptors_obj[$descriptor_name]["img_name"]) ? $descriptors_obj[$descriptor_name]["img_name"] : "";
+        $img_opt_array = isset($descriptors_obj[$descriptor_name]["options"]) ? $descriptors_obj[$descriptor_name]["options"] : [];
         //echo "img_opt_array: "print_r($img_opt_array);
         
-        if ($descriptor_primary_name && $descriptor_secondary_name) {
+        if (!empty($descriptor_primary_name) && !empty($descriptor_secondary_name)) {
           echo "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>"; // primary AND secondary descriptor names from json
-        } elseif ($descriptor_primary_name) {
+        } elseif (!empty($descriptor_primary_name)) {
           echo "<b>$descriptor_primary_name</b>: $joint_unique_list_printed<br>"; // ONLY primary descriptor name from json
         } else {
           echo "<b>$descriptor_name</b>: $joint_unique_list_printed<br>"; // descriptor name from file
@@ -236,6 +240,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
                 if ($one_option && $one_img && file_exists("$root_path/$path_img/$one_img") ) {
                 // if ($one_option && $one_img && file_exists("$root_path/$path_img/$sp_name/$one_img") ) {
                   $one_option_printed = str_replace("_", " ", $one_option);
+                  // echo $one_img." == ".$img_upov."<br>";
                   if ($one_img == $img_upov) {
                     echo "<th style=\"text-align: center;border: 2px solid red;\">$one_option_printed</th>";
                   } else {
@@ -297,8 +302,11 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
 
         $array_length = count($unique_list);
         $average = array_sum($unique_list)/$array_length;
+        // $ranges = [];
+        // $categories = [];
+        // $category = "";
        
-        if ($convert_json[$file][$descriptor_name] ) {
+        if (isset($convert_json[$file]) && !empty($convert_json[$file][$descriptor_name])) {
           $category_obj = $convert_json[$file][$descriptor_name];
           $ranges = $category_obj["ranges"];
           $categories = $category_obj["categories"];
@@ -310,8 +318,9 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
               $max = PHP_INT_MAX; // same as $min < $average
             }
 
-            if ($average >= $min && $average < $max) {
+            if ($average >= $min && $average < $max) { // if the average is between min and max, assign the category
               $category = $categories[$index];
+              // echo $category;
               break;
             } else {
               $category = "<i>Category not assigned</i>";
@@ -319,16 +328,20 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           }          
         } else{
           //echo "No conversion available<br>";
+          // if 
+          $category = "";
         }
                 
-        $average_printed = number_format($average, 2);
+        $average_printed = number_format($average, 2); // Format the average to 2 decimal places
+        // echo "average: $average_printed <br>";
         $all_ranges_descriptors = [];
         $unique_id = "collapse_" . uniqid();
         
-        if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
+        if (!empty($descriptor_primary_name) && !empty($descriptor_secondary_name) && !empty($category)) {
           $category_printed = str_replace("_", " ", $category);
+          // echo "category printed: $category_printed <br>";
           // echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"color: #c4d03f; cursor: pointer;\" data-toggle=\"collapse\" data-target=\"#$unique_id\"></i><br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;\" data-toggle=\"collapse\" data-target=\"#$unique_id\"></i><br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
           
           echo "<div id=\"$unique_id\" class=\"collapse\">";
           echo "<table style='color: grey;min-width:250px;margin:20px'>";
@@ -346,8 +359,8 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           
           echo "</table></div>";
           
-        } elseif ($descriptor_primary_name && $category) {
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<i class=\"fas fa-info-circle info-icon\" style=\"color: #c4d03f; cursor: pointer;\" data-bs-toggle=\"collapse\" data-bs-target=\"#$unique_id\"></i><br>";
+        } elseif (!empty($descriptor_primary_name) && !empty($category)) {
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;\" data-bs-toggle=\"collapse\" data-bs-target=\"#$unique_id\"></i><br>";
           
           foreach ($categories as $index => $cat) {
             $range = $ranges[$index];
@@ -360,29 +373,29 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
             array_push($all_ranges_descriptors, $popup_ranges);
           }
           
-        } elseif ($descriptor_primary_name && $descriptor_secondary_name) {
-          echo "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>";
+        } elseif (!empty($descriptor_primary_name)  && !empty($descriptor_secondary_name)) {
+          echo "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
         } else {
-          echo "<b>$descriptor_name</b>: $average<br>";
+          echo "<b>$descriptor_name</b>: $average_printed<br>";
         }
-
+          
         // if $decriptor_name is in $featured_list, add to $all_featured_descriptors
         if (in_array($descriptor_name, $featured_list) ) {
           if ($descriptor_primary_name && $descriptor_secondary_name && $category) {
-            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>");
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>");
           } elseif ($descriptor_primary_name && $category) {
             array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed ($category_printed)<br>");
           } elseif ($descriptor_primary_name && $descriptor_secondary_name) {
-            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br><br>");
+            array_push($all_featured_descriptors, "<b>$descriptor_primary_name</b>: $average_printed<br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>");
           } else {
             array_push($all_featured_descriptors, "<b>$descriptor_name</b>: $average_printed<br>");
           }
         }
 
         // Print images
-        $descriptor_img = $descriptors_obj[$descriptor_name]["img_name"];
-        $img_opt_array = $descriptors_obj[$descriptor_name]["options"];
-        if ($img_opt_array && $descriptor_img) {
+        $descriptor_img = isset($descriptors_obj[$descriptor_name]["img_name"]) ? $descriptors_obj[$descriptor_name]["img_name"] : "";
+        $img_opt_array = isset($descriptors_obj[$descriptor_name]["options"]) ? $descriptors_obj[$descriptor_name]["options"] : [] ;
+        if (!empty($img_opt_array) && !empty($descriptor_img)) {
           
           $descriptor_value = $category;
 
@@ -482,6 +495,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
     if (empty($descriptor_name) ) {
 
       echo "No phenotype data available";
+      
     }
 
   } // if input file exist  
@@ -503,8 +517,8 @@ function file_to_table($file_path, $acc_name) {
     $collapse_id = str_replace(".txt", "", $file) . "_collapse";
 
     // Create a collapsible section for raw data
-    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#$collapse_id\" aria-expanded=\"false\" style=\"color: white; background-color: grey\">";
-    echo "<span class=\"fas fa-sort\" style=\"color:#e0ea68\"></span> Raw data </div>";
+    echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#$collapse_id\" aria-expanded=\"false\">";
+    echo "<span class=\"fas fa-sort\"></span> Replication data </div>";
     echo "<div id=\"$collapse_id\" class=\"collapse\">";
 
     // Table with raw data
@@ -534,10 +548,10 @@ function file_to_table($file_path, $acc_name) {
 
       }
     } // each line
-    echo "</tbody></table>";
+    echo "</tbody></table><br><br>";
     //echo "</div><br>";
 
-    echo "</div>"; // close DIV collapse-section
+    echo "</div><br>"; // close DIV collapse-section
 
   } else { // file exist
     //echo "No phenotype data available"; // Comprobate but do not print    
@@ -581,63 +595,84 @@ function file_to_table($file_path, $acc_name) {
     // echo "header:<br>";
     // print_r($header);
     
-    $title_col = (array_search($acc_header,$header)+1);
+    $title_col_index = (array_search($acc_header,$header)+1);;
     
-    //echo "<p>title_col: $title_col</p>";
-    
-    $passport_cmd = "awk -F '\t' 'tolower($$title_col) == tolower(\"$acc_id\") {print $0}' $passport_path/$pass_dir/$passport_file";
-    //$passport_cmd = "awk -F \"\\t\" '$$title_col == \"$acc_id\" {print $0}' $passport_path/$pass_dir/$passport_file";
-    
-    //awk -F "\t" '$1 == "ICC 10544" {print $0}' Chickpea_10K_Passport.txt
-      
-    //echo "<p>passport_cmd: $passport_cmd</p>";
-    
-    $acc_line = shell_exec($passport_cmd);
-    $acc_line = trim($acc_line);
+  // $passport_cmd = "awk -F '\t' 'tolower(\$$title_col_index) == tolower(\"$acc_id\") {print $0}' $passport_path/$pass_dir/$passport_file";
+  //awk -F "\t" '$1 == "ICC 10544" {print $0}' Chickpea_10K_Passport.txt 
+  //echo "<p>passport_cmd: $passport_cmd</p>";
 
-    //echo "<p>acc_line: $acc_line</p>";
-    
-    
+
+// -------------Execute command awk safely for search acc_id in acc_link column in the passport file --------------------------------------------------------------------------------------------------
+
+    // make variables safe for shell command
+    // commad injection protection
+    $acc_id_safe = escapeshellarg($acc_id);
+    // echo "<p>acc_id: $acc_id_safe</p>"; 
+    // echo "<p>acc_id_safe: $acc_id_safe -> $acc_id</p>";         
+    $passport_file_safe = escapeshellarg("$passport_path/$pass_dir/$passport_file");
+    $awk_script = "tolower(\$$title_col_index) == tolower(var) {print \$0}";
+    $awk_script_safe = escapeshellarg($awk_script);
+
+    // comand to be executed
+    // this command compares the acc_link column with the acc_id and print the line with the acc_id, search for the acc_id in the acc_link column and return the lines with the acc_id.
+    $passport_cmd = "awk -F '\t' -v var=$acc_id_safe $awk_script_safe $passport_file_safe";
+
+    // echo "<p>passport_cmd: $passport_cmd</p>";
+
+    // Execute the command    
+    $acc_line = shell_exec($passport_cmd);
+
+    // trim line break, end, spaces and white spaces 
+    $acc_line = rtrim($acc_line);
+    // get the columns
     $cols = explode("\t", $acc_line);
-    // $cols = explode("\t", $passport_lines[$row_count]);
-    $header = explode("\t", $header_line);
-    
+    // fills the array to the length of the header
+    $cols=array_pad($cols,count($header),"");
+// --------------------------------------------------------------------------------------------------------------------------------------------------
     
     // $acc_name = $cols[$title_col];
     echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
-    echo "<div class=\"row\">";
+    echo "<div class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\">";
 
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
     
     foreach ($cols as $col_count => $col_value) {
       if ($header[$col_count] ) {
-        if ($header[$col_count] == "DOI" ) {
+        if ($header[$col_count] == "DOI" && !empty($col_value) ) {
           echo "<p><b>$header[$col_count]:</b> <a href=\"https://doi.org/$col_value\" target=\"_blank\"> $col_value</a></p>";
-        } elseif ($header[$col_count] == "Species") {
+        } elseif ($header[$col_count] == "Species" && !empty($col_value) ) {
           echo "<p><b>$header[$col_count]:</b> <i>$col_value</i></p>"; 
         } else {
+          if (!empty($col_value)) {
           echo "<p><b>".$header[$col_count].":</b> $col_value</p>";
+          }
         }
       }
     }
-    echo "</div>";
+  if ($show_qr) {
+    // echo "<div id=\"qrcode\" style=\"display:none\"></div>";
+    echo "<button class=\"btn phenotype_traits\" id=\"generate_qr\" style=\"margin-top:10px; box-shadow:none\">
+          <i class=\"fa-solid fa-qrcode\"></i> QR Code for ".$acc_name."
+          </button> ";
+  }
+  echo "</div>";
     
   } // Close if
 ?>
-    <br>
+  <br>
 
 <?php
-  if ($show_qr) {
-    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6 p-7 my-3\"><div id=\"qrcode\"></div></div>";
+  if ($show_map) {
+    echo '<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">';
+    echo "<div id=\"map\" class=\"border\" style=\"height: 350px; border:\"></div>";
+    echo "<span style=\"font-size:12px\">Map data copyrighted OpenStreetMap contributors and available from <a href=\"https://www.openstreetmap.org/\" target=\"_blank\">openstreetmap.org</a>. Some features are enabled by <a href=\"https://www.leafletjs.com/\" target=\"_blank\">Leaflet</a>.</span>";
+    // echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
   }
 ?>
     
-  </div> <!-- close row -->
+</div> <!-- close row -->
 </div><!-- close passport container -->
-<br>
-
-<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
-
+</div><br>
 
 
   <!-- FEATURED DESCRIPTORS -->
@@ -651,20 +686,23 @@ if (!empty($featured_descriptors_file) ) {
   if (file_exists($featured_descriptors_path) ) {
     
     // containers
-    echo "<div class=\"container p-1 my-1 text-white feature-desc-cont\" style=\"background-color: #e0ea68; border: 1px solid grey;\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-regular fa-star\"></i><b> Featured descriptors </b></h1></center></div></div>";
-    echo "<div class =\"container p-7 my-3 border feature-desc-cont\"\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
-    echo "<div id=\"featured-descriptors\"></div>"; 
-    echo "<br></div></div>";
+    echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 my-3 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;user-select:none;\">
+    <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits </b></h1></center></div>";
 
+    echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
+    echo "<div id=\"featured-descriptors\" style=\"margin-bottom: 10px\"></div>"; 
+    echo "</div>";
   }
 }
 
 ?>
 
-  <!-- MAP -->
+<!-- GALLERY -->
+<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
 
-<!-- COORDENADAS -->
 <?php
+// var_dump($header);
+// var_dump($cols);
 
 if (array_search('Latitude', $header)) {
   $latitude_index = array_search('Latitude', $header);
@@ -675,7 +713,7 @@ if (array_search('Latitude', $header)) {
 
 if (array_search('Longitude', $header)) {
   $longitude_index = array_search('Longitude', $header);
-  $longitude = $cols[$longitude_index];
+  $longitude =  $cols[$longitude_index]; 
 } else {
   $longitude = null;
 }
@@ -684,29 +722,31 @@ if (array_search('Longitude', $header)) {
 // $longitude_index = array_search('Longitude', $header);
 $country_name_index = array_search('Country', $header);
 $country_code_index = array_search('Country code', $header);
-$collection_site_index = array_search('Collection site', $header);
+// $collection_site_index = array_search('Collection site', $header);
 
 // $latitude = $cols[$latitude_index];
 // $longitude = $cols[$longitude_index];
 $country_name = $cols[$country_name_index];
 $country_code = $cols[$country_code_index];
-$collection_site = $cols[$collection_site_index];
+// $collection_site = $cols[$collection_site_index];
 
 
 $numeric_pattern = "/[0-9]/";
 
-if ($show_map) {
-  echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-location-dot\"></i><b> Location </b></h1></center></div></div>";
-  echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">";
+$map_data_available = (!empty($latitude) && !empty($longitude) ) || !empty($country_name) || !empty($country_code) ? true : false;
 
-  if (preg_match($numeric_pattern, $latitude and $longitude) ) { // Print map
+if ($show_map && $map_data_available) {
+  // echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-location-dot\"></i><b> Source Location </b></h1></center></div></div>";
+  // echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">";
 
-    echo "<br>";
-    echo "<div id=\"map\" style=\"height: 350px;\"></div>";
+  if (preg_match($numeric_pattern, $latitude && $longitude) ) { // Print map
+
+    // echo "<br>";
+    // echo "<div id=\"map\" style=\"height: 350px;\"></div>";
     
   } else if ($country_name) { // Close 'if' - real coords
     
-    echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
+    // echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
     
     $coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt"; // file with coords info
   
@@ -715,8 +755,8 @@ if ($show_map) {
       $country_to_coords_file = file_get_contents("$coords_file");        
 
       $rows_coords = explode("\n", $country_to_coords_file);
-      $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
-      $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
+      // $cols_coords = explode("\t", $rows_coords[$row_count]);  //no es necesario
+      // $header_coords = explode("\t", $rows_coords[0]);  //no es necesario
   
   
       //  Defining $var of $coords_file - all options
@@ -741,33 +781,39 @@ if ($show_map) {
       //   echo "<br>No location data available.";
       // }
   
-      echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
+      // echo "<div id=\"map\" style=\"height: 350px;\"></div>"; // print the map
     } // close if $coords_file exists 
     
     
   } // Use CountryCode
     else {
-      echo "No location data available.";
+      // echo "No location data available.";
   }
           
   // Frame Reference 
-  echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
+  // echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
   
 }
 ?>
 
-    <br>
-    <br>
-    </div>
-  </div>  
+    <!-- <br> -->
+    <!-- <br> -->
+    <!-- </div> -->
+  <!-- </div>   -->
 
 
 <?php 
   
 if (!empty($phenotype_file_array)){
+    // echo "<div class=\"container p-1 my-1 bg-secondary text-white collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#phenotype_container\" aria-expanded=\"true\"><h1 style=\"text-align: center\"><b> Phenotypic traits </b></h1></div>";
+echo "<div class=\"container p-1 my-1 text-white collapse_section pointer_cursor collapse_background\"
+      data-toggle=\"collapse\" data-target=\"#phenotype_container\" aria-expanded=\"true\"
+      style=\"display:flex; align-items:center; justify-content:center; position:relative;user-select:none; background-color: #6b6b6b; \">
+      <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i>
+      <h1><b> Phenotypic traits </b> </h1>
+      </div>";
 
-    echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><b> Phenotype descriptors </b></h1></center></div></div>";
-    
+    echo "<div id =\"phenotype_container\" class =\"collapse show\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">";
 
   $phenotype_img_json = $pass_hash["phenotype_imgs"];
   
@@ -784,7 +830,7 @@ if (!empty($phenotype_file_array)){
     
     $phenotype_file_full_path = "$passport_path/$pass_dir/$phenotype_file";
     
-    echo "<div class =\"container p-7 my-3 border\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    echo "<div class =\"container p-7 my-3 border\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
     $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name,$numerics_columns_without_average);
@@ -808,11 +854,45 @@ if (!empty($phenotype_file_array)){
 }
 ?>
 
-</div>
-
+</div></div> 
+<!-- END CONTAINER -->
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php"); ?>
+<!-- END FOOTER -->
+
+
+<!--MODAL QR CODE -->
+  <div class="modal fade" tabindex="-1" id="qrcode_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title  w-100 text-center">QR Code</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body" style="display: flex; justify-content: center;">
+        <div id="qrcode"></div>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <div class="btn-group">
+          <button type="button" class="btn phenotype_traits dropdown-toggle" data-toggle="dropdown">
+            Download QR
+          </button>
+          <div class="dropdown-menu pointer_cursor">
+            <a class="dropdown-item pointer_cursor" id="download_pdf">Download PDF</a>
+            <a class="dropdown-item pointer_cursor" id="download_png">Download PNG</a>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL -->
+
 
 
 <!-- STYLES CSS -->
@@ -829,43 +909,124 @@ if (!empty($phenotype_file_array)){
     overflow: hidden;
     text-align: center;
   }
-  
-  .feature-desc-cont{
-    display:none;
-  }
-  
-  .collapse_section:hover {
-/*  text-decoration: underline;*/
-  background-color: #999 !important;
 
+.collapse_background  {
+  background-color: #6b6b6b !important;
+}  
+.collapse_background:hover{  
+ background-color: #999 !important;
 }
 
-.phenotype_section:hover {
-  color: grey !important;
+.info-icon {
+  color: #229dff
 }
+
+.info-icon:hover {
+  color: #6fbeff;
+}
+
+.phenotype_traits:hover {
+  background-color: rgb(155, 10, 10);
+  color: white;
+}
+
+.phenotype_traits, .phenotype_traits:active{
+  background-color: rgb(139, 13, 0);
+  color: white ;
+
+}   
+
 </style>
 <!-- END STYLES -->
 
 <!-- SCRIPTS JS -->
-
+<script src="../../js/datatable.js"></script>
+<!-- // For QR code download in PDF format -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  -->
 <script type="text/javascript">
 
 //----- QR CODE
 var showQR = <?php echo $show_qr; ?>;
 
-if (showQR) {
-  url_qrcode = window.location.href;
-  qr_id = document.getElementById("qrcode")
+$(document).ready(function(){
 
-  new QRCode(qr_id,url_qrcode);
-}
+  if (showQR) {
+    // Create QR code
+    url_qrcode = window.location.href;
+    qr_id = document.getElementById("qrcode")
+    new QRCode(qr_id,url_qrcode);
+
+    // Functions for QR download in PNG and PDF formats
+    function downloadPNG() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (!canvas) {
+        alert("QR not found");
+        return;
+      }
+
+      const enlace = document.createElement('a');
+      enlace.download = 'qrcode_<?php echo $acc_name; ?>.png';
+      enlace.href = canvas.toDataURL('image/png');
+      enlace.click();
+    }
+
+    function downloadPDF() {
+        const canvas = document.querySelector('#qrcode canvas');
+        const img = document.querySelector('#qrcode img');
+
+        let imgData;
+
+        if (canvas) {
+          imgData = canvas.toDataURL('image/png');
+        // } else if (img) {
+          // imgData = img.src;
+        } else {
+          alert("QR not found");
+          return;
+        }
+
+        const docDefinition = {
+          content: [
+              { text: "<?php echo $acc_name;?>", style: "header", alignment: "center" },
+              { image: imgData, width: 200, alignment: "center", margin: [0, 20, 0, 0] }
+          ],
+          styles: {
+              header: { fontSize: 20, bold: true }
+          }
+        };
+
+        pdfMake.createPdf(docDefinition).download("qrcode_<?php echo $acc_name; ?>.pdf");
+      }
+
+  }
+
+  $("#generate_qr").on("click", function() { 
+      $('#qrcode_modal').modal('show');  
+  });
+
+  $("#download_png").on("click", function() {
+    downloadPNG();
+  });
+
+  $("#download_pdf").on("click", function() {
+    downloadPDF();
+  });
+
+// Close modal and remove focus from the button that opened the modal to avoid the warning "Bootstrap""
+  $("#qrcode_modal").on("hide.bs.modal", function () {
+    document.activeElement.blur();
+    $("#generate_qr").focus();
+});
+
+});
+
 
 //----- FEATURED DESCRIPTORS
 var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
 
 if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '') {
   $('#featured-descriptors').html(featuredArrayJson);
-  $('.feature-desc-cont').css('display','block');
+  // $('#featured_descriptors_container').css('display','block');
 }
 // Function to show featured descriptors
 // function showFeaturedDescriptors(featuredDescriptors) {
@@ -881,8 +1042,10 @@ if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredA
 //----- PRINT MAP
 
 var showMap = <?php echo $show_map; ?>;
+var mapDataAvailable = <?php echo $map_data_available ? 1 : 0; ?>;
+// alert(mapDataAvailable);
 
-if(showMap) {
+if(showMap && mapDataAvailable) {
 
   latitude = "<?php echo $latitude; ?>";
   latitude_printed = "<?php echo number_format($latitude,2); ?>";
@@ -898,62 +1061,65 @@ if(showMap) {
       marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
     }
 
-    var map = L.map('map').setView([latitude, longitude], 5);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="">OpenStreetMap</a> contributors'}).addTo(map);
+    var map = L.map('map',{scrollWheelZoom: false}).setView([latitude, longitude], 5);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
     var marker = L.marker([latitude, longitude]).addTo(map);
     marker.bindPopup(marker_label).openPopup();
 }
 
 
-  $(document).ready(function(){
+$(document).ready(function(){
 
-$(".collapse").on('shown.bs.collapse', function(){    
+  $(".collapse").on('shown.bs.collapse', function(){    
 
-  var id=this.id;
+    var id=this.id;
 
-  $("#load_"+id).remove();
-  $("#table_"+id).show();
+    $("#load_"+id).remove();
+    $("#table_"+id).show();
 
-    $("#table_"+id).dataTable({
-      dom:'Bfrtlpi',
-      "oLanguage": {
-        "sSearch": "Filter by:"
-        },
-      buttons: [
-        'copy', 'csv', 'excel',
-          {
-            extend: 'pdf',
-            orientation: 'landscape',
-            pageSize: 'LEGAL'
-          },
-        'print', 'colvis'
-        ],
-      "sScrollX": "100%",
-      "sScrollXInner": "110%",
-      "bScrollCollapse": true,
-      retrieve: true,
-      colReorder: true,
-      "drawCallback": function( settings ) {
-    // $('#body').css("display","inline");
-    // $(".td-tooltip").tooltip();
-      $("table.dataTable tbody tr").hover(
-          function() {
-              // Al pasar el mouse
-              $(this).css("background-color", "#d1d1d1");
-          }, function() {
-              // Al retirar el mouse
-              $(this).css("background-color", "");
-          }
-      );
-    },
-  });
+    datatable_basic("#table_"+id);
+
+    // $("#table_"+id).dataTable({
+    //   dom:'Bfrtlpi',
+    //   "oLanguage": {
+    //     "sSearch": "Filter by:"
+    //     },
+    //   buttons: [
+    //     'copy', 'csv', 'excel',
+    //       {
+    //         extend: 'pdf',
+    //         orientation: 'landscape',
+    //         pageSize: 'LEGAL'
+    //       },
+    //     'print', 'colvis'
+    //     ],
+    //   "sScrollX": "100%",
+    //   "sScrollXInner": "110%",
+    //   "bScrollCollapse": true,
+    //   retrieve: true,
+    //   colReorder: true,
+    //   "drawCallback": function( settings ) {
+    // // $('#body').css("display","inline");
+    // // $(".td-tooltip").tooltip();
+    //   $("table.dataTable tbody tr").hover(
+    //       function() {
+    //           // Al pasar el mouse
+    //           $(this).css("background-color", "#d1d1d1");
+    //       }, function() {
+    //           // Al retirar el mouse
+    //           $(this).css("background-color", "");
+    //       }
+    //   );
+    // },
+  // });
  
-$(".dataTables_filter").addClass("float-right");
-$(".dataTables_filter").addClass("float-left");
-$(".dataTables_filter").addClass("float-right");
+// $(".dataTables_filter").addClass("float-right");
+// $(".dataTables_filter").addClass("float-left");
+// $(".dataTables_filter").addClass("float-right");
 
-});
+  });
 });
 
 //----- Phenotype section collapse
