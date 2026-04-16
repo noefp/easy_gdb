@@ -632,7 +632,7 @@ function file_to_table($file_path, $acc_name) {
     
     // $acc_name = $cols[$title_col];
     echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
-    echo "<div class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\">";
+    echo "<div id=\"passport_container\" class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\">";
 
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
     
@@ -663,9 +663,10 @@ function file_to_table($file_path, $acc_name) {
 
 <?php
   if ($show_map) {
-    echo '<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">';
+    echo '<div id="map_container" class="col-xs-12 col-sm-6 col-md-6 col-lg-6">';
     echo "<div id=\"map\" class=\"border\" style=\"height: 350px; border:\"></div>";
     echo "<span style=\"font-size:12px\">Map data copyrighted OpenStreetMap contributors and available from <a href=\"https://www.openstreetmap.org/\" target=\"_blank\">openstreetmap.org</a>. Some features are enabled by <a href=\"https://www.leafletjs.com/\" target=\"_blank\">Leaflet</a>.</span>";
+    echo "</div>";
     // echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
   }
 ?>
@@ -870,39 +871,6 @@ echo "<div class=\"container p-1 my-1 text-white collapse_section pointer_cursor
 <!-- END FOOTER -->
 
 
-<!--MODAL QR CODE -->
-  <div class="modal fade" tabindex="-1" id="qrcode_modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title  w-100 text-center">QR Code</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> -->
-      </div>
-      <div class="modal-body" style="display: flex; justify-content: center;">
-        <div id="qrcode"></div>
-      </div>
-      <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-        <div class="btn-group">
-          <button type="button" class="btn phenotype_traits dropdown-toggle" data-toggle="dropdown">
-            Download QR
-          </button>
-          <div class="dropdown-menu pointer_cursor">
-            <a class="dropdown-item pointer_cursor" id="download_pdf">Download PDF</a>
-            <a class="dropdown-item pointer_cursor" id="download_png">Download PNG</a>
-          </div>
-        </div>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- END MODAL -->
-
-
-
 <!-- STYLES CSS -->
 <style>
   .center {
@@ -1069,6 +1037,12 @@ if(showMap && mapDataAvailable) {
 
     var marker = L.marker([latitude, longitude]).addTo(map);
     marker.bindPopup(marker_label).openPopup();
+}else if (showMap && !mapDataAvailable) {
+  $('#map_container').hide();
+}
+
+if ( !mapDataAvailable && !showQR) {
+  $('#passport_container').hide();
 }
 
 
@@ -1113,3 +1087,35 @@ $(".phenotype_section_collapse").on('hide.bs.collapse', function(){
   }
 });
 </script>
+
+
+<!--MODAL QR CODE -->
+  <div class="modal fade" tabindex="-1" id="qrcode_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title  w-100 text-center">QR Code</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body" style="display: flex; justify-content: center;">
+        <div id="qrcode"></div>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <div class="btn-group">
+          <button type="button" class="btn phenotype_traits dropdown-toggle" data-toggle="dropdown">
+            Download QR
+          </button>
+          <div class="dropdown-menu pointer_cursor">
+            <a class="dropdown-item pointer_cursor" id="download_pdf">Download PDF</a>
+            <a class="dropdown-item pointer_cursor" id="download_png">Download PNG</a>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL -->
