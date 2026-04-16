@@ -999,13 +999,20 @@ $(document).ready(function(){
 
 //----- FEATURED DESCRIPTORS
 var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
+var image_count = <?php echo count($image_count); ?>;
 
 if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '') {
   $('#featured-descriptors').html(featuredArrayJson);
   // $('#featured_descriptors_container').css('display','block');
 }else{
-  $('#featured-descriptors').html("<p class=\"text-center\">No featured traits data available</p>");
+  if (image_count == 0) {
+    $('#featured_descriptors_container').hide();
+    $('#featured_descriptors_collapse').hide();
+  }else {
+    $('#featured-descriptors').html("<p class=\"text-center\">No featured traits data available </p>");
+  }
 }
+
 
 
 
@@ -1088,34 +1095,3 @@ $(".phenotype_section_collapse").on('hide.bs.collapse', function(){
 });
 </script>
 
-
-<!--MODAL QR CODE -->
-  <div class="modal fade" tabindex="-1" id="qrcode_modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title  w-100 text-center">QR Code</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> -->
-      </div>
-      <div class="modal-body" style="display: flex; justify-content: center;">
-        <div id="qrcode"></div>
-      </div>
-      <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-        <div class="btn-group">
-          <button type="button" class="btn phenotype_traits dropdown-toggle" data-toggle="dropdown">
-            Download QR
-          </button>
-          <div class="dropdown-menu pointer_cursor">
-            <a class="dropdown-item pointer_cursor" id="download_pdf">Download PDF</a>
-            <a class="dropdown-item pointer_cursor" id="download_png">Download PNG</a>
-          </div>
-        </div>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- END MODAL -->

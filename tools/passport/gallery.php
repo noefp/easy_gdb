@@ -3,7 +3,6 @@
   //echo "sp_name: $sp_name<br>";
   $gallery_path  = "$root_path/$images_path/gallery/$sp_name/$acc_name";
   //echo "gallery_path = $gallery_path<br>";
-  $thumbnails = [];
   $active = 'active';
   $is_gallery = is_dir($gallery_path) ;
 
@@ -22,7 +21,6 @@
                 // Indicador
                 $activeClass = ($index === 0) ? "class='active'" : "";
                 echo "<li data-target=\"#galleryCarousel\" data-slide-to=\"$index\" $activeClass></li>";
-
                 $index++;
             }
         }
@@ -46,8 +44,6 @@
           echo "<div class=\"carousel-item $active\"><img src=\"$img_path\" class=\"d-block carousel-img-small\" alt=\"$file image\"></div>"; 
           $active = ''; // Reset active 
           $index++;
-          // Add imgs to array
-          $thumbnails[] = $img_path;
         }
       }
       //close directory
@@ -66,7 +62,7 @@
     // echo "Gallery_path not found for $acc_name<br>";
   }
 
-
+$image_count = $index;
 
 ?>
 
@@ -79,7 +75,7 @@
   }
   
   .carousel-inner {
-    margin-bottom: 15px; /* Space between carousel and thumbnails */
+    margin-bottom: 15px;
   }
 
   /* indicator color when it is not active */
