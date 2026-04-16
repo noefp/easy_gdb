@@ -136,8 +136,8 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
     $section = str_replace(".txt", "", $section);
     $collapse_sec = str_replace(".txt", "", $file);
 
-    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section phenotype_traits\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\"display:flex; align-items:center;\">
-    <i class=\"fas fa-angle-down\" style=\"margin-left:10px;margin-right:10px;\"></i><h3 style=\"margin:0px\"><b>$section</b></h3>
+    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section phenotype_traits\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\"display:flex; align-items:center; padding-top:2px; padding-bottom:2px\"\">
+    <i class=\"fas fa-angle-down\" style=\"margin-left:10px;margin-right:10px\"></i><h3 style=\"margin:0px\"><b>$section</b></h3>
     </div><br>";  
 
     echo "<div id=\"collapse_$collapse_sec\" class=\"collapse show phenotype_section_collapse\">";
@@ -690,15 +690,23 @@ if (!empty($featured_descriptors_file) ) {
     <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits </b></h1></center></div>";
 
     echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
-    echo "<div id=\"featured-descriptors\" style=\"margin-bottom: 10px\"></div>"; 
+    
+    echo "<div class=\"row\">";
+
+    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
+    echo "<div id=\"featured-descriptors\" style=\"margin-bottom: 10px\"></div>";
     echo "</div>";
+    include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); 
+    echo "</div>"; // close row
+    echo "</div>"; // close   collapse
+    echo "</div>"; // close container
   }
 }
 
 ?>
 
 <!-- GALLERY -->
-<?php include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
+<?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
 
 <?php
 // var_dump($header);
@@ -1027,16 +1035,10 @@ var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
 if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '') {
   $('#featured-descriptors').html(featuredArrayJson);
   // $('#featured_descriptors_container').css('display','block');
+}else{
+  $('#featured-descriptors').html("<p class=\"text-center\">No featured traits data available</p>");
 }
-// Function to show featured descriptors
-// function showFeaturedDescriptors(featuredDescriptors) {
-//   var container = document.getElementById("featured-descriptors");
-//   if (container && allFeaturedDescriptors) {
-//     $('.feature-desc-cont').css('display','block');
-//     $('.feature-desc-cont').show();
-//     container.innerHTML = allFeaturedDescriptors; // Insert content in HTML div
-//   }
-// }
+
 
 
 //----- PRINT MAP
@@ -1079,45 +1081,7 @@ $(document).ready(function(){
     $("#load_"+id).remove();
     $("#table_"+id).show();
 
-    datatable_basic("#table_"+id);
-
-    // $("#table_"+id).dataTable({
-    //   dom:'Bfrtlpi',
-    //   "oLanguage": {
-    //     "sSearch": "Filter by:"
-    //     },
-    //   buttons: [
-    //     'copy', 'csv', 'excel',
-    //       {
-    //         extend: 'pdf',
-    //         orientation: 'landscape',
-    //         pageSize: 'LEGAL'
-    //       },
-    //     'print', 'colvis'
-    //     ],
-    //   "sScrollX": "100%",
-    //   "sScrollXInner": "110%",
-    //   "bScrollCollapse": true,
-    //   retrieve: true,
-    //   colReorder: true,
-    //   "drawCallback": function( settings ) {
-    // // $('#body').css("display","inline");
-    // // $(".td-tooltip").tooltip();
-    //   $("table.dataTable tbody tr").hover(
-    //       function() {
-    //           // Al pasar el mouse
-    //           $(this).css("background-color", "#d1d1d1");
-    //       }, function() {
-    //           // Al retirar el mouse
-    //           $(this).css("background-color", "");
-    //       }
-    //   );
-    // },
-  // });
- 
-// $(".dataTables_filter").addClass("float-right");
-// $(".dataTables_filter").addClass("float-left");
-// $(".dataTables_filter").addClass("float-right");
+    datatable_basic("#table_"+id)
 
   });
 });
