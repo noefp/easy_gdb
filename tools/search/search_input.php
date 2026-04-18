@@ -9,11 +9,13 @@
   <a class="float-right" href="/easy_gdb/help/01_search.php" target="blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
-<h3 class="text-center">Gene / Annotation Search</h3>
 
-<!-- INPUT FORM -->
-<div class="form margin-20">
-  <div style="margin:auto; max-width:900px">
+<div>
+  <h1 class="text-center">Gene / Annotation Search <i class="fas fa-search" style="color:#555"></i></h1>
+  <br>
+
+  <!-- INPUT FORM -->
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
 <?php
   if ($file_database) {
@@ -105,14 +107,13 @@
     ?>
 
     <br>
-    <button type="submit" class="btn btn-info float-right" style="margin-top: -5px">Search</button>
-    <br>
-    <br>
-    <br>
+    <div class="text-right">
+      <button type="submit" class="btn btn-info" style="margin-bottom: -15px">Search</button>
+    </div>
     </form>
   </div>
 </div>
-
+<br>
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
 

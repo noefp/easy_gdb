@@ -9,8 +9,10 @@
     <a class="float-right" href="/easy_gdb/help/08_gene_expression.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
   <br>
-  <h3 class="text-center">Gene Expression Viewer</h3>   
-  <div class="form margin-20">    
+  <h1 class="text-center">Gene Expression Viewer <i class="fas fa-chart-bar" style="color:#555"></i></h1>   
+  <br>
+  
+  <div id="expression-container" class="form margin-20" style="margin:auto">    
     <form id="get_expression_form" action="expression_output.php" method="post">   
       <div class="form-group">
 <?php
@@ -128,19 +130,18 @@ if ($dir_counter) {
         <div class="col-sm-6 col-md-6 col-lg-6">
     
           <label for="InputGenes">Paste a list of gene IDs</label>
-<textarea class="form-control" id="InputGenes" rows="8" name="gids">
-</textarea>
+<textarea class="form-control" id="InputGenes" rows="8" name="gids"></textarea>
           <br>
     
         </div>
       </div>
       
 
-      <button class="button btn btn-info float-right" id="btnSend" type="submit" form="get_expression_form" formmethod="post">Get Expression</button>
+      <div class="text-right">
+        <button class="button btn btn-info" id="btnSend" type="submit" form="get_expression_form" formmethod="post">Get Expression</button>
+      </div>
       
     </form>
-    <br>
-    <br>
   </div>
 
 </div>

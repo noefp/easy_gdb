@@ -38,9 +38,10 @@
         <input type="hidden" name="selected_dbs" id="selected_dbs" value="">
       <?php endif; ?>
 
-      <button class="button btn btn-info float-right" id="btnSend" type="submit" form="download_fasta_form" formmethod="post">Download</button>
+      <div class="text-right">
+        <button class="button btn btn-info" id="btnSend" type="submit" form="download_fasta_form" formmethod="post">Download</button>
+      </div>
       </form>
-      <br>
       
   </div>
 

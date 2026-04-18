@@ -7,16 +7,15 @@
   <a class="float-right" href="/easy_gdb/help/07_gene_enrichment.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
-  <h1 class="text-center">Gene Set Enrichment</h1>
 
 <div>
+  <h1 class="text-center">Gene Set Enrichment <i class="fas fa-project-diagram" style="color:#555"></i></h1>
+  <br>
 
-  <div class="form margin-20" style="margin:auto; max-width:900px">
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
     
     <label for="txtGenes">Paste a list of gene IDs</label>
-    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10">
-<?php echo "$input_gene_list" ?>
-    </textarea>
+    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10"><?php echo "$input_gene_list" ?></textarea>
     <br>
 
     <label>Please, choose one of the species available for Gene Ontolgy enrichment analysis:</label>
@@ -61,11 +60,11 @@ if ( file_exists("$json_files_path/tools/enrichment.json") ) {
   Developed by <a href="https://doi.org/10.1093/nar/gkz369" target="_blank">Raudvere et al 2019</a>.
 </p>
 
-    <button id="submit_enrichment" type="submit" class="btn btn-success float-right">Submit</button>
-
+    <div class="text-right">
+      <button id="submit_enrichment" type="submit" class="btn btn-info">Submit</button>
+    </div>
   </div>
 </div>
-<br>
 <br>
 <?php include realpath('../footer.php'); ?>
 
