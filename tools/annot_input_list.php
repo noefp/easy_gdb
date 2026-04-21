@@ -7,11 +7,13 @@
   <a class="float-right" href="/easy_gdb/help/05_annotation_extraction.php" target="_blank"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
 </div>
 <br>
-<h3 class="text-center">Annotation Extraction</h3>
 
-<!-- INPUT FORM -->
-<div class="form margin-20">
-  <div style="margin:auto; max-width:900px">
+<div>
+  <h1 class="text-center">Annotation Extraction <i class="fas fa-file-export" style="color:#555"></i></h1>
+  <br>
+
+  <!-- INPUT FORM -->
+  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
 
 <?php
   if ($file_database) {
@@ -108,13 +110,13 @@
     ?>
 
     <br>
-    <button type="submit" class="btn btn-info float-right" form="egdb_annot_file_form" style="margin-top: -5px" formmethod="post">Search</button>
-    <br>
-    <br>
-    <br>
+    <div class="text-right">
+      <button type="submit" class="btn btn-info" form="egdb_annot_file_form" style="margin-bottom: -15px" formmethod="post">Search</button>
+    </div>
     </form>
   </div>
 </div>
+<br>
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>

@@ -9,7 +9,7 @@
 <br>
 
 <div>
-  <h1 class="text-center">Gene Version Lookup <i class="fas fa-search" style="color:#555"></i></h1>
+  <h1 class="text-center">Gene Version Lookup <i class="fas fa-exchange-alt" style="color:#555"></i></h1>
   <br>
 
   <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
@@ -48,9 +48,10 @@
       echo "</div>";
 
     ?>
-      <button type="submit" class="btn btn-info float-right" form="gene_version_lookup" formaction="gene_lookup_output.php" formmethod="post">Search</button>
+    <div class="text-right">
+      <button type="submit" class="btn btn-info" form="gene_version_lookup" formaction="gene_lookup_output.php" formmethod="post">Search</button>
+    </div>
     </form>
-    <br>
   </div>
 </div>
 <br>

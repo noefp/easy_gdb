@@ -10,8 +10,9 @@
   </div>
   <br>
   
-  <h3 class="text-center">Expression Comparator</h3>
-  <div class="form margin-20">
+  <h1 class="text-center">Expression Comparator <i class="fas fa-balance-scale" style="color:#555"></i></h1>
+  <br>
+  <div id="expression-container" class="form margin-20" style="margin:auto">
     
     <form id="comparator_form" action="comparator_output.php" method="post">
     <br>
@@ -246,10 +247,10 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
 }
 
 ?>
-      <button class="button btn btn-info float-right" id="btnSend" type="submit" form="comparator_form" formmethod="post">Compare</button>
+      <div class="text-right">
+        <button class="button btn btn-info" id="btnSend" type="submit" form="comparator_form" formmethod="post">Compare</button>
+      </div>
       </form>
-      <br>
-      <br>
   </div>
 
 </div>
