@@ -8,7 +8,7 @@
 
   if ($is_gallery) {
 
-    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
+    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\" style=\"border-left: 1px solid #ccc; margin-bottom: 20px;\">";
     
     echo"<div id=\"galleryCarousel\" class=\"container carousel slide carousel-fade \" data-ride=\"carousel\" data-interval=\"5000\"><div class=\"carousel-inner\">";
     
@@ -74,10 +74,6 @@ $image_count = $index;
     border-radius: 10px; /*  Add rounded corners to the images */
   }
   
-  .carousel-inner {
-    margin-bottom: 15px;
-  }
-
   /* indicator color when it is not active */
 .carousel-indicators li {
     background-color: #bbb;

@@ -3,11 +3,19 @@
 
 <?php 
   include_once realpath("$easy_gdb_path/tools/common_functions.php");
-  $pass_dir = test_input($_GET["dir_name"]); // get passport directory with files to list
-  $pass_dir_title = str_replace("_", " ", $pass_dir);
+
+  echo '<div class="margin-20">';
+    if (file_exists("$passport_path/germplasm_list.json") ) {
+      // echo '<div class="margin-20">';
+      echo '<a class=" pointer_cursor" href="/easy_gdb/tools/passport/view_subdirectories.php"><i class="fas fa-reply" style="color:#229dff"></i> Back to menu </a>';
+      // echo "</div>";
+  }
+  echo '</div>';
+
+   $pass_dir = isset($_GET["dir_name"]) ? test_input($_GET["dir_name"]) : ""; // get passport directory with files to list
 
 ?>
-
+ 
 <!-- Load the QR library-->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <!-- Load the map library-->
@@ -19,7 +27,7 @@
 <!-- Load icon LIBRARY-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<br><br>
+<!-- <br><br> -->
 <div id="load" class="loader"></div> 
 <div id="body" style="display:none">
 

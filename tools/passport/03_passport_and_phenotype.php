@@ -136,7 +136,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
     $section = str_replace(".txt", "", $section);
     $collapse_sec = str_replace(".txt", "", $file);
 
-    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section phenotype_traits\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\"display:flex; align-items:center; padding-top:2px; padding-bottom:2px\"\">
+    echo "<div id=\"phenotype_$collapse_sec\" class=\"pointer_cursor phenotype_section phenotype_traits\" data-toggle=\"collapse\" data-target=\"#collapse_$collapse_sec\" aria-expanded=\"true\" style=\"display:flex; align-items:center; padding-top:2px; padding-bottom:2px; user-select:none\">
     <i class=\"fas fa-angle-down\" style=\"margin-left:10px;margin-right:10px\"></i><h3 style=\"margin:0px\"><b>$section</b></h3>
     </div><br>";  
 
@@ -341,9 +341,9 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           $category_printed = str_replace("_", " ", $category);
           // echo "category printed: $category_printed <br>";
           // echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;\" data-toggle=\"collapse\" data-target=\"#$unique_id\"></i><br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"info_icon categoric_info\" style=\"cursor: pointer;margin:5px\" data-toggle=\"collapse\" data-target=\"#$unique_id\">i</i><br><span style='color: #777772;'>($descriptor_secondary_name)</span><br>";
           
-          echo "<div id=\"$unique_id\" class=\"collapse\">";
+          echo "<div id=\"$unique_id\" class=\"collapse\" style=\"overflow-x:auto\">";
           echo "<table style='color: grey;min-width:250px;margin:20px'>";
           
           foreach ($categories as $index => $cat) {
@@ -360,7 +360,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           echo "</table></div>";
           
         } elseif (!empty($descriptor_primary_name) && !empty($category)) {
-          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;\" data-bs-toggle=\"collapse\" data-bs-target=\"#$unique_id\"></i><br>";
+          echo "<b>$descriptor_primary_name</b>: $average_printed ($category_printed) <i class=\"info_icon categoric_info\" style=\"cursor: pointer;margin:5px\" data-bs-toggle=\"collapse\" data-bs-target=\"#$unique_id\">i</i><br>";
           
           foreach ($categories as $index => $cat) {
             $range = $ranges[$index];
@@ -417,6 +417,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
           } else {
             $img_upov = str_replace("value", $descriptor_value, $descriptor_img);
             
+            echo "<div style=\"overflow-x:auto\">";
             echo "<table style=\"border: 2px solid\"><head><tr>";
           
             foreach($img_opt_array as $one_option) {
@@ -477,7 +478,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
               
             } // end foreach
           
-            echo "</tr></body></table><br>";
+            echo "</tr></body></table></div><br>";
 
           }
 
@@ -563,8 +564,6 @@ function file_to_table($file_path, $acc_name) {
 
 <!-- PASSPORT -->
 
-<div class="container" style="max-width:1500px; margin:auto">
-  <br>
 <?php
   
   $pass_dir = test_input($_GET["pass_dir"]);
@@ -582,8 +581,16 @@ function file_to_table($file_path, $acc_name) {
   }
   
   //echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply'></span><i> Back</i></a>";
-  echo "<div class=\"container\">";
-  
+
+    if ($show_qr) {
+    // echo "<div id=\"qrcode\" style=\"display:none\"></div>";
+    echo "<button class=\"btn phenotype_traits float-right\" id=\"generate_qr\" style=\"margin-top:25px; box-shadow:none;\">
+          <i class=\"fas fa-qrcode\"></i> QR Code for ".$acc_name."
+          </button> ";
+  }
+
+  // echo "<div class=\"container\" width=\"100%\"><br>";
+  echo "<br><div class=\"container\" style=\"width:100%\">"; // container for passport and map
   
   if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
           
@@ -632,7 +639,7 @@ function file_to_table($file_path, $acc_name) {
     
     // $acc_name = $cols[$title_col];
     echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
-    echo "<div id=\"passport_container\" class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\">";
+    echo "<div id=\"passport_container\" class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px\">";
 
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
     
@@ -649,17 +656,11 @@ function file_to_table($file_path, $acc_name) {
         }
       }
     }
-  if ($show_qr) {
-    // echo "<div id=\"qrcode\" style=\"display:none\"></div>";
-    echo "<button class=\"btn phenotype_traits\" id=\"generate_qr\" style=\"margin-top:10px; box-shadow:none\">
-          <i class=\"fa-solid fa-qrcode\"></i> QR Code for ".$acc_name."
-          </button> ";
-  }
   echo "</div>";
     
   } // Close if
 ?>
-  <br>
+  <!-- <br> -->
 
 <?php
   if ($show_map) {
@@ -672,23 +673,23 @@ function file_to_table($file_path, $acc_name) {
 ?>
     
 </div> <!-- close row -->
-</div><!-- close passport container -->
-</div><br>
+</div><!-- close passport and map container -->
+
+<!-- </div> -->
 
 
   <!-- FEATURED DESCRIPTORS -->
    <!-- container for Javascript -->
 
 <?php 
-
 if (!empty($featured_descriptors_file) ) {
   $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
   
   if (file_exists($featured_descriptors_path) ) {
     
     // containers
-    echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 my-3 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;user-select:none;\">
-    <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits </b></h1></center></div>";
+    echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;\">
+    <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits & Gallery </b></h1></center></div>";
 
     echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
     
@@ -703,7 +704,6 @@ if (!empty($featured_descriptors_file) ) {
     echo "</div>"; // close container
   }
 }
-
 ?>
 
 <!-- GALLERY -->
@@ -815,9 +815,9 @@ if ($show_map && $map_data_available) {
   
 if (!empty($phenotype_file_array)){
     // echo "<div class=\"container p-1 my-1 bg-secondary text-white collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#phenotype_container\" aria-expanded=\"true\"><h1 style=\"text-align: center\"><b> Phenotypic traits </b></h1></div>";
-echo "<div class=\"container p-1 my-1 text-white collapse_section pointer_cursor collapse_background\"
+echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white pointer_cursor collapse_section\"
       data-toggle=\"collapse\" data-target=\"#phenotype_container\" aria-expanded=\"true\"
-      style=\"display:flex; align-items:center; justify-content:center; position:relative;user-select:none; background-color: #6b6b6b; \">
+      style=\"display:flex; align-items:center; justify-content:center; position:relative;user-select:none;\">
       <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i>
       <h1><b> Phenotypic traits </b> </h1>
       </div>";
@@ -873,6 +873,7 @@ echo "<div class=\"container p-1 my-1 text-white collapse_section pointer_cursor
 
 <!-- STYLES CSS -->
 <style>
+
   .center {
     display: block;
     margin-left: auto;
@@ -886,39 +887,34 @@ echo "<div class=\"container p-1 my-1 text-white collapse_section pointer_cursor
     text-align: center;
   }
 
-.collapse_background  {
-  background-color: #6b6b6b !important;
-}  
-.collapse_background:hover{  
- background-color: #999 !important;
-}
+  table {
+        overflow: hidden;
 
-.info-icon {
-  color: #229dff
-}
+  }
+  #phenotype_collapse{ 
+    background-color: #6b6b6b;
+  }  
+  #phenotype_collapse:hover{  
+  background-color: #999;
+  }
 
-.info-icon:hover {
-  color: #6fbeff;
-}
+  .phenotype_traits:hover {
+    background-color: rgb(155, 10, 10);
+    color: white;
+  }
 
-.phenotype_traits:hover {
-  background-color: rgb(155, 10, 10);
-  color: white;
-}
-
-.phenotype_traits, .phenotype_traits:active{
-  background-color: rgb(139, 13, 0);
-  color: white ;
-
-}   
+  .phenotype_traits, .phenotype_traits:active{
+    background-color: rgb(139, 13, 0);
+    color: white ;
+  }   
 
 </style>
 <!-- END STYLES -->
 
 <!-- SCRIPTS JS -->
 <script src="../../js/datatable.js"></script>
+
 <!-- // For QR code download in PDF format -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  -->
 <script type="text/javascript">
 
 //----- QR CODE
@@ -1013,7 +1009,9 @@ if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredA
   }
 }
 
-
+if(image_count == 0) {
+  $('#featured_descriptors_collapse h1').html('<b> Featured traits </b>'); 
+}
 
 
 //----- PRINT MAP
@@ -1044,13 +1042,13 @@ if(showMap && mapDataAvailable) {
 
     var marker = L.marker([latitude, longitude]).addTo(map);
     marker.bindPopup(marker_label).openPopup();
-}else if (showMap && !mapDataAvailable) {
-  $('#map_container').hide();
+}else{ 
+  if (showMap && !mapDataAvailable) {
+    $('#passport_container').hide();
+    $('#featured_descriptors_collapse').css('margin-top','0px');
+  }
 }
 
-if ( !mapDataAvailable && !showQR) {
-  $('#passport_container').hide();
-}
 
 
 $(document).ready(function(){
@@ -1095,3 +1093,34 @@ $(".phenotype_section_collapse").on('hide.bs.collapse', function(){
 });
 </script>
 
+
+<!--MODAL QR CODE -->
+  <div class="modal fade" tabindex="-1" id="qrcode_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title  w-100 text-center">QR Code</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body" style="display: flex; justify-content: center;">
+        <div id="qrcode"></div>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <div class="btn-group">
+          <button type="button" class="btn phenotype_traits dropdown-toggle" data-toggle="dropdown">
+            Download QR
+          </button>
+          <div class="dropdown-menu pointer_cursor">
+            <a class="dropdown-item pointer_cursor" id="download_pdf">Download PDF</a>
+            <a class="dropdown-item pointer_cursor" id="download_png">Download PNG</a>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL -->

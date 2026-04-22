@@ -7,9 +7,15 @@
 ?>
 
 <div class="page_container" style="margin-top:20px">
-  <h1 class="text-center">Germplasm's species of <?php echo $dbTitle; ?></h1>
-  <br>
 
+<?php  
+  if (file_exists("$custom_text_path/custom_titles/custom_germplasm_title.php")) {
+    include_once realpath("$custom_text_path/custom_titles/custom_germplasm_title.php");
+  }else{
+    echo "<h1 class=\"text-center\"> Germplasm's species of $dbTitle </h1>";
+  }
+?>
+  <br>
   <!-- Container for cards, printed later by JavaScript -->
    <div id="cards_container" class="row"></div>
 
@@ -202,4 +208,9 @@
     cursor:pointer;
     text-decoration:none;
   }
+
+  #cards_container{
+    justify-content: center;
+  }
+
 </style>
