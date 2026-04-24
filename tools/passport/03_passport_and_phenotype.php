@@ -26,7 +26,7 @@
     $numeric_to_categoric_json = $pass_hash["convert_to_categoric"]; 
     $translator_file = $pass_hash["translator"];
     $sp_name = $pass_hash["sp_name"];
-    $featured_descriptors_file = $pass_hash["featured_traits"];
+    $featured_descriptors_file = isset($pass_hash["featured_traits"]) ? $pass_hash["featured_traits"] : "";
     $numerics_columns_without_average = $pass_hash["numerics_columns_without_average"];
     // echo "numeric_to_categoric_json: ".$numeric_to_categoric_json;
     
@@ -59,23 +59,29 @@
   }
 
 //----- FEATURED DESCRIPTORS
+if($featured_descriptors_file) {
   $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
-  //echo $featured_descriptors_path;
-  $featured_descriptors = [];
+  // $featured_descriptors = [];
   if (file_exists($featured_descriptors_path) ) {
       $featured_descriptor_json_file = file_get_contents($featured_descriptors_path); // Get the info
       $featured_descriptors_json = json_decode($featured_descriptor_json_file, true); // Convert JSON -> array
-      //var_dump($featured_descriptors_json); // Funciona
+
   } else {
     //echo "<br> NOT FOUND featured descriptors file";
   }
+}else {
+  $featured_descriptors_json = []; // if there is no file, create an empty array to avoid errors when try to access it
+}
+
+// END JSON info get
 ?>
 
 
 <?php
+// ----- FUNCTIONS  DECLARATION ----------
 
 $descriptor_primary_name = "";
-
+// Function to write all the fenotype descriptors and values
 function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_path, $path_img, $convert_json, $translator_json, $featured_descriptors_json, $all_featured_descriptors, $sp_name,$numerics_columns_without_average) {
   //var_dump($convert_json); // funciona
   //var_dump($translator_json); // funciona
@@ -83,12 +89,10 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
   $file = preg_replace('/.+\//', '', $file_path);
 
   // Create $featured_list to print it later
-  if ($featured_descriptors_json[$file]) {
+  if (isset($featured_descriptors_json[$file] ) && !empty($featured_descriptors_json[$file])) {
     $featured_list = $featured_descriptors_json[$file];
-    //echo "featured_list is <b>correct</b>"; / funciona
   } else {
     $featured_list = [];
-    //echo "featured_list is empty";
   }
   
   $obj_average = [];
@@ -505,7 +509,7 @@ function write_descriptor_files($file_path, $acc_name, $descriptors_obj, $root_p
 
 } // Close function
 
-
+// ---- Prints a table with raw phenotype data -----
 function file_to_table($file_path, $acc_name) {
 
   if (file_exists ("$file_path") ) {
@@ -558,11 +562,15 @@ function file_to_table($file_path, $acc_name) {
     //echo "No phenotype data available"; // Comprobate but do not print    
   }
 }
+// Close function declaration
+
 
 ?>
+<!-- ******************************************************************* -->
+<!--                             MAIN                                    -->
+<!-- ******************************************************************* -->
 
-
-<!-- PASSPORT -->
+<!------ Get info ---------------------------->
 
 <?php
   
@@ -582,12 +590,18 @@ function file_to_table($file_path, $acc_name) {
   
   //echo "<a href=\"02_pass_file_to_datatable.php?dir_name=$pass_dir\"><span class='fas fa-reply'></span><i> Back</i></a>";
 
+  // QR code button
     if ($show_qr) {
     // echo "<div id=\"qrcode\" style=\"display:none\"></div>";
     echo "<button class=\"btn phenotype_traits float-right\" id=\"generate_qr\" style=\"margin-top:25px; box-shadow:none;\">
           <i class=\"fas fa-qrcode\"></i> QR Code for ".$acc_name."
           </button> ";
   }
+  
+  // end info get
+
+
+// <!------ PASSPORT section ---------------------------->
 
   // echo "<div class=\"container\" width=\"100%\"><br>";
   echo "<br><div class=\"container\" style=\"width:100%\">"; // container for passport and map
@@ -635,6 +649,7 @@ function file_to_table($file_path, $acc_name) {
     $cols = explode("\t", $acc_line);
     // fills the array to the length of the header
     $cols=array_pad($cols,count($header),"");
+    // var_dump($cols);
 // --------------------------------------------------------------------------------------------------------------------------------------------------
     
     // $acc_name = $cols[$title_col];
@@ -670,45 +685,12 @@ function file_to_table($file_path, $acc_name) {
     echo "</div>";
     // echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
   }
-?>
-    
+?>    
 </div> <!-- close row -->
 </div><!-- close passport and map container -->
 
-<!-- </div> -->
 
-
-  <!-- FEATURED DESCRIPTORS -->
-   <!-- container for Javascript -->
-
-<?php 
-if (!empty($featured_descriptors_file) ) {
-  $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
-  
-  if (file_exists($featured_descriptors_path) ) {
-    
-    // containers
-    echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;\">
-    <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits & Gallery </b></h1></center></div>";
-
-    echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
-    
-    echo "<div class=\"row\">";
-
-    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
-    echo "<div id=\"featured-descriptors\" style=\"margin-bottom: 10px\"></div>";
-    echo "</div>";
-    include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); 
-    echo "</div>"; // close row
-    echo "</div>"; // close   collapse
-    echo "</div>"; // close container
-  }
-}
-?>
-
-<!-- GALLERY -->
-<?php //include_once realpath("$easy_gdb_path/tools/passport/gallery.php"); ?> 
-
+<!-- Map get information  -->
 <?php
 // var_dump($header);
 // var_dump($cols);
@@ -743,6 +725,7 @@ $country_code = $cols[$country_code_index];
 $numeric_pattern = "/[0-9]/";
 
 $map_data_available = (!empty($latitude) && !empty($longitude) ) || !empty($country_name) || !empty($country_code) ? true : false;
+// $country_no_available = (empty($latitude) && empty($longitude)) && empty($country_name) && empty($country_code) ? true : false;
 
 if ($show_map && $map_data_available) {
   // echo "<div class=\"container p-1 my-1 bg-secondary text-white\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><center><h1><i class=\"fa-solid fa-location-dot\"></i><b> Source Location </b></h1></center></div></div>";
@@ -795,9 +778,9 @@ if ($show_map && $map_data_available) {
     
     
   } // Use CountryCode
-    else {
+    // else {
       // echo "No location data available.";
-  }
+  // }
           
   // Frame Reference 
   // echo "<br>It is used <a href=\"https://leafletjs.com/\" tardet=\"_blank\">Leaflet</a>, an open-source JavaScript library for mobile-fiendly interactive maps, to create the map frame, importing the CSS file. The map frame used is made available under the <a href=\"https:\/\/opendatacommons.org/licenses/odbl/1.0/\" target=\"_blank\">Open Database Licence</a>. Any rights in individual contents of the database are licensed under the <a href=\"http://opendatacommons.org/licenses/dbcl/1.0/\" tardet=\"_blank\">Database Contents License</a>. More info in cookies's section.";
@@ -805,14 +788,50 @@ if ($show_map && $map_data_available) {
 }
 ?>
 
-    <!-- <br> -->
-    <!-- <br> -->
-    <!-- </div> -->
+  <!-- <br> -->
+  <!-- <br> -->
+  <!-- </div> -->
   <!-- </div>   -->
 
+  <!---- FEATURED DESCRIPTORS AND GALLERY  ------->
+   <!-- container for Javascript -->
 
 <?php 
+// if (!empty($featured_descriptors_file) && file_exists("$passport_path/$pass_dir/$featured_descriptors_file")) {
+  // $featured_descriptors_path = "$passport_path/$pass_dir/$featured_descriptors_file";
   
+  // if (file_exists($featured_descriptors_path) ) {
+    // containers
+    echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;\">
+    <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits & Gallery </b></h1></center></div>";
+
+    echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
+    
+    echo "<div class=\"row\">";
+
+    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
+    echo "<div id=\"featured-descriptors\" style=\"margin-bottom: 10px\"></div>";
+    echo "</div>";
+
+    include_once realpath("$easy_gdb_path/tools/passport/gallery.php");
+    echo "</div>"; // close row
+    echo "</div>"; // close   collapse
+    echo "</div>"; // close container
+  // }
+// }else {
+//     echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;\">
+//     <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Gallery </b></h1></center></div>";
+//     echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
+    
+//     include_once realpath("$easy_gdb_path/tools/passport/gallery.php");
+//     echo "</div>"; // close   collapse
+//     echo "</div>"; // close container 
+// }
+?>
+<!-- End container featured descriptors AND gallery-->
+
+<!-- PHENOTYPIC TRAITS SECTION -->
+<?php  
 if (!empty($phenotype_file_array)){
     // echo "<div class=\"container p-1 my-1 bg-secondary text-white collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#phenotype_container\" aria-expanded=\"true\"><h1 style=\"text-align: center\"><b> Phenotypic traits </b></h1></div>";
 echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white pointer_cursor collapse_section\"
@@ -822,7 +841,7 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
       <h1><b> Phenotypic traits </b> </h1>
       </div>";
 
-    echo "<div id =\"phenotype_container\" class =\"collapse show\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">";
+    echo "<div id =\"phenotype_container\" class =\"collapse show\">";
 
   $phenotype_img_json = $pass_hash["phenotype_imgs"];
   
@@ -862,16 +881,16 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
 
 }
 ?>
+</div> 
+<!-- END  Phenotypic traits CONTAINER -->
 
-</div></div> 
-<!-- END CONTAINER -->
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php"); ?>
 <!-- END FOOTER -->
 
 
-<!-- STYLES CSS -->
+<!----- STYLES CSS ------>
 <style>
 
   .center {
@@ -911,7 +930,9 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
 </style>
 <!-- END STYLES -->
 
-<!-- SCRIPTS JS -->
+
+<!----------------------------- SCRIPTS JS ---------------------->
+
 <script src="../../js/datatable.js"></script>
 
 <!-- // For QR code download in PDF format -->
@@ -993,12 +1014,12 @@ $(document).ready(function(){
 });
 
 
-//----- FEATURED DESCRIPTORS
+//----- FEATURED DESCRIPTORS--------
 var featuredArrayJson = <?php echo json_encode($featured_array); ?>;
-var image_count = <?php echo count($image_count); ?>;
+var image_count = <?php echo json_encode($image_count); ?>;
 
-if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '') {
-  $('#featured-descriptors').html(featuredArrayJson);
+if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredArrayJson != '' && featuredArrayJson !== null ) {
+    $('#featured-descriptors').html(featuredArrayJson);
   // $('#featured_descriptors_container').css('display','block');
 }else{
   if (image_count == 0) {
@@ -1012,13 +1033,14 @@ if ($('#featured-descriptors') && featuredArrayJson !== 'undefined' && featuredA
 if(image_count == 0) {
   $('#featured_descriptors_collapse h1').html('<b> Featured traits </b>'); 
 }
+//----- END FEATURED DESCRIPTORS
 
-
-//----- PRINT MAP
+//----- PRINT MAP ---------------
 
 var showMap = <?php echo $show_map; ?>;
 var mapDataAvailable = <?php echo $map_data_available ? 1 : 0; ?>;
 // alert(mapDataAvailable);
+
 
 if(showMap && mapDataAvailable) {
 
@@ -1044,15 +1066,16 @@ if(showMap && mapDataAvailable) {
     marker.bindPopup(marker_label).openPopup();
 }else{ 
   if (showMap && !mapDataAvailable) {
-    $('#passport_container').hide();
-    $('#featured_descriptors_collapse').css('margin-top','0px');
+    $('#map_container').hide();
+    // $('#map_container').html("<span>No location data available to show the map</span>");
   }
 }
-
+//----- END PRINT MAP ---------------
 
 
 $(document).ready(function(){
-
+ 
+//----- COLLAPSE DATA TABLES --------
   $(".collapse").on('shown.bs.collapse', function(){    
 
     var id=this.id;
@@ -1094,7 +1117,7 @@ $(".phenotype_section_collapse").on('hide.bs.collapse', function(){
 </script>
 
 
-<!--MODAL QR CODE -->
+<!---------------MODAL QR CODE ---------->
   <div class="modal fade" tabindex="-1" id="qrcode_modal">
   <div class="modal-dialog">
     <div class="modal-content">

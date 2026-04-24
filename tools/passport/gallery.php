@@ -5,15 +5,18 @@
   //echo "gallery_path = $gallery_path<br>";
   $active = 'active';
   $is_gallery = is_dir($gallery_path) ;
+  
+  $image_count = 0;
+  $index = 0;
 
   if ($is_gallery) {
 
-    echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\" style=\"border-left: 1px solid #ccc; margin-bottom: 20px;\">";
+    echo "<div id=\"gallery\" class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\" style=\"border-left: 1px solid #ccc; margin-bottom: 20px;\">";
     
     echo"<div id=\"galleryCarousel\" class=\"container carousel slide carousel-fade \" data-ride=\"carousel\" data-interval=\"5000\"><div class=\"carousel-inner\">";
     
     echo "<ol class=\"carousel-indicators\">";
-    $index = 0;
+
     if ($dir = opendir($gallery_path)) {
         while (($file = readdir($dir)) !== false) {
             if ($file != '.' && $file != '..' && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file)) {
@@ -32,7 +35,6 @@
     echo "<div class=\"carousel-inner\">";
     if ($dir = opendir($gallery_path) ) { 
       // Read files of directory
-      $index = 0;
     
       while (($file = readdir($dir)) !== false) {
         // Check that $file is an img
@@ -43,11 +45,11 @@
           //echo "img_path: $img_path<br>";
           echo "<div class=\"carousel-item $active\"><img src=\"$img_path\" class=\"d-block carousel-img-small\" alt=\"$file image\"></div>"; 
           $active = ''; // Reset active 
-          $index++;
         }
       }
       //close directory
       closedir($dir);
+      
     }
 
   echo "</div>"; // carousel-inner
@@ -57,12 +59,9 @@
 
   echo "</div>"; // galleryCarousel
   echo "</div>"; // close col
-  
-  } else {
-    // echo "Gallery_path not found for $acc_name<br>";
   }
 
-$image_count = $index;
+  $image_count = $index;
 
 ?>
 
