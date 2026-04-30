@@ -29,12 +29,13 @@
 
       $passport_file = $pass_hash["passport_file"];
       $unique_link = $pass_hash["acc_link"];
-      $map_array = $pass_hash["map_columns"];
-      
+      // $map_array = $pass_hash["map_columns"];
+
+    
       //to convert column index to natural, starting in 1 instead of 0
-      foreach($map_array as &$val) {
-        $val -= 1;
-      }
+      // foreach($map_array as &$val) {
+      //   $val -= 1;
+      // }
       
       $full_passport_path = "$passport_path/$species/$passport_file";
       //echo "<b>full_passport_path</b>: $full_passport_path<br>";
@@ -45,15 +46,25 @@
         if(file_exists($full_passport_path) ) {
           //echo "FILE EXISTS<br>";
           //echo "passport_file: $passport_file<br>";
+          $file_header = "";
             
            $tab_file = file($full_passport_path);
 
           // get header array by columns
           $file_header = trim(array_shift($tab_file) );
           $header_cols = explode("\t", $file_header);
+          
+        //--- get acc_id, latitude,longitude, country name and country code index from passport file----
+          foreach($header_cols as $index => $col_name) {
+            if (in_array($col_name, ["$unique_link","Latitude","Longitude","Country","Country code"])) {
+              $map_array[] = $index;
+            }
+          }
 
-          $file_header = 0;
+      //if (in_array(strtolower($col_name), array_map('strtolower',["$unique_link","Latitude","Longitude","Country","Country code"]))) {
 
+      // --------------------------------------------------------------------------------------------
+          
           foreach($tab_file as $row_count => $line) {
             $columns = explode("\t", $line);
             $row_data = [];
@@ -75,10 +86,6 @@
         $species_count[$species] = $total_rows;
 
 
-        //ordenarlo (descendente) en función del $total_rows. arsort()
-        //hacer loop para recorrer e imprimir de forma ordenada. imprimir en array (array_push($species_html, texto en html)), hacer json_encode() para poder leerlo en javascript e imprimir con javascript
-        //.html es la función que se utiliza en javascript. para ello tiene que tener un id y así se localiza donde imprimirlo en el código.
-
         // Read country_coordinates.txt
         $country_coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt";
         $country_coords = [];
@@ -88,10 +95,10 @@
 
           foreach ($lines as $line){
               $cols = explode ("\t", $line);
-              $country = $cols[0];
               $latitude = $cols[4];
               $longitude = $cols[5];
-              $country_coords[$country] = ['latitude' => $latitude, 'longitude' => $longitude];
+              $country_name_coords[$cols[0]] = ['latitude' => $latitude, 'longitude' => $longitude];
+              $country_code_coords[$cols[2]] = ['latitude' => $latitude, 'longitude' => $longitude];
           }
         }
 
@@ -102,9 +109,10 @@
           if(isset($row["$unique_link"])){
           $acc = $row["$unique_link"];
           }
-          if(isset($row["Country"])){
-            $country = $row["Country"];
-          }
+
+          $country = isset($row["Country"]) ? $row["Country"] : null;
+          $country_code = isset($row["Country code"]) ? $row["Country code"] : null;
+          
           if(isset($row["Latitude"])){
             $latitude = $row["Latitude"];
           } else {
@@ -120,20 +128,23 @@
 
         // Verify if lat and long are empty
         if (empty($latitude) || empty($longitude)){
-          foreach($country_coords as $country_name =>$coords){
-            if(strnatcasecmp($country, $country_name) == 0){
-              $latitude = $coords['latitude'];
-              $longitude = $coords['longitude'];
-              break;
+          $country_coords = !empty($country) ? [$country_name_coords, $country] : [$country_code_coords,$country_code];
+            foreach($country_coords[0] as $country_name =>$coords){
+              // echo "Comparing $country_name with $country_coords[1]<br>";
+              if(strnatcasecmp($country_coords[1], $country_name) === 0){
+                $latitude = $coords['latitude'];
+                $longitude = $coords['longitude'];
+                break;
+              }
             }
           }
-        }
 
         // Store data in $data_map
         if (!empty($latitude) && !empty($longitude)){
           $data_map[] = [
               'acc' => $acc,
               'country' => $country,
+              'country_code' => $country_code,
               'latitude' => $latitude,
               'longitude' => $longitude,
               'trait' => 'default', 
@@ -170,11 +181,9 @@
   
   if (!empty($passport_path) && $show_map ) {
     echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
-
     echo "<div id=\"map\" style=\"height: 600px;\"></div></div>";
   }
 ?>
-
 
 <script>
   const data = <?php echo $json_data_map; ?>;
@@ -202,9 +211,13 @@
       if (item.latitude && item.longitude) {
           var icon = getIcon(item.species, item.trait);
           var marker = L.marker([item.latitude, item.longitude], {icon: icon});
-
-          var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`;
-
+        if (item.country) {
+          var markerLabel = `<b>Acc ID:</b> <a target="_blank" href="03_passport_and_phenotype.php?pass_dir=${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`;
+        }else
+        { if (item.country_code) {
+          var markerLabel = `<b>Acc ID:</b> <a target="_blank" href="03_passport_and_phenotype.php?pass_dir=${item.species}&acc_id=${item.acc}">${item.acc}</a><br><b>Country code:</b> ${item.country_code}`;
+          }
+        }
           // console.log("<?php //echo $pass_dir; ?>");
           marker.bindPopup(markerLabel);
           markers.addLayer(marker);

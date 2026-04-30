@@ -14,12 +14,19 @@
 
     $field_number = 0;
 
+      //--- get acc_id, latitude,longitude, country name and country code index from passport file----
+    foreach($header_cols as $index => $col_name) {
+      if (in_array($col_name, ["$unique_link","Latitude","Longitude","Country","Country code"])) {
+        $map_array[] = $index;
+      }
+    }
+    // --------------------------------------------------------------------------------------------
+    
     foreach ($tab_file as $row_count => $line) {
       $columns = explode("\t", $line);
       $row_data = [];
     
       foreach ($columns as $col_index => $col) {
-    
         if ( in_array($col_index,$map_array) ) {
           $row_data[$header_cols[$col_index] ] = $col;
     
@@ -42,11 +49,12 @@
     $lines = file($country_coords_file, FILE_IGNORE_NEW_LINES);
 
     foreach ($lines as $line) {
-      $cols = explode("\t", $line); // Ajustar si el delimitador es diferente
-      $country = $cols[0];
+      $cols = explode("\t", $line);
       $latitude = $cols[4];
       $longitude = $cols[5];
-      $country_coords[$country] = ['latitude' => $latitude, 'longitude' => $longitude];
+      $country_name_coords[$cols[0]] = ['latitude' => $latitude, 'longitude' => $longitude];
+      $country_code_coords[$cols[2]] = ['latitude' => $latitude, 'longitude' => $longitude];
+
     }
   }
 
@@ -61,8 +69,7 @@
       $cols = explode ("\t", $line);
       $acc = $cols[$marker_acc_col];
       $trait = str_replace(" ", "_", $cols[$marker_column]);
-      //echo "trait: $trait<br> $acc<br>"; //hay que conseguir unificar en uno solo valor
-      $acc_traits[$acc] = $trait;
+      //echo "trait: $trait<br> $acc<br>"; 
     }
   }
 
@@ -74,9 +81,10 @@
     if(isset($row["$unique_link"])){
     $acc = $row["$unique_link"];
     }
-    if(isset($row["Country"])){
-      $country = $row["Country"];
-    }
+
+    $country = isset($row["Country"]) ? $row["Country"] : null;
+    $country_code = isset($row["Country code"]) ? $row["Country code"] : null;
+
     if(isset($row["Latitude"])){
       $latitude = $row["Latitude"];
     } else {
@@ -90,16 +98,18 @@
       $row["Longitude"] = null;
     }
 
-    // Verificate if lat & long are empty-> search in country_coords
-    if (empty($latitude) || empty($longitude) ) {
-      foreach($country_coords as $country_name => $coords) {
-        if (strnatcasecmp($country, $country_name) == 0) {
-          $latitude = $coords['latitude'];
-          $longitude = $coords['longitude'];
-          break;
+    // Verify if lat and long are empty
+    if (empty($latitude) || empty($longitude)){
+      $country_coords = !empty($country) ? [$country_name_coords, $country] : [$country_code_coords,$country_code];
+        foreach($country_coords[0] as $country_name =>$coords){
+          // echo "Comparing $country_name with $country_coords[1]<br>";
+          if(strnatcasecmp($country_coords[1], $country_name) == 0){
+            $latitude = $coords['latitude'];
+            $longitude = $coords['longitude'];
+            break;
+          }
         }
       }
-    }
 
     // Store data in data_map array
     if (!empty($latitude) && !empty($longitude) ) {
@@ -107,6 +117,7 @@
       $data_map[] = [
         'acc' => $acc,
         'country' => $country,
+        'country_code' => $country_code,
         'latitude' => $latitude,
         'longitude' => $longitude,
         'trait' => $acc_traits[$acc] ?? 'default'
@@ -202,7 +213,15 @@ function draw_map(){
 
       //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
 
-      var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+  //  var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+
+      if (item.country) {
+          var markerLabel = `<b>Acc ID:</b> <a target="_blank" href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+        }else
+        { if (item.country_code) {
+            var markerLabel = `<b>Acc ID:</b> <a target="_blank" href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country code:</b> ${item.country_code}`; // con link
+          }
+        }
 
       marker.bindPopup(markerLabel);
       markers.addLayer(marker);

@@ -736,14 +736,13 @@ if ($show_map && $map_data_available) {
     // echo "<br>";
     // echo "<div id=\"map\" style=\"height: 350px;\"></div>";
     
-  } else if ($country_name) { // Close 'if' - real coords
+  } else if ($country_name || $country_code) { // Close 'if' - real coords
     
     // echo "<br>Latitude and longitude not available, using country coordinates instead.<br><b>Country name:</b> $country_name<br>";
     
     $coords_file = "$root_path/easy_gdb/tools/passport/country_coordinates.txt"; // file with coords info
   
-    if ( file_exists("$coords_file") ) {
-            
+    if (file_exists("$coords_file") ) {
       $country_to_coords_file = file_get_contents("$coords_file");        
 
       $rows_coords = explode("\n", $country_to_coords_file);
@@ -757,14 +756,16 @@ if ($show_map && $map_data_available) {
       $country_longitude = "";
   
       // Associate lat&long with $country_name
-      foreach ( $rows_coords as $row ) {
+      foreach ($rows_coords as $row ) {
         $cols_coords = explode("\t", $row);
-        if ($cols_coords[0] == $country_name || $country_code == $cols_coords[2]) {
+        
+        // if the country name or the country code in the passport file matches with the country name or country code in the coords file, get the lat and long from the coords file
+        if (strcasecmp($cols_coords[0], $country_name) === 0 || strcasecmp($country_code, $cols_coords[2]) === 0) {
           // GET var independent values - it depends on the file distribution
           $full_name = $cols_coords[0];  
           $country_latitude = $cols_coords[4]; 
           $country_longitude = $cols_coords[5];
-          break; // finish when finds the country
+          // break; // finish when finds the country
         }
       }
   
@@ -1055,7 +1056,7 @@ if(showMap && mapDataAvailable) {
     else {
       latitude = "<?php echo $country_latitude; ?>";
       longitude = "<?php echo $country_longitude; ?>";
-      marker_label = "<b>Collection country</b><br><?php echo $country_name; ?>";
+      marker_label = "<b>Collection country</b><br><?php echo $full_name; ?>";
     }
 
     var map = L.map('map',{scrollWheelZoom: false}).setView([latitude, longitude], 5);
