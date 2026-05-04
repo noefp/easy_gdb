@@ -20,23 +20,29 @@
 
 <!---------------------------------------------- FRONT MAIN ------------------------------------------------------------------------------------>
 <br>
-<h3 class="text-center">Passport Search</h3>
-
+<?php
+  if (file_exists("$custom_text_path/custom_titles/custom_passport_search_title.php")) {
+    include_once realpath("$custom_text_path/custom_titles/custom_passport_search_title.php");
+  }else{
+    echo "<h1 class=\"text-center\">Passport and Phenotype Search <i class=\"fa fa-passport\" style=\"color:#555\"></i></h1>";
+  }  
+?>
 
 <!--------------------------------- Default filter    --------------------------------->
-<div class="form margin-20" >
+<div class="form margin-20">
   <div style="margin:auto; max-width:1200px">
 
       <!-- FORM OPPENED -->
+  <div class="tool-container" style="margin-top:20px;">
     <form id="egdb_passport_form" action="passport_search_output.php" method="get">
       <div class="form-group">
         <label for="search_box" style="font-size:16px">Insert an accession ID or passport keywords</label>
-        <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
+        <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
         <input id="search_box_default" type="search_box" class="form-control" name="search_keywords" style="border-color: #666">
       </div>
-      <br>
-      <button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button>
-      <br>
+      <!-- <br> -->
+      <!-- <button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button> -->
+      <!-- <br>-->
 
 
       <?php
@@ -74,18 +80,23 @@
         }
         echo "</div>";
       }
+      echo '<br><br><button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button><br>';
     }
     ?>
-    </form>
+    </form></div>
 <!--  ------------------------------------------------------------->
-<br>
+<!-- <hr> -->
 
 <!-------------------------------------------  Filter avanced main -------------------------------------------------->
-<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#advanced" aria-expanded="true" style="text-align:center">
+<!-- <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#advanced" aria-expanded="true" style="text-align:center">
   <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Advanced Search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
-</div>
+</div> -->
 
-<div id="advanced" class="hide collapse">
+
+<h1 style="text-align:center"> Passport and Phenotype Advanced Search <i class="fa fa-passport" style="color:#555"></i></h1>
+
+<div class="tool-container" style="margin-top:20px;">
+<!-- <div id="advanced"> -->
 
 <?php
 //
@@ -143,6 +154,7 @@ if ($dir_counter) {
 ?>
 </div>
 </div>
+  <!-- </div> -->
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
@@ -173,9 +185,13 @@ if ($dir_counter) {
   if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path_file.'/'.$passport_file) &&  !preg_match('/\.json$/i', $passport_file) && file_exists($passport_path_file.'/'.$passport_file)   ) {
     
     // echo "unique_link: $unique_link<br>";
-  echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:left;"> <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3>
-    </div>
-    <div id="passport_search" class="show collapse">';
+
+  // echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:center;"> <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
+  //     </div>
+  // echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>
+
+    echo'<div id="passport_search" class="show collapse">';
+     echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>';
       read_passport_file($passport_path_file,$passport_file,"passport");
     echo "</div>";
   }
@@ -190,10 +206,11 @@ if ($dir_counter) {
     }
     if ($counts_phenotypes){
 
-      echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#phenotype_search" aria-expanded="true" style="text-align:left;">
-      <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Phenotype search </h3>
-      </div>
-      <div id="phenotype_search" class="show collapse"">';
+    // echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#phenotype_search" aria-expanded="true" style="text-align:center;"> <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Phenotype search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
+    //   </div>
+    echo ' <h2 style="text-align:center; margin-top:20px;">Phenotype Search <i class="fas fa-seedling" style="color:#555"></i></h2>
+
+      <div id="phenotype_search" class="show collapse">';
 
       if ($counts_phenotypes>1){
         $GLOBALS['files_phenotype_count']=$counts_phenotypes;
@@ -201,7 +218,7 @@ if ($dir_counter) {
           read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1));}
 
         echo'<div class="all_phenotype_search" style="display: flex; justify-content: flex-end;">
-        <button  id="submit_all_forms"class="btn btn-info search_button" type="submit" style="margin:20px;"><span class="fas fa-search"></span> All Phenotype Search</button>
+        <button  id="submit_all_forms"class="btn btn-info search_button" type="submit" style="margin:20px;"> All Phenotype Search</button>
         </div>';
         }else{
           read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype");
@@ -231,7 +248,7 @@ if ($dir_counter) {
         echo "<i class=\"fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name";
       echo "</div>";
 
-      echo "<div id=\"collapse_$frame_id\" class=\"hide collapse\" style=\" border-radius: 5px; border:groove 2px; background-color:#efefef; padding-top:7px\">";
+      echo "<div id=\"collapse_$frame_id\" class=\"hide collapse\" style=\" border-radius: 5px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); padding-top:7px\">";
       // array_push($GLOBALS['n_passport_files'],$frame_id);
       
       $pass_array = file("$passport_path/$passport_file");
@@ -247,7 +264,7 @@ if ($dir_counter) {
         echo "<div class=\"container\" style=\"margin-left:20px\">";
             echo "<div class=\"row\">";
               echo "<div class=\"col\">";
-                echo "<label for=\"select_$frame_id\" style=\"margin-left:15px;margin-right:15px \"><i>Filter by: </i></label>";
+                echo "<label for=\"select_$frame_id\" style=\"margin-left:15px;margin-right:15px \">Filter by: </label>";
                 echo "<select class=\"form-control sel_opt\" id=\"$frame_id\" name=\"$no_spc_file\" style=\"width:auto; display: inline-block;\">";
                 // echo "<option selected></option>";
                 foreach ($header_array as $index => $value) {
@@ -259,7 +276,7 @@ if ($dir_counter) {
 
              echo "</div>";
             echo "<div class=\"col\">";
-              echo "<label for=\"text_$frame_id\"  style=\"margin-left:45px;margin-top:10px\"><i>Added filter:</i></label>";
+            echo "<label for=\"text_$frame_id\"  style=\"margin-left:30px;margin-top:10px\">Added filter: </label>";
             echo "</div>";
             echo "</div>";
 
@@ -272,14 +289,14 @@ if ($dir_counter) {
               echo "<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>";
               echo "</div>";
 
-            echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"4\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true\"></textarea>"; 
+            echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"4\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true ; margin-right: 35px\"></textarea>"; 
             echo "</div>"; // col
             echo "</div>";
             echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
             echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";
 
         echo"<div style=\"display: flex; justify-content: flex-end;\">";
-        echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px;\"><span class=\"fas fa-search\"></span> Search</button>";
+        echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; margin-right: 40px\"> Search</button>";
         echo"</div>";
         echo "</div>";
      echo "</form>"; 
@@ -322,7 +339,7 @@ if ($dir_counter) {
   /* background-color:white; */
   color:black;
   border-radius: 5px;
-  margin-bottom: 0px;
+  /* margin-bottom: 0px; */
   }  
 
   .collapse_section:hover  {
@@ -334,10 +351,10 @@ if ($dir_counter) {
 #phenotype_search , #passport_search
 { 
   margin-left:20px;
-  background-color:#efefef;
+  margin-right:20px;
+  /* background-color:#efefef; */
   border-radius: 0px 0px 5px 5px;
-  padding-top: 1px;
-
+  padding-top: 0px;
 }
 </style>
 
@@ -677,7 +694,7 @@ tempForm.submit();
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
