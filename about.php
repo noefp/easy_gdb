@@ -1,7 +1,7 @@
 <?php include_once realpath("header.php");?>
 
 
-<!-- <div style="max-width:900px; margin:auto"> -->
+<div class="page_container" style="max-width:1350px;">
 <!-- <br>
   <h1>About Us</h1> -->
 <div class="row">
@@ -18,6 +18,6 @@
 
 <br>
 
-<!-- </div> -->
+</div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
