@@ -1,8 +1,8 @@
 <?php include_once realpath("header.php");?>
 
 <?php
-if ( file_exists("$species_path/custom_species_title.php") ) {
-  include_once realpath("$species_path/custom_species_title.php");
+if ( file_exists("$custom_text_path/custom_titles/custom_species_title.php") ) {
+  include_once realpath("$custom_text_path/custom_titles//custom_species_title.php");
 } else {
   echo '<br>';
   echo '<div style="text-align:center"> <h1 style="font-size:40px;text-align:center">Species</h1> </div>';
