@@ -12,7 +12,7 @@
   <h1 class="text-center">Gene Expression Viewer <i class="fas fa-chart-bar" style="color:#555"></i></h1>   
   <br>
   
-  <div id="expression-container" class="form margin-20" style="margin:auto">    
+  <div class="form margin-20 tool-container" style="margin:auto">
     <form id="get_expression_form" action="expression_output.php" method="post">   
       <div class="form-group">
 <?php

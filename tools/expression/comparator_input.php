@@ -12,7 +12,7 @@
   
   <h1 class="text-center">Expression Comparator <i class="fas fa-balance-scale" style="color:#555"></i></h1>
   <br>
-  <div id="expression-container" class="form margin-20" style="margin:auto">
+  <div class="form margin-20 tool-container" style="margin:auto">
     
     <form id="comparator_form" action="comparator_output.php" method="post">
     <br>
