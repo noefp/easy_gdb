@@ -174,8 +174,9 @@ if ($dir_counter) {
     $pass_hash = json_decode($pass_json_file, true);
     // print_r($pass_hash);
 
-    $passport_file = $pass_hash["passport_file"];
-    $phenotype_file_array = $pass_hash["phenotype_files"];
+    $passport_file = isset($pass_hash["passport_file"]) ? $pass_hash["passport_file"] : "";
+    $phenotype_file_array = isset($pass_hash["phenotype_files"]) ? $pass_hash["phenotype_files"] : [];
+    $hidden_search_traits = isset($pass_hash["hidden_search_traits"]) ? $pass_hash["hidden_search_traits"] : [];
     $counts_phenotypes=0;
     $files_phenotypes_exist=[];
     // $unique_link = $pass_hash["acc_link"];
@@ -186,13 +187,13 @@ if ($dir_counter) {
     
     // echo "unique_link: $unique_link<br>";
 
-  // echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:center;"> <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
-  //     </div>
-  // echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>
+    // echo'<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#passport_search" aria-expanded="true" style="text-align:center;"> <i class="fas fa-sort" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3> <i for="collapse_section" class="fas fa-sort" style="color:#229dff"></i>
+    //     </div>
+    // echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>
 
     echo'<div id="passport_search" class="show collapse">';
-     echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>';
-      read_passport_file($passport_path_file,$passport_file,"passport");
+      echo ' <h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>';
+      read_passport_file($passport_path_file,$passport_file,"passport",$hidden_search_traits[$passport_file] ?? [] );
     echo "</div>";
   }
 
@@ -215,13 +216,13 @@ if ($dir_counter) {
       if ($counts_phenotypes>1){
         $GLOBALS['files_phenotype_count']=$counts_phenotypes;
       foreach($files_phenotypes_exist as $index => $phenotype_file){
-          read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1));}
+          read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1),$hidden_search_traits[$phenotype_file] ?? []);}
 
         echo'<div class="all_phenotype_search" style="display: flex; justify-content: flex-end;">
         <button  id="submit_all_forms"class="btn btn-info search_button" type="submit" style="margin:20px;"> All Phenotype Search</button>
         </div>';
         }else{
-          read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype");
+          read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype",$hidden_search_traits[$phenotype_file_array[0]] ?? []);
         }
         echo "</div>";
         }// if no counts
@@ -230,14 +231,14 @@ if ($dir_counter) {
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // $n_passport_files=[];
-  function read_passport_file($passport_path,$passport_file,$form_id) {
-    
+  function read_passport_file($passport_path,$passport_file,$form_id,$hidden_search_traits) {
     
     $dataset_name = preg_replace('/\.[a-z]{3}$/',"",$passport_file);
     $dataset_name = str_replace("_"," ",$dataset_name);
     $frame_id = preg_replace('/[. ]txt/',"",$passport_file);
     
     // $link_name = preg_replace('/\s|\.|\d/', '', $dataset_name);
+
     
     // echo "<h4>$passport_path/$passport_file</h4>";
     // echo "<h4>$frame_id</h4>";
@@ -260,17 +261,20 @@ if ($dir_counter) {
       
       $no_spc_file = str_replace(" ","\ ","$passport_path/$passport_file");
 
-      echo "<form id=\"$form_id\" action=\"passport_search_output_avanced.php\" method=\"post\">";
+      echo "<form id=\"$form_id\" class=\"advanced_form\" action=\"passport_search_output_avanced.php\" method=\"post\">";
         echo "<div class=\"container\" style=\"margin-left:20px\">";
             echo "<div class=\"row\">";
               echo "<div class=\"col\">";
                 echo "<label for=\"select_$frame_id\" style=\"margin-left:15px;margin-right:15px \">Filter by: </label>";
                 echo "<select class=\"form-control sel_opt\" id=\"$frame_id\" name=\"$no_spc_file\" style=\"width:auto; display: inline-block;\">";
                 // echo "<option selected></option>";
+                $hidden_search_traits = array_map(function ($n) { return $n - 1; }, $hidden_search_traits ?? []); // Convert to zero-based index
+                
                 foreach ($header_array as $index => $value) {
                   // if ($value != $acc_header_name) {
+                  if (!in_array($index, $hidden_search_traits))   {
                     echo "<option name=\"$index\">$value</option>";
-                  // }
+                  }
                 }
                 echo "</select>";
 
@@ -282,8 +286,10 @@ if ($dir_counter) {
 
             echo "<div class=\"d-flex\" style=\"display: inline-block;margin:10px\">";
               echo "<select multiple id=\"select_$frame_id\" size=\"5\" class=\"form-control select\"></select>";
-              echo "<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
-        
+              // echo "<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
+
+              echo "<input id=\"numeric_input_$frame_id\" type=\"number\" step=\"any\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
+
               echo "<div id=\"button_$frame_id\" style=\"margin:10px;margin-top:20px;width:20%; text-align: center\">";
               echo "<button class=\"btn btn-success add\" style=\"width:90%;font-size:small\">Add <span class=\"fas fa-angle-double-right\"></span></button><br>";
               echo "<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>";
@@ -293,7 +299,7 @@ if ($dir_counter) {
             echo "</div>"; // col
             echo "</div>";
             echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
-            echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";
+            echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";  
 
         echo"<div style=\"display: flex; justify-content: flex-end;\">";
         echo "<button id=\"search_$frame_id\" type=\"submit\" class=\"btn btn-info search_button\" style=\"margin:10px; margin-right: 40px\"> Search</button>";
@@ -618,6 +624,21 @@ $(document).on('click', '.delete', function() {
     };
   }); 
 });
+
+  // //check input before sending  
+  $(document).on('submit', '.advanced_form', function() 
+  {  var $textarea = $(this).find('textarea');
+     var filters = $textarea.val();
+
+    if (!filters) {
+      $("#search_input_modal").html( "No filters added" );
+      $('#no_gene_modal').modal('show');
+      return false;
+    } else {
+      return true;
+    }
+
+  });
 
 // ...................all_phenotypes_filter...............................
 

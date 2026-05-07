@@ -10,8 +10,10 @@ $pass_json_file = file_get_contents($passport_path_file."/passport.json");
 $pass_hash = json_decode($pass_json_file, true);
 // print_r($pass_hash);
 
-$passport_file = $pass_hash["passport_file"];
-$phenotype_file_array = $pass_hash["phenotype_files"];
+$passport_file = isset($pass_hash["passport_file"]) ? $pass_hash["passport_file"] : "";
+$phenotype_file_array = isset($pass_hash["phenotype_files"]) ? $pass_hash["phenotype_files"] : [];
+$hidden_search_traits = isset($pass_hash["hidden_search_traits"]) ? $pass_hash["hidden_search_traits"] : [];
+   
 // $unique_link = $pass_hash["acc_link"];
 // $hide_array = $pass_hash["hide_columns"];
 
@@ -25,7 +27,7 @@ if ( !preg_match('/\.php$/i', $passport_file) && !is_dir($passport_path_file.'/'
 // <i class="fa fa-list" style="color:#229dff;"></i> <h3 style="display:flex inline"> Passport search </h3>
 // </div>
 array_push($all_passport_array,'<div id="passport_search" class="show collapse"><h2 style="text-align:center; margin-top:20px;">Passport Search <i class="fas fa-map-marker-alt" style="color:#555"></i></h2>');
-$one_passport_array=read_passport_file($passport_path_file,$passport_file,"passport");
+$one_passport_array=read_passport_file($passport_path_file,$passport_file,"passport",$hidden_search_traits[$passport_file] ?? []);
 // array_push($all_passport_array,read_passport_file($passport_path_file,$passport_file));
 $all_passport_array=array_merge($all_passport_array,$one_passport_array);
 array_push($all_passport_array,"</div>");  
@@ -37,14 +39,14 @@ if (!empty($phenotype_file_array)){
   array_push($all_passport_array,'<div id="phenotype_search" class="show collapse"><h2 style="text-align:center; margin-top:20px;">Phenotype Search <i class="fas fa-seedling" style="color:#555"></i></h2>');
   if (count($phenotype_file_array)>1){
     foreach ($phenotype_file_array as $index => $phenotype_file) {
-      $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1));
+      $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file,"phenotype".($index+1),$hidden_search_traits[$phenotype_file] ?? []);
       $all_passport_array=array_merge($all_passport_array,$phenotype_passport_array);
     }
     array_push($all_passport_array,"<div class=\"all_phenotype_search\" style=\"display: flex; justify-content: flex-end;\">");
-    array_push($all_passport_array,"<button id=\"submit_all_forms\" class=\"btn btn-info search_button\"  type=\"submit\" style=\"margin:20px;\"><span class=\"fas fa-search\"></span> All Phenotype Search</button>");
+    array_push($all_passport_array,"<button id=\"submit_all_forms\" class=\"btn btn-info search_button\"  type=\"submit\" style=\"margin:20px;\"> All Phenotype Search</button>");
     array_push($all_passport_array, "</div>");
   }else{
-    $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype");
+    $phenotype_passport_array=read_passport_file($passport_path_file,$phenotype_file_array[0],"phenotype",$hidden_search_traits[$phenotype_file_array[0]] ?? []);
     $all_passport_array=array_merge($all_passport_array,$phenotype_passport_array);
   }
   array_push($all_passport_array, "</div>");
@@ -56,7 +58,7 @@ echo (json_encode($all_passport_array));
 
 // $n_passport_files=[];
 
-function read_passport_file($passport_path,$passport_file,$form_id) {
+function read_passport_file($passport_path,$passport_file,$form_id,$hidden_search_traits) {
   
   $passport_array = array();
 
@@ -93,8 +95,11 @@ function read_passport_file($passport_path,$passport_file,$form_id) {
               array_push($passport_array,"<label for=\"select_$frame_id\" style=\"margin-left:15px;margin-right:15px \">Filter by: </label>");
               array_push($passport_array,"<select class=\"form-control sel_opt\" id=\"$frame_id\" name=\"$no_spc_file\" style=\"width:auto; display: inline-block;\">");
               // echo "<option selected></option>";
+              $hidden_search_traits = array_map(function ($n) { return $n - 1; }, $hidden_search_traits ?? []); // Convert to zero-based index
               foreach ($header_array as $index => $value) {
-                array_push($passport_array,"<option name=\"$index\">$value</option>");
+                if (!in_array($index, $hidden_search_traits)) {
+                  array_push($passport_array,"<option name=\"$index\">$value</option>");
+                }
               }
               array_push($passport_array,"</select>");
 
