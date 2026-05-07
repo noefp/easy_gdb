@@ -24,6 +24,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
   $filters =explode("\n",rtrim($_POST['filters']));
   $file =$_POST['file'];
   $passport_path_file =$_POST['passport'];
+  $species =$_POST['species'];
    
   // print_r($filters);
   // print_r($file."\n");
@@ -164,12 +165,13 @@ function print_search_table($grep_input, $annot_file, $file_name) {
     $filters_values=search_numeric_values($grep_input);
     $results_no_numerics=search_no_numeric_table($tab_file,$filters_values['not_numeric'],$columns);
     $results=search_numeric_table($results_no_numerics,$filters_values['is_numeric'],$columns);
-//------------------------------------------------------------------------------------------------------------------------------------
+
+    // ----------------------------------------------------------------------------------------------------------------------------------------
     echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
       <span aria-hidden="true">&times;</span>
     </button>';
-    echo "<h3><u><i>Search</i></u></h3>";
+    echo "<h3><i>Search</i></h3>";
     if(!array_keys($GLOBALS['filters_dict'])[0]==""){ // if search isn't empty
         foreach($GLOBALS['filters_dict'] as $key=>$values){
         echo"<label><b>".$key." &#10132 "."</b></label>";
@@ -181,26 +183,56 @@ function print_search_table($grep_input, $annot_file, $file_name) {
       } 
     }
     echo"</div>";
-    // echo"<br>\n";
+
+    echo"<br>\n";
+        
+    $title = str_replace("_"," ",$file_name);  
+    echo "<h1 style=\"text-align:center\">$title</h1><br>";
+
+ // get the name of the passport dir to link to accession info
+    if($GLOBALS['passport_path_file'] != $GLOBALS['passport_path'])
+      { $expr_file=explode("/",$GLOBALS['passport_path_file']);
+        $file_len=count($expr_file)-1;
+        $passport_dir_name=$expr_file[$file_len]; // get the name of the passport dir to link to accession info
+      }
+
+//--------------------results list: ------------------------------------------------------------   
+   $acc_id_selec_list = []; // init list of all the accessions selected
+    // find the accession column index to link to accession info
+    $field_number = array_search($GLOBALS['unique_link'], $columns) !== false ? array_search($GLOBALS['unique_link'], $columns) : -1;
+    // get the list of all the accessions selected in the search to link to accession info, avoid duplicates with array_unique
+    $acc_id_selec_list= array_unique(array_map(function($sample) use ($field_number) {
+      $columns = explode("\t", rtrim($sample));
+      return $columns[$field_number] ?? [];}, $results)); 
+
+  if(!empty($acc_id_selec_list))
+    {
+
+      echo '<div class="alert alert-primary phenotype_acc_results_box" style="border:none" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">×</span>
+      </button>
+      <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
+      echo '<body>
+      <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
+      foreach($acc_id_selec_list as $index => $acc_name)
+      {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor phenotype_acc_results\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
+      echo"</lu></body>";
+      echo "</div>";
+    }  
     // ----------------------------------------------------------------------------------------------------------------------------------------
 
       // echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_file\" aria-expanded=\"true\><i class=\"fas fa-sort\" style=\"color:#229dff\"></i>$file_name</div>";
       
     //   // TABLE BEGIN
-    // echo"<p id=\"load\" style=\"text-align: center\"><b>Table Loading...</b></p>";
+    // echo"<p id=\"load\" style=\"text-align: center\"><b>Table Loading...</b></p>"
+
+    // -- TABLE Section ----------------------------------------------------------------------------------------
     echo '<div id=load class="loader"></div>';
+    echo "<div style=\"display:none\" id=\"body\">";
 
-      echo "<div style=\"display:none\" id=\"body\"><table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">";
-      
-      $title = str_replace("_"," ",$file_name);  
-      echo "<h1 style=\"text-align:center\">$title</h1><br>";
-    
-      if($GLOBALS['passport_path_file'] != $GLOBALS['passport_path'])
-      { $expr_file=explode("/",$GLOBALS['passport_path_file']);
-        $file_len=count($expr_file)-1;
-        $passport_dir_name=$expr_file[$file_len];
-      }
-
+      // TABLE
+      echo "<table id=\"tblAnnotations\" class=\"tblAnnotations table table-striped table-bordered\">";
     // //   TABLE HEADER
       echo "<thead><tr>\n";
       $field_number = -1;
@@ -224,7 +256,9 @@ function print_search_table($grep_input, $annot_file, $file_name) {
         {
           // if ( !in_array($index,$GLOBALS['hide_array']) ) {
             if ($index == $field_number) 
-            {echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
+            {
+              $acc_id_selec_list[] = $data;
+              echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$data\" target=\"_blank\">$data</a></td>\n";
             }elseif ($columns[$index] == "Species")
             {echo "<td><i>$data</i></td>";
             }else{echo "<td>$data</td>\n";}
@@ -232,7 +266,8 @@ function print_search_table($grep_input, $annot_file, $file_name) {
         }
         echo "</tr>\n"; 
       }
-      echo "</tbody></table></div><br>\n";      
+      echo "</tbody></table></div><br>\n";
+      return(array_unique($acc_id_selec_list) ?? []);    
   } // End of function
   
 

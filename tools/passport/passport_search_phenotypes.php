@@ -1,6 +1,7 @@
 <!-- HEADER -->
 <?php include_once realpath("../../header.php"); 
-include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
+include_once realpath("$easy_gdb_path/tools/common_functions.php");
+?>
 
 
 <!-- RETURN AND HELP-->
@@ -96,7 +97,7 @@ for($i=1;$i<=$files_counts;$i++) {
       if(!empty($common_search))
       {
         //--------------------results list: ------------------------------------------------------------
-        echo '<div class="alert alert-primary" role="alert">
+        echo '<div class="alert alert-primary phenotype_acc_results_box" style="border:none" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
         <span aria-hidden="true">×</span>
         </button>
@@ -104,13 +105,14 @@ for($i=1;$i<=$files_counts;$i++) {
         echo '<body>
         <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
         foreach($common_search as $index => $acc_name)
-        {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
+        {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor phenotype_acc_results\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
         echo"</lu></body>";
         echo "</div>";
         //---------------------------------------------------------------------------------------
+        print_search_phenotype_table($common_search,$read_file_all,$results);
 
         print_search_passport_table($common_search,$passport_path_file."/".$pass_hash['passport_file'],$pass_hash['passport_file']);
-        print_search_phenotype_table($common_search,$read_file_all,$results);
+        // print_search_phenotype_table($common_search,$read_file_all,$results);
         // print_r($common_search);
       }
       else{
@@ -190,6 +192,7 @@ function search_no_numeric_table($tab_file,$filters,$category){
   foreach(array_keys($filters) as $filters_select){
     foreach($category as $index => $cat)
     {
+      
       if($filters_select == $cat)
       {
         // $search= "awk -F \"\\t\" '$$index == \"$cat\" {print}' .".$GLOBALS['passport_path']."/".$GLOBALS['dir_or_file']."/".$GLOBALS['file'].".txt ";
@@ -201,7 +204,7 @@ function search_no_numeric_table($tab_file,$filters,$category){
         {
           $sample=strip_tags(explode("\t",rtrim($n_sample))[$index]); // delete all html tags 
 
-          if(in_array($sample,$filters[$filters_select]))
+          if(in_array(strtolower($sample),array_map('strtolower',$filters[$filters_select])))
           {
               array_push($sample_found,$n_sample);
           }
@@ -298,8 +301,9 @@ function search_info($filters_dict)
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
         <span aria-hidden="true">&times;</span>
       </button>';
-
-    echo"<lable style=\"margin:5px\" class=\"info_icon td-tooltip\" title=\"$info\">i</lable>";
+    // echo "<i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;margin:5px;\" title=\"$info\"></i>";
+    // echo"<i class=\" td-tooltip pointer_cursor info_icon\" style=\"margin:5px; test-align:center\" title=\"$info\">i</i>";
+    echo '<button type="button" class="info_icon" style="margin:5px;" title="'.$info.'" data-toggle="modal" data-target="#info_modal">i</button>';
     echo "<h3 style=\"display:inline\"><i>Search</i></h3>";
 
   echo '<table class="table table-bordered table-sm" style="width:100%;">';
@@ -366,7 +370,7 @@ function acc_link_common_array($acc_links_array){
   foreach($first_array as $index => $acc_array ){
     for($i=1;$i<$files_count;$i++)
     {
-      if (!in_array($acc_array,$acc_links_array[$file_names[$i]]))
+      if (!in_array(strtolower($acc_array),array_map('strtolower',$acc_links_array[$file_names[$i]])))
       {
         unset($first_array[$index]);
         break;
@@ -390,7 +394,7 @@ function print_search_phenotype_table($acc_link_common_array,$annot_files,$searc
   foreach($annot_files as $file_name => $file_data)
   {
     $title=str_replace("_"," ",$file_name);
-    echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $title table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";
+    echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\" fas fa-sort\" style=\"color:#229dff\"></i></i> $title table </div>";
 
       // TABLE BEGIN
 
@@ -414,7 +418,7 @@ function print_search_phenotype_table($acc_link_common_array,$annot_files,$searc
 // //       // TABLE BODY
       echo "<tbody>\n";
       foreach($search_result[$file_name] as $sample_select){
-      if(in_array(explode("\t",$sample_select)[$field_number],$acc_link_common_array))
+      if(in_array(strtolower(explode("\t",$sample_select)[$field_number]),array_map('strtolower',$acc_link_common_array)))
       {
         echo "<tr>";
         foreach(explode("\t",$sample_select) as $index => $data)
@@ -446,7 +450,7 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
 
   // $pass_dir_name=str_replace($GLOBALS['passport_path'],"",$GLOBALS['passport_path_file']);
 
-  echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $title table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";
+  echo "<div id=\"$file_name\" class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#body_$file_name\" aria-expanded=\"true\"><i class=\" fas fa-sort\" style=\"color:#229dff\"></i> $title table </div>";
 
     // TABLE BEGIN
   echo "<div class=\"body collapse\" style=\"display:hide\" id=\"body_$file_name\"><table id=\"table_$file_name\" class=\"tblAnnotations table table-striped table-bordered\" style=\"display:none\">";
@@ -467,7 +471,8 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
 // //       // TABLE BODY
     echo "<tbody>\n";
     foreach($read_passport_file['tab_file'] as $sample_select){
-    if(in_array(explode("\t",$sample_select)[$field_number],$common_search))
+
+    if(in_array(strtolower(explode("\t",$sample_select)[$field_number]),array_map('strtolower',$common_search)))
     {
       echo "<tr>";
       foreach(explode("\t",$sample_select) as $index => $data)
@@ -504,9 +509,9 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
     cursor: pointer;
   }
 
-  .btn:hover{
+  /* .btn:hover{
     background-color:dodgerblue;
-  }
+  } */
   
 </style>
 <!-- End CSS -->
@@ -538,3 +543,28 @@ $(document).ready(function(){
 
 <!-- FOOTER -->
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
+
+
+
+
+<!-- Modal popup info message -->
+<div class="modal fade" id="info_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+          <h5 class="modal-title  w-100 text-center" id="Info_Label"> ⓘ Info</h5>
+          </button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center;">
+          <span>Here are the filters selected for the search.</span><br>
+          <span>This search uses the AND method for filtering.</span><br>
+          <span>The tables shown below meet all the selected characteristics.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
