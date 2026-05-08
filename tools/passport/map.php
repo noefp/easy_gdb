@@ -228,8 +228,25 @@ function draw_map(){
     }
   });
 
-  // Añadir el grupo de clusters al mapa
-  map.addLayer(markers);
+    map.addLayer(markers);
+
+    // Function to adjust map view to fit markers
+    function adjustMap() {
+    if (markers.getLayers().length === 0) return; // No markers
+    map.invalidateSize(true); // Force a map update
+    map.fitBounds(markers.getBounds(), { padding: [50, 50], maxZoom: 3, minZoom: 3 }); // center map on markers with padding
+    }
+
+    // Adjust map when it's ready and when the window is resized
+    map.whenReady(function() {
+    setTimeout(adjustMap, 150);
+    });
+
+    // Adjust map when the window is resized
+    window.addEventListener('resize', function() {
+    setTimeout(adjustMap, 150);
+    });
+
 }
 
 </script>
