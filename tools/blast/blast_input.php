@@ -8,7 +8,7 @@
 
 <h1 class="text-center">BLAST <i class="fas fa-dna" style="color:#555"></i></h1>
 <br>
-<div id="tool-container" class="margin-20" style="margin:auto; max-width:900px">
+<div class="margin-20 tool-container" style="margin:auto">
 
 <?php 
 if (isset($multiple_blast_db) && $multiple_blast_db) {

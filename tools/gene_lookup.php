@@ -12,7 +12,7 @@
   <h1 class="text-center">Gene Version Lookup <i class="fas fa-exchange-alt" style="color:#555"></i></h1>
   <br>
 
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div class="form margin-20 tool-container" style="margin:auto">
 
      <?php 
       echo "<div id=\"color_default\" class=\"alert alert-primary\" role=\"alert\" style=\"display:block;margin:0px\">";
@@ -24,7 +24,7 @@
 
     <form id="gene_version_lookup">
     <label for="txtGenes">Paste a list of gene IDs</label>
-    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10"></textarea>
+    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="8"></textarea>
 
     <br>
 

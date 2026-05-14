@@ -13,7 +13,7 @@
   <br>
 
   <!-- INPUT FORM -->
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div class="form margin-20 tool-container" style="margin:auto">
 
 <?php
   if ($file_database) {
@@ -25,8 +25,8 @@
 
     <!-- FORM OPPENED -->
     <div class="form-group">
-      <label for="annot_file_box" style="font-size:16px">Paste a list of gene IDs</label>
-      <textarea type="search_box" class="form-control" id="annot_file_box" name="txtGenes" rows="5" style="border-color: #666"><?php echo "$input_gene_list"; ?></textarea>
+      <label for="annot_file_box" >Paste a list of gene IDs</label>
+      <textarea class="form-control" id="annot_file_box" name="txtGenes" rows="5"><?php echo "$input_gene_list"; ?></textarea>
     </div>
 
 

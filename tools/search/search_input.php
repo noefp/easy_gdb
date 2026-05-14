@@ -15,7 +15,7 @@
   <br>
 
   <!-- INPUT FORM -->
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div class="form margin-20 tool-container" style="margin:auto">
 
 <?php
   if ($file_database) {
@@ -30,7 +30,7 @@
     <div class="form-group">
       <label for="search_file_box_annot" style="font-size:16px">Insert a gene ID or annotation keywords</label>
       <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button>
-      <input type="search_box" class="form-control" id="search_file_box_annot" name="search_keywords" style="border-color: #666">
+      <input type="search" class="form-control" id="search_file_box_annot" name="search_keywords" placeholder="E.g. kinase">
     </div>
 
 

@@ -9,7 +9,7 @@
 <!-- <div id="dlgDownload"> -->
   <h1 class="text-center">Sequence Extraction <i class="fas fa-download" style="color:#555"></i></h1>
   <br>
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div class="form margin-20 tool-container" style="margin:auto">
 
   <?php
     if (isset($multiple_blast_db) && $multiple_blast_db) {
@@ -23,9 +23,7 @@
 
     <div class="sequence_attr">
       <label for="txtDownloadGenes">Paste a list of gene IDs</label>
-      <textarea class="form-control sequence_box" id="txtDownloadGenes" rows="8" name="gids">
-<?php echo "$input_gene_list" ?>
-      </textarea>
+      <textarea class="form-control" id="txtDownloadGenes" rows="8" name="gids"><?php echo "$input_gene_list" ?></textarea>
     </div>
       <br>
 

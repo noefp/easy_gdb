@@ -9,10 +9,10 @@
     <a class="float-right" href="/easy_gdb/help/08_gene_expression.php"><i class='fa fa-info' style='font-size:20px;color:#229dff'></i> Help</a>
   </div>
   <br>
-  <h3 class="text-center">Gene Expression Viewer</h3>
+  <h1 class="text-center">Gene Expression Viewer <i class="fas fa-chart-bar" style="color:#555"></i></h1>
+  <br>
   
-  
-  <div class="form margin-20">
+  <div class="form margin-20 tool-container" style="margin:auto">
     
     <form id="get_expression_form" action="expression_output_private.php" method="post">
     
@@ -117,7 +117,7 @@ if ($dir_counter) {
         <div class="col-sm-6 col-md-6 col-lg-6">
     
           <div class="form-group">
-            <label for="usr">Find your gene/metabolite by name:</label>
+            <label for="autocomplete_gene">Find your gene/metabolite by name:</label>
       
             <div class="input-group mb-3">
               <input id="autocomplete_gene" type="text" class="form-control form-control-lg" placeholder="gene/metabolite name">
@@ -140,13 +140,13 @@ if ($dir_counter) {
       </div>
       
 
-      <button class="button btn btn-info float-right" id="btnSend" type="submit" form="get_expression_form" formmethod="post">Get Expression</button>
+      <div class="text-right">
+        <button class="button btn btn-info" id="btnSend" type="submit" form="get_expression_form" formmethod="post">Get Expression</button>
+      </div>
       
     </form>
-    <br>
-    <br>
   </div>
-
+  <br>
 </div>
 
 <?php include realpath('../../footer.php'); ?>

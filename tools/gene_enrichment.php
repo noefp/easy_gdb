@@ -12,10 +12,10 @@
   <h1 class="text-center">Gene Set Enrichment <i class="fas fa-project-diagram" style="color:#555"></i></h1>
   <br>
 
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div class="form margin-20 tool-container" style="margin:auto">
     
     <label for="txtGenes">Paste a list of gene IDs</label>
-    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="10"><?php echo "$input_gene_list" ?></textarea>
+    <textarea name="txtGenes" id="txtGenes" class="form-control" rows="8"><?php echo "$input_gene_list" ?></textarea>
     <br>
 
     <label>Please, choose one of the species available for Gene Ontolgy enrichment analysis:</label>

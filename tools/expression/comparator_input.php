@@ -252,7 +252,7 @@ if ( file_exists($expression_path."/comparator_gene_list.txt") ) {
       </div>
       </form>
   </div>
-
+  <br>
 </div>
 
 <?php include realpath('../../footer.php'); ?>
