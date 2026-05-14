@@ -205,7 +205,7 @@ th {
 /* species_view.php */
 
 #species_container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: auto;
   text-align: justify;
 }
@@ -228,8 +228,6 @@ th {
 .sequence_blast_box {
   /* apply with form-control */
   width: 200px;
-  border-radius: 10px;
-  border: 1px solid rgb(53, 58, 64);
   padding: 10px;
   width: 100%;
   font-family: Monospace;
@@ -259,15 +257,6 @@ th {
   border: 1px solid rgb(53, 58, 64);
   padding: 10px;
   width: 100%;
-}
-
-#tool-container {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  max-width: 1200px;
-  margin: 50px auto;
 }
 
 .tool-container {
