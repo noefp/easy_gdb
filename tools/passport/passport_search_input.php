@@ -38,7 +38,7 @@
       <div class="form-group">
         <label for="search_box" style="font-size:16px">Insert an accession ID or passport keywords</label>
         <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
-        <input id="search_box_default" type="search_box" class="form-control" name="search_keywords" style="border-color: #666">
+        <input id="search_box_default" type="search_box" class="form-control" name="search_keywords" placeholder="CHLM001">
       </div>
       <!-- <br> -->
       <!-- <button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button> -->
@@ -60,8 +60,8 @@
 
         if($is_dir)
           {
-            echo "<lable style=\"margin-left:5px\"><i>Select Dataset</i></lable>";
-            echo "<div style=\"border:groove 1px;\">";
+            echo "<lable style=\"margin-left:5px\">Select Dataset</lable>";
+            echo "<div class=\"card card-body\" style=\"display: block\">";
 
             foreach ($all_datasets as $expr_dataset) {
               if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
@@ -119,7 +119,7 @@ foreach ($all_datasets as $expr_dataset) {
 //category organization
 if ($dir_counter) {
   
-  echo "<label style=\"margin:3px\" for=\"sel1\"><i>Select Dataset</i></label>";
+  echo "<label style=\"margin:3px\" for=\"sel1\">Select Dataset</label>";
   get_info_json($passport_path);
   echo "<select class=\"form-control\" id=\"sel1\" name=\"expr_file\">";
   
@@ -698,7 +698,7 @@ tempForm.submit();
 
 </script>
 
-<!-- Modal popup erro message -->
+<!-- Modal popup error message -->
 
 <div class="modal fade" id="no_gene_modal" tabindex="-1" role="dialog" aria-labelledby="genesNotFoundLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
