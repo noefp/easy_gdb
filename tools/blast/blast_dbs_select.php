@@ -151,6 +151,8 @@ if ($multiple_blast_db) {
 
 
   // Display Nucleotide databases
+  sort($nucleotide_dbs);
+  sort($protein_dbs);
   echo "<div class=\"form-group blast_attr\" id='nucleotide_db_list'>";
   echo "<label for=\"blast_sequence\">Nucleotide databases <a href='#' class='select-toggle' data-type='nucleotide'>[Select all]</a></label>";
   echo "<ul style='list-style-type: none; padding: 0;'>";
