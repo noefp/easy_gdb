@@ -39,6 +39,9 @@
     border-top-style: solid;
     border-top-width: 1px;
     border-top-color: #d8d8d8;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #d8d8d8;
     background-color: #fff;
     font-size: 12px;
     text-align: center;

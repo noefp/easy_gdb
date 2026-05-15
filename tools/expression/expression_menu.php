@@ -1,5 +1,7 @@
 <?php include realpath('../../header.php'); ?>
 <br>
+<div class="custom-container">
+
 <h1 style="font-size:26px">Expression Datasets</h1>
 <br>
 <?php
@@ -26,4 +28,6 @@ if ( file_exists("$json_files_path/tools/expression_info.json") ) {
 }
 
 ?>
+</div>
+
 <?php include realpath('../../footer.php'); ?>
