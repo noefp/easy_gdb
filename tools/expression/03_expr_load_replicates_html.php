@@ -5,9 +5,9 @@
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
     </div>
 
-    <div id="replicates_graph" class="collapse hide">
+    <div id="replicates_graph" class="collapse hide expression-container">
 
-      <div id="chart2_frame" style="border:2px solid #666; padding-top:7px">
+      <div id="chart2_frame">
         <div class="form-group d-inline-flex" style="width: 450px;">
           <label for="sel1" style="width: 150px; margin-top:7px"><b>Select gene:</b></label>
           <select class="form-control" id="sel1">

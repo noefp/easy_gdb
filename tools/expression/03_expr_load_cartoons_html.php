@@ -52,7 +52,7 @@
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression images';
       echo '</div>';
 
-      echo '<div id="cartoons_frame" class="row collapse hide" style="margin:0px; border:2px solid #666; padding-top:7px">';
+      echo '<div id="cartoons_frame" class="row collapse hide expression-container">';
     
       echo "<div class=\"form-group d-inline-flex\" style=\"width: 450px;\">";
       echo "<label for=\"sel_cartoons\" style=\"width: 150px; margin-top:7px\"><b>Select gene:</b></label>";
