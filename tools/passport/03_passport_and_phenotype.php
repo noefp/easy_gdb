@@ -940,7 +940,7 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
 <script type="text/javascript">
 
 //----- QR CODE
-var showQR = <?php echo $show_qr; ?>;
+var showQR = <?php echo json_encode($show_qr); ?>;
 
 $(document).ready(function(){
 
@@ -1038,25 +1038,27 @@ if(image_count == 0) {
 
 //----- PRINT MAP ---------------
 
-var showMap = <?php echo $show_map; ?>;
-var mapDataAvailable = <?php echo $map_data_available ? 1 : 0; ?>;
+var showMap = <?php echo json_encode($show_map); ?>;
+var mapDataAvailable = <?php echo json_encode($map_data_available ? 1 : 0); ?>;
 // alert(mapDataAvailable);
 
 
 if(showMap && mapDataAvailable) {
 
-  latitude = "<?php echo $latitude; ?>";
-  latitude_printed = "<?php echo number_format($latitude,2); ?>";
-  longitude = "<?php echo $longitude; ?>";
-  longitude_printed = "<?php echo number_format($longitude,2); ?>";
+  latitude = <?php echo json_encode(!empty($latitude) && is_numeric($latitude) ? $latitude : ""); ?>;
+  // latitude_printed = "<?php //echo number_format($latitude,2); ?>";
+  longitude = <?php echo json_encode(!empty($longitude) && is_numeric($longitude) ? $longitude : ""); ?>;
+  // longitude_printed = "<?php //echo number_format($longitude,2); ?>";
 
     if (latitude && longitude) {
+      latitude_printed = <?php echo json_encode(number_format($latitude,2)); ?>;
+      longitude_printed = <?php echo json_encode(number_format($longitude,2)); ?>;
       marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
     }
     else {
-      latitude = "<?php echo $country_latitude; ?>";
-      longitude = "<?php echo $country_longitude; ?>";
-      marker_label = "<b>Collection country</b><br><?php echo $full_name; ?>";
+      latitude = <?php echo json_encode($country_latitude); ?>;
+      longitude = <?php echo json_encode($country_longitude); ?>;
+      marker_label = "<b>Collection country</b><br>"+<?php echo json_encode($full_name); ?>;
     }
 
     var map = L.map('map',{scrollWheelZoom: false}).setView([latitude, longitude], 5);
