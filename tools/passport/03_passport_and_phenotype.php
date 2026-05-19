@@ -1051,8 +1051,8 @@ if(showMap && mapDataAvailable) {
   // longitude_printed = "<?php //echo number_format($longitude,2); ?>";
 
     if (latitude && longitude) {
-      latitude_printed = <?php echo json_encode(number_format($latitude,2)); ?>;
-      longitude_printed = <?php echo json_encode(number_format($longitude,2)); ?>;
+      latitude_printed = latitude.toFixed(2);
+      longitude_printed = longitude.toFixed(2);
       marker_label = "<b>Collection site</b><br>Latitude: "+latitude_printed+"<br> Longitude: "+longitude_printed;
     }
     else {
