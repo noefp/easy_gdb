@@ -69,6 +69,7 @@
       $cols = explode ("\t", $line);
       $acc = $cols[$marker_acc_col];
       $trait = str_replace(" ", "_", $cols[$marker_column]);
+      $acc_traits[$acc] = $trait;
       //echo "trait: $trait<br> $acc<br>"; 
     }
   }
