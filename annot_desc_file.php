@@ -35,7 +35,7 @@
 
 
   <!-- TABLE BEGIN -->
-  <table class="table annot_table">
+  <table class="table annot_table dataTable table-bordered ">
 
     <!-- TABLE HEADER -->
     <thead>

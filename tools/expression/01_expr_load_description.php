@@ -7,7 +7,7 @@
     echo '<i class="fas fa-sort" style="color:#229dff"></i> Description dataset';
     echo '</div>';
 
-  echo '<div id="description_frame" class="collapse hide" style="padding-top:7px">';
+  echo '<div id="description_frame" class="collapse hide expression-container">';
     include("$custom_text_path/expr_datasets/$desc_file");
     echo  "</div>";
   

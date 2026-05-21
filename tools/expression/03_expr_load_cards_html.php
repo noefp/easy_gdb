@@ -8,7 +8,7 @@
       echo '<i class="fas fa-sort" style="color:#229dff"></i> Expression Cards';
     echo '</div>';
 
-    echo '<div id="cards_frame" class="row collapse hide" style=" margin:0px; border:2px solid #666; padding-top:7px">';
+    echo '<div id="cards_frame" class="collapse hide expression-container">';
 
 
       echo '<div class="form-group d-inline-flex" style="width: 450px; margin-left:15px">';

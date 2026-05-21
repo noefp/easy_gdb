@@ -213,4 +213,15 @@
     justify-content: center;
   }
 
+  .page_container {
+    width: 100%;
+  }
+
+
+ @media (min-width: 1500px) {
+  .page_container {
+    width: 90%;
+  }
+}  
+ 
 </style>
