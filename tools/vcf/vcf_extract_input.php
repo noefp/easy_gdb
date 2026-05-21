@@ -12,7 +12,7 @@
 </div>
 
 <br>
-<h2 style="text-align: center;"> SNP Extraction </h2>
+<h2 style="text-align: center;">Variant Explorer</h2>
 
 <?php
 
