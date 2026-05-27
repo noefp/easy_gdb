@@ -113,16 +113,16 @@ function print_table($file_path,$unique_link,$file_name,$show)
     //   $val -= 1;
     // }
     
-    $traits_array = $pass_hash["map_markers"];
-    $sp_name = $pass_hash["sp_name"];
-    $phenotype_file_marker_trait = $pass_hash["phenotype_file_marker_trait"];
+    $traits_array = $pass_hash["map_markers"] ?? [];
+    $sp_name = $pass_hash["sp_name"] ?? "";
+    $phenotype_file_marker_trait = $pass_hash["phenotype_file_marker_trait"] ?? null;
     
-    if ($pass_hash["marker_column"]) {
+    if (isset($pass_hash["marker_column"]) && !empty($pass_hash["marker_column"])) {
       $marker_column = $pass_hash["marker_column"]-1;
     }
-    if ($pass_hash["marker_acc_col"]) {
-      $marker_acc_col = $pass_hash["marker_acc_col"]-1;
-    }
+    // if ($pass_hash["marker_acc_col"]) {
+      // $marker_acc_col = $pass_hash["marker_acc_col"]-1;
+    // }
     if ( file_exists("$passport_path/$pass_dir/$passport_file") ) {
       $tab_file="$passport_path/$pass_dir/$passport_file";
       print_table($tab_file,$unique_link,$passport_file,true); 

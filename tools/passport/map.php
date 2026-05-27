@@ -18,8 +18,14 @@
     foreach($header_cols as $index => $col_name) {
       if (in_array($col_name, ["$unique_link","Latitude","Longitude","Country","Country code"])) {
         $map_array[] = $index;
+        
+        //-- // get index acc_id
+        if($col_name == $unique_link){
+          $unique_link_index = $index;
+        }
       }
     }
+    // echo "Unique link column: $unique_link_index<br>";
     // --------------------------------------------------------------------------------------------
     
     foreach ($tab_file as $row_count => $line) {
@@ -59,20 +65,41 @@
   }
 
   // Read phenotype file to get trait marker 
-  $phenotype_file = "$passport_path/$pass_dir/$phenotype_file_marker_trait";
-  $acc_traits = [];
+  if ( $phenotype_file_marker_trait && isset($marker_column)) {
+    $phenotype_file = "$passport_path/$pass_dir/$phenotype_file_marker_trait";
+    $acc_traits = [];
 
-  if (file_exists($phenotype_file) ) {
-    $lines = file($phenotype_file, FILE_IGNORE_NEW_LINES);
+    if (file_exists($phenotype_file) ) {
+      $lines = file($phenotype_file, FILE_IGNORE_NEW_LINES);
 
-    foreach ($lines as $line) {
-      $cols = explode ("\t", $line);
-      $acc = $cols[$marker_acc_col];
-      $trait = str_replace(" ", "_", $cols[$marker_column]);
-      $acc_traits[$acc] = $trait;
-      //echo "trait: $trait<br> $acc<br>"; 
+      foreach ($lines as $line) {
+        $cols = explode ("\t", $line);
+        // $acc = $cols[$marker_acc_col];
+        $acc = $cols[$unique_link_index];
+        $trait = str_replace(" ", "_", $cols[$marker_column]);
+        // $acc_traits[$acc] = $trait;
+        //echo "trait: $trait<br> $acc<br>"; 
+
+        // Get all traits for each acc in an array
+        if(!isset($acc_traits[$acc])){
+          $acc_traits[$acc] =  [];
+        }
+        $acc_traits[$acc][] = $trait;
+      }
+      // ($acc_traits[$acc] ??=[])[]= $trait;
     }
-  }
+      // Get most common trait for each acc if there are more than 1 trait
+      foreach (array_keys($acc_traits) as $acc) {
+        if (count($acc_traits[$acc]) > 1) {
+          // echo "Accession: $acc<br>";
+          // echo(array_count_values($acc_traits[$acc]));
+          $acc_traits[$acc] = array_keys(array_count_values($acc_traits[$acc]), max(array_count_values($acc_traits[$acc])))[0];  
+        }else {
+          $acc_traits[$acc] = $acc_traits[$acc][0];
+        }
+      }
+    }
+
 
   // Array- keep data to Javascript
   $data_map = [];
@@ -129,16 +156,18 @@
   // Convert $data to JSON- to use it in Javascript part
   $json_data_map = json_encode($data_map);
 
+  
   // Personalized marker
   $marker_path = "$images_path/map_labels/"; 
 
-
-  // if $traits_array is empty, use 'default'
-  if (empty($traits_array)){
-    $marker_traits_array = json_encode(['default']);
-  } else {
-  $marker_traits_array = json_encode($traits_array);
-}
+  $marker_traits_array = json_encode(get_dir_and_files($root_path.'/'.$marker_path));
+  
+//   // if $traits_array is empty, use 'default'
+//   if (empty($traits_array)){
+//     $marker_traits_array = json_encode(['default']);
+//   } else {
+//   $marker_traits_array = json_encode($traits_array);
+// }
 
   if (!empty($map_array) ) {
     echo "<div class=\"p-1 my-1 bg-secondary text-white\"><center><h1><i class=\"fa-solid fa-location-crosshairs\"></i><b> Explore the map </b></h1></center></div><div class=\"p-7 my-3 border\">";
@@ -149,10 +178,7 @@
   }
 ?>
 
-
-
-<script>
-
+<script> 
 function draw_map(){
   // MAP 
   // Get $data_map from PHP
@@ -167,29 +193,19 @@ function draw_map(){
   // List options of markers (traits)
   validTraits = JSON.parse('<?php echo $marker_traits_array; ?>');
 
-  // function to get the trait
+  // species name for marker icon
+  spName = '<?php echo $sp_name; ?>';
+
+  // function to get the trait image
   function getIcon(trait) {
   
-    if (!validTraits.includes(trait) ) {
-      trait = 'default';
-    }
-
-    if (trait == 'default') {
-      if ('<?php echo $sp_name; ?>' != '') {
-        iconUrl = '<?php echo $sp_name; ?>_default.png';
-      } else {
-        iconUrl = 'marker_default.png';
-      }
-    } else {
-      if ('<?php echo $sp_name; ?>' != '') {
-        iconUrl = '<?php echo $sp_name; ?>_' + trait + '.png';
-      } else {
-        iconUrl = `${trait}.png`;
-      }
-    }
-
-    // Verifica el iconUrl en la consola del navegador
-    //console.log("iconUrl:", iconUrl); // Esto imprimirá el valor de iconUrl
+    // Get the trait for the marker, if the trait image exist as png in map_labels folder, use it.(case insensitive)
+    const trait_image_found = validTraits.find(name => name.toLowerCase() === (spName + '_' + trait + '.png').toLowerCase());
+     //if not, use default.png (case insensitive)
+    const default_image_found = validTraits.find(name => name.toLowerCase() === (spName + '_default.png').toLowerCase());
+    
+    // If the trait image exist, use it, if not, use default image, if not exist, use 'marker_default.png' as last option
+    const iconUrl = trait_image_found || default_image_found || ('marker_default.png');
 
     return new L.Icon ({
     iconUrl: markersPath + iconUrl,
@@ -214,7 +230,7 @@ function draw_map(){
 
       //var accList = item.acc.split(", ").map(acc => `<a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${acc}">${acc}</a>`).join("<br>"); 
 
-  //  var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
+  //  var markerLabel = `<b>Acc ID:</b> <a href="03_passport_and_phenotype.php?pass_dir=<?php //echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
 
       if (item.country) {
           var markerLabel = `<b>Acc ID:</b> <a target="_blank" href="03_passport_and_phenotype.php?pass_dir=<?php echo $pass_dir; ?>&acc_id=${item.acc}">${item.acc}</a><br><b>Country:</b> ${item.country}`; // con link
