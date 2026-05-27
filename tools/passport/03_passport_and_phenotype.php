@@ -653,7 +653,10 @@ function file_to_table($file_path, $acc_name) {
 // --------------------------------------------------------------------------------------------------------------------------------------------------
     
     // $acc_name = $cols[$title_col];
-    echo "<center><h1><b>".$acc_name."</b></h1></center><br>";
+    echo "<center><h1><b>".$acc_name."</b></h1></center>";
+    echo "</div>";
+    echo "<br><div class=\"container\" style=\"width:100%; background-color:white\">"; // container for passport and map
+
     echo "<div id=\"passport_container\" class=\"row p-4\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px\">";
 
     echo "<div class=\"col-xs-12 col-sm-6 col-md-6 col-lg-6\">";
@@ -806,7 +809,7 @@ if ($show_map && $map_data_available) {
     echo "<div id =\"featured_descriptors_collapse\" class=\"container p-1 text-white phenotype_traits feature-desc-cont collapse_section pointer_cursor \" data-toggle=\"collapse\" data-target=\"#featured_descriptors_container\" aria-expanded=\"true\" style=\" display:flex; align-items:center; justify-content:center; position:relative;\">
     <i class=\"fas fa-sort\" style=\"position:absolute; left:10px;\"></i><h1><b> Featured traits & Gallery </b></h1></center></div>";
 
-    echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
+    echo "<div id =\"featured_descriptors_container\" class =\"container p-7 my-3 border feature-desc-cont collapse show\" style=\"background-color:white; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); margin-bottom: 50px !important\"><br>";
     
     echo "<div class=\"row\">";
 
@@ -859,7 +862,7 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
     
     $phenotype_file_full_path = "$passport_path/$pass_dir/$phenotype_file";
     
-    echo "<div class =\"container p-7 my-3 border\" style=\"border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
+    echo "<div class =\"container p-7 my-3 border\" style=\"background-color:white; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
     $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name,$numerics_columns_without_average);
