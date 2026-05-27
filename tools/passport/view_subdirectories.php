@@ -20,48 +20,41 @@
    <div id="cards_container" class="row"></div>
 
 <?php
-  
-  $subdir_name = [];
-  
-  if (file_exists("$passport_path/germplasm_list.json") ) {
+  // Get subdirectories of passport directory
+  $subdir_name = [];  
+  if (is_dir($passport_path) && $sub_dh = opendir($passport_path) ) {   
+    while ( $species = readdir($sub_dh) ) { //iterate all subdirs as $species      
+      if (!preg_match('/^\./', $species) && is_dir($passport_path."/".$species) ) {
+        array_push($subdir_name,$species);
+      }     
+    } //end while
+    closedir($sub_dh);
+  } 
+
+// If there are subdirectories, check if germplasm_list.json file exist to get germplasm data, if not, redirect to datatable of the only species
+if(!empty($subdir_name)){
+  if (file_exists("$passport_path/germplasm_list.json")) {
     $germplasm_json_file = file_get_contents("$passport_path/germplasm_list.json");
     $germplasm_hash = json_decode($germplasm_json_file, true);
-
-    if (is_dir($passport_path) && $sub_dh = opendir($passport_path) ) {
-      
-      while ( $species = readdir($sub_dh) ) { //iterate all subdirs as $species
-        
-        if (!preg_match('/^\./', $species) && is_dir($passport_path."/".$species) ) {
-          array_push($subdir_name,$species);
-        }
-          
-      } //end while
-      closedir($sub_dh);
-    } else {
-      echo "<p><i>No subdirectories found</i>.</p>";
-    }
-
-  } elseif ($passport_path) {// close if file_exists germplasm_list.json
-
-    if (is_dir($passport_path) && $sub_dh = opendir($passport_path) ) {
-      
-      while (($species = readdir($sub_dh)) !== false) { //iterate all subdirs
-  
-        if (!preg_match('/^\./', $species) && is_dir($passport_path."/".$species) ) {
-          array_push($subdir_name,$species);
-          
-          echo "<li><a href=\"02_pass_file_to_datatable.php?dir_name=/$species\">$species</a></li>"; // simple list
-        }
-          
-      } //end while
-      closedir($sub_dh);
-    } else {
-      echo "<p><i>No subdirectories found</i>.</p>";
-    }
-  }
-  
+  } elseif (count($subdir_name) === 1) 
+    // if there is only one species, redirect to 02_pass_file_to_datatable of the only species
+  {   echo '<script>location.href = "02_pass_file_to_datatable.php?dir_name=' . $subdir_name[0] . '";</script>';
+      exit;
+  }else 
+  // if there are more than one species, print a list of species with links to 02_pass_file_to_datatable of each species
+  {  foreach ($subdir_name as $species) {
+      echo "<li><a href=\"02_pass_file_to_datatable.php?dir_name=/$species\">$species</a></li>";
+      }
+      // include_once realpath("$easy_gdb_path/footer.php");
+      // exit;
+  } 
+}
+else{ // If there are no subdirectories, print message and exit
+  echo "<p><i>No subdirectories found</i>.</p>";
+  include_once realpath("$easy_gdb_path/footer.php");
+  exit;
+}  
 ?>
-
   <br>
   <br>
 
@@ -77,19 +70,19 @@
   arsort($species_count); // Ya estaba ordenado en multi_map.php, pero por si acaso
 
   // loop through $species in the order of $species_count
-  foreach ($species_count as $species_key => $count) {
+  foreach (array_keys($species_count) as $species_key) {
     // Verify if specie exists in germplasm_hash
     if (array_key_exists($species_key, $germplasm_hash) ) {
       $species_data = $germplasm_hash[$species_key];
         
       // Loop through data of specie and generate cards
-      foreach ($species_data as $key => $value) {
-        if ($value["public"]) {
+        if ($species_data["public"]) {
           $cards_data[] = [
-            "link" => $value["link"],
-            "image" => $images_path .'/species/'. $value["image"],
-            "sps_name" => $value["sps_name"],
-            "common_name" => $value["common_name"], 
+            // "link" => $species_data["link"],
+            "link" => "02_pass_file_to_datatable.php?dir_name=$species_key",
+            "image" => $images_path .'/species/'. $species_data["image"],
+            "sps_name" => $species_data["sps_name"],
+            "common_name" => $species_data["common_name"], 
             "total_acc" => $species_count[$species_key] // Add total acc
           ];  
 //            echo '<a href="'.$value["link"].'" class="float-left card egdb_person_card" style="color:#333">';
@@ -99,9 +92,7 @@
 //            echo '<p class="card-text">'.$value["common_name"].'</p>';
 //            echo '</div>';
 //            echo '</a>';
-
         }
-      }
     }
   }
 

@@ -92,9 +92,7 @@
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Passport and Phenotype</a>';
             echo '<div class="dropdown-menu">';
             if(!isset($tb_navigation) || $tb_navigation)
-              {if(file_exists("$passport_path/germplasm_list.json")) // check if passport germplasm_list file exist 
-                      {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';} // multiple subdirectories (species)
-                else  {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/02_pass_file_to_datatable.php">Navigation</a>';}} // single directory only one species
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';}
             if(!isset($tb_search_passport) || $tb_search_passport)
               {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/passport_search_input.php">Search</a>';}
             echo '</div>';
