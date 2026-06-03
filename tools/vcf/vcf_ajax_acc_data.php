@@ -6,6 +6,7 @@
 $tabix_cmd = $_POST["tabix_cmd"];
 $vcf_file = $_POST["vcf_file"];
 $vcf_dir = $_POST["vcf_dir"];
+$passport_folder = $_POST["passport_folder"];
 
 
 
@@ -54,7 +55,12 @@ foreach ($acc_data as $index => $col) {
   
   $acc_name = $header_array[$index];
   
-  array_push($html_array,"<tr><td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$vcf_dir&acc_id=$acc_name\">$acc_name</a></td>");
+  if($passport_folder != "") {
+    $acc_name = "<a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_folder&acc_id=$acc_name\">$acc_name</a>";
+  }else{
+    $acc_name = $acc_name;
+  }
+  array_push($html_array,"<tr><td>$acc_name</td>");
   
   
   // save accession results in an array

@@ -19,8 +19,7 @@
   $vcf_chr = $_GET["vcf_chr"];
   $vcf_start = trim($_GET["vcf_start"]);
   $vcf_end = trim($_GET["vcf_end"]);
-  $vcf_dir = $_GET["snp_file"];
-  // echo "<p>vcf_chr: $snp_file</p>";
+  $vcf_dir = isset($_GET["snp_file"]) ? $_GET["snp_file"] : "";
 
   // if (file_exists("$vcf_path/vcf.json")) {
   $vcf_json_file = file_get_contents($json_files_path."/tools/vcf.json");
@@ -35,17 +34,20 @@
     $vcf_chr_file = $chr_file_array = $vcf_hash[$vcf_dir]["chr_files"][$vcf_chr];
     $snp_eff_subtable=$vcf_hash[$vcf_dir]["snp_eff_subtable"];
     $tabix_command = "tabix $vcf_path/$vcf_dir"."/$vcf_chr_file ".$vcf_chr.":".$vcf_start."-".$vcf_end;
+    $passport_folder = isset($vcf_hash[$vcf_dir]["passport_folder"]) ? $vcf_hash[$vcf_dir]["passport_folder"] : "";
   }else {
     $jb_data_folder = $vcf_hash["jb_data_folder"];
     $vcf_chr_file = $chr_file_array = $vcf_hash["chr_files"][$vcf_chr];
     $snp_eff_subtable=$vcf_hash["snp_eff_subtable"];
     $tabix_command = "tabix $vcf_path"."/$vcf_chr_file ".$vcf_chr.":".$vcf_start."-".$vcf_end;
+    $passport_folder = isset($vcf_hash["passport_folder"]) ? $vcf_hash["passport_folder"] : "";
   }
   
   // run tabix;
   ini_set( 'memory_limit', '1024M' );
   $tabix_out = shell_exec($tabix_command);
-  //echo "<p>output: $tabix_out</p>";
+  //  echo "<p>command: $tabix_command</p>";
+  // echo "<p>output: $tabix_out</p>";
   
   $lines_array = array_filter(explode("\n",$tabix_out));
   $tabix_out = "";
@@ -100,7 +102,7 @@
         echo "<td><a href=\"$jbrowse_link\" target=\"_blank\">$snp_val</a></td>";
       }  
       elseif ($index == 2) {
-        echo "<td style='font-size:12px'>Ca1_$snp_info[1]</td>";
+        echo "<td style='font-size:12px'>Ca1_$snp_info[1]</td>"; // Revisar
       } 
       elseif ($index == 7 && $snp_eff_subtable) {
         $snp_eff = preg_replace("/.+ANN=/",'',$snp_val);
@@ -225,6 +227,7 @@ if(count($lines_array) > 0)
 <script type="text/javascript">
   //var counter = 0;
   var vcf_dir = "<?php echo "$vcf_dir" ?>";
+  var passport_folder = "<?php echo "$passport_folder" ?>";
   
   $('.acc_link').click(function () {
 
@@ -255,12 +258,12 @@ if(count($lines_array) > 0)
     //alert("acc_path: "+acc_path );
 
     //call PHP file ajax_get_names_array.php to get the gene list to autocomplete from the selected dataset file
-    function ajax_call(tabix_cmd,vcf_file,vcf_dir) {
+    function ajax_call(tabix_cmd,vcf_file,vcf_dir,passport_folder) {
     
       jQuery.ajax({
         type: "POST",
         url: 'vcf_ajax_acc_data.php',
-        data: {'tabix_cmd': tabix_cmd, 'vcf_file': vcf_file,'vcf_dir':vcf_dir},
+        data: {'tabix_cmd': tabix_cmd, 'vcf_file': vcf_file,'vcf_dir':vcf_dir, 'passport_folder': passport_folder},
 
         success: function (html_array) {
           //alert("hi: "+html_array);
@@ -288,7 +291,7 @@ if(count($lines_array) > 0)
     
     }; // end ajax_call
     
-    ajax_call(tabix_cmd,vcf_file,vcf_dir);
+    ajax_call(tabix_cmd,vcf_file,vcf_dir,passport_folder);
   });
   
   $("#load").hide();

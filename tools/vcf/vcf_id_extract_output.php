@@ -15,10 +15,7 @@
 <?php
   //get input variables
   $snp_id = $_GET["snp_id"];
-  $vcf_dir=$_GET["snp_file"];
-  
-
-  // echo "<p>SNP ID: $vcf_dir</p>";
+  $vcf_dir= isset($_GET["snp_file"]) ? $_GET["snp_file"] : "";
   
   
   //GET JBROWSE DATA FOLDER NAME!!!!!!!!!!!!
@@ -26,7 +23,8 @@
   preg_match('/(\d+)_(\d+)/', $snp_id, $matches);
   $vcf_chr = 'chr'.$matches[1];
   $vcf_pos = $matches[2];
-  
+
+  // echo "<p>Searching SNP ID: <b>$snp_id</b> in <b>$matches[0]:$matches[1]:$matches[2]</b> in <b>$vcf_chr:$vcf_pos</b></p>";
   
   // if (file_exists("$vcf_path/vcf.json")) {
     $vcf_json_file = file_get_contents($json_files_path."/tools/vcf.json");
@@ -37,12 +35,14 @@
     $vcf_file = $vcf_hash[$vcf_dir]["chr_files"][$vcf_chr];
     $jb_data_folder = $vcf_hash[$vcf_dir]["jb_data_folder"];
     $snp_eff_subtable=$vcf_hash[$vcf_dir]["snp_eff_subtable"];
+    $passport_folder = isset($vcf_hash[$vcf_dir]["passport_folder"]) ? $vcf_hash[$vcf_dir]["passport_folder"] : "";
 
     $vcf_path_file= "$vcf_path/$vcf_dir/$vcf_file";
   }else { 
     $vcf_file = $vcf_hash["chr_files"][$vcf_chr];
     $jb_data_folder = $vcf_hash["jb_data_folder"];
     $snp_eff_subtable=$vcf_hash["snp_eff_subtable"];
+    $passport_folder = isset($vcf_hash["passport_folder"]) ? $vcf_hash["passport_folder"] : "";
 
     $vcf_path_file= "$vcf_path/$vcf_file"; 
 
@@ -204,7 +204,11 @@
       $acc_array = explode(':',$col_value);
       $acc_name = $head_info[$col_index];
       
-      echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$vcf_dir&acc_id=$acc_name\">$acc_name</a></td>";
+      if($passport_folder != "") {
+      echo "<td><a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_folder&acc_id=$acc_name\">$acc_name</a></td>";}
+      else{
+        echo "<td>$acc_name</td>";
+      }
       //<a href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=Chickpea_10K&row_num=$index\">$header_array[$index]</a>
       
       foreach ($acc_array as $acc_value) {
