@@ -21,7 +21,10 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
 <!-- GET INPUT -->
 <?php
 
-  $filters =explode("\n",rtrim($_POST['filters']));
+  // $filters =explode("\n",rtrim($_POST['filters']));
+  $filters = isset($_POST['filters'])
+    ? (is_array($_POST['filters']) ? $_POST['filters'] : explode("\n", rtrim($_POST['filters'])))
+    : [];
   $file =$_POST['file'];
   $passport_path_file =$_POST['passport'];
   $species =$_POST['species'];
@@ -174,10 +177,10 @@ function print_search_table($grep_input, $annot_file, $file_name) {
     echo "<h3><i>Search</i></h3>";
     if(!array_keys($GLOBALS['filters_dict'])[0]==""){ // if search isn't empty
         foreach($GLOBALS['filters_dict'] as $key=>$values){
-        echo"<label><b>".$key." &#10132 "."</b></label>";
+        echo"<span><b>".$key." : "."</b></span>";
         foreach($values as $value)
         {
-          echo "<label>"."  ".$value." ,"."</label>";
+          echo '<span class="badge badge-secondary mr-1 mb-1">' . $value . '</span>';
         }
         echo"<br>";
       } 
@@ -212,12 +215,13 @@ function print_search_table($grep_input, $annot_file, $file_name) {
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
       <span aria-hidden="true">×</span>
       </button>
-      <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: </strong>';
-      echo '<body>
+     <strong style="justify-content:center; display:flex">'.$GLOBALS['unique_link'].' Results: ' . count($acc_id_selec_list) . ' </strong>';
+      echo '<div class="acc_link_scroll">';
+      echo '
       <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
       foreach($acc_id_selec_list as $index => $acc_name)
       {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor phenotype_acc_results\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$passport_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
-      echo"</lu></body>";
+      echo"</ul></div>";
       echo "</div>";
     }  
     // ----------------------------------------------------------------------------------------------------------------------------------------
@@ -368,6 +372,17 @@ return $numeric;
   .td-tooltip {
     cursor: pointer;
   }
+
+.acc_link_scroll {
+  padding: auto;
+  max-height: calc(3*16px + 35px); 
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  scrollbar-color: #609efc #cfe2ff; /* thumb | track */
+}
   
 </style>
 

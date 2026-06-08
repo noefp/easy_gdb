@@ -49,7 +49,7 @@ include_once realpath("$easy_gdb_path/tools/common_functions.php");?>
       echo("<script>$('#info_$dir_or_file').hide();</script>");
 
 
-      echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\"fas fa-table\" style=\"color:#229dff\"></i> $dataset_name table <i class=\" fas fa-sort\" style=\"color:#229dff\"></i></div>";      
+      echo "<div class=\"collapse_section pointer_cursor\" data-toggle=\"collapse\" data-target=\"#Annot_table_$table_counter\" aria-expanded=\"true\"><i class=\" fas fa-sort\" style=\"color:#229dff\"></i> $dataset_name table </div>";      
       // TABLE BEGIN
       echo "<div id=\"Annot_table_$table_counter\" class=\"collapse hide\"><table style=\"display:none\" id=\"tblAnnotations_$table_counter\" class=\"tblAnnotations table table-striped table-bordered\">\n";
       

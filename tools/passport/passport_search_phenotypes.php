@@ -29,7 +29,7 @@ $passport_dir_name="";
 $passport_path_file=$_POST['passport'];
 
 for($i=1;$i<=$files_counts;$i++) {
-  $filters[$i] =explode("\t",rtrim($_POST['filters'.$i]));
+  $filters[$i] =explode("\t",rtrim($_POST['all_filters'.$i]));
   $file[$i] =$_POST['file'.$i];
  
   $filters_dict=[];
@@ -56,12 +56,7 @@ for($i=1;$i<=$files_counts;$i++) {
   include_once realpath("$easy_gdb_path/tools/common_functions.php");
 
     $file_found=0;
-    // $all_datasets = get_dir_and_files($passport_path); // find dirs in passport path
-    // asort($all_datasets);
-    // if ($all_datasets)  
-    // foreach ($all_datasets as $dir_or_file) {
-    //   if (is_dir($passport_path."/".$dir_or_file)){ // get dirs and print categories  
-    //     // get info from passport.json
+
     if ( file_exists("$passport_path_file/passport.json") ) {
       $pass_json_file = file_get_contents("$passport_path_file/passport.json");
       $pass_hash = json_decode($pass_json_file, true);
@@ -97,16 +92,17 @@ for($i=1;$i<=$files_counts;$i++) {
       if(!empty($common_search))
       {
         //--------------------results list: ------------------------------------------------------------
-        echo '<div class="alert alert-primary phenotype_acc_results_box" style="border:none" role="alert">
+        echo '<div class="alert alert-primary phenotype_acc_results_box" style="border:none;" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
         <span aria-hidden="true">×</span>
         </button>
-        <strong style="justify-content:center; display:flex">'.$unique_link.' Results: </strong>';
-        echo '<body>
+        <strong style="justify-content:center; display:flex">'.$unique_link.' Results: ' . count($common_search).' </strong>';
+        echo '<div class="acc_link_scroll">';
+        echo '
         <ul class="acc_link_list" style="justify-content:center;display:flex;flex-wrap:wrap;">';
         foreach($common_search as $index => $acc_name)
         {echo "<li style=\"display:inline; margin-right:20px;\"><a class=\"pointer_cursor phenotype_acc_results\" href=\"/easy_gdb/tools/passport/03_passport_and_phenotype.php?pass_dir=$pass_dir_name&acc_id=$acc_name\" target=\"_blank\">$acc_name</a></li>";}
-        echo"</lu></body>";
+        echo"</ul></div>";
         echo "</div>";
         //---------------------------------------------------------------------------------------
         print_search_phenotype_table($common_search,$read_file_all,$results);
@@ -297,41 +293,41 @@ function search_info($filters_dict)
 {
   $info="Here are the filters selected for the search.\nThis search uses the AND method for filtering.\nThe tables shown below meet all the selected characteristics.";
 
-  echo '<br><div class="alert alert-dismissible show" style="background-color:#f0f0f0">
+  echo '<br><div class="alert alert-dismissible show" style="padding-top:2px; background-color:#f0f0f0">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
-        <span aria-hidden="true">&times;</span>
+      <span aria-hidden="true">&times;</span>
       </button>';
-    // echo "<i class=\"fas fa-info-circle info-icon\" style=\"cursor: pointer;margin:5px;\" title=\"$info\"></i>";
-    // echo"<i class=\" td-tooltip pointer_cursor info_icon\" style=\"margin:5px; test-align:center\" title=\"$info\">i</i>";
-    echo '<button type="button" class="info_icon" style="margin:5px;" title="'.$info.'" data-toggle="modal" data-target="#info_modal">i</button>';
-    echo "<h3 style=\"display:inline\"><i>Search</i></h3>";
+  echo '<button type="button" class="info_icon" style="margin:5px;" title="'.$info.'" data-toggle="modal" data-target="#info_modal">i</button>'; 
+ 
+  echo '<div class="row" style="margin-left:1rem;">';
+  $grid_count=intval(12/count($filters_dict));
+  // $gridl="col-lg-".$grid_count;
+  $grid="col-md-".$grid_count;
 
-  echo '<table class="table table-bordered table-sm" style="width:100%;">';
-
-  echo "<thead><tr>";
-  foreach($filters_dict as $file => $file_filters){
-    $file_column=str_replace("_"," ",$file);
-      echo "<th><i>$file_column</i></th>";
-  }
-  echo "</tr></thead>";
-  echo "<tbody><tr>";
-  foreach($filters_dict as $file => $file_filters){
-      echo "<td>";
+  foreach ($filters_dict as $file => $file_filters) {
+      $file_column = str_replace("_", " ", $file); 
+      echo '<div class="'.$grid.' mt-0 mb-3 filter_card">';
+      echo '<div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100%;">';
+      echo '<div class="card-header text-black text-center alert-secondary"><b>' . $file_column . '</b></div>';
+      echo '<div class="card-body" style="max-height: 100px; overflow-y: auto; background-color: #f0f0f0;">';
       if (!empty($file_filters)) {
-          foreach($file_filters as $key => $values){
-            if ($key != "") {
-              echo "<b>".$key." &#10132; "."</b>";
-              foreach($values as $value){
-                  echo $value.", ";
+          foreach ($file_filters as $key => $values) {
+              if ($key !== "") {
+                  echo '<div class="mb-2">';
+                  echo '<strong>' . $key . ': </strong>';
+                  foreach ($values as $value) {
+                      echo '<span class="badge badge-secondary mr-1 mb-1">' . $value . '</span>';
+                  }
+                  echo '</div>';
               }
-            }
-              echo "<br>";
           }
-      }
-      echo "</td>";
+      } 
+      echo '</div>';
+      echo '</div>';
+      echo '</div>';
   }
-  echo "</tr></tbody>";
-  echo "</table></div>";
+
+  echo '</div></div>';
   echo "<br>\n";
 }
 
@@ -509,10 +505,33 @@ function print_search_passport_table($common_search,$root_passport_file,$passpor
     cursor: pointer;
   }
 
-  /* .btn:hover{
-    background-color:dodgerblue;
-  } */
-  
+
+  .acc_link_scroll {
+  padding: auto;
+  max-height: calc(3*16px + 35px); 
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  scrollbar-color: #609efc #cfe2ff; /* thumb | track */
+}
+
+.row{
+ justify-content: center !important;
+}
+
+.filter_card {
+  min-width: 250px;
+  max-width: 100%;
+}
+
+.card {
+  background-color: #f0f0f0;
+}
+
+
+
 </style>
 <!-- End CSS -->
 
@@ -548,7 +567,7 @@ $(document).ready(function(){
 
 
 <!-- Modal popup info message -->
-<div class="modal fade" id="info_modal" tabindex="-1" role="dialog">
+<div class="modal fade" id="info_modal" tabindex="-1"s role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content ">
       <div class="modal-header">
