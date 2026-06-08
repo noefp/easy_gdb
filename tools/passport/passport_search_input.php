@@ -54,11 +54,12 @@
           foreach ($all_datasets as $expr_dataset) {
             if (is_dir($passport_path."/".$expr_dataset)){ // get dirs and print categories
                 $is_dir=true;
-                break;
+                // break;
+                $dir_counter = isset($dir_counter) ? $dir_counter + 1 : 1;
               }
             }
 
-        if($is_dir)
+        if($is_dir && $dir_counter > 1)
           {
             echo "<lable style=\"margin-left:5px\">Select Dataset</lable>";
             echo "<div class=\"card card-body\" style=\"display: block\">";
@@ -79,6 +80,10 @@
           }
         }
         echo "</div>";
+      }else
+      {
+        echo "<input checked type=\"checkbox\" style=\"display:none\" class=\"form-check-input\" id=\"$all_datasets[0]\" name=\"checkboxes[]\" value=\"$all_datasets[0]\">";
+
       }
       echo '<br><br><button id="search_buttom_default" type="submit" class="btn btn-info float-right" style="margin-top: -15px">Search</button><br>';
     }
@@ -285,7 +290,7 @@ if ($dir_counter) {
             echo "</div>";
 
             echo "<div class=\"d-flex\" style=\"display: inline-block;margin:10px\">";
-              echo "<select multiple id=\"select_$frame_id\" size=\"5\" class=\"form-control select\"></select>";
+              echo "<select multiple id=\"select_$frame_id\" class=\"form-control select\" size=\"5\" style=\"resize:none;\"></select>";
               // echo "<input id=\"numeric_input_$frame_id\" type=\"number\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
 
               echo "<input id=\"numeric_input_$frame_id\" type=\"number\" step=\"any\" class=\"form-control\" name=\"\" style=\"height:50px;display:none; background-color:#ffff; margin-left: 20px;\" placeholder=\"0\">";
@@ -295,9 +300,10 @@ if ($dir_counter) {
               echo "<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>";
               echo "</div>";
 
-            echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"4\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true ; margin-right: 35px\"></textarea>"; 
+            // echo "<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"4\" cols=\"5\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true ; margin-right: 35px\"></textarea>"; 
+            echo "<select multiple id=\"text_$frame_id\" class=\"form-control filters_selected\" name=\"filters[]\" size=\"5\" style=\"margin-right: 35px; resize:none;\"></select>";
             echo "</div>"; // col
-            echo "</div>";
+            echo "</div>"; // row
             echo "<input name=\"passport\" value=\"$passport_path\" style=\"display:none\"/>";
             echo "<input name=\"file\" value=\"$frame_id\" style=\"display:none\"/>";  
 
@@ -314,7 +320,7 @@ if ($dir_counter) {
 <!-- --------------------------------------------END funnctiond php----------------------------------------------------------------------------------------------------- -->
 
 <style>  
-  .info_icon {
+  /* .info_icon {
     background-color:#4387FD;
     border-radius:20px;
     vertical-align: top;
@@ -338,7 +344,7 @@ if ($dir_counter) {
   .info_icon:active {
     position:relative;
     top:1px;
-  }
+  } */
 
   .collapse_section{
 /*  text-decoration: underline;*/
@@ -424,28 +430,37 @@ $(document).ready(function () {
 
     $("#frame").html(passport_filter.join("\n"));
 
-    $('.sel_opt').before(function(){  
-    var filter_id=this.id;
-    var Selec = $('#' + filter_id).val();  
-    var passport_full_path = $('#' + filter_id).attr("name");
-    var col_index = $(this).find('option:selected').attr("name");   
-    get_ajax_options(col_index,passport_full_path,filter_id);
-  });
-    }
-  });
+
+    //put the options into the select multiple input when the page is changed
+    $('.sel_opt').each(function(){ // get the options of the select input
+      var filter_id = this.id;
+      var passport_full_path = $('#' + filter_id).attr("name"); // get the passport full path 
+      var col_index = $(this).find('option:selected').attr("name"); // get the column index of the selected option
+      get_ajax_options(col_index, passport_full_path, filter_id); // call the function to get the options of the select input
+    });
+
+  //   $('.sel_opt').before(function(){  
+  //   var filter_id=this.id;
+  //   var Selec = $('#' + filter_id).val();  
+  //   var passport_full_path = $('#' + filter_id).attr("name");
+  //   var col_index = $(this).find('option:selected').attr("name");   
+  //   get_ajax_options(col_index,passport_full_path,filter_id);
+  // });
+  }
+ });
 
 };
 
 // ...........................................................
 
-$('.sel_opt').before(function(){  
-    var filter_id=this.id;
-    var Selec = $('#' + filter_id).val();  
-    var passport_full_path = $('#' + filter_id).attr("name");
-    var col_index = $(this).find('option:selected').attr("name");   
-    // alert(filter_id);
-    get_ajax_options(col_index,passport_full_path,filter_id);
-  });
+  // put the options into the select multiple input when the page is loaded for the first time
+  $('.sel_opt').each(function(){  // get the options of the select input
+      var filter_id=this.id;
+      var passport_full_path = $('#' + filter_id).attr("name");
+      var col_index = $(this).find('option:selected').attr("name"); 
+      // alert("filter_id: "+filter_id+", passport_full_path: "+passport_full_path+", col_index: "+col_index);  
+      get_ajax_options(col_index,passport_full_path,filter_id);
+    });
 
 
   // Get dataset genes when changing dataset
@@ -456,10 +471,9 @@ $('.sel_opt').before(function(){
 
   });
 
+  // Get options of select input when changing the category to filter
   $(document).on('change', '.sel_opt', function() {
     var filter_id=this.id;
-    // alert(filter_id)
-    var Selec = $('#' + filter_id).val();   
     var passport_full_path = $('#' + filter_id).attr("name");
     var col_index = $(this).find('option:selected').attr("name"); 
     get_ajax_options(col_index,passport_full_path,filter_id);
@@ -468,12 +482,29 @@ $('.sel_opt').before(function(){
 
   var all_filters=[];
 
+  // add a filter when double click on the option of select multiple input
   $(document).on('dblclick', '.select', function() {
     var attr_id=$(this).attr('id');
     var id = attr_id.replace("select_","");
-    add(id);
-
+    add(id); // call the function to add the filter to the select multiple input and to the array of filters
   });
+
+//..........................
+// remove the filter when double click on the option of select multiple input
+  $(document).on('dblclick' ,'.filters_selected', function() { 
+    var id = this.id.replace('text_', '');
+    var selected = $(this).val(); // get the selected options of the select multiple input
+    if (!selected || selected.length === 0) return;
+
+// remove the selected options from the select multiple input and from the array of filters
+    selected.forEach(function(optionText) {
+      $(this).find('option[value="' + optionText + '"]').remove(); // remove the option from the select multiple input
+      all_filters[id] = all_filters[id].filter(function(f) { // remove the filter from the array of filters
+        return (f.category + " -> " + f.filter) !== optionText;
+      });
+    }.bind(this)); // bind the this to the function to access the select multiple input inside the function
+  });  
+  //........................
 
   $(document).on('click', '.add', function() {
   event.preventDefault();
@@ -484,104 +515,162 @@ $('.sel_opt').before(function(){
 });
 
 //............. function that add a filter to the textarea and add to array of filters.....................
-function add (id){
+// function add (id){
 
-  if(!all_filters[id])
-  {
-    all_filters[id]=[];
-  }
-  var category_select = $('#' + id).val();
-  // var filter_select=$('#select_' + id).val().join('\n');
+//   if(!all_filters[id])
+//   {
+//     all_filters[id]=[];
+//   }
+//   var category_select = $('#' + id).val();
+//   // var filter_select=$('#select_' + id).val().join('\n');
 
-  var filter_select=$('#select_' + id).val();
+//   var filter_select=$('#select_' + id).val();
   
-  if(category_select=="" || filter_select=="")
-    {  
-      var text_error_id=document.getElementById('search_input_modal');
-      text_error_id.textContent = "Categories or Filter Not Selected";
-      var myModal = new bootstrap.Modal(document.getElementById('no_gene_modal'), {
-        keyboard: false
-        });
-        myModal.show()
-        return false;
-    }else
-    {
-      if(/^[<>=]/.test(filter_select)) {
-        if($('#numeric_input_' + id).val()=="")
-        {
-          filter_select=filter_select +" "+ 0;
-        }
-        else{
-          filter_select=filter_select + " " + $('#numeric_input_' + id).val();
-        }
+//   if(category_select=="" || filter_select=="")
+//     {  
+//       var text_error_id=document.getElementById('search_input_modal');
+//       text_error_id.textContent = "Categories or Filter Not Selected";
+//       var myModal = new bootstrap.Modal(document.getElementById('no_gene_modal'), {
+//         keyboard: false
+//         });
+//         myModal.show()
+//         return false;
+//     }else
+//     {
+//       if(/^[<>=]/.test(filter_select)) {
+//         if($('#numeric_input_' + id).val()=="")
+//         {
+//           filter_select=filter_select +" "+ 0;
+//         }
+//         else{
+//           filter_select=filter_select + " " + $('#numeric_input_' + id).val();
+//         }
 
-        const newFilter = {
-          category: category_select,
-          filter: filter_select
-        };
+//         const newFilter = {
+//           category: category_select,
+//           filter: filter_select
+//         };
 
-        //add a new filter to diccionaire
-        all_filters[id].push(newFilter);
+//         //add a new filter to diccionaire
+//         all_filters[id].push(newFilter);
+//       }
+//       else{
+
+//       filter_select=$('#select_' + id).val().join("\n")
+
+//       filter_select.split("\n").forEach(n_filter=>{
+//       //create a dicctionaire
+//         const newFilter = {
+//           category: category_select,
+//           filter: n_filter
+//         };
+
+//         //add a new filter to diccionaire
+//         all_filters[id].push(newFilter);
+//         });
+//       }
+
+//        // clean the textarea
+//        $('#text_' + id).val('');
+
+//        all_filters[id].forEach(filters => {
+//           $('#text_' + id).val($('#text_' + id).val() + `${filters.category} -> ${filters.filter}\n`);
+//       });
+//     }
+// }
+
+function add(id) {
+  if (!all_filters[id]) all_filters[id] = []; // Initialize the filters array for this id if it doesn't exist
+
+  var category_select = $('#' + id).val();
+  var filter_select = $('#select_' + id).val(); 
+
+  // Validate that category and filter are selected
+  if (!category_select || !filter_select || filter_select.length === 0) {
+    $("#search_input_modal").html("Categories or Filter Not Selected");
+    $('#no_gene_modal').modal('show');
+    return false;
+  }
+
+  var values = Array.isArray(filter_select) ? filter_select : [filter_select]; // Ensure filter_select is an array
+
+  values.forEach(function(value) {
+    if (/^[<>=]/.test(value)) { // If the filter starts with a comparison operator, append the numeric input value
+      if ($('#numeric_input_' + id).val() === "") { // If numeric input is empty, default to 0
+        value = value + " 0";
+      } else {
+        value = value + " " + $('#numeric_input_' + id).val();
       }
-      else{
-
-      filter_select=$('#select_' + id).val().join("\n")
-
-      filter_select.split("\n").forEach(n_filter=>{
-      //create a dicctionaire
-        const newFilter = {
-          category: category_select,
-          filter: n_filter
-        };
-
-        //add a new filter to diccionaire
-        all_filters[id].push(newFilter);
-        });
-      }
-
-       // clean the textarea
-       $('#text_' + id).val('');
-
-       all_filters[id].forEach(filters => {
-          $('#text_' + id).val($('#text_' + id).val() + `${filters.category} -> ${filters.filter}\n`);
-      });
     }
+
+    var filterText = category_select + " -> " + value; // Create the filter text to display
+
+    // Check if the filter already exists in the filters array for this id before adding
+    if (!all_filters[id].some(f => (f.category + " -> " + f.filter) === filterText)) { // returns true if it finds at least one element that meets the condition
+      all_filters[id].push({ category: category_select, filter: value }); // Add the new filter to the filters array for this id for the next iteration
+      $('#text_' + id).append('<option value="' + filterText + '">' + filterText + '</option>'); // Add the new filter to the select multiple input
+    }
+  });
 }
 
 
 //..... function that delete a filter to the textarea and delete to array of filters.........
-$(document).on('click', '.delete', function() {
+// $(document).on('click', '.delete', function() {
 
+//   event.preventDefault();
+
+//   var parent_id=$(this).parent().attr('id');
+//   var id = parent_id.replace("button_","");
+//   var filters = $('#text_' + id).val();
+
+//   if(filters=="")
+//     {  
+//       var text_error_id=document.getElementById('search_input_modal');
+//       text_error_id.textContent = "Filters empty";
+//       var myModal = new bootstrap.Modal(document.getElementById('no_gene_modal'), {
+//         keyboard: false
+//         });
+//         myModal.show()
+//         return false;
+//     }else
+//     {
+//       // delete  the last filter to diccionaire
+//       all_filters[id].pop();
+
+//       // clean the textarea
+//       $('#text_' + id).val('');
+
+//       all_filters[id].forEach(filter => {
+//       $('#text_' + id).val($('#text_' + id).val() + `${filter.category} -> ${filter.filter}\n`);
+//       });
+
+//     }
+
+
+// });
+
+// delete the selected filter when click on the delete button
+$(document).on('click', '.delete', function(event) {
   event.preventDefault();
-
-  var parent_id=$(this).parent().attr('id');
+  var parent_id = $(this).parent().attr('id');
   var id = parent_id.replace("button_","");
-  var filters = $('#text_' + id).val();
+  var $select = $('#text_' + id);
+  var selected = $select.val(); // get the selected options of the select multiple input (array)
 
-  if(filters=="")
-    {  
-      var text_error_id=document.getElementById('search_input_modal');
-      text_error_id.textContent = "Filters empty";
-      var myModal = new bootstrap.Modal(document.getElementById('no_gene_modal'), {
-        keyboard: false
-        });
-        myModal.show()
-        return false;
-    }else
-    {
-      // delete  the last filter to diccionaire
-      all_filters[id].pop();
+  // alert("Selected filters to remove: " + JSON.stringify(selected));
 
-      // clean the textarea
-      $('#text_' + id).val('');
+  if (!selected || selected.length === 0) { // If no filters are selected, show an error message and return 
+    $("#search_input_modal").html("No filter selected to remove");
+    $('#no_gene_modal').modal('show');
+    return false;
+  }
 
-      all_filters[id].forEach(filter => {
-      $('#text_' + id).val($('#text_' + id).val() + `${filter.category} -> ${filter.filter}\n`);
-      });
-
-    }
-
-
+  selected.forEach(function(optionText) {
+    $select.find('option[value="' + optionText + '"]').remove(); // find a option with the value of the selected filter and remove it from the select multiple input
+    all_filters[id] = all_filters[id].filter(function(f) {
+      return (f.category + " -> " + f.filter) !== optionText;
+    });
+  });
 });
 
 // $(document).on('click', '.search_button', function() {
@@ -590,7 +679,7 @@ $(document).on('click', '.delete', function() {
 // });
 
 
-  // //check input gene before sending form
+  // //check input gene before sending form generic for passport and phenotype search
   $(document).on('submit', '#egdb_passport_form', function() 
   {
     var gene_id = $('#search_box_default').val();
@@ -626,19 +715,31 @@ $(document).on('click', '.delete', function() {
 });
 
   // //check input before sending  
-  $(document).on('submit', '.advanced_form', function() 
-  {  var $textarea = $(this).find('textarea');
-     var filters = $textarea.val();
+  // $(document).on('submit', '.advanced_form', function() 
+  // {  var $textarea = $(this).find('textarea');
+  //    var filters = $textarea.val();
 
-    if (!filters) {
-      $("#search_input_modal").html( "No filters added" );
-      $('#no_gene_modal').modal('show');
-      return false;
-    } else {
-      return true;
-    }
+  //   if (!filters) {
+  //     $("#search_input_modal").html( "No filters added" );
+  //     $('#no_gene_modal').modal('show');
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
 
-  });
+  // });
+
+$(document).on('submit', '.advanced_form', function() {
+  // alert("Submitting form with filters: " + $(this).find('select[name="filters[]"]').val().join(", "));
+  var $select = $(this).find('select[name="filters[]"]'); // find the select multiple input with name "filters[]"
+  if ($select.find('option').length === 0) { // If there are no options in the select multiple input, show an error message and return
+    $("#search_input_modal").html("No filters added");
+    $('#no_gene_modal').modal('show');
+    return false;
+  }
+  $(this).find('select[name="filters[]"] option').prop('selected', true); // Select all options in the select multiple input to send them by POST
+  return true;
+});
 
 // ...................all_phenotypes_filter...............................
 
@@ -652,17 +753,30 @@ $(document).on('click', '#submit_all_forms', function()
   for(var index=1; index<=counts_files; index++)
   {
       var id = "phenotype"+index;
+      // select all options in the select element to send them by POST
+      $( "#" + id ).find('select[name="filters[]"] option').prop('selected', true);
+      const selectedValues = $("#" + id).find('select[name="filters[]"] option').map(function () {
+        return $(this).val();
+      }).get();
+
+      // Crear el input oculto con los valores separados por \n
+       $('<input>', {
+      type: 'hidden',
+      name: 'all_filters',
+      value: selectedValues.join("\n")
+    }).appendTo("#" + id);
+
       forms[index]= new FormData(document.getElementById(id));
+
+      
   }
-
-
-// Create a temporary form
- var tempForm = document.createElement('form');
- tempForm.action = 'passport_search_phenotypes.php';
- tempForm.method = 'POST';
+  // Create a temporary form
+  var tempForm = document.createElement('form');
+  tempForm.action = 'passport_search_phenotypes.php';
+  tempForm.method = 'POST';
   tempForm.style.display = 'none';
 
-// add elements
+  // add elements
   var forms_counts = document.createElement('input');
   forms_counts.name = "counts";
   forms_counts.value = counts_files;
@@ -672,8 +786,9 @@ $(document).on('click', '#submit_all_forms', function()
   data.forEach((value, key) => {
   var input = document.createElement('input');
   input.name = key+index;
-  if(key=="filters")
+  if(key=="all_filters")
   { 
+    // alert("filters value: " + value.split("\n").join("\t"));
     input.value = value.split("\n").join("\t");
   }
   else{

@@ -88,7 +88,7 @@ function read_passport_file($passport_path,$passport_file,$form_id,$hidden_searc
     $no_spc_file = str_replace(" ","\ ","$passport_path/$passport_file");
       
 
-    array_push($passport_array,"<form id=\"$form_id\" action=\"passport_search_output_avanced.php\" method=\"post\">");
+    array_push($passport_array,"<form id=\"$form_id\" class=\"advanced_form\" action=\"passport_search_output_avanced.php\" method=\"post\">");
       array_push($passport_array,"<div class=\"container\" style=\"margin-left:20px ; margin-top:10px\">");
           array_push($passport_array,"<div class=\"row\">");
           array_push($passport_array, "<div class=\"col\">");
@@ -118,7 +118,8 @@ function read_passport_file($passport_path,$passport_file,$form_id,$hidden_searc
             array_push($passport_array,"<button class=\"btn btn-danger delete\" style=\"margin-top:20px; width:90%; font-size:small\"><span class=\"fas fa-angle-double-left\"></span> Quit</button>");
             array_push($passport_array,"</div>");
 
-          array_push($passport_array,"<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"5\" cols=\"4\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true;margin-right: 35px\"></textarea>"); 
+          // array_push($passport_array,"<textarea id=\"text_$frame_id\" class=\"form-control\" name=\"filters\" rows=\"5\" cols=\"4\" readonly=\"true\" wrap=\"hard\" style=\"background-color:#ffff;resize:true;margin-right: 35px\"></textarea>");
+          array_push($passport_array,"<select multiple id=\"text_$frame_id\" class=\"form-control filters_selected\" name=\"filters[]\" size=\"5\" style=\"background-color:#ffff; margin-right: 35px;\"></select>");   
           array_push($passport_array,"</div>"); // col
           array_push($passport_array,"</div>");
 
