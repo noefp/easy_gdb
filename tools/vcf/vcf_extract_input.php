@@ -109,23 +109,22 @@ include_once realpath("gff_and_jbrowse.php");
   </div>
 
 </form>
-  <hr>
+  <!-- <hr>
 
 
 
 <form id="egdb_vcf_id_form" action="vcf_id_extract_output.php" method="get">
   <div class="form-group" style="margin:30px !important">
-    <label for="vcf_snip_id">Type a SNP ID</label> 
-    <!-- <button type="button" class="info_icon" data-toggle="modal" data-target="#search_help">i</button> -->
+    <label for="vcf_snip_id">Type a SNP ID</label>
 
       <div class="input-group mt-3 mb-3" style="margin-top:0px !important">
         <input id="vcf_snip_id" type="text" class="form-control form-control-lg" placeholder="SNP ID" name="snp_id">
         <input type=hidden class="vcf_dataset_file form-control form-control-lg"  name="snp_file">
         <button type="submit" class="btn btn-info float-right">Search</button>
       </div>
-      
+
   </div>
-</form>
+</form> -->
 
 </div>
 
