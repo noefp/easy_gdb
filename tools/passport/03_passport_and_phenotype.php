@@ -865,7 +865,7 @@ echo "<div id =\"phenotype_collapse\" class=\"container p-1 my-1 text-white poin
     echo "<div class =\"container p-7 my-3 border\" style=\"background-color:white; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1)\"><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\"><br>";
     
     // $root_path and $phenotype_imgs_path are defined in easyGDB_conf.php
-    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path."/$pass_dir",$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name,$numerics_columns_without_average);
+    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$images_path."/descriptors_imgs/".$pass_dir,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name,$numerics_columns_without_average);
 //    $featured_array = write_descriptor_files($phenotype_file_full_path,$acc_name,$pheno_hash[$phenotype_file],$root_path,$phenotype_imgs_path,$convert_json,$translator_json,$featured_descriptors_json,$featured_array,$sp_name);
 
 
