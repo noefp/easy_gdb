@@ -50,7 +50,7 @@
           case 'coexpression':
             echo "<li><a href=\"/easy_gdb/help/10_coexpression.php\"> Coexpression Search</a>";
             break;
-          case 'coexpression':
+          case 'pheno_ext':
             echo "<li><a href=\"/easy_gdb/help/12_phen_ex.php\"> Phenotype Extraction</a>";
             break;
 				}

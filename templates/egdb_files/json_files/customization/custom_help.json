@@ -7,5 +7,7 @@
 	"lookup":6,
 	"enrichment":7,
 	"gene_expr":8,
-	"comparator_lookup":9
+	"comparator_lookup":9,
+	"coexpression":10,
+	"pheno_ext":12
 }
