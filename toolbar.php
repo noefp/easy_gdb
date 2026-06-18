@@ -37,6 +37,7 @@
           echo '<li class="nav-item"><a class="nav-link" href="/easy_gdb/species.php">Species</a></li>';
         }
         
+        //*** Tools section ***//
         if (isset($tb_tools) && $tb_tools) {
           echo '<li class="nav-item dropdown">';
           echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Tools</a>';
@@ -71,6 +72,7 @@
           echo '</li>';
         }
         
+        //*** Expression section ***//
         if (isset($tb_gene_expr) && $tb_gene_expr) {
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Expression Atlas</a>';
@@ -86,7 +88,8 @@
             echo '</div>';
           echo '</li>';
         }
-        
+
+        //*** Passport and Phenotype section ***//
         if (isset($tb_passport) && $tb_passport) {
           echo '<li class="nav-item dropdown">';
             echo '<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Passport and Phenotype</a>';
@@ -95,6 +98,8 @@
               {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/view_subdirectories.php">Navigation</a>';}
             if(!isset($tb_search_passport) || $tb_search_passport)
               {echo '<a class="dropdown-item" href="/easy_gdb/tools/passport/passport_search_input.php">Search</a>';}
+            if (isset($tb_phen_ex) && $tb_phen_ex) 
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/phen_ex/phen_ex_input.php">Phenotype Extraction</a>';}
             echo '</div>';
           echo '</li>';
         }
