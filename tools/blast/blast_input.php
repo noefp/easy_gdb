@@ -27,12 +27,7 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
     </div>
 
     <div class="row">
-
-      <div class="col-sm-6 col-md-6 col-lg-">
-        <?php  include_once 'blast_dbs_select.php';?>
-      </div>
-
-      <div class="col-sm-6 col-md-6 col-lg-">
+      <div class="col-sm-12 col-md-12 col-lg-12">
         <label for="blast_program" class="yellow_col">BLAST program</label>
         <select class="form-control blast_box" id="blast_program" name="blast_prog">
           <option value='blastn'>BLASTn</option>
@@ -42,7 +37,10 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
           <!-- <option value='tblastx'>tBLASTx</option> -->
         </select>
       </div>
-
+    </div>
+    <br>
+    <div class="row">
+      <?php  include_once 'blast_dbs_select.php';?>
     </div>
 
     <hr>

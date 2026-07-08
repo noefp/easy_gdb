@@ -100,7 +100,6 @@ if ($multiple_blast_db) {
   $protein_dbs = [];
 
 
-
   function get_databases($directory_path, &$database_list, $allowed_extensions) {
     // Check if the directory exists
     if (is_dir($directory_path)) {
@@ -153,7 +152,8 @@ if ($multiple_blast_db) {
   // Display Nucleotide databases
   sort($nucleotide_dbs);
   sort($protein_dbs);
-  echo "<div class=\"form-group blast_attr\" id='nucleotide_db_list'>";
+  
+  echo "<div class=\"form-group blast_attr col-sm-6 col-md-6 col-lg-\" id='nucleotide_db_list'>"; 
   echo "<label for=\"blast_sequence\">Nucleotide databases <a href='#' class='select-toggle' data-type='nucleotide'>[Select all]</a></label>";
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
@@ -165,14 +165,14 @@ if ($multiple_blast_db) {
     // $db_name = str_replace([".phr", ".nhr"], "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
-    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</li>";
+    echo "<li><label style='margin-top:0px;font-weight:normal'><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</label></li>";
   }
 
   echo "</ul>";
   echo "</div>";
 
   // Display Protein databases
-  echo "<div class=\"form-group blast_attr\" id='protein_db_list'>";
+  echo "<div class=\"form-group blast_attr col-sm-6 col-md-6 col-lg-\" id='protein_db_list'>";
   echo "<label for=\"blast_sequence\">Protein databases <a href='#' class='select-toggle' data-type='protein'>[Select all]</a></label>";
   echo "<ul style='list-style-type: none; padding: 0;'>";
 
@@ -184,7 +184,7 @@ if ($multiple_blast_db) {
     // $db = str_replace(".phr", "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
-    echo "<li><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</li>";
+    echo "<li><label style='margin-top:0px;font-weight:normal'><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</label></li>";
   }
 
   echo "</ul>";
