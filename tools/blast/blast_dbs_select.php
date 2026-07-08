@@ -165,7 +165,7 @@ if ($multiple_blast_db) {
     // $db_name = str_replace([".phr", ".nhr"], "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
-    echo "<li><label style='margin-top:0px;font-weight:normal'><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</label></li>";
+    echo "<li><label style='margin-top:0px;font-weight:normal;cursor:pointer'><input type='checkbox' name='blast_db[]' value='$db' class='nucleotide-checkbox' data-type='nucleotide'> $db_name</label></li>";
   }
 
   echo "</ul>";
@@ -184,7 +184,7 @@ if ($multiple_blast_db) {
     // $db = str_replace(".phr", "", $db);
     // $db_name = str_replace(".fasta", "", $db);
     $db_name = str_replace("_", " ", $db_name);
-    echo "<li><label style='margin-top:0px;font-weight:normal'><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</label></li>";
+    echo "<li><label style='margin-top:0px;font-weight:normal;cursor:pointer'><input type='checkbox' name='blast_db[]' value='$db' class='protein-checkbox' data-type='protein'> $db_name</label></li>";
   }
 
   echo "</ul>";
