@@ -20,15 +20,13 @@ if (file_exists($json_files_path."/tools/seq_exp.json")) {
     $json_exists = true;
     $seq_dir_array = array_keys($seq_hash);
 
-    $all_datasets = get_dir_and_files($root_path."/".$downloads_path);
-
     $is_dir = false;
     $first_dir = true;
 
-    sort($all_datasets);
+    sort($seq_dir_array);
 
-    foreach ($all_datasets as $seq_dataset) {
-      if (is_dir($root_path."/".$downloads_path."/".$seq_dataset) && in_array($seq_dataset,$seq_dir_array)) {
+    foreach ($seq_dir_array as $seq_dataset) {
+      if(isset($seq_hash[$seq_dataset]['blast_db'])) {
         $is_dir = true;
       }
     }
@@ -37,14 +35,7 @@ if (file_exists($json_files_path."/tools/seq_exp.json")) {
     $json_exists = false;
 }
 
-if (file_exists($json_files_path."/tools/annotations_conf.json")) {
-    $annotation_conf_file = file_get_contents($json_files_path."/tools/annotations_conf.json");
-    $annotation_conf_hash = json_decode($annotation_conf_file, true);
-    $annotation_conf_exists = true;
-} else {
-    echo "<div class=\"alert alert-danger\"> <b>annotations_conf.json not found</b></div>";
-    $annotation_conf_exists = false;
-}
+
 
 echo '<div id="container" class="form margin-20" style="margin:auto; max-width:900px">';
 echo '<h2 style="text-align: center;">Sequence Explorer</h2>';
@@ -53,10 +44,8 @@ if($is_dir) {
     echo '<label for="dataset_select">Select organism</label>
     <select class="form-control form-control-lg" id="dataset_select" name="seq_dataset">';
 
-    foreach ($all_datasets as $seq_dataset) {
-        if (is_dir($root_path."/".$downloads_path."/".$seq_dataset)
-            && in_array($seq_dataset, $seq_dir_array)) {
-
+    foreach ($seq_dir_array as $seq_dataset) {
+        if(isset($seq_hash[$seq_dataset]['blast_db'])) {
             $data_set_name = str_replace("_", " ", $seq_dataset);
             echo "<option value=\"$seq_dataset\">$data_set_name</option>";
 
@@ -98,13 +87,11 @@ echo '
 <!-- JAVASCRIPT -->
 <script>
 var seq_store = {};
-var jb_dataset = '';
 var jbrowse_url = '';
 
 $(document).ready(function() {
 
   var json_files_path = "<?php echo $json_files_path; ?>";
-  // var seq_path = "<?php echo $root_path."/".$downloads_path; ?>";
   var seq_path = "<?php echo $root_path."/"?>";
   var first_folder = "<?php echo $first_folder; ?>";
   window.json_files_path = json_files_path;
@@ -131,8 +118,6 @@ $(document).ready(function() {
     sessionStorage.removeItem('sv_gene_name');
     update_json_info(json_files_path, seq_dataset, seq_path);
   });
-
-  // restaurar búsqueda al volver atrás desde BLAST
   window.addEventListener('pageshow', function(event) {
     if(event.persisted) {
       var saved_gene = sessionStorage.getItem('sv_gene_name');
@@ -146,7 +131,6 @@ $(document).ready(function() {
         if(saved_dir && saved_dir !== first_folder) {
           $('#dataset_select').val(saved_dir);
         }
-        // esperar a que se carguen los genes del autocomplete antes de buscar
         setTimeout(function() {
           get_gene_structure(saved_gene);
         }, 600);
@@ -176,7 +160,6 @@ $(document).ready(function() {
       success: function(data) {
         var json_info = JSON.parse(data);
         names = json_info.genes_array;
-        jb_dataset = json_info.jb_dataset;
         jbrowse_url = json_info.jbrowse_url || '';
       }
     });
@@ -186,7 +169,6 @@ $(document).ready(function() {
 
     $('#genomic_upstream_bp').val(0);
     $('#genomic_downstream_bp').val(0);
-    // guardar estado de la búsqueda en sessionStorage
     sessionStorage.setItem('sv_gene_name', gene_name);
     sessionStorage.setItem('sv_seq_dir', $('#dataset_select').val() || first_folder);
     sessionStorage.setItem('sv_upstream', 0);
@@ -211,12 +193,8 @@ $(document).ready(function() {
   }
 
   window.get_sequences = function get_sequences(gene_structure, gene_name) {
-
-    // leer valores de extensión y limitar a 3000 bp
     var upstream   = Math.min(parseInt($('#genomic_upstream_bp').val())   || 0, 3000);
     var downstream = Math.min(parseInt($('#genomic_downstream_bp').val()) || 0, 3000);
-
-    // ajustar coordenadas según hebra
     var ext_start = gene_structure.start;
     var ext_end   = gene_structure.end;
 
@@ -278,14 +256,14 @@ $(document).ready(function() {
 
   function show_results(gene_structure, sequences, gene_name, ext_start, ext_end, upstream, downstream) {
     var html = "";
-
-    // obtener el ID de la primera isoforma para JBrowse
     var first_mrna_id = Object.keys(gene_structure.mRNAs)[0];
     var jb_loc = first_mrna_id || gene_name;
 
     var jb_url = '';
     if(jbrowse_url !== '') {
-      jb_url = jbrowse_url.replace('{gene_name}', encodeURIComponent(jb_loc));
+      var first_mrna_id   = Object.keys(gene_structure.mRNAs)[0];
+      var first_mrna_name = gene_structure.mRNAs[first_mrna_id].name || first_mrna_id;
+      jb_url = jbrowse_url.replace('{gene_name}', encodeURIComponent(first_mrna_name));
     }
     if(jb_url !== '') {
       html += "<div id='jbrowse_container' style='margin-top:20px'>";
@@ -299,8 +277,6 @@ $(document).ready(function() {
       html += "  </iframe>";
       html += "</div>";
     }
-
-    // GFF info card - collapsible full GFF table
     html += "<div style='margin-top:20px'>";
     html += "  <button class='btn btn-outline-secondary btn-sm' type='button' data-toggle='collapse' data-target='#gff_table_collapse'>";
     html += "    <i class='fas fa-table'></i> Gene coordinates";
@@ -354,8 +330,6 @@ $(document).ready(function() {
       var active = first_tab ? "active" : "";
       var tab_id = mrna_id.replace(/\./g, '_');
       html += "<div id='tab_" + tab_id + "' class='tab-pane " + active + "'>";
-
-      // GENOMIC
       html += "<div class='card' style='margin-top:10px'>";
       html += "  <div class='card-header' data-toggle='collapse' href='#genomic_" + tab_id + "' style='cursor:pointer'>";
       html += "    <b>Genomic sequence</b>";
@@ -390,8 +364,6 @@ $(document).ready(function() {
       html += "    </div>";
       html += "  </div>";
       html += "</div>";
-
-      // TRANSCRIPT
       html += "<div class='card' style='margin-top:10px'>";
       html += "  <div class='card-header' data-toggle='collapse' href='#transcript_" + tab_id + "' style='cursor:pointer'>";
       html += "    <b>Transcript</b>";
@@ -411,8 +383,6 @@ $(document).ready(function() {
       html += "    </div>";
       html += "  </div>";
       html += "</div>";
-
-      // PROTEIN - only show if CDS exists
       if(seq_store[tab_id].cds) {
         html += "<div class='card' style='margin-top:10px'>";
         html += "  <div class='card-header' data-toggle='collapse' href='#protein_" + tab_id + "' style='cursor:pointer'>";
@@ -470,8 +440,6 @@ function update_genomic_seq() {
     ext_start = Math.max(0, ext_start - upstream);
     ext_end   = ext_end + downstream;
   }
-
-  // show spinner in each genomic content div
   $.each(gene_structure.mRNAs, function(mrna_id, mrna_data) {
     var tab_id = mrna_id.replace(/\./g, '_');
     $('#genomic_content_' + tab_id).html(
@@ -501,8 +469,6 @@ function update_genomic_seq() {
 
       $.each(gene_structure.mRNAs, function(mrna_id, mrna_data) {
         var tab_id = mrna_id.replace(/\./g, '_');
-
-        // update seq_store genomic
         if(seq_store[tab_id]) seq_store[tab_id].genomic = sequences.genomic_seq;
 
         var genomic_html = "";
@@ -553,11 +519,6 @@ function color_genomic_seq(genomic_seq, mrna_data, gene_start, gene_end, strand,
     for(var j = o.s; j <= o.e; j++) position_types[j] = 'exon';
   });
 
-  //$.each(mrna_data.CDS, function(i, cds) {
-    //var o = to_offset(cds.start, cds.end);
-    //for(var j = o.s; j <= o.e; j++) position_types[j] = 'CDS';
-  //});
-
   if(mrna_data.five_prime_UTR && mrna_data.five_prime_UTR.length > 0) {
     $.each(mrna_data.five_prime_UTR, function(i, utr) {
       var o = to_offset(utr.start, utr.end);
@@ -591,12 +552,6 @@ function color_genomic_seq(genomic_seq, mrna_data, gene_start, gene_end, strand,
       }
     });
   }
-
-  // marcar regiones flanqueantes al final para que no sean sobreescritas
-  // tras el RC de hebra negativa:
-  //   upstream queda al INICIO de la secuencia
-  //   downstream queda al FINAL de la secuencia
-  // en hebra positiva es al revés
   upstream   = upstream   || 0;
   downstream = downstream || 0;
   if(strand == '-') {

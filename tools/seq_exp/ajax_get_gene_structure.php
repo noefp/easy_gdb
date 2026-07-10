@@ -27,8 +27,6 @@ function parse_attributes($col8) {
 }
 
 function parse_gff_lines($lines, &$gene_structure) {
-  // two passes: first gene and mRNA, then children (exon, CDS, UTRs)
-  // this handles GFFs where children appear before parents in grep output
   foreach ([['gene','mRNA'], ['exon','CDS','five_prime_UTR','three_prime_UTR']] as $pass_features) {
   foreach ($lines as $line) {
     if(empty($line) || $line[0] == '#') continue;
@@ -50,13 +48,13 @@ function parse_gff_lines($lines, &$gene_structure) {
         $gene_structure['mRNAs'][$mrna_id] = [
           'start'           => (int)$cols[3],
           'end'             => (int)$cols[4],
+          'name'            => isset($attributes['Name']) ? $attributes['Name'] : $mrna_id,
           'exons'           => [],
           'CDS'             => [],
           'five_prime_UTR'  => [],
           'three_prime_UTR' => []
         ];
       }
-      // if no gene feature found yet, infer from mRNA using geneID or ID
       if(!isset($gene_structure['chr'])) {
         $gene_id = isset($attributes['geneID']) ? $attributes['geneID'] : 
                    (isset($attributes['Parent']) ? $attributes['Parent'] : null);
@@ -65,7 +63,6 @@ function parse_gff_lines($lines, &$gene_structure) {
         $gene_structure['end']    = (int)$cols[4];
         $gene_structure['strand'] = $cols[6];
       } else {
-        // update gene boundaries if mRNA extends beyond current gene coords
         $gene_structure['start'] = min($gene_structure['start'], (int)$cols[3]);
         $gene_structure['end']   = max($gene_structure['end'],   (int)$cols[4]);
       }
@@ -109,17 +106,12 @@ function parse_gff_lines($lines, &$gene_structure) {
   }
   } // end pass
 }
-
-// First grep: search by gene name
 $grep_cmd = "zgrep '$gene_name' \"$gff_file\"";
 $grep_out = shell_exec($grep_cmd);
 $gff_lines = array_filter(explode("\n", $grep_out));
 
 $gene_structure = [];
 parse_gff_lines($gff_lines, $gene_structure);
-
-// If mRNAs were found but have no exons/CDS, do a second grep for each mRNA ID
-// This handles NCBI GFFs where exons/CDS have different Parent IDs
 if(!empty($gene_structure['mRNAs'])) {
   $needs_second_grep = false;
   foreach($gene_structure['mRNAs'] as $mrna_id => $mrna_data) {
@@ -138,8 +130,6 @@ if(!empty($gene_structure['mRNAs'])) {
     }
   }
 }
-
-// helper functions for GFF table
 function extract_note($col8) {
   foreach(explode(";", $col8) as $attr) {
     $parts = explode("=", $attr, 2);
@@ -154,8 +144,6 @@ function extract_id_attr($col8) {
   }
   return "";
 }
-
-// collect all grep lines avoiding duplicates
 $all_grep_lines = array_filter(explode("\n", $grep_out));
 if(isset($grep_out2)) {
   $all_grep_lines = array_unique(array_merge(
@@ -163,16 +151,12 @@ if(isset($grep_out2)) {
     array_filter(explode("\n", $grep_out2))
   ));
 }
-
-// build GFF table rows - all features
 $gff_table_rows = [];
 foreach($all_grep_lines as $line) {
   if(empty($line) || $line[0] == '#') continue;
   $cols = explode("\t", $line);
   if(count($cols) < 9) continue;
   $feature = $cols[2];
-
-  // build info column
   if($feature == 'mRNA') {
     $id   = extract_id_attr($cols[8]);
     $note = extract_note($cols[8]);
