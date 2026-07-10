@@ -129,7 +129,13 @@ if (isset($multiple_blast_db) && $multiple_blast_db) {
 
 <script>
   $(document).ready(function () {
-
+    
+    var blast_seq = sessionStorage.getItem('blast_sequence');
+    if(blast_seq) {
+      $('#blast_sequence').val(blast_seq);
+      sessionStorage.removeItem('blast_sequence');
+    }
+    
     // $('#blast_program').change(function () {
     //   blast_program = $('#blast_program').val();
     //   alert("blast_program: "+blast_program);
