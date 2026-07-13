@@ -34,33 +34,28 @@ if (file_exists($json_files_path."/tools/seq_exp.json")) {
     echo "<div class=\"alert alert-danger\"> <b>seq_exp.json not found</b></div>";
     $json_exists = false;
 }
+?>
 
+<div id="container" class="form margin-20" style="margin:auto; max-width:900px">
+<h2 style="text-align: center;">Sequence Explorer</h2>
 
-
-echo '<div id="container" class="form margin-20" style="margin:auto; max-width:900px">';
-echo '<h2 style="text-align: center;">Sequence Explorer</h2>';
-
+<?php
 if($is_dir) {
-    echo '<label for="dataset_select">Select organism</label>
-    <select class="form-control form-control-lg" id="dataset_select" name="seq_dataset">';
-
+    echo '<label for="dataset_select">Select organism</label>';
+    echo '<select class="form-control form-control-lg" id="dataset_select" name="seq_dataset">';
     foreach ($seq_dir_array as $seq_dataset) {
         if(isset($seq_hash[$seq_dataset]['blast_db'])) {
             $data_set_name = str_replace("_", " ", $seq_dataset);
+            if($first_dir) { $first_folder = $seq_dataset; $first_dir = false; }
             echo "<option value=\"$seq_dataset\">$data_set_name</option>";
-
-            if($first_dir) {
-                $first_folder = $seq_dataset;
-                $first_dir = false;
-            }
         }
     }
-    echo "</select>";
+    echo '</select>';
 } else {
     $first_folder = "";
 }
+?>
 
-echo '
 <br>
 <div class="form-group" style="margin:0px !important">
   <label for="gene_search">Search a gene</label>
@@ -71,18 +66,16 @@ echo '
         <i class="fas fa-search" style="font-size:20px; color:white; width:50px"></i>
       </button>
     </div>
-
   </div>
 </div>
 
-
-
 <div id="results_container" style="display:none">
+  <div id="section_jbrowse"></div>
+  <div id="section_coordinates"></div>
+  <div id="section_sequences"></div>
 </div>
 
 </div> <!-- end container -->
-';
-?>
 
 <!-- JAVASCRIPT -->
 <script>
@@ -174,12 +167,32 @@ $(document).ready(function() {
     sessionStorage.setItem('sv_upstream', 0);
     sessionStorage.setItem('sv_downstream', 0);
 
+    var spinner = "<div class='text-center' style='padding:30px'>" +
+                  "  <div class='spinner-border text-secondary' role='status'>" +
+                  "    <span class='sr-only'>Loading...</span>" +
+                  "  </div>" +
+                  "</div>";
+
+    // show results container with spinners in each section
+    $('#section_jbrowse').html(spinner);
+    $('#section_coordinates').html(spinner);
+    $('#section_sequences').html(spinner);
+    $('#results_container').show();
+
+    var seq_dir = $('#dataset_select').val() || first_folder;
+
+    // Section 1: JBrowse - no AJAX needed, build immediately
+    var first_mrna_id = '';
+    var jb_html = '';
+    // JBrowse will be built after gene_structure arrives
+
+    // Section 2: Gene coordinates - ajax_get_gene_structure.php
     jQuery.ajax({
       type: 'POST',
       url: 'ajax_get_gene_structure.php',
       data: {
         'gene_name':       gene_name,
-        'seq_dir':         $('#dataset_select').val() || first_folder,
+        'seq_dir':         seq_dir,
         'seq_path':        seq_path,
         'json_files_path': json_files_path
       },
@@ -187,7 +200,58 @@ $(document).ready(function() {
         var gene_structure = JSON.parse(data);
         window.current_gene_structure = gene_structure;
         window.current_gene_name = gene_name;
-        get_sequences(gene_structure, gene_name);
+
+        // Section 1: JBrowse - now we have gene_structure
+        var jb_url = '';
+        if(jbrowse_url !== '') {
+          var first_mrna_id   = Object.keys(gene_structure.mRNAs)[0];
+          var first_mrna_name = gene_structure.mRNAs[first_mrna_id].name || first_mrna_id;
+          jb_url = jbrowse_url.replace('{gene_name}', encodeURIComponent(first_mrna_name));
+        }
+        if(jb_url !== '') {
+          var jb_html = "";
+          jb_html += "<div id='jbrowse_container' style='margin-top:20px'>";
+          jb_html += "  <div style='margin-bottom:5px'>";
+          jb_html += "    <a class='float-left jbrowse_link' href='" + jb_url + "' target='_blank'>Full screen</a>";
+          jb_html += "    <button class='close float-right' onclick=\"$('#jbrowse_container').hide();\" title='Close'><span>&times;</span></button>";
+          jb_html += "  </div>";
+          jb_html += "  <div style='clear:both'></div>";
+          jb_html += "  <iframe src='" + jb_url + "' style='border:1px solid rgb(80,80,80); height:300px; width:100%;'>";
+          jb_html += "    <p>Your browser does not support iframes.</p>";
+          jb_html += "  </iframe>";
+          jb_html += "</div>";
+          $('#section_jbrowse').html(jb_html);
+        } else {
+          $('#section_jbrowse').html('');
+        }
+
+        // Section 2: Gene coordinates table
+        var coord_html = "";
+        coord_html += "<div style='margin-top:20px'>";
+        coord_html += "  <button class='btn btn-outline-secondary btn-sm' type='button' onclick=\"$('#gff_table_collapse').toggle()\">";
+        coord_html += "    <i class='fas fa-table'></i> Gene coordinates";
+        coord_html += "  </button>";
+        coord_html += "  <div id='gff_table_collapse' style='display:none'>";
+        coord_html += "    <div class='card bg-light text-dark' style='margin-top:5px'>";
+        coord_html += "      <div class='card-body' style='overflow-x:auto; padding:10px'>";
+        coord_html += "        <table class='table table-bordered table-sm' style='line-height:1; font-size:13px; margin-bottom:0'>";
+        coord_html += "          <thead><tr><th>Chr</th><th>Feature</th><th>Start</th><th>End</th><th>Strand</th><th>Info</th></tr></thead>";
+        coord_html += "          <tbody>";
+        if(gene_structure.gff_lines && gene_structure.gff_lines.length > 0) {
+          $.each(gene_structure.gff_lines, function(i, row) {
+            coord_html += "<tr><td style='text-align:center'>" + row.chr + "</td><td style='text-align:center'>" + row.feature + "</td><td style='text-align:center'>" + row.start + "</td><td style='text-align:center'>" + row.end + "</td><td style='text-align:center'>" + row.strand + "</td><td style='font-size:11px; word-break:break-all'>" + row.info + "</td></tr>";
+          });
+        }
+        coord_html += "          </tbody>";
+        coord_html += "        </table>";
+        coord_html += "      </div>";
+        coord_html += "    </div>";
+        coord_html += "  </div>";
+        coord_html += "</div>";
+        $('#section_coordinates').html(coord_html);
+
+        // Section 3: Launch sequences AJAX in parallel
+        window.get_sequences(gene_structure, gene_name);
       }
     });
   }
@@ -221,7 +285,7 @@ $(document).ready(function() {
       },
       success: function(data) {
         var sequences = JSON.parse(data);
-        show_results(gene_structure, sequences, gene_name, ext_start, ext_end, upstream, downstream);
+        show_sequences(gene_structure, sequences, gene_name, ext_start, ext_end, upstream, downstream);
       }
     });
   }
@@ -254,50 +318,13 @@ $(document).ready(function() {
     return protein;
   }
 
-  function show_results(gene_structure, sequences, gene_name, ext_start, ext_end, upstream, downstream) {
+  function show_sequences(gene_structure, sequences, gene_name, ext_start, ext_end, upstream, downstream) {
     var html = "";
     var first_mrna_id = Object.keys(gene_structure.mRNAs)[0];
     var jb_loc = first_mrna_id || gene_name;
 
-    var jb_url = '';
-    if(jbrowse_url !== '') {
-      var first_mrna_id   = Object.keys(gene_structure.mRNAs)[0];
-      var first_mrna_name = gene_structure.mRNAs[first_mrna_id].name || first_mrna_id;
-      jb_url = jbrowse_url.replace('{gene_name}', encodeURIComponent(first_mrna_name));
-    }
-    if(jb_url !== '') {
-      html += "<div id='jbrowse_container' style='margin-top:20px'>";
-      html += "  <div style='margin-bottom:5px'>";
-      html += "    <a class='float-left jbrowse_link' href='" + jb_url + "' target='_blank'>Full screen</a>";
-      html += "    <button class='close float-right' onclick=\"$('#jbrowse_container').hide();\" title='Close'><span>&times;</span></button>";
-      html += "  </div>";
-      html += "  <div style='clear:both'></div>";
-      html += "  <iframe src='" + jb_url + "' style='border:1px solid rgb(80,80,80); height:300px; width:100%;'>";
-      html += "    <p>Your browser does not support iframes.</p>";
-      html += "  </iframe>";
-      html += "</div>";
-    }
-    html += "<div style='margin-top:20px'>";
-    html += "  <button class='btn btn-outline-secondary btn-sm' type='button' data-toggle='collapse' data-target='#gff_table_collapse'>";
-    html += "    <i class='fas fa-table'></i> Gene coordinates";
-    html += "  </button>";
-    html += "  <div id='gff_table_collapse' class='collapse'>";
-    html += "    <div class='card bg-light text-dark' style='margin-top:5px'>";
-    html += "      <div class='card-body' style='overflow-x:auto; padding:10px'>";
-    html += "        <table class='table table-bordered table-sm' style='line-height:1; font-size:14px; margin-bottom:5px'>";
-    html += "          <thead><tr><th style='font-size:16px'>Chr</th><th style='font-size:16px'>Feature</th><th style='font-size:16px'>Start</th><th style='font-size:16px'>End</th><th style='font-size:16px'>Strand</th><th style='font-size:16px'>Info</th></tr></thead>";
-    html += "          <tbody>";
-    if(gene_structure.gff_lines && gene_structure.gff_lines.length > 0) {
-      $.each(gene_structure.gff_lines, function(i, row) {
-        html += "<tr><td style='text-align:center'>" + row.chr + "</td><td style='text-align:center'>" + row.feature + "</td><td style='text-align:center'>" + row.start + "</td><td style='text-align:center'>" + row.end + "</td><td style='text-align:center'>" + row.strand + "</td><td style='font-size:14px; word-break:break-all'>" + row.info + "</td></tr>";
-      });
-    }
-    html += "          </tbody>";
-    html += "        </table>";
-    html += "      </div>";
-    html += "    </div>";
-    html += "  </div>";
-    html += "</div>";
+
+
 
     html += "<ul class='nav nav-tabs' style='margin-top:20px'>";
     var first_tab = true;
@@ -350,7 +377,7 @@ $(document).ready(function() {
       html += "      <div id='genomic_content_" + tab_id + "'>";
       html += "      <div style='margin-bottom:10px'>";
       html += "        <small><b>Legend: </b></small>";
-      html += "        <span style='background-color:#FFFFFF; color:#5d6d7e; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Flanking region</small></span>";
+      html += "        <span style='background-color:#c0c0c0; color:#000000; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Flanking region</small></span>";
       html += "        <span style='background-color:#8cb4e7; color:#000000; border:1px solid #ccc; padding:2px 8px; border-radius:3px; margin-right:5px'><small>5'UTR</small></span>";
       html += "        <span style='background-color:#339933; color:#ffffff; border:1px solid #ccc; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Exon</small></span>";
       html += "        <span style='background-color:#FFFFFF; color:#000000; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Intron</small></span>";
@@ -412,8 +439,7 @@ $(document).ready(function() {
     });
     html += "</div>";
 
-    $('#results_container').html(html);
-    $('#results_container').show();
+    $('#section_sequences').html(html);
   }
 
 });
@@ -474,7 +500,7 @@ function update_genomic_seq() {
         var genomic_html = "";
         genomic_html += "<div style='margin-bottom:10px'>";
         genomic_html += "  <small><b>Legend: </b></small>";
-        genomic_html += "  <span style='background-color:#FFFFFF; color:#5d6d7e; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Flanking region</small></span>";
+        genomic_html += "  <span style='background-color:#c0c0c0; color:#000000; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Flanking region</small></span>";
         genomic_html += "  <span style='background-color:#8cb4e7; border:1px solid #ccc; padding:2px 8px; border-radius:3px; margin-right:5px'><small>5\'UTR</small></span>";        
         genomic_html += "  <span style='background-color:#339933; color:#ffffff; border:1px solid #ccc; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Exon</small></span>";
         genomic_html += "  <span style='background-color:#FFFFFF; border:1px solid #ddd; padding:2px 8px; border-radius:3px; margin-right:5px'><small>Intron</small></span>";
@@ -572,7 +598,7 @@ function color_genomic_seq(genomic_seq, mrna_data, gene_start, gene_end, strand,
 
   var colors = {
     'intron':    { bg: '#ffffff00', text: '#000000' },
-    'flanking':  { bg: '#FFFFFF', text: '#5d6c7c' },
+    'flanking':  { bg: '#c0c0c0', text: '#000000' },
     'exon':      { bg: '#339933', text: '#ffffff' },
     'five_UTR':  { bg: '#8cb4e7', text: '#000000' },
     'three_UTR': { bg: '#e7b071', text: '#000000' }
@@ -713,8 +739,12 @@ function color_protein_seq(protein) {
 }
 
 function blast_redirect(tab_id, seq_type) {
-  var sequence = ">" + tab_id + "_" + seq_type + "\n" + seq_store[tab_id][seq_type];
-  sessionStorage.setItem('blast_sequence', sequence);
+  var sequence = seq_store[tab_id][seq_type];
+  if(seq_type === 'protein') {
+    sequence = sequence.replace(/\*$/, '');
+  }
+  var fasta = ">" + tab_id + "_" + seq_type + "\n" + sequence;
+  sessionStorage.setItem('blast_sequence', fasta);
   window.location.href = '../blast/blast_input.php';
 }
 </script>
