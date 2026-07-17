@@ -119,8 +119,8 @@ $(document).ready(function() {
       var saved_down = sessionStorage.getItem('sv_downstream');
       if(saved_gene) {
         $('#gene_search').val(saved_gene);
-        if(saved_up)   $('#genomic_upstream_bp').val(saved_up);
-        if(saved_down) $('#genomic_downstream_bp').val(saved_down);
+        if(saved_up)   $('.form-control[id^=genomic_upstream_bp_]').first().val(saved_up);
+        if(saved_down) $('.form-control[id^=genomic_downstream_bp_]').first().val(saved_down);
         if(saved_dir && saved_dir !== first_folder) {
           $('#dataset_select').val(saved_dir);
         }
@@ -160,8 +160,8 @@ $(document).ready(function() {
 
   function get_gene_structure(gene_name) {
 
-    $('#genomic_upstream_bp').val(0);
-    $('#genomic_downstream_bp').val(0);
+    $('.form-control[id^=genomic_upstream_bp_]').val(0);
+    $('.form-control[id^=genomic_downstream_bp_]').val(0);
     sessionStorage.setItem('sv_gene_name', gene_name);
     sessionStorage.setItem('sv_seq_dir', $('#dataset_select').val() || first_folder);
     sessionStorage.setItem('sv_upstream', 0);
@@ -257,8 +257,15 @@ $(document).ready(function() {
   }
 
   window.get_sequences = function get_sequences(gene_structure, gene_name) {
-    var upstream   = Math.min(parseInt($('#genomic_upstream_bp').val())   || 0, 3000);
-    var downstream = Math.min(parseInt($('#genomic_downstream_bp').val()) || 0, 3000);
+    var first_tab_id = Object.keys(gene_structure.mRNAs)[0].replace(/\./g, '_');
+    var upstream_input = $('#genomic_upstream_bp_' + first_tab_id);
+    var upstream   = upstream_input.length > 0
+      ? Math.min(parseInt(upstream_input.val()) || 0, 3000)
+      : Math.min(parseInt(sessionStorage.getItem('sv_upstream')) || 0, 3000);
+    var downstream_input = $('#genomic_downstream_bp_' + first_tab_id);
+    var downstream = downstream_input.length > 0
+      ? Math.min(parseInt(downstream_input.val()) || 0, 3000)
+      : Math.min(parseInt(sessionStorage.getItem('sv_downstream')) || 0, 3000);
     var ext_start = gene_structure.start;
     var ext_end   = gene_structure.end;
 
@@ -366,11 +373,11 @@ $(document).ready(function() {
       html += "    <div class='form-inline'>";
       html += "      <small style='margin-right:10px'><b>Extend:</b></small>";
       html += "      <small style='margin-right:5px'>Upstream</small>";
-      html += "      <input type='number' id='genomic_upstream_bp' class='form-control form-control-sm' value='0' min='0' max='3000' style='width:70px; margin-right:10px'>";
+      html += "      <input type='number' id='genomic_upstream_bp_" + tab_id + "' class='form-control form-control-sm' value='0' min='0' max='3000' style='width:70px; margin-right:10px'>";
       html += "      <small style='margin-right:5px'>Downstream</small>";
-      html += "      <input type='number' id='genomic_downstream_bp' class='form-control form-control-sm' value='0' min='0' max='3000' style='width:70px; margin-right:10px'>";
+      html += "      <input type='number' id='genomic_downstream_bp_" + tab_id + "' class='form-control form-control-sm' value='0' min='0' max='3000' style='width:70px; margin-right:10px'>";
       html += "      <small class='text-muted' style='margin-right:10px'>(max 3000 bp)</small>";
-      html += "      <button type='button' class='btn btn-outline-secondary btn-sm' onclick='update_genomic_seq()'><i class='fas fa-sync-alt'></i> Update</button>";
+      html += "      <button type='button' class='btn btn-outline-secondary btn-sm' onclick='update_genomic_seq(\"" + tab_id + "\")'><i class='fas fa-sync-alt'></i> Update</button>";
       html += "    </div>";
       html += "  </div>";
       html += "    <div class='card-body'>";
@@ -406,7 +413,12 @@ $(document).ready(function() {
       html += "        <button type='button' class='btn btn-secondary btn-sm' style='margin-bottom:10px; margin-right:10px; float:right' onclick=\"blast_redirect('" + tab_id + "', 'genomic')\"><i class='fas fa-dna'></i> BLAST</button>";
       html += "      </div>";
       html += "      <br>";
-      html += "      <p style='font-family:monospace; word-break:break-all'>" + color_transcript_seq(sequences.sequences[mrna_id].transcript_seq, mrna_data, ext_start, gene_structure.strand) + "</p>";
+
+      if(sequences.sequences[mrna_id].transcript_seq && sequences.sequences[mrna_id].transcript_seq.length > 0) {
+        html += "      <p style='font-family:monospace; word-break:break-all'>" + color_transcript_seq(sequences.sequences[mrna_id].transcript_seq, mrna_data, ext_start, gene_structure.strand) + "</p>";
+      } else {
+        html += "      <p class='text-muted' style='padding:10px'>Sequence not available</p>";
+      }
       html += "    </div>";
       html += "  </div>";
       html += "</div>";
@@ -446,11 +458,11 @@ $(document).ready(function() {
 
 
 
-function update_genomic_seq() {
+function update_genomic_seq(tab_id) {
   if(!window.current_gene_structure || !window.current_gene_name) return;
 
-  var upstream   = Math.min(parseInt($('#genomic_upstream_bp').val())   || 0, 500);
-  var downstream = Math.min(parseInt($('#genomic_downstream_bp').val()) || 0, 500);
+  var upstream   = Math.min(parseInt($('#genomic_upstream_bp_'   + tab_id).val()) || 0, 500);
+  var downstream = Math.min(parseInt($('#genomic_downstream_bp_' + tab_id).val()) || 0, 500);
 
   sessionStorage.setItem('sv_upstream',   upstream);
   sessionStorage.setItem('sv_downstream', downstream);
@@ -509,7 +521,11 @@ function update_genomic_seq() {
         genomic_html += "  <button type='button' class='btn btn-secondary btn-sm' style='margin-bottom:10px; margin-right:10px; float:right' onclick=\"blast_redirect('" + tab_id + "', 'genomic')\"><i class='fas fa-dna'></i> BLAST</button>";
         genomic_html += "</div>";
         genomic_html += "<br>";
-        genomic_html += "<p style='font-family:monospace; word-break:break-all'>" + color_genomic_seq(sequences.genomic_seq, mrna_data, ext_start, ext_end, gene_structure.strand, upstream, downstream) + "</p>";
+        if(sequences.genomic_seq && sequences.genomic_seq.length > 0) {
+          genomic_html += "<p style='font-family:monospace; word-break:break-all'>" + color_genomic_seq(sequences.genomic_seq, mrna_data, ext_start, ext_end, gene_structure.strand, upstream, downstream) + "</p>";
+        } else {
+          genomic_html += "<p class='text-muted' style='padding:10px'>Sequence not available</p>";
+        }
 
         $('#genomic_content_' + tab_id).html(genomic_html);
       });
@@ -529,6 +545,7 @@ function download_fasta(id, sequence) {
 }
 
 function color_genomic_seq(genomic_seq, mrna_data, gene_start, gene_end, strand, upstream, downstream) {
+  if(!genomic_seq || genomic_seq.length === 0) return '';
   var seq_length = genomic_seq.length;
   var position_types = new Array(seq_length).fill('intron');
 
@@ -621,10 +638,10 @@ function color_genomic_seq(genomic_seq, mrna_data, gene_start, gene_end, strand,
   return colored_seq;
 }
 
+
 function color_transcript_seq(transcript_seq, mrna_data, gene_start, strand) {
-  console.log("has_cds:", mrna_data.CDS && mrna_data.CDS.length > 0);
-  console.log("CDS length:", mrna_data.CDS ? mrna_data.CDS.length : 0);
-  console.log("five_prime_UTR:", mrna_data.five_prime_UTR ? mrna_data.five_prime_UTR.length : 0);
+  if(!transcript_seq || transcript_seq.length === 0) return '';
+
   var seq_length = transcript_seq.length;
   var position_types = new Array(seq_length).fill('CDS');
 
@@ -698,9 +715,11 @@ function color_transcript_seq(transcript_seq, mrna_data, gene_start, strand) {
 
   var colors = {
     'CDS':       { bg: '#339933', text: '#FFFFFF' },
+    'exon':      { bg: '#339933', text: '#FFFFFF' },
     'five_UTR':  { bg: '#8cb4e7', text: '#000000' },
     'three_UTR': { bg: '#e7b071', text: '#000000' }
   };
+
 
   var colored_seq   = "";
   var current_type  = position_types[0];
