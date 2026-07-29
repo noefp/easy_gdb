@@ -18,11 +18,11 @@ if (!file_exists("$custom_text_path/tools/coexpression.php")) {
       <i class="fa fa-info" style="font-size:20px;color:#229dff"></i> Help
     </a>
   </div>
-  <br><br>
+  <br>
   ';
 }
 else {
-  echo '<br><br>';
+  echo '<br>';
 }
 ?>
 
@@ -32,7 +32,7 @@ else {
   <h1 class="text-center">Coexpression Search <i class="fas fa-network-wired" style="color:#555"></i></h1>
   <br>
 
-  <div id="tool-container" class="form margin-20" style="margin:auto; max-width:900px">
+  <div id="coex_container" class="form tool-container" style="margin:auto;">
 
 <!-- OPTIONAL TEXT -->
 <?php 
@@ -103,17 +103,16 @@ if (file_exists("$custom_text_path/tools/coexpression.php")) {
           </script>
 
           <?php
-          echo "<br>";
-          echo "<button type=\"submit\" class=\"btn btn-info float-right\" form=\"search_cor\">Search</button>";
-          echo "</div>";
+          echo "<div class=\"text-right\">";
+          echo "<button type=\"submit\" class=\"btn btn-info\" form=\"search_cor\">Search</button>";
+          echo "</div></div>";
           ?>
 
         </form>
-        <br>
       </div>
     </div>
   </div>
-  <br>
+
 </div>
 
 
@@ -188,20 +187,20 @@ $(document).ready(function () {
     var max_input = 1;
 
     if (!gene_lookup_input) {
-      $("#search_input_modal2").html("The gene ID field is empty.");
-      $('#no_gene_modal2').modal();
+      $("#search_input_modal").html("The gene ID field is empty.");
+      $('#no_gene_modal').modal();
       return false;
     }
     else if (gene_lookup_input.length < 2) {
-      $("#search_input_modal2").html("Input is too short, please provide a longer gene ID.");
-      $('#no_gene_modal2').modal();
+      $("#search_input_modal").html("Input is too short, please provide a longer gene ID.");
+      $('#no_gene_modal').modal();
       return false;
     }
     if (gene_count > max_input) {
-      $("#search_input_modal2").html(
+      $("#search_input_modal").html(
         "Please provide only one gene ID."
       );
-      $('#no_gene_modal2').modal();
+      $('#no_gene_modal').modal();
       return false;
     }
 
