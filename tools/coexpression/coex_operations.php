@@ -5,8 +5,13 @@ if (file_exists("$json_files_path/tools/annotation_links.json")) {
   $annot_hash = json_decode($annot_json_file, true);
 }
 if (file_exists("$json_files_path/tools/coexpression.json")) {
-  $datasets = json_decode(file_get_contents("$json_files_path/tools/coexpression.json"), true);
-  $annot_file = $annotations_path . "/" . $datasets[basename($lookup_file)];
+  $coexp_json_info = json_decode(file_get_contents("$json_files_path/tools/coexpression.json"), true);
+  $coexp_file = $coexp_json_info[basename($lookup_file)];
+  $annot_file= (isset($coexp_file["annotation_file"]) && !empty($coexp_file["annotation_file"])) ? $annotations_path . "/" . $coexp_file["annotation_file"] : null;
+  // $annot_file = $annotations_path . "/" . $coexp_file["annotation_file"]; // basename() returns the last part of the loolkup_file path
+  $coexp_link = (isset($coexp_file["link"]) && !empty($coexp_file["link"])) ? $coexp_file["link"] : null;
+  $coexp_description = (isset($coexp_file["description"]) && !empty($coexp_file["description"])) ? $coexp_file["description"] : null;
+
 }
 
 // INPUT
@@ -69,8 +74,25 @@ else {
     }
   }
 
+
+  //----- DESCRIPTION dataset section --------------------------------------------------
+
+  $coexp_description_path ="$custom_text_path/expr_datasets/$coexp_description";
+
+  if($coexp_description && file_exists($coexp_description_path)) {
+    echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlation_description" aria-expanded="true">
+    <i class="fas fa-sort" style="color:#229dff"></i> Description dataset 
+    </div>';
+
+    echo "<div class=\"collapse show expression-container\" id=\"Correlation_description\" style=\"margin-bottom:40px\">";
+    include_once realpath($coexp_description_path);
+    echo "</div>";
+  
+  }
+// ------------------------------------------------------------------------------------------------
+
   // ANNOT FILE
-  if (file_exists($annot_file)) {
+  if ( $annot_file && file_exists($annot_file)) {
     $head_command = "head -n 1 $annot_file";
     $output_head = exec($head_command);
     $head_columns = explode("\t", $output_head);
@@ -106,16 +128,25 @@ else {
       }
     }
 
-    // TABLE
-    echo "<table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
 
-    // TABLE HEAD
-$columns = array(
-  'Gene',
-  '<span class="coex-tooltip" data-toggle="tooltip" title="Correlation coefficient (Pearson) between the query gene and other genes within the same WGCNA module. Only positive correlations ≥ 0.8 are shown">Correlation</span>'
-);
+
+  // TABLE
+  
+  echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlations_table" aria-expanded="true">
+    <i class="fas fa-sort" style="color:#229dff"></i> Correlations table 
+  </div>';
+
+  echo "<div class=\"collapse show\" id=\"Correlations_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
+
+  // TABLE HEAD
+  $columns = array(
+    'Gene',
+    '<span class="coex-tooltip" data-toggle="tooltip" title="Correlation coefficient (Pearson) between the query gene and other genes within the same WGCNA module. Only positive correlations ≥ 0.8 are shown">Correlation</span>'
+    );
+
     $columns = array_merge($columns, $head_columns);
     $col_number = count($columns);
+
     echo "<thead><tr>";
     foreach ($columns as $index=>$col) {
       echo "<th>$col</th>\n";
@@ -126,8 +157,20 @@ $columns = array(
     echo "<tbody>\n";
     foreach ($gene_cor_array as $gene => $info) {
       echo "<tr>";
-      $annot_encode = str_replace($annotations_path."/", "", $annot_file);
-      echo "<td><a href=\"/easy_gdb/gene.php?name=$gene&annot=$annot_encode\" target=\"_blank\">$gene</a></td>\n";
+      if($coexp_link) {
+        if($coexp_link == "#" || !preg_match('/\bquery_id\b/', $coexp_link)) // if coexp_link is # or doesn't contain query_id word
+          {
+            echo "<td>$gene</td>\n";
+          }else {
+            $coexp_link_gene = str_replace('query_id', $gene, $coexp_link);
+            echo "<td><a href=\"$coexp_link_gene\" target=\"_blank\" >$gene</a></td>\n";
+          }
+      } else {
+        $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+        echo "<td><a href=\"/easy_gdb/gene.php?name=$gene&annot=$annot_encode\" target=\"_blank\">$gene</a></td>\n";
+      } 
+      // $annot_encode = str_replace($annotations_path."/", "", $annot_file);
+      // echo "<td><a href=\"/easy_gdb/gene.php?name=$gene&annot=$annot_encode\" target=\"_blank\">$gene</a></td>\n";
 
       if (is_array($info)) {
         for ($n = 0; $n < ($col_number - 1); $n++) {
@@ -202,13 +245,23 @@ $columns = array(
       }
       echo "</tr>\n";
     }
-    echo "</tbody></table>\n";
+    echo "</tbody></table></div>\n";
   }
 
   //NOT ANNOT FILE
   else {
-    echo "<table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
-    $columns = array('Gene', 'Correlation');
+  
+    echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlations_table" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Correlations table 
+    </div>';
+
+    echo "<div class=\"collapse show\" id=\"Correlations_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
+
+    $columns = array(
+    'Gene',
+    '<span class="coex-tooltip" data-toggle="tooltip" title="Correlation coefficient (Pearson) between the query gene and other genes within the same WGCNA module. Only positive correlations ≥ 0.8 are shown">Correlation</span>'
+    );
+
     echo "<thead><tr>";
     foreach ($columns as $col) {
       echo "<th>$col</th>\n";
@@ -218,7 +271,17 @@ $columns = array(
     echo "<tbody>\n";
     foreach ($gene_cor_array as $gene => $cor) {
       echo "<tr>";
-      echo "<td>$gene</td>";
+      if($coexp_link) {
+        if($coexp_link == "#" || !preg_match('/\bquery_id\b/', $coexp_link))
+          {
+            echo "<td>$gene</td>\n";
+          }else {
+            $coexp_link_gene = str_replace('query_id', $gene, $coexp_link);
+            echo "<td><a href=\"$coexp_link_gene\" target=\"_blank\" >$gene</a></td>\n";
+          }
+      } else {
+        echo "<td>$gene</td>\n";
+      } 
       if (is_array($cor)) {
         echo "<td>{$cor[0]}</td>";
       }
@@ -227,8 +290,7 @@ $columns = array(
       }
       echo "</tr>\n";
     }
-    echo "</tbody></table>\n";
+    echo "</tbody></table></div>\n";
   }
 }
 ?>
-
