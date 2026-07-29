@@ -132,11 +132,11 @@ else {
 
   // TABLE
   
-  echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlations_table" aria-expanded="true">
-    <i class="fas fa-sort" style="color:#229dff"></i> Correlations table 
+  echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlation_table" aria-expanded="true">
+    <i class="fas fa-sort" style="color:#229dff"></i> Correlation table 
   </div>';
 
-  echo "<div class=\"collapse show\" id=\"Correlations_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
+  echo "<div class=\"collapse show\" id=\"Correlation_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
 
   // TABLE HEAD
   $columns = array(
@@ -251,11 +251,11 @@ else {
   //NOT ANNOT FILE
   else {
   
-    echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlations_table" aria-expanded="true">
-      <i class="fas fa-sort" style="color:#229dff"></i> Correlations table 
+    echo '<div class="collapse_section pointer_cursor user-select-none" data-toggle="collapse" data-target="#Correlation_table" aria-expanded="true">
+      <i class="fas fa-sort" style="color:#229dff"></i> Correlation table 
     </div>';
 
-    echo "<div class=\"collapse show\" id=\"Correlations_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
+    echo "<div class=\"collapse show\" id=\"Correlation_table\"><table id=\"tblCorrelations\" class=\"table table-striped table-bordered\">\n";
 
     $columns = array(
     'Gene',
