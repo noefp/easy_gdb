@@ -18,7 +18,7 @@
 
 
 <?php
-//check if relative gene normalization is enabled and get genes
+//check if relative gene normalization is enabled and get genes (fold change)
 $hk_genes=[];
 if ($_POST['denominator_genes']) {
   $hk_genes = explode("\n",$_POST['denominator_genes']);
@@ -26,32 +26,45 @@ if ($_POST['denominator_genes']) {
   $hk_genes = array_map('trim', $hk_genes);
 }
 
+
+
 //check if log2 and conversion to newest version enabled
 $fc_log2 = $_POST['fc_log2'];
 $to_newest_v = $_POST['newest_v'];
 
 if ($hk_genes) {
-  echo "<p> Your data are normalized using ".join(", ",$hk_genes)." as reference.";
+    echo '<div class="alert alert-info" role="alert" style="padding-top:10px;padding-bottom:0px;">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        <p style="text-align:center;">Your data are normalized using '.join(", ", $hk_genes).' as reference.</p>';
   if ($fc_log2) {
     echo " Log2 was applied.";
   }
-  echo "</p>";
+  echo "</div>";
 }
 
-if ($to_newest_v) {
+// if ($to_newest_v) {
 
-  // echo "<p> Your gene list was converted to the latest gene version available.</p>";
-  echo '<div class="alert alert-info margin-20" role="alert">
+//   // echo "<p> Your gene list was converted to the latest gene version available.</p>";
+//   echo '<div class="alert alert-info margin-20" role="alert">
+//       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+//       <span aria-hidden="true">&times;</span>
+//     </button>
+//         <p>Your gene list was converted to the latest gene version available<p>';
+
+// }
+
+//if conversion to newest version was enabled and the comparator lookup file exist, save gene lookup in hash
+
+if ( file_exists("$json_files_path/tools/comparator_lookup.json") && $to_newest_v) {
+
+    echo '<div class="alert alert-info margin-20" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
       <span aria-hidden="true">&times;</span>
     </button>
         <p>Your gene list was converted to the latest gene version available<p>';
 
-}
-
-//if conversion to newest version was enabled and the comparator lookup file exist, save gene lookup in hash
-
-if ( file_exists("$json_files_path/tools/comparator_lookup.json") && $to_newest_v) {
   $lookup_file = file_get_contents("$json_files_path/tools/comparator_lookup.json");
   $lookup_hash = json_decode($lookup_file, true);
 
@@ -87,12 +100,12 @@ if ( file_exists("$json_files_path/tools/comparator_lookup.json") && $to_newest_
 }
 
 // function to retrieve multiple lookup genes and add them to the input gene list $gids
-function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse_hash) {
+function process_multiple_genes($gene_string, $other_gene, $gids, $lookup_reverse_hash) {
 
   $genes_array = explode(";",$gene_string);
 
   foreach ($genes_array as $one_gene) {
-    if (!in_array($one_gene,$gids)) {
+    if (!in_array(strtolower($one_gene),array_map('strtolower', $gids))) {
       array_push($gids,$one_gene);
     }
 
@@ -162,12 +175,12 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
   // get input genes
   $gene_list = $_POST["gids"];
   $gids = [];
-  $one_gene2;
+  $one_gene2 ="";
 
   if(isset($gene_list)) {
 
 
-    //iterate by each gene and add genes with/without isoform version (.1) to the list $gids
+    //iterate by each gene and add genes with and without isoform version (.1) to the list $gids (e.g. if gids contains gene1.1 add gene1 to the list)
     foreach (explode("\n",$gene_list) as $one_gene) {
       $one_gene = rtrim($one_gene);
 
@@ -176,7 +189,7 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
 
         if (preg_match('/\.\d+$/',$one_gene)) {
           $one_gene2 = preg_replace('/\.\d+$/',"",$one_gene);
-          if (!in_array($one_gene2,$gids)) {
+          if (!in_array(strtolower($one_gene2),array_map('strtolower', $gids))) {
             array_push($gids,$one_gene2);
           }
         }
@@ -188,7 +201,7 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
         // }
         if (!preg_match('/\.\d+$/',$one_gene)) {
           $one_gene2 = $one_gene.".1";
-          if (!in_array($one_gene2,$gids)) {
+          if (!in_array(strtolower($one_gene2),array_map('strtolower', $gids))) {
             array_push($gids,$one_gene2);
           }
         }
@@ -196,7 +209,7 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
       }
     }
 
-    //iterate each gene
+    //iterate each gene and look for newer versions 
     foreach ($gids as $one_gene) {
 
       if ($one_gene) {
@@ -291,7 +304,6 @@ function process_multiple_genes($gene_string, $other_gene, $gids,$lookup_reverse
     // print("<pre>".print_r($gids,true)."</pre>");
     echo "</div>"; //end alert-info
 
-
   } //end isset
 /////////////////////////////////////////////////////////////////echo var_dump($gids) . "<br>";
 
@@ -332,6 +344,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
     $header = explode("\t", rtrim($first_line));
     foreach ($header as $one_exp) {
+    // if header sample is in comparator samples array seleted in the input, save it in full_header array for cre
       if (in_array($one_exp,$comparator_samples_array)) {
         array_push($full_header,$one_exp);
       }
@@ -347,28 +360,29 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
       $columns = explode("\t", rtrim($line));
 
       $col_count = 0;
-      $gene_name = $columns[0];
+      $gene_name = $columns[0]; //the first column of each line is the gene
 
       // if gene found in input list save it in found_genes hash
       // when datasets have different gene IDs it is possible that genes are not found in some of the selected datasets
-      if ( in_array($gene_name,$gids) || ($hk_genes && in_array($gene_name,$hk_genes)) ) {
+      if ( in_array(strtolower($gene_name),array_map('strtolower', $gids)) || ($hk_genes && in_array(strtolower($gene_name),array_map('strtolower', $hk_genes))) ) {
 
-        if ( in_array($gene_name,$gids) ) {
-          $found_genes[$gene_name] = 1;
+        if ( in_array(strtolower($gene_name),array_map('strtolower', $gids))) {
+          $found_genes[$gene_name] = 1; // gene found, save it in found_genes dictionary
         }
         //echo "1 replicates -> $gene_name $sample_name $col <br>";
 
         // create object with replicates of each sample and gene
         foreach ($columns as $col) {
 
-          $sample_name = $header[$col_count];
+          $sample_name = $header[$col_count]; // select sample name
 
           //echo "2 replicates -> $gene_name $sample_name $col <br>";
 
-          if ( in_array($gene_name,$gids) && in_array($sample_name, $comparator_samples_array) && $col_count != 0 ) {
+          // if gene found in input list and sample is in comparator samples array and it is not the first column
+          if (in_array(strtolower($gene_name),array_map('strtolower', $gids)) && in_array($sample_name, $comparator_samples_array) && $col_count != 0 ) {
 
 
-            //########################################### Lookup code
+            //########################################### Lookup code ######################################################
             if ($to_newest_v) {
 
               // convert old versions to new ones
@@ -405,12 +419,12 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
             }
           }
-          //########################################### end lookup code
+          //########################################### end lookup code ################################
 
 
 
 
-          // ############################### Housekeeping normalization
+          // ############################### Housekeeping normalization ##############################
 
           if ($hk_genes) {
 
@@ -429,7 +443,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
 
 
-              //########################################### Lookup code
+              //########################################### Lookup code #################################
               if ($to_newest_v) {
 
                 // convert old versions to new ones
@@ -467,7 +481,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
 
               }
-              //################## End Lookup code
+              //################## End Lookup code ##################
 
             } // end else
 
@@ -479,7 +493,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
             // echo "<br>";
           }
-          // ############################### End Housekeeping normalization
+          // ############################### End Housekeeping normalization ##############################
 
           $col_count++;
         } // end column foreach
@@ -491,6 +505,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
   } // end if expression file exists
 
 } // end foreach sample_hash
+
 
 if ($hk_genes && $to_newest_v && $newer_found) {
 
@@ -784,7 +799,7 @@ $samples_found = array_keys($replicates);
       <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
       <span aria-hidden="true">&times;</span>
     </button>
-        <p><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p></div>';
+        <p style="text-align: center;"><b>WARNING!</b> The selected gene for relative normalization did not work in cases were matched multiple genes.</p></div>';
   }
 
 
