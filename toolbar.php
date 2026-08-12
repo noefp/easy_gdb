@@ -67,6 +67,9 @@
           if (isset($tb_enrichment) && $tb_enrichment) {
             echo '<a class="dropdown-item" href="/easy_gdb/tools/gene_enrichment.php">Gene Set Enrichment</a>';
           }
+          if(isset($tb_seq_exp) && $tb_seq_exp){
+            echo '<a class="dropdown-item" href="/easy_gdb/tools/seq_exp/seq_exp_input.php">Sequence Explorer</a>';
+          }
           
           echo '</div>';
           echo '</li>';
@@ -85,6 +88,8 @@
               {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/cv_calculator_input.php">CV calculator</a>';}
             if(!isset($tb_expr_datasets) || $tb_expr_datasets)
               {echo '<a class="dropdown-item" href="/easy_gdb/tools/expression/expression_menu.php">Datasets</a>';}
+            if(isset($tb_coexpr) && $tb_coexpr)
+              {echo '<a class="dropdown-item" href="/easy_gdb/tools/coexpression/coex_input.php">Coexpression</a>';}
             echo '</div>';
           echo '</li>';
         }
