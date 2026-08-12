@@ -733,9 +733,9 @@ The JSON file `egdb_files/json_files/tools/expression_info.json` includes:
 
 - <span id="link">`link` </span> - links to the gene annotation page for each dataset (it is also possible to add external links or remove links) in the *Average values* table.  By default this field should remain empty (`"link":""`). Using  `"link":"#"` field will remove links. To use an external link we just need to add the URL include the word `query_id` in the place of the gene identifier. For example, for UniProt the link would be `http://www.uniprot.org/uniprot/query_id` and the gene IDs in the expression matrix should correspond to UniProt identifiers.
 
-- `annotation_file` - field it is possible to provide an annotation file to add gene annotations in the *Average values* table and links to the gene annotations pages.
+- <span id="annotation_file"> `annotation_file` </span> - field it is possible to provide an annotation file to add gene annotations in the *Average values* table and links to the gene annotations pages.
 
--  `description` - field than add a dataset description. It will include the indicated PHP file, which should be placed in `egdb_custom_text/expr_datasets/` within the your `egdb_files` folder. It is recommendable to describe briefly the experimental conditions and links to its publication. 
+- <span id="description"> `description` </span> - field than add a dataset description. It will include the indicated PHP file, which should be placed in `egdb_custom_text/expr_datasets/` within the your `egdb_files` folder. It is recommendable to describe briefly the experimental conditions and links to its publication. 
 The descriptions of all datasets will be shown in the *Expression tools*, which can be enabled using the variable `$expr_menu` in the configuration file (*easyGDB_conf.php*).
 
 
@@ -939,7 +939,7 @@ The configuration of the *Coefficient of Variation Calculator* is defined in the
 
 ## Co-expression search
 
-Correlation data should be placed in the `$coexpression_path`, in `$root_path/coexpression_data` by default (defined as `$coexpression_path = "$root_path/coexpression_data"` in *easyGDB_conf.php*)
+Correlation data should be placed in the `coexpression_data` folder (defined as `$coexpression_path = "$root_path/coexpression_data"` in *easyGDB_conf.php*)
 
 >[!IMPORTANT]
 >These files should be tab-delimited text files.
@@ -978,27 +978,51 @@ Gene7   NA     1       0.938
 Gene9   NA     NA      1
 ```
 
-These two elements must be added to the same new folder with a name of your choice inside the your coexpression folder `(coexpression)`.
+These two elements must be added to the same new folder with a name of your choice inside the your coexpression_data folder.
 
 ```
-correlation/
-    |---- example/
-          |---- gene_cluster.txt
-          |---- black_cor.tsv.gz
-          |---- brown_cor.tsv.gz
-          |---- purple_cor.tsv.gz
+coexpression_data/
+    |---- Species1
+        |---- Example_dataset/
+              |---- gene_cluster.txt
+              |---- black_cor.tsv.gz
+              |---- brown_cor.tsv.gz
+              |---- purple_cor.tsv.gz
+        |---- Example2_dataset/
+              |---- gene_cluster2.txt
+              |---- black_cor.tsv.gz
+              |---- brown_cor.tsv.gz
+              |---- purple_cor.tsv.gz
 ```
+> [!IMPORTANT]
+> The *coexpression_data* directory must contain up to two levels of subfolders, allowing datasets to be organized e.g. first  by species and then by technology.
 
 You can use the code from this [github](https://github.com/Javiersdr/Co-expression_analysis) to obtain an example. First, you must execute the ```configure_WGCNA.R``` script. Then, with ```cor_matrix_filter.R``` you can calculate the correlations for easyGDB.
 
 
-Optionally, if you have an annotation file for those genes, you can add it to the JSON folder in `egdb_files/json_files/` and then create a `coexpression.json`, where the path to the annotations file name is connected to the name you gave to your dataset in correlations, like in the other tools.
+If you want add an *annotation file*, *link* or/and a *dataset desription* for each dataset, you must add a `coexpression.json` file in `egdb_files/json_files/` :
 
-```
-01 Example dataset: "Example/example_annotations.txt"
-02 Example2 dataset: "Example2/example2_annotations.txt"
-```
+- `link` - links to the gene annotation page for each dataset (it is also possible to add external links or remove links) in the *Average values* table.  By default this field should remain empty (`"link":""`). Using  `"link":"#"` field will remove links. To use an external link we just need to add the URL include the word `query_id` in the place of the gene identifier. For example, for UniProt the link would be `http://www.uniprot.org/uniprot/query_id` and the gene IDs in the expression matrix should correspond to UniProt identifiers.
 
+- `annotation_file` - field it is possible to provide an annotation file to add gene annotations in the *Average values* table and links to the gene annotations pages.
+
+- <span id="description"> `description` </span> - field than add a dataset description. It will include the indicated PHP file, which should be placed in `egdb_custom_text/expr_datasets/` within the your `egdb_files` folder. It is recommendable to describe briefly the experimental conditions and links to its publication.
+ 
+ ``` json
+{
+  "Example_dataset":
+    { "link":"#",
+      "annotation_file":"example_annotations.txt",
+      "description":"example_description.php"
+    },
+  "Example2_dataset":
+    { "link":"#",
+      "annotation_file":"example2_annotations.txt",
+      "description":""
+    }
+}
+```
+ (Like in the [Expression viewer](#expression-viewer) tool).
 <br><br>
 
 # Passport and phenotype tools
