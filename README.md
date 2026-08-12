@@ -12,23 +12,23 @@ For more information check [this YouTube playlist](https://youtu.be/JTE-8zR5ogk)
 
 Some examples of sites developed using EasyGDB are:
 
+-   [IHSM Subtropicals DB](https://ihsmsubtropicals.uma.es/)
+-   [MAdLandExpr](https://peatmoss.plantcode.cup.uni-freiburg.de/easy_gdb/index.php)
 -   [MangoBase](https://mangobase.org/)
 -   [OliveAtlas](https://www.oliveatlas.uma.es/)
--   [IHSM Subtropicals DB](https://ihsmsubtropicals.uma.es/)
 -   [SkeletalAtlas](https://www.skeletalatlas.uma.es/)
 -   [AvoBase](https://www.avocado.uma.es/)
--   [MAdLandExpr](https://peatmoss.plantcode.cup.uni-freiburg.de/easy_gdb/index.php)
 -   [Ae. arabicum DB](https://plantcode.cup.uni-freiburg.de/aetar_db/index.php)
 <br><br>
 
 # Table of contents
 -   [Requirements](#requirements)
 
-- [Installation]()
+- [Installation](#installation)
   -   [Installation with Docker](#installation-with-docker)
   -   [Installation without Docker (only for Linux Systems)](#installation-without-docker-only-for-linux-systems)
       - [Install Git, PHP, BLAST and useful tools](#install-git-php-blast-and-useful-tools)
-      - [Install Perl dependencies for JBrowse and importing scripts]()
+      - [Install Perl dependencies for JBrowse and importing scripts](#install-perl-dependencies-for-jbrowse-and-importing-scripts)
       - [Load local-lib in Perl5lib](#load-local-lib-in-perl5lib)
       - [Install EasyGDB](#install-easygdb)
 -   [Customization](#customization)
@@ -838,7 +838,7 @@ Drawings in the separate images should not overlap, and black color should be us
 }
 ```
 
-## Customitation
+## Customization
 
 ### Customise the expression color scale
 To customise the general expression color scale, which will then be used in the expression tools, in  the `easyGDB_conf.php` file you can define the colors, ranges and labels.
