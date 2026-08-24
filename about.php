@@ -11,7 +11,17 @@
          include_once realpath("$custom_text_path/db_citation.php");
       }
    ?>
-   <br>
+         
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <?php 
+        if ( $ab_labs && file_exists(realpath("groups.php")) ) {
+          include_once realpath("groups.php");
+        }
+      ?>
+    </div>
+  </div>
+<br>
 </div>
 
 <?php include_once realpath("$easy_gdb_path/footer.php");?>
