@@ -41,6 +41,13 @@ if (file_exists("$custom_text_path/tools/coexpression.php")) {
 }
 ?>
 
+
+<?php
+    echo '<div id="dataset_info" class="alert alert-primary" role="alert" style="display:none;margin:10;margin-bottom:20px">
+    <div class="card-body" style="padding:0px;text-align:center">
+    </div></div>';
+?> 
+
     <!-- INPUT FORM -->
     <div class="form">
       <div style="margin:auto; max-width:900px">
@@ -138,6 +145,26 @@ if (file_exists("$custom_text_path/tools/coexpression.php")) {
 <!-- JAVASCRIPT -->
 <script>
 $(document).ready(function () {
+
+var json_files_path = "<?php echo $json_files_path."/tools/coexpression.json"; ?>";
+
+ function ajax_call_get_dataset_info(json_file,coex_dataset) {
+   jQuery.ajax({
+     type: "POST",
+     url: 'ajax_get_dataset_info.php',
+     data: {'json_file': json_file, 'coex_dataset': coex_dataset},
+     success: function (dataset_info) {
+      if (JSON.parse(dataset_info) == "") {
+        $("#dataset_info").hide();
+      }else{
+        // alert(dataset_info);
+        $("#dataset_info .card-body").html(JSON.parse(dataset_info));
+        $("#dataset_info").show();
+      }
+     }
+   });
+ }
+
   function ajax_call(expr_file) {
     jQuery.ajax({
       type: "POST",
@@ -155,6 +182,8 @@ $(document).ready(function () {
     });
   }
 
+  ajax_call_get_dataset_info(json_files_path,$('#sel1').val());
+
   function update_dataset_dropdown(category) {
     let options = coex_categories[category];
     $('#sel1').html(options);
@@ -168,11 +197,13 @@ $(document).ready(function () {
   $('#cat1').change(function () {
     let new_category = $(this).val();
     update_dataset_dropdown(new_category);
+    ajax_call_get_dataset_info(json_files_path,$('#sel1').val());
   });
 
   $('#sel1').change(function () {
     let selected_dataset = $('#sel1').val();
     ajax_call(selected_dataset);
+    ajax_call_get_dataset_info(json_files_path,$(this).val());
   });
 });
 </script>
