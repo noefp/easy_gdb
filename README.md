@@ -1007,13 +1007,16 @@ If you want add an *annotation file*, *link* or/and a *dataset desription* for e
 - `annotation_file` - field it is possible to provide an annotation file to add gene annotations in the *Average values* table and links to the gene annotations pages.
 
 - <span id="description"> `description` </span> - field than add a dataset description. It will include the indicated PHP file, which should be placed in `egdb_custom_text/expr_datasets/` within the your `egdb_files` folder. It is recommendable to describe briefly the experimental conditions and links to its publication.
+
+- <span id="description"> `description_text` </span> - field allows you to provide a brief description of the dataset (or any relevant information). The description will appear in the tool’s input when a dataset is selected.
  
  ``` json
 {
   "Example_dataset":
     { "link":"#",
       "annotation_file":"example_annotations.txt",
-      "description":"example_description.php"
+      "description":"example_description.php",
+	  "description_text":"<strong>Dataset</strong><br> example"
     },
   "Example2_dataset":
     { "link":"#",
