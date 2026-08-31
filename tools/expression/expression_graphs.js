@@ -1,19 +1,57 @@
-var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546ead','#666','#999','#ccc','#000',"#a61101", "#c89", "#ab5700", "#798b00", "#437801", "#036aab", "#d0f", "#700982", "#fe9989", "#f8aedf", "#ffdf64", "#cbff89", "#6befff", "#f77ffa",'#b66'];
+// var color_array = ["#ea5545", "#f46a9b", "#ef9b20", "#edbf33", "#ede15b", "#bdcf32", "#87bc45", "#27aeef", "#b33dc6",'#546ead','#666','#999','#ccc','#000',"#a61101", "#c89", "#ab5700", "#798b00", "#437801", "#036aab", "#d0f", "#700982", "#fe9989", "#f8aedf", "#ffdf64", "#cbff89", "#6befff", "#f77ffa",'#b66'];
 
+//Array of color-blind friendly colors
+var color_array = [  
+  "#88CCEE",
+  "#CC6677",
+  "#DDCC77",
+  "#117733",
+  "#332288",
+  "#AA4499",
+  "#44AA99",
+  "#999933",
+  "#882255",
+  "#661100",
+  "#6699CC",
+  "#888888",
+  "#E69F00",
+  "#56B4E9",
+  "#009E73",
+  "#F0E442",
+  "#0072B2",
+  "#D55E00",
+  "#CC79A7",
+  "#000000",
+  "#8C564B",
+  "#4C4C4C",
+  "#BDBDBD", 
+  "#1B9E77", 
+  "#7570B3", 
+  "#E6AB02", 
+  "#A6761D", 
+  "#666666", 
+  "#1F78B4"  
+  ];
+
+// labels length is used to set the height of the graphs, to avoid cutting the sample names in the x-axis
 // var labels_length=[];
 
 // sample_array.forEach( sample => {
 //   labels_length.push(sample.length);
 // });
-// height_labels=Math.max(...labels_length);
+// // height_labels=(Math.max(...labels_length)*13)*Math.sin(-50);
+// height_labels=Math.floor(Math.max(...labels_length)*Math.abs(Math.sin(50*Math.PI/180)))*6.5;
+// alert("height_labels: "+Math.max(...labels_length));
+// --------------------------------------------------------------------------
 
-if (heatmap_series.length>8)
-{
-  height_heatmap=44*heatmap_series.length;
+// ## if dataset_groups is undefined, set it to an empty array ##
+  var dataset_groups = dataset_groups ?? []; 
+  // dataset groups is used to add annotations to comparative graphs. Expression comparator tool.
 
-}else{
-  height_heatmap=350;
-}
+// ## heatmap height ##
+if (heatmap_series.length>8) // if there are more than 8 series in the heatmap
+{height_heatmap=44*heatmap_series.length;} // 44px per series, to avoid cutting the series names in the y-axis
+else{height_heatmap=350;}
 
 // ######################################################## Lines
 
@@ -52,11 +90,12 @@ var options = {
       rotate: -50,
       rotateAlways: true,
       hideOverlappingLabels: false,
-      trim: false
-      // maxHeight: 450,
-      // minHeight: height_labels*4.5
+      trim: false,
+      // maxHeight: 450
+      // minHeight: height_labels
     }
   },
+
   yaxis: {
     title: {
       text: 'Expression value'
@@ -83,6 +122,12 @@ var options = {
     
     },
   },
+
+  // add annotations to comparative graphs
+    annotations: {
+      xaxis:dataset_groups
+    },  
+
   tooltip: {
     inverseOrder: true
   }
@@ -271,6 +316,13 @@ var options = {
     categories: sample_array,
     tickAmount: sample_array.length-1
   },
+  
+  // add annotations to highlight
+    // annotations: {
+    //   xaxis: dataset_groups
+    //       // fillColor: '#008FFB',
+    //       // opacity: 0.15,
+    // },
 
   // yaxis: {
     // labels: {
@@ -399,6 +451,13 @@ var options = {
     show: false
     // position: 'top'
   },
+
+    // add annotations to highlight
+    annotations: {
+      xaxis: dataset_groups
+          // fillColor: '#008FFB',
+          // opacity: 0.15,
+    },
 
   tooltip: {
     inverseOrder: false

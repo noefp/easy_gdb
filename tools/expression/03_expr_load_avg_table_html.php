@@ -37,16 +37,39 @@
 <script src="../../js/datatable.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+
+//  comparatos table flags
+let comparator_table = <?php echo json_encode(isset($comparator_table) && $comparator_table==1 ? 1 : 0) ?>;
+
     $("#avg_table").on('shown.bs.collapse', function(){
 
       $('#load').remove();
-      $('#tblResults').css("display","table");
-      datatable("#tblResults","");
+      $('#tblResults').css("display","table"); // transform the table information into table format
 
+    
+    // ################ Comparator table ################
 
-      $(".td-tooltip").tooltip();
+      if (comparator_table)
+       {
+        // add the dataset header to the table 
+        var datasetHeader = `<?php echo implode("", $dataset_header); ?>`;
+        var Header = `
+            <tr><th style="border: none"></th> <!-- empty cell for the first column of the table Gen_id -->
+            ${datasetHeader}</tr>`;
+
+      // insert a new row with the dataset header at the beginning of the table header <thead>
+        $('#tblResults thead:eq(0)').prepend(Header); 
+
+        // initialize the datatable with the BASIC TABLE
+        datatable_basic("#tblResults");          
+      }
+      else
+    // ################ Expression table ################ 
+
+      {datatable("#tblResults","");}
+      // $(".td-tooltip").tooltip();
   });
-});   
+});     
   
 </script>
   

@@ -134,16 +134,112 @@ function process_multiple_genes($gene_string, $other_gene, $gids, $lookup_revers
     }// old gene
 
   }// foreach
-
-
+  
   return $gids;
 }
 
+//#### Resumen search function to get sample names and their dataset file from the input form #######
+function display_categories_info($categories_info)
+{
+    echo '<div class="alert alert-dismissible show mb-3" style="padding-top:20px; background-color:#f0f0f0">';
+    echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">';
+    echo '<span aria-hidden="true">&times;</span>';
+    echo '</button>';
 
+    echo '<div class="row" style="margin-left:1rem;">';
+    
+    // calculate grid
+    $total_categories = count($categories_info); // total number of categories
+    $grid_count = $total_categories > 0 ? max(3, intval(12 / $total_categories)) : 12; 
+    $grid = "col-md-" . $grid_count; // grid for displays >=768px. 
+
+    // 1. categories boxes
+
+    $expr_file_count = 0;
+    $expr_file_sufix = "";
+
+    foreach ($categories_info as $category => $datasets) {
+
+        $category_header = str_replace("_", " ", $category); 
+        
+        echo '<div class="' . $grid . ' mt-0 mb-3 filter_card">';
+        echo '<div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">';
+        
+        // category header
+        echo '<div class="card-header text-black text-center alert-secondary font-weight-bold">' . $category_header . '</div>';
+        
+        // category body with datasets and samples
+        echo '<div class="card-body" style="max-height: 350px; overflow-y: auto; background-color: #f0f0f0;">';
+        
+        if (!empty($datasets)) {
+            // 2. datasets boxes loop
+            foreach ($datasets as $dataset_name => $samples) {
+                $expr_file_count ++;
+                $expr_file_sufix = "D".$expr_file_count;
+
+                $formatted_dataset = str_replace("_", " ", $dataset_name);
+                $formatted_dataset = str_replace(".txt", " ", $formatted_dataset);
+                
+                // dataset box
+                echo '<div class="card mb-2 border shadow-sm">';
+                
+                // dataset header
+                // echo '<div class="card-header py-1 text-center alert-secondary text-dark font-weight-bold border-bottom" style="font-size: 0.9rem;">';
+                // echo $formatted_dataset;
+                // echo '</div>';
+                
+                // dataset body with samples
+                echo '<div class="card-body p-2 " style="background-color: #f0f0f0;">';
+                echo '<span class="badge  mr-1 mb-1 alert-primary" style="font-size: 0.9rem;">' . $expr_file_sufix. '</span>';
+                echo '<span class="badge mr-1 mb-1 alert-secondary" style="font-size:0.9rem; max-width:100%; white-space:normal;text-align: left">'. $formatted_dataset . ' </span><br>';
+
+                foreach ($samples as $sample) {
+                  echo '<span class="badge badge-info mr-1 mb-1" style="max-width:100%; white-space:normal;text-align: left">' . $sample . '</span>';
+                }
+                echo '</div>'; // .card-body (dataset)
+                echo '</div>'; // .card (dataset)
+            }
+        } else {
+            echo '<em class="text-muted small">No hay datasets disponibles.</em>';
+        }
+
+        echo '</div>'; // .card-body (categoría)
+        echo '</div>'; // .card (categoría)
+        echo '</div>'; // .grid-col
+    }
+
+    echo '</div></div>';
+}
+######## end of function display_categories_info ########
+
+
+//-----------------------------------------------------------------
 // get each sample and their dataset and save it in a hash key=dataset-file value=array of experiments from that dataset
+  
   $sample_hash = [];
   $found_categories = [];
   $newer_found = 0;
+
+  $categories_info = [];
+
+// if (isset($_POST['sample_names']) && is_array($_POST['sample_names'])) {
+//     foreach ($_POST['sample_names'] as $sample) {
+//         list($file, $exp) = explode("@", $sample); // file is the dataset path, exp is the sample name
+
+//         $path_array = explode("/", rtrim($file, "/"));
+            
+//         if (count($path_array) >= 2) {
+//             $category = $path_array[count($path_array) - 2];
+//             $dataset_name = $path_array[count($path_array) - 1];
+
+//           if (!in_array($exp, $categories_info[$category][$dataset_name] ?? [])) {
+//                   $categories_info[$category][$dataset_name][] = $exp;
+//           }
+
+//         }
+//     }
+// }
+//-----------------------------------------------------------------
 
   foreach ($_POST['sample_names'] as $sample) {
     list($file,$exp) = explode("@", $sample);
@@ -152,11 +248,17 @@ function process_multiple_genes($gene_string, $other_gene, $gids, $lookup_revers
       //echo "Categories $file <br>";
       $path_array = explode("/", rtrim($file));
       $category = $path_array[count($path_array)-2];
+      $dataset_name = $path_array[count($path_array) - 1];
       $found_categories[$category]=1;
+
+      // save categories dataset_name and samples(expr) for display_categories_info function
+      if (!in_array($exp, $categories_info[$category][$dataset_name] ?? [])) {
+        $categories_info[$category][$dataset_name][] = $exp; 
+      }
       //echo "Category $category <br>";
     }
 
-    if ($sample_hash[$file]) {
+    if (isset($sample_hash[$file])) {
       array_push($sample_hash[$file],$exp);
     } else {
       $sample_hash[$file] = [];
@@ -168,9 +270,10 @@ function process_multiple_genes($gene_string, $other_gene, $gids, $lookup_revers
   $category_number = count(array_keys($found_categories));
 
   if ($category_number > 1) {
-    echo "<p style=\"color:red\"><b>WARNING!</b> samples from different categories were selected (".join(", ",array_keys($found_categories) )."). Consider if their comparison make sense</p>";
+    echo "<p class =\"text-center\" style=\"color:red\"><b>WARNING!</b> samples from different categories were selected (".join(", ",array_keys($found_categories) )."). Consider if their comparison make sense</p>";
   }
 
+  display_categories_info($categories_info);
 
   // get input genes
   $gene_list = $_POST["gids"];
@@ -330,12 +433,15 @@ $average = [];
 $full_header = [];
 $header = [];
 $found_genes = [];
-
+$expr_file_counter=0; // expression file counter for sample prefix
 
 // iterate each dataset selected in the comparator input
 foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
-// check dataset file exists and open it. Get header line and save sample names in header
+  $expr_file_counter++;
+  $sample_prefix="D".$expr_file_counter; 
+
+  // check dataset file exists and open it. Get header line and save sample names in header
   if ( file_exists("$expr_file") ) {
 
     $tab_file = file("$expr_file");
@@ -343,19 +449,18 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
     $first_line = array_shift($tab_file);
 
     $header = explode("\t", rtrim($first_line));
+
     foreach ($header as $one_exp) {
     // if header sample is in comparator samples array seleted in the input, save it in full_header array for cre
       if (in_array($one_exp,$comparator_samples_array)) {
-        array_push($full_header,$one_exp);
+
+        // array_push($full_header_aux,$one_exp); // array with only comparator samples selected   
+        array_push($full_header,$sample_prefix."_".$one_exp); // array with only comparator samples selected   
       }
     }
 
-    // echo "comparator samples array<br>";
-    // print_r($comparator_samples_array);
-    // echo "<br>";
 
-
-//gets each replicate value for each gene
+    //gets each replicate value for each gene
     foreach ($tab_file as $line) {
       $columns = explode("\t", rtrim($line));
 
@@ -372,15 +477,19 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
         //echo "1 replicates -> $gene_name $sample_name $col <br>";
 
         // create object with replicates of each sample and gene
-        foreach ($columns as $col) {
+        foreach ($columns as $col_count =>$col) {
+          // echo $col_count." <br>";
 
-          $sample_name = $header[$col_count]; // select sample name
+          $sample_name2 = $header[$col_count]; // select sample name
+          $sample_name= $sample_prefix."_".$sample_name2;
 
           //echo "2 replicates -> $gene_name $sample_name $col <br>";
 
           // if gene found in input list and sample is in comparator samples array and it is not the first column
-          if (in_array(strtolower($gene_name),array_map('strtolower', $gids)) && in_array($sample_name, $comparator_samples_array) && $col_count != 0 ) {
+          // if (in_array(strtolower($gene_name),array_map('strtolower', $gids)) && in_array($sample_name, $comparator_samples_array) && $col_count != 0 ) {
+          if (in_array(strtolower($gene_name),array_map('strtolower', $gids)) && in_array($sample_name2, $comparator_samples_array) && $col_count != 0 ) {
 
+              
 
             //########################################### Lookup code ######################################################
             if ($to_newest_v) {
@@ -422,13 +531,13 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
           //########################################### end lookup code ################################
 
 
-
-
           // ############################### Housekeeping normalization ##############################
 
           if ($hk_genes) {
 
-            if ( in_array($gene_name,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+            // if ( in_array($gene_name,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+            if ( in_array($gene_name,$hk_genes) && in_array($sample_name2, $comparator_samples_array) && $col_count != 0) {
+              
               //echo "hk true1 -> $gene_name";
 
               if ($hk_replicates[$sample_name][$gene_name]) {
@@ -439,9 +548,6 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
               }
             }
             else {
-
-
-
 
               //########################################### Lookup code #################################
               if ($to_newest_v) {
@@ -458,7 +564,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
                 // echo "hk -> ori: $gene_name new: $newest_gene old:$old_gene sample: $sample_name <br>";
 
-                if ( in_array($newest_gene,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+                if ( in_array($newest_gene,$hk_genes) && in_array($sample_name2, $comparator_samples_array) && $col_count != 0) {
                   // echo "hk true new -> $newest_gene $sample_name <br>";
 
                   if ($hk_replicates[$sample_name][$newest_gene]) {
@@ -468,7 +574,7 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
                    array_push($hk_replicates[$sample_name][$newest_gene], $col);
                   }
                 }
-                else if ( in_array($old_gene,$hk_genes) && in_array($sample_name, $comparator_samples_array) && $col_count != 0) {
+                else if ( in_array($old_gene,$hk_genes) && in_array($sample_name2, $comparator_samples_array) && $col_count != 0) {
                   // echo "hk true old -> $old_gene $sample_name <br>";
 
                   if ($hk_replicates[$sample_name][$old_gene]) {
@@ -485,26 +591,20 @@ foreach($sample_hash as $expr_file => $comparator_samples_array) {
 
             } // end else
 
-
-
-
-
-
-
             // echo "<br>";
           }
           // ############################### End Housekeeping normalization ##############################
 
-          $col_count++;
+          // $col_count++;
         } // end column foreach
       } // end if in_array
 
 
     } //end foreach line
-
   } // end if expression file exists
 
 } // end foreach sample_hash
+
 
 
 if ($hk_genes && $to_newest_v && $newer_found) {
@@ -529,14 +629,16 @@ if ($hk_genes && $to_newest_v && $newer_found) {
 
 
 
-$full_header = array_unique($full_header);
-$sample_names = array_values($full_header);
+$full_header = array_unique($full_header); 
+$sample_names = array_values($full_header); // reset array indexes
+
 
 // create average table and its header
 array_push($table_code_array,"<table class=\"tblAnnotations table table-striped table-bordered\" id=\"tblResults\" style=\"display:none\">");
 array_push($table_code_array,"<thead><tr><th>ID</th>");
 
 foreach ($full_header as $exp_name) {
+  // $exp_name = preg_replace('/D\d+_/',"",$exp_name);
   array_push($table_code_array,"<th>$exp_name</th>");
 }
 array_push($table_code_array,"</tr></thead>");
@@ -592,7 +694,7 @@ foreach ($found_genes as $gene_name => $kk) {
 
   if ($q_link) {
     if ($q_link == "#") {
-      array_push($table_code_array,"<tr><td>$gene_name</td>");
+      array_push($table_code_array,"<tr><td><i><b>$gene_name</b></i></td>");
     }
     else {
       $q_link2 = preg_replace('/query_id/',$gene_name,$q_link);
@@ -607,7 +709,8 @@ foreach ($found_genes as $gene_name => $kk) {
   $scatter_pos = 1;
 
   foreach ($sample_names as $sample_name) {
-    $gene_reps_array = $replicates[$sample_name];
+
+    $gene_reps_array = $replicates[$sample_name]; // get replicates of each sample
 
   // get expression average values like "Sample1" and values are like gene => [4.4,2.3,8.1]
   //foreach ($replicates as $sample_name => $gene_reps_array) {
@@ -739,8 +842,8 @@ foreach ($found_genes as $gene_name => $kk) {
     //save replicates. Iterate each replicate of each gene
     if ($gene_reps_array[$gene_name]) {
 
-
       foreach ($gene_reps_array[$gene_name] as $one_rep) {
+
         $one_replicate_pair = [$scatter_pos, $one_rep];
 
         //save samples and add replicates
@@ -754,6 +857,13 @@ foreach ($found_genes as $gene_name => $kk) {
 
       } // end foreach
     } // end if
+    else 
+    // If no replicates are available for a given sample and gene, the corresponding data will be null. (This is necessary for the scatter plot to function correctly for each sample)
+    {
+      $scatter_one_sample["name"] = $sample_name;
+      $scatter_one_sample["data"][] = [$scatter_pos, null];
+    }
+
     $scatter_pos++;
 
     //save gene and add samples with replicates
@@ -763,7 +873,6 @@ foreach ($found_genes as $gene_name => $kk) {
       $scatter_all_genes[$gene_name] = [];
       array_push($scatter_all_genes[$gene_name], $scatter_one_sample );
     }
-
 
     // exception to get data for replicate plot when samples without data because of different gene versions
     if ($replicates[$sample_name]) {
@@ -776,12 +885,10 @@ foreach ($found_genes as $gene_name => $kk) {
 
     }
 
-
-
-
     $scatter_one_sample = [];
-  }
 
+  }
+  
   array_push($heatmap_series, $heatmap_one_gene);
 
   $heatmap_one_gene = [];
@@ -816,36 +923,33 @@ if(count($found_genes)!=0)
 
     include realpath("03_expr_load_heatmap_html.php");
 
- #####################             Replicates           ################################
 
-    echo '<div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
+
+ #####################             Replicates           ################################
+?>
+
+    <div class="collapse_section pointer_cursor" data-toggle="collapse" data-target="#replicates_graph" aria-expanded="true">
       <i class="fas fa-sort" style="color:#229dff"></i> Replicates
     </div>
 
     <div id="replicates_graph" class="collapse hide">
 
-      <div id="chart2_frame" style="width:100%; border:2px solid #666; padding-top:7px;">
+      <div id="chart2_frame" class=" expression-container" style="width:100%; padding-top:7px;">
         <div class="form-group d-inline-flex" style="width: 450px;">
           <label for="sel1" style="width: 150px; margin-top:7px">Select gene:</label>
           <select class="form-control" id="sel1">';
-              foreach ($found_genes as $gene => $kk) {
+              <?php foreach ($found_genes as $gene => $kk) {
                 echo "<option value=\"$gene\">$gene</option>";
-              }
-        echo '</select>
+              }?>
+          </select>
          </div>
-        <div id="chart2" style="min-height: 365px;"></div>
-      </div>
+            <div id="chart2" style="min-height: 365px;"></div>
+          </div>
+    </div>
 
-    </div>';
+</center>
 
-echo "</center>";
-
-
-#####################             datatable           ################################
-
-   include realpath("03_expr_load_avg_table_html.php");
-
-
+<?php
 
 
   // echo implode("\n", $table_code_array);
@@ -854,6 +958,50 @@ echo "</center>";
   // echo "replicates_all_genes<br>";
   // print_r($replicates_all_genes[$found_genes[3]]);
   // echo "<br>";
+
+
+// ------------------- create dataset header for the datatable and annotations for the lines/bars graph---------------
+  $dataset_header=[];
+  $dataset_group=[]; // array to group samples by dataset
+  $dataset_groups=[]; // array to group all dataset_group
+
+  $header_colors=["#f0f0f0","#ffffff"];
+  $color_index = 0;
+  // $sample_index = 0;
+  $datasets_count = 0;
+  $sample_prefix="";
+
+  foreach ($categories_info as $category => $datasets) {
+    foreach ($datasets as $dataset_name => $samples) {
+
+    // #### Dataset header for the datatable ####
+      $dataset_name = str_replace("_", " ", $dataset_name);
+      $dataset_name = str_replace(".txt", " ", $dataset_name);
+      
+      array_push($dataset_header,'<th title="' . $dataset_name . '" colspan=' . count($samples) . ' style="background-color:' . $header_colors[$color_index%2] . '; text-align: center; border-left: 1px solid #ccc;border-right: 1px solid #ccc;">' .$dataset_name . '</th>');
+      $color_index++;
+
+      // #### Datasets labels (annotations) for linea/bars graph ####
+      $datasets_count ++;
+      $sample_prefix = "D".$datasets_count;
+      $dataset_group["x"] = $sample_prefix . "_" . $samples[0]; // first sample of the dataset label
+      $dataset_group["x2"] = $sample_prefix . "_" . $samples[count($samples) - 1]; // last sample of the dataset label
+      $dataset_group["label"]["style"]["background"] = "rgba(255, 255, 255, 0.6)"; // color and opacity of the dataset label
+      $dataset_group["label"]["text"] = $sample_prefix . " ➜ " . $dataset_name; // dataset label
+      // $dataset_group["opacity"] = 0.1;
+      // $dataset_group["label"]["position"] = 'middle';
+      // $sample_index += count($samples);
+      array_push($dataset_groups,$dataset_group);
+    }
+
+   } // end foreach $categories_info
+
+   
+   #####################             datatable           ################################
+
+   $comparator_table=1; // flag to indicate that the table is a comparator table and not a regular expression table
+   include realpath("03_expr_load_avg_table_html.php"); 
+   
 }else
 {
   echo '<br><div class="alert alert-danger" role="alert" style="text-align:center">
@@ -875,21 +1023,18 @@ include realpath('../../footer.php');
 
   var sample_array = <?php echo json_encode($sample_names) ?>;
   var samples_found = <?php echo json_encode($samples_found) ?>;
+  // reverse heatmap_series to match the order of genes in the table
   var heatmap_series = <?php echo json_encode(array_reverse($heatmap_series)) ?>;
+
+  var dataset_groups = <?php echo json_encode($dataset_groups) ?>;
+  // alert(JSON.stringify(dataset_groups));
 
   var gene_list = <?php echo json_encode($found_genes) ?>;
   var replicates_one_gene = <?php echo json_encode($replicates_all_genes[$found_genes[0]]) ?>;
   var scatter_one_gene = <?php echo json_encode($scatter_all_genes[$found_genes[0]]) ?>;
   var scatter_all_genes = <?php echo json_encode($scatter_all_genes) ?>;
   var replicates_all_genes = <?php echo json_encode($replicates_all_genes) ?>;
-
-  // if (gene_list.length == 0) {
-    // $( "#chart1" ).css("display","none");
-    // $( "#chart2" ).css("display","none");
-    // $( "#dataset_title" ).html("No gene was found in the selected dataset. Please, check gene names.");
-    // $("#search_input_modal").html( "No gene was found in the selected dataset. Please, check gene names." );
-    // $('#no_gene_modal').modal()
-  // }
+  // alert(JSON.stringify(replicates_one_gene));
 
 </script>
 
