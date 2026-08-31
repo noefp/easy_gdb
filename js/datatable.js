@@ -191,7 +191,6 @@ function datatable(table_id,select_id) {
         
           ],
 
-      
         "sScrollX": "100%",
         "sScrollXInner": "100%",
         "bScrollCollapse": true,
@@ -267,11 +266,15 @@ function datatable(table_id,select_id) {
 
   function datatable_with_subtable(table_id,subtable_id='') {
     
-    $(table_id).DataTable({
+    var table=$(table_id).DataTable({
     dom: 'Bfrtlpi',
     "oLanguage": {
       "sSearch": "Filter by:"
     },
+    aLengthMenu: [
+          [10, 25, 50, 100, 200, -1],
+          [10, 25, 50, 100, 200, "All"]
+      ],
     buttons: [
       {
         extend: 'copy',
@@ -444,7 +447,7 @@ function datatable(table_id,select_id) {
 
     "drawCallback": function( settings ) {
 
-        $(""+table_id+" tbody tr").hover(
+        $(table_id+" tbody tr").hover(
           function() {
               $(this).css("background-color", "#d1d1d1");
           }, function() {
@@ -463,6 +466,10 @@ function datatable(table_id,select_id) {
     
     $(table_id).DataTable({
       dom: 'Bfrtlpi',
+      aLengthMenu: [
+          [10, 25, 50, 100, 200, -1],
+          [10, 25, 50, 100, 200, "All"]
+      ],
       language: {
         search: "Filter by:"
       },
@@ -478,10 +485,11 @@ function datatable(table_id,select_id) {
       "bScrollCollapse": true,
       retrieve: true,
       colReorder: true,
-      order: [], // Desactiva orden inicial
-    "drawCallback": function( settings ) {
+      order: [], // disable initial sorting
 
-        $(""+table_id+" tbody tr").hover(
+      "drawCallback": function( settings ) {
+
+        $(table_id+" tbody tr").hover(
           function() {
               $(this).css("background-color", "#d1d1d1");
           }, function() {
