@@ -52,13 +52,12 @@ let comparator_table = <?php echo json_encode(isset($comparator_table) && $compa
       if (comparator_table)
        {
         // add the dataset header to the table 
-        var datasetHeader = `<?php echo implode("", $dataset_header); ?>`;
-        var Header = `
-            <tr><th style="border: none"></th> <!-- empty cell for the first column of the table Gen_id -->
-            ${datasetHeader}</tr>`;
+        var dataseetHeader = <?php echo json_encode((isset($dataset_header) && !empty($dataset_header) ? implode("",$dataset_header) : ""))?>;
+        var Header = '<tr><th style="border: none"></th>' + dataseetHeader + '</tr>';
 
       // insert a new row with the dataset header at the beginning of the table header <thead>
-        $('#tblResults thead:eq(0)').prepend(Header); 
+      if(dataset_header !== "")
+        {$('#tblResults thead:eq(0)').prepend(Header);}
 
         // initialize the datatable with the BASIC TABLE
         datatable_basic("#tblResults");          
