@@ -52,11 +52,11 @@ let comparator_table = <?php echo json_encode(isset($comparator_table) && $compa
       if (comparator_table)
        {
         // add the dataset header to the table 
-        var dataseetHeader = <?php echo json_encode((isset($dataset_header) && !empty($dataset_header) ? implode("",$dataset_header) : ""))?>;
-        var Header = '<tr><th style="border: none"></th>' + dataseetHeader + '</tr>';
+        var datasetHeader = <?php echo json_encode(isset($dataset_header) && !empty($dataset_header) ? implode("",$dataset_header) : "")?>;
+        var Header = '<tr><th style="border: none"></th>' + datasetHeader + '</tr>';
 
       // insert a new row with the dataset header at the beginning of the table header <thead>
-      if(dataset_header !== "")
+      if(datasetHeader !== "")
         {$('#tblResults thead:eq(0)').prepend(Header);}
 
         // initialize the datatable with the BASIC TABLE
