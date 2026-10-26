@@ -24,9 +24,9 @@ if ($file_database){
     $annotation_hash = json_decode($annot_json_file, true);
   }
 
-
   $quoted_search = 0;
-  if (preg_match('/^".+"$/', $name)) {
+  $gene_check = $gene_name ?? '';
+  if (preg_match('/^".+"$/', $gene_check)) {
     $quoted_search = 1;
   }
 

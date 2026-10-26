@@ -1,5 +1,7 @@
 <?php
-// set the momeory limit accordingly
+ob_start();
+
+// set the memory limit accordingly
 ini_set('memory_limit', '512M');
 
 include_once realpath("../../../configuration_path.php");
