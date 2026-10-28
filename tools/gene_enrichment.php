@@ -56,7 +56,7 @@ if ( file_exists("$json_files_path/tools/enrichment.json") ) {
     </div>
 
 <p>
-  The gene set enrichment analsysis will be redirected to <a href="https://biit.cs.ut.ee/gprofiler/gost" target="_blank">g:Profiler</a>, 
+  The gene set enrichment analysis will be redirected to <a href="https://biit.cs.ut.ee/gprofiler/gost" target="_blank">g:Profiler</a>, 
   Developed by <a href="https://doi.org/10.1093/nar/gkz369" target="_blank">Raudvere et al 2019</a>.
 </p>
 
