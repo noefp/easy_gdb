@@ -1,6 +1,5 @@
 <?php
-<<<<<<< HEAD
-// Linux; PHP >= 7.4. Keep this implementation identical in both endpoints.
+// Linux; PHP >= 7.4. Keep this implementation identical in both blastdbcmd_single.php y blastdbcmd_multiple.php.
 ini_set('display_errors', '0');
 ob_start();
 function egdb_fail($status, $message) {
@@ -26,33 +25,6 @@ function egdb_ids($raw, $maximum) {
     foreach ($ids as $id) {
         if (!preg_match('/\A[A-Za-z0-9_][A-Za-z0-9_.:|+\-]{0,254}\z/', $id)) {
             throw new InvalidArgumentException('Invalid gene ID format.');
-=======
-ob_start();
-
-// set the memory limit accordingly
-ini_set('memory_limit', '512M');
-
-include_once realpath("../../../configuration_path.php");
-include_once realpath("$conf_path/easyGDB_conf.php");
-$baseDir = $blast_dbs_path."/";
-
-
-// FIND PATH
-function findPath($dbPath, $baseDir) {
-  $dbPath = str_replace(' ', "_", $dbPath);
-
-  $allowedExtensions = ['nhr','nin','nsq','nog','nsd','nsi','phr','pin','pog','psd','psi','psq'];
-
-  $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($baseDir));
-
-  foreach ($iterator as $file) {
-    if ($file->isFile()) {
-      $extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
-      if (in_array($extension, $allowedExtensions)) {
-        $baseName = $file->getFilename();
-        if ($baseName === $dbPath) {
-          return $file->getPathname();
->>>>>>> refs/remotes/origin/main
         }
     }
     return array_values(array_unique($ids));
@@ -153,7 +125,6 @@ try {
     $databases = [];
     foreach ($keys as $key) $databases[] = egdb_database(trim($key), $catalog);
 
-<<<<<<< HEAD
     $deadline = microtime(true) + 60;
     $maxBytes = 20 * 1024 * 1024;
     $results = [];
@@ -177,7 +148,3 @@ try {
     error_log('easyGDB extraction: ' . $e->getMessage());
     egdb_fail(500, 'Sequence extraction failed. Please contact the administrator.');
 }
-=======
-
-?>
->>>>>>> refs/remotes/origin/main

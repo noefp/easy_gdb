@@ -1,5 +1,5 @@
 <?php
-// Linux; PHP >= 7.4. Keep this implementation identical in both endpoints.
+// Linux; PHP >= 7.4. Keep this implementation identical in both blastdbcmd_single.php y blastdbcmd_multiple.php.
 ini_set('display_errors', '0');
 ob_start();
 function egdb_fail($status, $message) {
