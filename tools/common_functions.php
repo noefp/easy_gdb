@@ -2,6 +2,7 @@
 
 
 function test_input($data) {
+  $data = $data ?? '';
   $data = stripslashes($data);
   $data = preg_replace('/[\<\>]+/','',$data);
   $data = htmlspecialchars($data);
@@ -10,6 +11,7 @@ function test_input($data) {
 }
 
 function test_input2($data) {
+  $data = $data ?? '';
   $data = preg_replace('/[\<\>\t\r\;]+/', '', $data);
   $data = htmlspecialchars($data);
   if (preg_match('/\s+/', $data)) {

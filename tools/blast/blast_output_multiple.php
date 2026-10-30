@@ -145,16 +145,15 @@ $json_array = array();
 array_push($res_html, "<table id=\"blast_table\" class=\"table \">");
 array_push($res_html, "<tr>");
 array_push($res_html, "<th>Select</th>"); // Add checkbox header
-array_push($res_html, "<th>Description</th>");
 array_push($res_html, "<th>Species</th>");
 array_push($res_html, "<th>SubjectId</th>");
 array_push($res_html, "<th>Qid%</th>");
 array_push($res_html, "<th>Aln</th>");
-array_push($res_html, "<th>e_value</th>");
+array_push($res_html, "<th>evalue</th>");
 array_push($res_html, "<th>Score</th>");
-// array_push($res_html, "<th>Description</th>");
+array_push($res_html, "<th>Description</th>");
 array_push($res_html, "</tr>");
-array_push($res_tab_txt, "Specie\tDatabase\tQueryID\tSubjectId\tQid%\tAln\tmismatches\tgapopen\tqstart\tqend\tsstart\tsend\te_value\tScore\tDescription");
+array_push($res_tab_txt, "Species\tDatabase\tqseqid\tsseqid\tpident\tlength\tmismatch\tgapopen\tqstart\tqend\tsstart\tsend\tevalue\tbitscore\tDescription");
 
 
 $length_list = [];
@@ -320,8 +319,10 @@ foreach ($blast_dbs as $blast_db) {
     $nameFD = basename(dirname($blast_db));
 
     // list($species_link, $target_type) = _get_species_link($s_link_hash, $nameFD, $species_path);
-    echo "<div style=\"margin:60px;min-width:1020px\"><h3>Results for Database: $nameDB</h3></div>";
-    echo "<div style=\"margin:60px;min-width:1020px\">$blast_res</div>";
+    echo "<div class=\"frame_container\" style=\"margin:30px auto;\">";
+    echo "<h3>Results for Database: $nameDB</h3>";
+    echo "<div style=\"overflow-x:auto;\">$blast_res</div>";
+    echo "</div>";
 
   } else {
     echo "<p>Error executing BLAST for database: $blast_db</p>";
@@ -429,7 +430,7 @@ foreach ($blast_dbs as $blast_db) {
 
           $species=str_replace("_", " ", $nameFD);
 
-          array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td>$desc</td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td></tr>");
+          array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td><td>$desc</td></tr>");
           
           array_push($res_tab_txt, "$nameFD\t$nameDB\t$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$e_value\t$score\t$desc");
 
@@ -504,7 +505,7 @@ foreach ($blast_dbs as $blast_db) {
           $desc = preg_replace('/[\'\"]+/','',$desc);
           
           $species=str_replace("_", " ", $nameFD);
-          array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td>$desc</td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td></tr>");
+          array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td><td>$desc</td></tr>");
           // array_push($res_html, "<tr><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"/easy_gdb/gene.php?name=$subject\" target=\"_blank\">$subject</a></td><td>$id</td><td>$aln</td><td>$e_value</td><td>$score</td><td>$desc</td></tr>");
           array_push($res_tab_txt, "$nameFD\t$nameDB\t$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$e_value\t$score\t$desc");
 
@@ -612,7 +613,7 @@ foreach ($blast_dbs as $blast_db) {
       $desc = preg_replace('/[\'\"]+/','',$desc);
       $species=str_replace("_", " ", $nameFD);
       
-      array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td>$desc</td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td></tr>");
+      array_push($res_html, "<tr><td><input type=\'checkbox\' class=\'row-select\'></td><td style=\"white-space: nowrap;\">$species</td><td><a id=\"$subject\" class=\"blast_match_ident\" href=\"$s_link\" target=\"$target_type\">$subject</a></td><td style=\"text-align: right;\">$id</td><td style=\"text-align: right;\">$aln</td><td style=\"text-align: right;\">$e_value</td><td style=\"text-align: right;\">$score</td><td>$desc</td></tr>");
       array_push($res_tab_txt, "$nameFD\t$nameDB\t$query\t$subject\t$id\t$aln_total\t$mm\t$gapopen\t$qstart\t$qend\t$sstart\t$send\t$e_value\t$score\t$desc");
 
       if (strlen($desc) > 150) {
@@ -686,13 +687,13 @@ $name = str_replace("</b>", "", $query_name);
     const rows = Array.from(table.querySelectorAll("tr")).slice(1); // Exclude header row
 
     rows.sort((rowA, rowB) => {
-      const qidA = parseFloat(rowA.children[4].textContent); // Qid% column
-      const evalueA = parseFloat(rowA.children[6].textContent); // e_value column
-      const scoreA = parseFloat(rowA.children[7].textContent); // Score column
+      const qidA = parseFloat(rowA.children[3].textContent); // Qid% column
+      const evalueA = parseFloat(rowA.children[5].textContent); // e_value column
+      const scoreA = parseFloat(rowA.children[6].textContent); // Score column
 
-      const qidB = parseFloat(rowB.children[4].textContent);
-      const evalueB = parseFloat(rowB.children[6].textContent);
-      const scoreB = parseFloat(rowB.children[7].textContent);
+      const qidB = parseFloat(rowB.children[3].textContent);
+      const evalueB = parseFloat(rowB.children[5].textContent);
+      const scoreB = parseFloat(rowB.children[6].textContent);
 
       // Sorting logic
       const qidDiff = qidB - qidA; // Descending Qid%
@@ -784,7 +785,7 @@ if (selectedRows.length === 0) {
   return;
 }
  
-const header = ["Description", "Specie", "SubjectID", "QID%", "Aln", "E-value", "Score"];
+const header = ["Species", "SubjectId", "Qid%", "Aln", "evalue", "Score", "Description"];
 
 let content = "";
 let mimeType = "";
